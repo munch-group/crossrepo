@@ -3,9 +3,9 @@ requires = ["setuptools>=61.0", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "munch-group-library"
+name = "labdata"
 version = "0.1.16"
-description = "Project description"
+description = "Catalog and fetch versioned result files across git repos, without submodules"
 authors = [
     {name = "Your Name", email = "your@email.com"}
 ]
@@ -17,16 +17,20 @@ classifiers = [
     "Programming Language :: Python :: 3",
 ]
 dependencies = [
-
+    "tomli; python_version < '3.11'",
 ]
 
 [project.urls]
-Homepage = "https://github.com/munch-group/munch-group-library"
-Repository = "https://github.com/munch-group/munch-group-library"
-Documentation = "https://munch-group.org/munch-group-library"
+Homepage = "https://github.com/munch-group/labdata"
+Repository = "https://github.com/munch-group/labdata"
+Documentation = "https://munch-group.org/labdata"
 
 [project.scripts]
-munch-group-library = "munch_group_library:munch_group_library"
+labdata = "labdata.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["test"]
+pythonpath = ["src", "test"]
 
 [tool.setuptools]
 include-package-data = true
@@ -36,7 +40,7 @@ where = ["src"]
 exclude = ["test*"]
 
 [tool.setuptools.package-data]
-munch_group_library = ["data/*.txt", "data/*.csv", "data/*.pickle", "data/*.h5"]
+labdata = ["data/*.txt", "data/*.csv", "data/*.pickle", "data/*.h5"]
 
 [tool.pixi.workspace]
 channels = ["conda-forge", "munch-group"]
@@ -62,7 +66,7 @@ vscodenb = "*"
 r-rsvg = "*"
 
 # [tool.pixi.pypi-dependencies]
-# munch-group-library = { path = ".", editable = true }
+# labdata = { path = ".", editable = true }
 
 [tool.pixi.environments]
 default = {solve-group = "default"}
@@ -91,7 +95,7 @@ cmd = "git clean -id"
 description = "Removes untracked files and directories but respects your .gitignores"
 
 [tool.pixi.tasks.test]
-cmd = "mkdir -p tests/pytest/tmp && jupyter nbconvert docs/pages/tutorial/*.ipynb --to script --TagRemovePreprocessor.enabled=True --TagRemovePreprocessor.remove_cell_tags='{\"skip-execution\"}' --output-dir tests/pytest/tmp && pytest tests/pytest/"
+cmd = "pytest test/"
 description = "Run tests"
 
 [tool.pixi.tasks.commit]

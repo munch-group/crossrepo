@@ -37,7 +37,7 @@ interlinks:
     #   inv: objects-test.txt
 
 website:
-  title: "munch-group-library"
+  title: "labdata"
   page-navigation: true
   navbar:
     left:
@@ -47,7 +47,7 @@ website:
       #   text: Gallery
     right:
       - icon: github
-        href: https://github.com/munch-group/munch-group-library/
+        href: https://github.com/munch-group/labdata/
   sidebar:
     - id: pages
       title: Get Started
@@ -76,7 +76,7 @@ format:
       theme: neutral 
 
 quartodoc:
-  package: munch-group-library
+  package: labdata
   style: pkgdown
   dir: api
   render_interlinks: true
@@ -89,15 +89,78 @@ quartodoc:
   css: "api/_styles-quartodoc.css"
 
   sections:
-    - title: Some section
-      package: munch_group_library.modulename
+    - title: Catalog
+      package: labdata
       desc: |
-        Some description...
+        Finding out what the repositories publish.
       contents:
-        - functionname
-    - title: Some other section
-      package: munch_group_library.modulename
+        - catalog
+        - build
+        - frame
+    - title: Fetching
+      package: labdata
       desc: |
-        Some description...
+        Getting a local path to one version of a result file.
       contents:
-        - scriptname
+        - fetch
+        - versions
+    - title: Resolving
+      package: labdata.core
+      desc: |
+        Turning a spec such as `repo:file@version` into one entry and one
+        version.
+      contents:
+        - resolve_one
+        - match
+        - find_version
+        - scan_repo
+        - repo_identity
+        - materialize
+    - title: Data types
+      package: labdata
+      desc: |
+        What the catalog is made of.
+      contents:
+        - Entry
+        - Version
+        - Spec
+    - title: Configuration
+      package: labdata
+      desc: |
+        Which directories are searched and which files are cataloged.
+      contents:
+        - Config
+    - title: Cache
+      package: labdata.cache
+      desc: |
+        The content-addressed store keyed by git blob sha.
+      contents:
+        - blob_path
+        - readable_path
+        - store
+        - store_from_file
+        - open_for_write
+        - link
+        - usage
+    - title: Git access
+      package: labdata.gitutil
+      desc: |
+        Plumbing wrappers used to read repositories.
+      contents:
+        - discover_repos
+        - tracked_blobs
+        - last_commits
+        - file_history
+        - blob_at
+        - tag_map
+        - read_blob
+        - write_blob_to
+        - parse_lfs_pointer
+        - lfs_object_path
+    - title: Command line
+      package: labdata.cli
+      desc: |
+        Entry points behind the `labdata` command.
+      contents:
+        - main
+        - build_parser

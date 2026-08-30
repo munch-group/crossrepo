@@ -1,6 +1,6 @@
 # Sphinx inventory version 2
-# Project: munch-group-library
+# Project: labdata
 # Version: 0.0.9999
 # The remainder of this file is compressed using zlib.
-munch_group_library.modulename.functionname py:function 1 api/functionname.html#munch_group_library.modulename.functionname -
-munch_group_library.modulename.scriptname py:function 1 api/scriptname.html#munch_group_library.modulename.scriptname -
+labdata.modulename.functionname py:function 1 api/functionname.html#labdata.modulename.functionname -
+labdata.modulename.scriptname py:function 1 api/scriptname.html#labdata.modulename.scriptname -
