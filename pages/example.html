@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Workplace interaction – labdata</title>
+<title>Reading another project’s results – labdata</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -77,9 +77,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap-1c33c0780a01951c1c2d77b4a45239a1.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
-<script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
-<link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
-<link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -110,6 +107,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
 
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+<script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@*/dist/embed-amd.js" crossorigin="anonymous"></script>
 
 
 <link rel="stylesheet" href="../api/_styles-quartodoc.css">
@@ -155,7 +153,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../pages/example.html">Examples</a></li><li class="breadcrumb-item"><a href="../pages/example.html">Workplace interaction</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../pages/example.html">Examples</a></li><li class="breadcrumb-item"><a href="../pages/example.html">Reading another project’s results</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -185,7 +183,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/example.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Workplace interaction</span></a>
+ <span class="menu-text">Reading another project’s results</span></a>
   </div>
 </li>
       </ul>
@@ -200,17 +198,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#sampling" id="toc-sampling" class="nav-link active" data-scroll-target="#sampling">Sampling</a></li>
-  <li><a href="#interviews" id="toc-interviews" class="nav-link" data-scroll-target="#interviews">Interviews</a></li>
+  <li><a href="#what-gets-published" id="toc-what-gets-published" class="nav-link active" data-scroll-target="#what-gets-published">What gets published</a></li>
+  <li><a href="#what-is-published" id="toc-what-is-published" class="nav-link" data-scroll-target="#what-is-published">What is published</a></li>
+  <li><a href="#reading-a-file" id="toc-reading-a-file" class="nav-link" data-scroll-target="#reading-a-file">Reading a file</a></li>
+  <li><a href="#a-dataset-split-over-many-files" id="toc-a-dataset-split-over-many-files" class="nav-link" data-scroll-target="#a-dataset-split-over-many-files">A dataset split over many files</a></li>
+  <li><a href="#history" id="toc-history" class="nav-link" data-scroll-target="#history">History</a></li>
+  <li><a href="#when-nothing-shows-up" id="toc-when-nothing-shows-up" class="nav-link" data-scroll-target="#when-nothing-shows-up">When nothing shows up</a></li>
+  <li><a href="#reading-github-without-cloning" id="toc-reading-github-without-cloning" class="nav-link" data-scroll-target="#reading-github-without-cloning">Reading GitHub, without cloning</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../pages/example.html">Examples</a></li><li class="breadcrumb-item"><a href="../pages/example.html">Workplace interaction</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../pages/example.html">Examples</a></li><li class="breadcrumb-item"><a href="../pages/example.html">Reading another project’s results</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Workplace interaction</h1>
+<h1 class="title">Reading another project’s results</h1>
 </div>
 
 
@@ -227,254 +230,124 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<div id="cell-2" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2025-12-19T10:49:21.169198Z&quot;,&quot;iopub.status.busy&quot;:&quot;2025-12-19T10:49:21.169058Z&quot;,&quot;iopub.status.idle&quot;:&quot;2025-12-19T10:49:21.233482Z&quot;,&quot;shell.execute_reply&quot;:&quot;2025-12-19T10:49:21.232944Z&quot;}}" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>load_ext autoreload</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>autoreload <span class="dv">2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>labdata</code> lets one project read result files produced by another, without submodules, without cloning, and without downloading anything by hand.</p>
+<p>A repository publishes by committing a <code>labdata.yml</code> in the <code>results/</code> directory at its root, naming the files it wants others to see and saying what each one holds. Everything else in <code>results/</code> stays private to that project.</p>
+<p>This page builds a small repository so that it runs anywhere, then uses the python API on it. Reading repositories on GitHub works exactly the same way and is shown at the end.</p>
+<div id="4ea86094" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-08-31T10:24:00.609389Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-08-31T10:24:00.609279Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-08-31T10:24:00.788331Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-08-31T10:24:00.787783Z&quot;}}">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> vscodenb</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> labdata</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+
+        <style>
+        :root {
+            --vscodenb-foreground: var(--vscode-editor-foreground, var(--jp-content-font-color1, #cccccc));
+            --jp-widgets-color: var(--vscodenb-foreground);
+        }
+        </style>
+        
+        <style>
+        .cell-output-ipywidget-background {
+            background-color: transparent !important;
+        }
+       .jp-OutputArea-output {
+           background-color: transparent;
+        }  
+        /* tqdm styling: */
+        .widget-label,
+        .widget-html,
+        .widget-button,
+        .widget-dropdown,
+        .widget-text,
+        .widget-textarea {
+            font-size: 10px !important;      /* Font size */
+        }
+        /* tqdm progress bar labels ("47%" and "470/1000 [00:03<00:03, ...]") */
+        .widget-label,
+        .widget-html,
+        .widget-htmlmath,
+        .widget-html-content,
+        .widget-htmlmath-content {
+            color: var(--vscodenb-foreground) !important;
+        }
+        div.widget-html-content > progress { /* Outer container */
+            height: 10px !important;
+        
+        }
+        div.jp-OutputArea-output td.output_html { /* tqdm HTML output area */
+            height: 5px !important;
+        }
+        div.progress { /* Jupyter Notebook (classic) */
+            height: 5px !important;
+            min-height: 5px !important;
+            margin-top: 12px !important;    
+        }
+        div.progress-bar { /* inner bar */
+            height: 5px !important;
+            min-height: 5px !important;
+            line-height: 5px !important;
+            color: white !important;
+            padding-bottom: 0px !important;    
+        }
+        table {
+            font-variant-numeric: tabular-nums; 
+        }                     
+        </style>                          
+        
 </div>
-<p>Import some plotting libraries and set some defaults:</p>
-<div id="cell-4" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2025-12-19T10:49:21.235402Z&quot;,&quot;iopub.status.busy&quot;:&quot;2025-12-19T10:49:21.235225Z&quot;,&quot;iopub.status.idle&quot;:&quot;2025-12-19T10:49:23.887058Z&quot;,&quot;shell.execute_reply&quot;:&quot;2025-12-19T10:49:23.886624Z&quot;}}" data-execution_count="2">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> display, Markdown</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>sns.<span class="bu">set</span>()</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>sns.set_style(<span class="st">"whitegrid"</span>)</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<blockquote class="blockquote">
-<p><strong>Tip:</strong><br>
-Producing figures in svg format (scalable vector graphics) makes for sharp plots on webpages. However, if you make plots with thousands of observations you should set this to <code>'png'</code> instead:</p>
-</blockquote>
-<div id="cell-6" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2025-12-19T10:49:23.888911Z&quot;,&quot;iopub.status.busy&quot;:&quot;2025-12-19T10:49:23.888698Z&quot;,&quot;iopub.status.idle&quot;:&quot;2025-12-19T10:49:23.911177Z&quot;,&quot;shell.execute_reply&quot;:&quot;2025-12-19T10:49:23.910652Z&quot;}}" data-execution_count="3">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>config InlineBackend.figure_formats <span class="op">=</span> [<span class="st">'svg'</span>] </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="what-gets-published" class="level3">
+<h3 class="anchored" data-anchor-id="what-gets-published">What gets published</h3>
+<p><code>results/labdata.yml</code> is the whole of it. Keys are file names, paths, or globs; values say what the file holds. You can list parquet folders as if they were files, since they load as such.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode yml code-with-copy"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">files</span><span class="kw">:</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">output.csv</span><span class="kw">:</span><span class="at"> Some csv file</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">large_data.parquet</span><span class="kw">:</span><span class="at"> large data set </span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="1d5ea216" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>labdata.refresh()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id":"7c75e39ec1ab45e7acb21bf719106452","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+</script>
 </div>
-<section id="sampling" class="level2">
-<h2 class="anchored" data-anchor-id="sampling">Sampling</h2>
-<div id="cell-8" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2025-12-19T10:49:23.912707Z&quot;,&quot;iopub.status.busy&quot;:&quot;2025-12-19T10:49:23.912605Z&quot;,&quot;iopub.status.idle&quot;:&quot;2025-12-19T10:49:23.931859Z&quot;,&quot;shell.execute_reply&quot;:&quot;2025-12-19T10:49:23.931352Z&quot;}}" data-execution_count="4">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>subjects <span class="op">=</span> pd.read_csv(<span class="st">'../../data/data_table.csv'</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>sample_size <span class="op">=</span> subjects.shape[<span class="dv">0</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id":"c0abf6fadeea4232833abc6e16b16bf1","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+</script>
 </div>
-<blockquote class="blockquote">
-<p><strong>Tip:</strong><br>
-By adding a label and caption to a cell displaying a table, you can refer to that table elsewhere and insert it in a manuscript.</p>
-</blockquote>
-<div class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2025-12-19T10:49:23.933369Z&quot;,&quot;iopub.status.busy&quot;:&quot;2025-12-19T10:49:23.933260Z&quot;,&quot;iopub.status.idle&quot;:&quot;2025-12-19T10:49:23.955766Z&quot;,&quot;shell.execute_reply&quot;:&quot;2025-12-19T10:49:23.955229Z&quot;}}" data-execution_count="5">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>subjects</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div id="tbl-subjects" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="5" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2025-12-19T10:49:23.933369Z&quot;,&quot;iopub.status.busy&quot;:&quot;2025-12-19T10:49:23.933260Z&quot;,&quot;iopub.status.idle&quot;:&quot;2025-12-19T10:49:23.955766Z&quot;,&quot;shell.execute_reply&quot;:&quot;2025-12-19T10:49:23.955229Z&quot;}}">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-subjects-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;1: People included in the analysis.
-</figcaption>
-<div aria-describedby="tbl-subjects-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output cell-output-display" data-execution_count="5">
+<div class="cell-output cell-output-display" data-execution_count="2">
 <div>
 
 
-<table class="dataframe do-not-create-environment cell caption-top table table-sm table-striped small" data-border="1">
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">repo</th>
+<th data-quarto-table-cell-role="th">path</th>
 <th data-quarto-table-cell-role="th">name</th>
-<th data-quarto-table-cell-role="th">age</th>
-<th data-quarto-table-cell-role="th">sex</th>
-<th data-quarto-table-cell-role="th">position</th>
-<th data-quarto-table-cell-role="th">nationality</th>
+<th data-quarto-table-cell-role="th">description</th>
+<th data-quarto-table-cell-role="th">date</th>
+<th data-quarto-table-cell-role="th">bytes</th>
+<th data-quarto-table-cell-role="th">parts</th>
+<th data-quarto-table-cell-role="th">tags</th>
+<th data-quarto-table-cell-role="th">lfs</th>
+<th data-quarto-table-cell-role="th">spec</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">0</th>
-<td>Julie</td>
-<td>27</td>
-<td>F</td>
-<td>PhDstudent</td>
-<td>DK</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">1</th>
-<td>Thomas</td>
-<td>33</td>
-<td>M</td>
-<td>Postdoc</td>
-<td>GB</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2</th>
-<td>Emilie</td>
-<td>23</td>
-<td>F</td>
-<td>PhDstudent</td>
-<td>CH</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">3</th>
-<td>Sofie</td>
-<td>31</td>
-<td>F</td>
-<td>Postdoc</td>
-<td>DK</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">4</th>
-<td>Sara</td>
-<td>29</td>
-<td>F</td>
-<td>Postdoc</td>
-<td>US</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">5</th>
-<td>Cecilie</td>
-<td>34</td>
-<td>F</td>
-<td>Postdoc</td>
-<td>DK</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">6</th>
-<td>Anders</td>
-<td>32</td>
-<td>M</td>
-<td>PhDstudent</td>
-<td>UK</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">7</th>
-<td>Emma</td>
-<td>42</td>
-<td>F</td>
-<td>Professor</td>
-<td>DK</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">8</th>
-<td>Caroline</td>
-<td>31</td>
-<td>F</td>
-<td>PhDstudent</td>
-<td>DK</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">9</th>
-<td>Laura</td>
-<td>30</td>
-<td>F</td>
-<td>Postdoc</td>
-<td>DK</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">10</th>
-<td>Mikkel</td>
-<td>33</td>
-<td>M</td>
-<td>Postdoc</td>
-<td>NL</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">11</th>
-<td>Jens</td>
-<td>27</td>
-<td>M</td>
-<td>PhDstudent</td>
-<td>DK</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">12</th>
-<td>Andreas</td>
-<td>29</td>
-<td>M</td>
-<td>PhDstudent</td>
-<td>DK</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">13</th>
-<td>Jakob</td>
-<td>28</td>
-<td>M</td>
-<td>PhDstudent</td>
-<td>DK</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">14</th>
-<td>Mathilde</td>
-<td>61</td>
-<td>F</td>
-<td>Professor</td>
-<td>DK</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">15</th>
-<td>Katrine</td>
-<td>35</td>
-<td>F</td>
-<td>Postdoc</td>
-<td>DK</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">16</th>
-<td>Poul</td>
-<td>30</td>
-<td>M</td>
-<td>Postdoc</td>
-<td>DK</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">17</th>
-<td>Anna</td>
-<td>26</td>
-<td>F</td>
-<td>PhDstudent</td>
-<td>DK</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">18</th>
-<td>Peter</td>
-<td>42</td>
-<td>M</td>
-<td>Professor</td>
-<td>GB</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">19</th>
-<td>Ida</td>
-<td>53</td>
-<td>F</td>
-<td>Postdoc</td>
-<td>DK</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">20</th>
-<td>Freja</td>
-<td>30</td>
-<td>F</td>
-<td>Postdoc</td>
-<td>DK</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">21</th>
-<td>Maria</td>
-<td>39</td>
-<td>F</td>
-<td>Professor</td>
-<td>UK</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">22</th>
-<td>Amalie</td>
-<td>29</td>
-<td>F</td>
-<td>PhDstudent</td>
-<td>DK</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">23</th>
-<td>Camilla</td>
-<td>35</td>
-<td>F</td>
-<td>Postdoc</td>
-<td>DK</td>
+<td>munch-group/tree-stats</td>
+<td>results/dummy.csv</td>
+<td>dummy.csv</td>
+<td>Some dummy csv file</td>
+<td>2026-08-30</td>
+<td>19</td>
+<td>0</td>
+<td></td>
+<td>False</td>
+<td>munch-group/tree-stats:results/dummy.csv@77017...</td>
 </tr>
 </tbody>
 </table>
@@ -482,33 +355,18 @@ Table&nbsp;1: People included in the analysis.
 </div>
 </div>
 </div>
-</figure>
-</div>
-</div>
-<blockquote class="blockquote">
-<p><strong>Tip:</strong><br>
-By generaing markdown for descriptions that will eventually end up in the manuscript, you can imbed python values. It also ensures that the manuscript exactly reflects the notebook.</p>
-</blockquote>
-<div id="cell-doc-sampling" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2025-12-19T10:49:23.978311Z&quot;,&quot;iopub.status.busy&quot;:&quot;2025-12-19T10:49:23.978175Z&quot;,&quot;iopub.status.idle&quot;:&quot;2025-12-19T10:49:23.994771Z&quot;,&quot;shell.execute_reply&quot;:&quot;2025-12-19T10:49:23.994297Z&quot;}}" data-execution_count="6">
-<div id="doc-sampling" class="cell-output cell-output-display cell-output-markdown" data-execution_count="6">
-<p>The 24 subjects from workplaces in Denmark were interviewed …. blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah</p>
-</div>
-</div>
 </section>
-<section id="interviews" class="level2">
-<h2 class="anchored" data-anchor-id="interviews">Interviews</h2>
-<p>In interviewed <code>{python} sample_size</code> workplace individuals were interviewed by …. blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah,</p>
-<div id="cell-16" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2025-12-19T10:49:23.996333Z&quot;,&quot;iopub.status.busy&quot;:&quot;2025-12-19T10:49:23.996215Z&quot;,&quot;iopub.status.idle&quot;:&quot;2025-12-19T10:49:24.016167Z&quot;,&quot;shell.execute_reply&quot;:&quot;2025-12-19T10:49:24.015635Z&quot;}}" data-execution_count="7">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-measured-informality</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Informality quantified for subjects in the study."</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({<span class="st">'name'</span>: subjects.name, </span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>                   <span class="st">'seniority'</span>: np.random.randint(<span class="dv">0</span>, <span class="dv">5</span>, sample_size), </span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>                   <span class="st">'age'</span>: subjects.age})</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'informality'</span>] <span class="op">=</span> np.random.normal(loc<span class="op">=</span><span class="dv">10</span>, scale<span class="op">=</span><span class="dv">1</span>, size<span class="op">=</span>sample_size)</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="7">
+<section id="what-is-published" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-published">What is published</h2>
+<p><code>labdata.list()</code> is the python side of <code>labdata list</code>. Point it at the directories your clones live in, or at GitHub — here we pass the settings directly so this page does not touch your own configuration.</p>
+<div id="098731d6" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>labdata.<span class="bu">list</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><code>scratch_notes.csv</code> is committed but absent: it is not named in the manifest. <code>by_chrom</code> is one row rather than three, because the manifest names the directory — <code>parts</code> says how many files are behind it.</p>
+<p>The version is left out by default, since it is a full commit sha and every file a repository publishes carries the same one. Ask for it when you want it:</p>
+<div id="813fe406" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-08-31T10:24:00.789778Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-08-31T10:24:00.789661Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-08-31T10:24:00.795185Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-08-31T10:24:00.794712Z&quot;}}">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>labdata.<span class="bu">list</span>(version<span class="op">=</span><span class="va">True</span>)[[<span class="st">'name'</span>, <span class="st">'description'</span>, <span class="st">'version'</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
 <div>
 
 
@@ -517,179 +375,28 @@ By generaing markdown for descriptions that will eventually end up in the manusc
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
 <th data-quarto-table-cell-role="th">name</th>
-<th data-quarto-table-cell-role="th">seniority</th>
-<th data-quarto-table-cell-role="th">age</th>
-<th data-quarto-table-cell-role="th">informality</th>
+<th data-quarto-table-cell-role="th">description</th>
+<th data-quarto-table-cell-role="th">version</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">0</th>
-<td>Julie</td>
-<td>3</td>
-<td>27</td>
-<td>10.816445</td>
+<td>by_chrom</td>
+<td>Per-chromosome effect sizes, one file per chro...</td>
+<td>2c3de82091f58f93cd803a7c43ecdccd7ee92b02</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">1</th>
-<td>Thomas</td>
-<td>4</td>
-<td>33</td>
-<td>8.476124</td>
+<td>hits.csv</td>
+<td>Genome-wide association hits, p &lt; 5e-8</td>
+<td>2c3de82091f58f93cd803a7c43ecdccd7ee92b02</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">2</th>
-<td>Emilie</td>
-<td>2</td>
-<td>23</td>
-<td>9.571954</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">3</th>
-<td>Sofie</td>
-<td>4</td>
-<td>31</td>
-<td>9.257593</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">4</th>
-<td>Sara</td>
-<td>4</td>
-<td>29</td>
-<td>9.296656</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">5</th>
-<td>Cecilie</td>
-<td>1</td>
-<td>34</td>
-<td>7.860379</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">6</th>
-<td>Anders</td>
-<td>2</td>
-<td>32</td>
-<td>9.370525</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">7</th>
-<td>Emma</td>
-<td>2</td>
-<td>42</td>
-<td>10.597720</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">8</th>
-<td>Caroline</td>
-<td>2</td>
-<td>31</td>
-<td>12.559488</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">9</th>
-<td>Laura</td>
-<td>4</td>
-<td>30</td>
-<td>10.394233</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">10</th>
-<td>Mikkel</td>
-<td>3</td>
-<td>33</td>
-<td>10.122219</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">11</th>
-<td>Jens</td>
-<td>2</td>
-<td>27</td>
-<td>9.484564</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">12</th>
-<td>Andreas</td>
-<td>4</td>
-<td>29</td>
-<td>9.399746</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">13</th>
-<td>Jakob</td>
-<td>1</td>
-<td>28</td>
-<td>10.947440</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">14</th>
-<td>Mathilde</td>
-<td>3</td>
-<td>61</td>
-<td>10.291034</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">15</th>
-<td>Katrine</td>
-<td>1</td>
-<td>35</td>
-<td>9.364440</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">16</th>
-<td>Poul</td>
-<td>3</td>
-<td>30</td>
-<td>8.978448</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">17</th>
-<td>Anna</td>
-<td>4</td>
-<td>26</td>
-<td>9.838245</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">18</th>
-<td>Peter</td>
-<td>0</td>
-<td>42</td>
-<td>9.466351</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">19</th>
-<td>Ida</td>
-<td>3</td>
-<td>53</td>
-<td>9.994472</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">20</th>
-<td>Freja</td>
-<td>1</td>
-<td>30</td>
-<td>9.770550</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">21</th>
-<td>Maria</td>
-<td>4</td>
-<td>39</td>
-<td>10.389349</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">22</th>
-<td>Amalie</td>
-<td>3</td>
-<td>29</td>
-<td>8.734881</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">23</th>
-<td>Camilla</td>
-<td>0</td>
-<td>35</td>
-<td>11.091992</td>
+<td>summary.csv</td>
+<td>Per-sample genotyping quality</td>
+<td>2c3de82091f58f93cd803a7c43ecdccd7ee92b02</td>
 </tr>
 </tbody>
 </table>
@@ -697,57 +404,79 @@ By generaing markdown for descriptions that will eventually end up in the manusc
 </div>
 </div>
 </div>
-<div class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2025-12-19T10:49:24.017659Z&quot;,&quot;iopub.status.busy&quot;:&quot;2025-12-19T10:49:24.017531Z&quot;,&quot;iopub.status.idle&quot;:&quot;2025-12-19T10:49:24.038567Z&quot;,&quot;shell.execute_reply&quot;:&quot;2025-12-19T10:49:24.038030Z&quot;}}" data-execution_count="8">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df.groupby([<span class="st">'seniority'</span>]).mean(numeric_only<span class="op">=</span><span class="va">True</span>).reset_index()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div id="tbl-mean-informality" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="8" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2025-12-19T10:49:24.017659Z&quot;,&quot;iopub.status.busy&quot;:&quot;2025-12-19T10:49:24.017531Z&quot;,&quot;iopub.status.idle&quot;:&quot;2025-12-19T10:49:24.038567Z&quot;,&quot;shell.execute_reply&quot;:&quot;2025-12-19T10:49:24.038030Z&quot;}}">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-mean-informality-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;2: Mean interaction scores by seniority and age
-</figcaption>
-<div aria-describedby="tbl-mean-informality-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<p>One row per repository, as <code>labdata repos</code> prints:</p>
+<div id="0d78fbb9" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-08-31T10:24:00.796533Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-08-31T10:24:00.796443Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-08-31T10:24:00.800174Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-08-31T10:24:00.799721Z&quot;}}">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>labdata.repos()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">repo</th>
+<th data-quarto-table-cell-role="th">files</th>
+<th data-quarto-table-cell-role="th">bytes</th>
+<th data-quarto-table-cell-role="th">latest</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>munch-group/x-gwas</td>
+<td>3</td>
+<td>152</td>
+<td>2026-08-31</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="reading-a-file" class="level2">
+<h2 class="anchored" data-anchor-id="reading-a-file">Reading a file</h2>
+<p><code>labdata.get()</code> returns a local path, so it goes straight into <code>read_csv</code>, <code>read_parquet</code>, <code>h5py.File</code>, or anything else that takes a path.</p>
+<div id="eebb53b3" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-08-31T10:24:00.801363Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-08-31T10:24:00.801279Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-08-31T10:24:00.823764Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-08-31T10:24:00.823184Z&quot;}}">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(labdata.get(<span class="st">"x-gwas"</span>, <span class="st">"hits.csv"</span>))</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>munch-group/x-gwas:results/hits.csv@2c3de82091f58f93cd803a7c43ecdccd7ee92b02  (2026-08-31, 61B)  Genome-wide association hits, p &lt; 5e-8
+pin this version:  labdata.get("x-gwas", "hits.csv", "2c3de82091f58f93cd803a7c43ecdccd7ee92b02")</code></pre>
+</div>
 <div class="cell-output cell-output-display" data-execution_count="8">
 <div>
 
 
-<table class="dataframe do-not-create-environment cell caption-top table table-sm table-striped small" data-border="1">
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">seniority</th>
-<th data-quarto-table-cell-role="th">age</th>
-<th data-quarto-table-cell-role="th">informality</th>
+<th data-quarto-table-cell-role="th">gene</th>
+<th data-quarto-table-cell-role="th">chrom</th>
+<th data-quarto-table-cell-role="th">p</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">0</th>
-<td>0</td>
-<td>38.500000</td>
-<td>10.279172</td>
+<td>BRCA2</td>
+<td>13</td>
+<td>3.100000e-11</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">1</th>
-<td>1</td>
-<td>31.750000</td>
-<td>9.485702</td>
+<td>APOE</td>
+<td>19</td>
+<td>7.400000e-09</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">2</th>
-<td>2</td>
-<td>31.000000</td>
-<td>10.316850</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">3</th>
-<td>3</td>
-<td>38.833333</td>
-<td>9.822917</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">4</th>
-<td>4</td>
-<td>31.000000</td>
-<td>9.578849</td>
+<td>FTO</td>
+<td>16</td>
+<td>2.200000e-08</td>
 </tr>
 </tbody>
 </table>
@@ -755,64 +484,184 @@ Table&nbsp;2: Mean interaction scores by seniority and age
 </div>
 </div>
 </div>
-</figure>
+<div id="3fca4a79" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>labdata.get(<span class="st">"x-gwas"</span>, <span class="st">"hits.csv"</span>, <span class="st">"2c3de82091f58f93cd803a7c43ecdccd7ee92b02"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<pre><code>PosixPath('/var/folders/s6/srs8qkh52w1_h32d65z95tth0000gn/T/tmpt36xjbcn/cache/files/munch-group__x-gwas/2c3de82091f58f93cd803a7c43ecdccd7ee92b02/results/hits.csv')</code></pre>
 </div>
 </div>
-<div id="cell-fig-danish-interaction" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2025-12-19T10:49:24.039938Z&quot;,&quot;iopub.status.busy&quot;:&quot;2025-12-19T10:49:24.039819Z&quot;,&quot;iopub.status.idle&quot;:&quot;2025-12-19T10:49:24.160645Z&quot;,&quot;shell.execute_reply&quot;:&quot;2025-12-19T10:49:24.160142Z&quot;}}" data-execution_count="9">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>sns.scatterplot(x<span class="op">=</span><span class="st">'age'</span>, y<span class="op">=</span><span class="st">'informality'</span>, data<span class="op">=</span>df, hue<span class="op">=</span><span class="st">'seniority'</span>, palette<span class="op">=</span><span class="st">'viridis'</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'How informal you can be'</span>)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Age'</span>)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>plt.legend(title<span class="op">=</span><span class="st">'Seniority'</span>, loc<span class="op">=</span><span class="st">'lower right'</span>, labels<span class="op">=</span>[<span class="st">'Undergrad'</span>, <span class="st">'Postgrad'</span>, <span class="st">'PhD'</span>, <span class="st">'Postdoc'</span>, <span class="st">'Professor'</span>])</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>plt.ylim(bottom<span class="op">=</span><span class="dv">0</span>) <span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display">
-<div id="fig-danish-interaction" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-danish-interaction-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="example_files/figure-html/fig-danish-interaction-output-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: Interaction among Danes: How Danes interact is has very little to do with age and seniority, compared to most other contries."><img src="example_files/figure-html/fig-danish-interaction-output-1.svg" class="img-fluid figure-img"></a>
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-danish-interaction-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: Interaction among Danes: How Danes interact is has very little to do with age and seniority, compared to most other contries.
-</figcaption>
-</figure>
+<p>Notice what it printed. Without a version it takes the current one and tells you the sha that pins it, together with the call that does so — paste that back into the cell and the notebook reads the same bytes next year.</p>
+<p>A pinned call is silent, and the sha is a full one, so it also means something to <code>git show</code> or a GitHub URL without labdata in hand.</p>
+<div id="b99c542f" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-08-31T10:24:00.825135Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-08-31T10:24:00.825027Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-08-31T10:24:00.829707Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-08-31T10:24:00.829237Z&quot;}}">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>version <span class="op">=</span> labdata.<span class="bu">list</span>(version<span class="op">=</span><span class="va">True</span>)[<span class="st">"version"</span>].iloc[<span class="dv">0</span>]</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(labdata.get(<span class="st">"x-gwas"</span>, <span class="st">"hits.csv"</span>, version))</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>df.shape</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<pre><code>(3, 3)</code></pre>
 </div>
 </div>
+<p>The file name is enough when it is unambiguous; otherwise give as much of the path as it takes.</p>
+<div id="4c7d3cc3" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-08-31T10:24:00.830939Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-08-31T10:24:00.830848Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-08-31T10:24:00.850680Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-08-31T10:24:00.850108Z&quot;}}">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>pd.read_csv(labdata.get(<span class="st">"x-gwas"</span>, <span class="st">"qc/summary.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>munch-group/x-gwas:results/qc/summary.csv@2c7b5f1b7395bcea03cac7c13687820afb3f03cf  (2026-08-31, 35B)  Per-sample genotyping quality
+pin this version:  labdata.get("x-gwas", "qc/summary.csv", "2c7b5f1b7395bcea03cac7c13687820afb3f03cf")</code></pre>
 </div>
-<p>Seems Danish people act very informally unaffected by age and seniority.</p>
-<div id="cell-21" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2025-12-19T10:49:24.162267Z&quot;,&quot;iopub.status.busy&quot;:&quot;2025-12-19T10:49:24.162149Z&quot;,&quot;iopub.status.idle&quot;:&quot;2025-12-19T10:49:24.178336Z&quot;,&quot;shell.execute_reply&quot;:&quot;2025-12-19T10:49:24.177930Z&quot;}}" data-execution_count="10">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>informality_age_cor <span class="op">=</span> df.informality.corr(df.age)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>informality_age_cor</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">sample</th>
+<th data-quarto-table-cell-role="th">call_rate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>S1</td>
+<td>0.998</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>S2</td>
+<td>0.991</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="a-dataset-split-over-many-files" class="level2">
+<h2 class="anchored" data-anchor-id="a-dataset-split-over-many-files">A dataset split over many files</h2>
+<p>A table too large for one file — a <code>.parquet</code> directory partitioned to stay under GitHub’s file size limit — is published by naming the <em>directory</em>. <code>get</code> then returns the directory, with every part in it.</p>
+<div id="fabe666c" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-08-31T10:24:00.852024Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-08-31T10:24:00.851920Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-08-31T10:24:00.941711Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-08-31T10:24:00.941104Z&quot;}}">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>directory <span class="op">=</span> labdata.get(<span class="st">"x-gwas"</span>, <span class="st">"by_chrom"</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(directory.is_dir())</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="bu">sorted</span>(p.name <span class="cf">for</span> p <span class="kw">in</span> directory.iterdir())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>munch-group/x-gwas:results/by_chrom@2c7b5f1b7395bcea03cac7c13687820afb3f03cf  (2026-08-31, 56B)  Per-chromosome effect sizes, one file per chromosome
+pin this version:  labdata.get("x-gwas", "by_chrom", "2c7b5f1b7395bcea03cac7c13687820afb3f03cf")
+True</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<pre><code>['chrom-1.csv', 'chrom-13.csv', 'chrom-2.csv']</code></pre>
+</div>
+</div>
+<div id="9d1c2837" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-08-31T10:24:00.943280Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-08-31T10:24:00.943176Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-08-31T10:24:00.950311Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-08-31T10:24:00.949518Z&quot;}}" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>pd.concat([pd.read_csv(p) <span class="cf">for</span> p <span class="kw">in</span> <span class="bu">sorted</span>(directory.iterdir())], ignore_index<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="10">
-<pre><code>np.float64(0.10942859782514087)</code></pre>
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">chrom</th>
+<th data-quarto-table-cell-role="th">beta</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>1</td>
+<td>0.010</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>13</td>
+<td>0.013</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>2</td>
+<td>0.020</td>
+</tr>
+</tbody>
+</table>
+
 </div>
 </div>
-<div id="cell-22" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2025-12-19T10:49:24.179716Z&quot;,&quot;iopub.status.busy&quot;:&quot;2025-12-19T10:49:24.179605Z&quot;,&quot;iopub.status.idle&quot;:&quot;2025-12-19T10:49:24.196748Z&quot;,&quot;shell.execute_reply&quot;:&quot;2025-12-19T10:49:24.196240Z&quot;}}" data-execution_count="11">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>informality_seniority_cor <span class="op">=</span> df.informality.corr(df.seniority)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>informality_seniority_cor</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>For a real partitioned parquet table the last step is simply</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>pd.read_parquet(labdata.get(<span class="st">"x-gwas"</span>, <span class="st">"variants.parquet"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>since <code>read_parquet</code> takes a directory. Nothing about <code>.parquet</code> is special to labdata — naming a directory in the manifest is what makes it a dataset, so <code>.zarr</code> and anything else shaped that way work the same.</p>
+</section>
+<section id="history" class="level2">
+<h2 class="anchored" data-anchor-id="history">History</h2>
+<p>The catalog stamps every file with the repository’s current commit. <code>labdata.versions()</code> shows the commits in which the file itself changed, which is the useful set to pin.</p>
+<div id="6dd2ffc7" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-08-31T10:24:00.952429Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-08-31T10:24:00.952306Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-08-31T10:24:01.008734Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-08-31T10:24:01.008138Z&quot;}}">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>labdata.versions(<span class="st">"x-gwas"</span>, <span class="st">"hits.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="11">
-<pre><code>np.float64(-0.13673439318448927)</code></pre>
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">version</th>
+<th data-quarto-table-cell-role="th">date</th>
+<th data-quarto-table-cell-role="th">bytes</th>
+<th data-quarto-table-cell-role="th">parts</th>
+<th data-quarto-table-cell-role="th">tags</th>
+<th data-quarto-table-cell-role="th">subject</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>2c7b5f1b7395bcea03cac7c13687820afb3f03cf</td>
+<td>2026-08-31</td>
+<td>61</td>
+<td>0</td>
+<td></td>
+<td>publish association results</td>
+</tr>
+</tbody>
+</table>
+
 </div>
 </div>
-<div id="cell-doc-formality-correlation" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2025-12-19T10:49:24.198465Z&quot;,&quot;iopub.status.busy&quot;:&quot;2025-12-19T10:49:24.198326Z&quot;,&quot;iopub.status.idle&quot;:&quot;2025-12-19T10:49:24.215663Z&quot;,&quot;shell.execute_reply&quot;:&quot;2025-12-19T10:49:24.215203Z&quot;}}" data-execution_count="12">
-<div id="doc-formality-correlation" class="cell-output cell-output-display cell-output-markdown" data-execution_count="12">
-<p>The correlation between informality and age was 0.109 and the correlation between informality and seniority was -0.137.</p>
+</div>
+</section>
+<section id="when-nothing-shows-up" class="level2">
+<h2 class="anchored" data-anchor-id="when-nothing-shows-up">When nothing shows up</h2>
+<p>An empty catalog has several ordinary causes and they look alike from outside. <code>labdata.diagnose()</code> says which it is, reading only local git.</p>
+<div id="95a5bd78" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-08-31T10:24:01.010164Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-08-31T10:24:01.010047Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-08-31T10:24:01.012423Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-08-31T10:24:01.011966Z&quot;}}" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">"</span>.join(labdata.diagnose(Config(roots<span class="op">=</span>[<span class="st">"~/no-such-place"</span>]))))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  ~/no-such-place: no such directory
+  github: no owners or repos configured, so nothing is read from GitHub</code></pre>
 </div>
 </div>
-<div id="cell-fig-danish-interaction-regressions" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2025-12-19T10:49:24.217283Z&quot;,&quot;iopub.status.busy&quot;:&quot;2025-12-19T10:49:24.217143Z&quot;,&quot;iopub.status.idle&quot;:&quot;2025-12-19T10:49:24.556261Z&quot;,&quot;shell.execute_reply&quot;:&quot;2025-12-19T10:49:24.555676Z&quot;}}" data-execution_count="13">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>sns.lmplot(x<span class="op">=</span><span class="st">'age'</span>, y<span class="op">=</span><span class="st">'informality'</span>, data<span class="op">=</span>df, hue<span class="op">=</span><span class="st">'seniority'</span>, palette<span class="op">=</span><span class="st">'viridis'</span>)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'How informal you can be'</span>)</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Age'</span>) <span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display">
-<div id="fig-danish-interaction-regressions" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-danish-interaction-regressions-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="example_files/figure-html/fig-danish-interaction-regressions-output-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;2: Interaction among Danes: Regressions of informality against age for five levels of seniority."><img src="example_files/figure-html/fig-danish-interaction-regressions-output-1.svg" class="img-fluid figure-img"></a>
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-danish-interaction-regressions-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2: Interaction among Danes: Regressions of informality against age for five levels of seniority.
-</figcaption>
-</figure>
-</div>
-</div>
+</section>
+<section id="reading-github-without-cloning" class="level2">
+<h2 class="anchored" data-anchor-id="reading-github-without-cloning">Reading GitHub, without cloning</h2>
+<p>Everything above works the same against repositories on GitHub, which are read over the API — nothing is cloned, and the repositories need not be checked out at all. Name the organisations, or single repositories, in <code>~/.config/labdata/config.toml</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="dt">owners</span> <span class="op">=</span> <span class="op">[</span><span class="st">"munch-group"</span><span class="op">,</span> <span class="st">"kaspermunch"</span><span class="op">]</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="dt">repos</span>  <span class="op">=</span> <span class="op">[</span><span class="st">"someone-else/shared-results"</span><span class="op">]</span>   <span class="co"># optional extras</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Then the calls need no <code>cfg=</code> at all:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>labdata.<span class="bu">list</span>()</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>labdata.<span class="bu">list</span>(url<span class="op">=</span><span class="va">True</span>)                     <span class="co"># with the URL of each version</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(labdata.get(<span class="st">"x-gwas"</span>, <span class="st">"hits.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Authentication is <code>GITHUB_TOKEN</code>, or whatever <code>gh auth login</code> already stored. Cataloguing costs three or four requests per repository and is flat in the number of files, and a repository with no <code>labdata.yml</code> costs a single request.</p>
+<p>URLs name the commit rather than a branch, so they keep pointing at the bytes that were cataloged:</p>
+<pre><code>https://raw.githubusercontent.com/munch-group/x-gwas/770170789d73.../results/hits.csv</code></pre>
+<p>Content is cached under its git blob sha, so a file you already have is never downloaded twice, whichever way it first arrived.</p>
+<div id="b44f170f" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-08-31T10:24:01.013698Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-08-31T10:24:01.013578Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-08-31T10:24:01.022139Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-08-31T10:24:01.021617Z&quot;}}" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> shutil</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>shutil.rmtree(workspace)          <span class="co"># tidy up after the page</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 
 
@@ -892,7 +741,7 @@ Figure&nbsp;2: Interaction among Danes: Regressions of informality against age f
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/munch-group\.github\.io\/labdata\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -1229,38 +1078,6 @@ Figure&nbsp;2: Interaction among Danes: Regressions of informality against age f
   </div>
 </nav>
 </div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
-(function() {
-  let previousOnload = window.onload;
-  window.onload = () => {
-    if (previousOnload) {
-      previousOnload();
-    }
-    lightboxQuarto.on('slide_before_load', (data) => {
-      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-      const href = trigger.getAttribute('href');
-      if (href !== null) {
-        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
-        if (imgEl !== null) {
-          const srcAttr = imgEl.getAttribute("src");
-          if (srcAttr && srcAttr.startsWith("data:")) {
-            slideConfig.href = srcAttr;
-          }
-        }
-      } 
-    });
-  
-    lightboxQuarto.on('slide_after_load', (data) => {
-      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-      if (window.Quarto?.typesetMath) {
-        window.Quarto.typesetMath(slideNode);
-      }
-    });
-  
-  };
-  
-})();
-          </script>
 
 
 

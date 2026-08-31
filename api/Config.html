@@ -65,8 +65,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../api/blob_path.html" rel="next">
-<link href="../api/Spec.html" rel="prev">
+<link href="../api/config_path.html" rel="next">
+<link href="../api/ManifestError.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -179,6 +179,36 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../api/list.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">list</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/repos.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">repos</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/versions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">versions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/refresh.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">refresh</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/frame.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">frame</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../api/catalog.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">catalog</span></a>
   </div>
@@ -191,8 +221,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../api/frame.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">frame</span></a>
+  <a href="../api/diagnose.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">diagnose</span></a>
   </div>
 </li>
       </ul>
@@ -208,14 +238,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../api/get.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">get</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../api/fetch.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">fetch</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../api/versions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">versions</span></a>
+  <a href="../api/outdated.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">outdated</span></a>
   </div>
 </li>
       </ul>
@@ -249,6 +285,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../api/fingerprint.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">fingerprint</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../api/scan_repo.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">scan_repo</span></a>
   </div>
@@ -263,6 +305,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../api/materialize.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">materialize</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/progress_bar.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">progress_bar</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/copy_out.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">copy_out</span></a>
   </div>
 </li>
       </ul>
@@ -299,7 +353,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Configuration</span></a>
+ <span class="menu-text">GitHub</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -307,8 +361,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../api/Config.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Config</span></a>
+  <a href="../api/build.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">build</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/scan_repo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">scan_repo</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/versions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">versions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/version_at.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">version_at</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/dataset_files.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">dataset_files</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/download.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">download</span></a>
   </div>
 </li>
       </ul>
@@ -316,12 +400,117 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Cache</span></a>
+ <span class="menu-text">GitHub API</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/Client.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Client</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/token.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">token</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/blob_url.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">blob_url</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/GitHubError.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GitHubError</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Manifests</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/Manifest.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Manifest</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/parse.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">parse</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/is_manifest.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">is_manifest</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/manifest_path.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">manifest_path</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/ManifestError.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">ManifestError</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">Configuration</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/Config.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Config</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/config_path.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">config_path</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/cache_root.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">cache_root</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Cache</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../api/blob_path.html" class="sidebar-item-text sidebar-link">
@@ -360,6 +549,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../api/objects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">objects</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/check_object.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">check_object</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/discard.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">discard</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../api/usage.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">usage</span></a>
   </div>
@@ -368,13 +575,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true">
  <span class="menu-text">Git access</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../api/discover_repos.html" class="sidebar-item-text sidebar-link">
@@ -389,8 +596,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../api/last_commits.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">last_commits</span></a>
+  <a href="../api/head_commit.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">head_commit</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -403,6 +610,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../api/blob_at.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">blob_at</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/tree_at.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">tree_at</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/tree_files.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">tree_files</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -435,17 +654,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">lfs_object_path</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/GitError.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GitError</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true">
  <span class="menu-text">Command line</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../api/main.html" class="sidebar-item-text sidebar-link">
@@ -454,8 +679,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../api/build_parser.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">build_parser</span></a>
+  <a href="../api/table.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">table</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/human.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">human</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/note.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">note</span></a>
   </div>
 </li>
       </ul>
@@ -470,15 +707,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#labdata.Config" id="toc-labdata.Config" class="nav-link active" data-scroll-target="#labdata.Config">Config</a>
+  <li><a href="#labdata.config.Config" id="toc-labdata.config.Config" class="nav-link active" data-scroll-target="#labdata.config.Config">Config</a>
   <ul class="collapse">
   <li><a href="#attributes" id="toc-attributes" class="nav-link" data-scroll-target="#attributes">Attributes</a></li>
   <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
   <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See Also</a></li>
   <li><a href="#methods" id="toc-methods" class="nav-link" data-scroll-target="#methods">Methods</a>
   <ul class="collapse">
-  <li><a href="#labdata.Config.load" id="toc-labdata.Config.load" class="nav-link" data-scroll-target="#labdata.Config.load">load</a></li>
-  <li><a href="#labdata.Config.write_default" id="toc-labdata.Config.write_default" class="nav-link" data-scroll-target="#labdata.Config.write_default">write_default</a></li>
+  <li><a href="#labdata.config.Config.load" id="toc-labdata.config.Config.load" class="nav-link" data-scroll-target="#labdata.config.Config.load">load</a></li>
+  <li><a href="#labdata.config.Config.write_default" id="toc-labdata.config.Config.write_default" class="nav-link" data-scroll-target="#labdata.config.Config.write_default">write_default</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -490,24 +727,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="labdata.Config" class="level1">
+<section id="labdata.config.Config" class="level1">
 <h1>Config</h1>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>labdata.Config(</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    roots<span class="op">=</span>(<span class="kw">lambda</span>: [<span class="st">'~'</span>])(),</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    depth<span class="op">=</span><span class="dv">2</span>,</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    results_dirs<span class="op">=</span>(<span class="kw">lambda</span>: [<span class="st">'results'</span>])(),</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    include<span class="op">=</span>(<span class="kw">lambda</span>: <span class="bu">list</span>(DEFAULT_INCLUDE))(),</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    exclude<span class="op">=</span>(<span class="kw">lambda</span>: <span class="bu">list</span>(DEFAULT_EXCLUDE))(),</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    min_bytes<span class="op">=</span><span class="dv">0</span>,</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    max_bytes<span class="op">=</span><span class="dv">0</span>,</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>labdata.config.Config(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    roots<span class="op">=</span><span class="bu">list</span>(),</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    owners<span class="op">=</span><span class="bu">list</span>(),</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    repos<span class="op">=</span><span class="bu">list</span>(),</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    depth<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    results_dirs<span class="op">=</span>(<span class="kw">lambda</span>: [<span class="st">'results'</span>])(),</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    include<span class="op">=</span>(<span class="kw">lambda</span>: <span class="bu">list</span>(DEFAULT_INCLUDE))(),</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    exclude<span class="op">=</span>(<span class="kw">lambda</span>: <span class="bu">list</span>(DEFAULT_EXCLUDE))(),</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    min_bytes<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    max_bytes<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Settings controlling which files are cataloged.</p>
 <section id="attributes" class="level2 doc-section doc-section-attributes">
 <h2 class="doc-section doc-section-attributes anchored" data-anchor-id="attributes">Attributes</h2>
 <dl>
 <dt><code><span class="parameter-name"><strong>roots</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.List">List</a>[<a href="https://docs.python.org/3/library/stdtypes.html#str">str</a>]</span></code></dt>
 <dd>
-<p>Directories searched for git working trees. <code>~</code> is expanded.</p>
+<p>Directories searched for git working trees. <code>~</code> is expanded. Empty by default: nothing is scanned until this is set. Naming the directories your repositories are in keeps the scan away from synced folders such as OneDrive, which can block for a long time on a directory that is not there.</p>
+</dd>
+<dt><code><span class="parameter-name"><strong>owners</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.List">List</a>[<a href="https://docs.python.org/3/library/stdtypes.html#str">str</a>]</span></code></dt>
+<dd>
+<p>GitHub organisations or users whose repositories are cataloged over the API, without being cloned. Every repository they own is looked at, at the cost of one request each for those that publish nothing.</p>
+</dd>
+<dt><code><span class="parameter-name"><strong>repos</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.List">List</a>[<a href="https://docs.python.org/3/library/stdtypes.html#str">str</a>]</span></code></dt>
+<dd>
+<p>Further GitHub repositories to catalog, written <code>owner/repo</code>, for ones outside <code>owners</code>.</p>
 </dd>
 <dt><code><span class="parameter-name"><strong>depth</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/functions.html#int">int</a></span></code></dt>
 <dd>
@@ -515,11 +762,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </dd>
 <dt><code><span class="parameter-name"><strong>results_dirs</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.List">List</a>[<a href="https://docs.python.org/3/library/stdtypes.html#str">str</a>]</span></code></dt>
 <dd>
-<p>Directories within a repository holding published result files. Matching is case-insensitive, so a repository that committed <code>Results/</code> is found as well.</p>
+<p>Directories within a repository holding published result files, given as paths relative to the repository root. They may be at any depth, so <code>analysis/step3/results</code> works as well as <code>results</code>. Matching is case-insensitive, so a repository that committed <code>Results/</code> is found too. Each is searched, and each needs its own <code>labdata.yml</code>.</p>
 </dd>
 <dt><code><span class="parameter-name"><strong>include</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.List">List</a>[<a href="https://docs.python.org/3/library/stdtypes.html#str">str</a>]</span></code></dt>
 <dd>
-<p>File name patterns to catalog.</p>
+<p>File name patterns to catalog, on top of what the manifests publish. Empty means everything published.</p>
 </dd>
 <dt><code><span class="parameter-name"><strong>exclude</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.List">List</a>[<a href="https://docs.python.org/3/library/stdtypes.html#str">str</a>]</span></code></dt>
 <dd>
@@ -555,25 +802,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#labdata.Config.load">load</a></td>
+<td><a href="#labdata.config.Config.load">load</a></td>
 <td>Read settings from a TOML file.</td>
 </tr>
 <tr class="even">
-<td><a href="#labdata.Config.write_default">write_default</a></td>
+<td><a href="#labdata.config.Config.write_default">write_default</a></td>
 <td>Write a commented configuration file holding these settings.</td>
 </tr>
 </tbody>
 </table>
-<section id="labdata.Config.load" class="level3">
-<h3 class="anchored" data-anchor-id="labdata.Config.load">load</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>labdata.Config.load(path<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="labdata.config.Config.load" class="level3">
+<h3 class="anchored" data-anchor-id="labdata.config.Config.load">load</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>labdata.config.Config.load(path<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read settings from a TOML file.</p>
 <section id="parameters" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h4>
 <dl>
 <dt><code><span class="parameter-name"><strong>path</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path">Path</a>]</span> <span class="parameter-default-sep">=</span> <span class="parameter-default">None</span></code></dt>
 <dd>
-<p>File to read. Defaults to <code>labdata.config.config_path</code>. A missing file is not an error and yields the defaults.</p>
+<p>File to read. Defaults to <a href="../api/config_path.html#labdata.config.config_path"><code>labdata.config.config_path</code></a>. A missing file is not an error and yields the defaults.</p>
 </dd>
 </dl>
 </section>
@@ -600,16 +847,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </dl>
 </section>
 </section>
-<section id="labdata.Config.write_default" class="level3">
-<h3 class="anchored" data-anchor-id="labdata.Config.write_default">write_default</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>labdata.Config.write_default(path<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="labdata.config.Config.write_default" class="level3">
+<h3 class="anchored" data-anchor-id="labdata.config.Config.write_default">write_default</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>labdata.config.Config.write_default(path<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Write a commented configuration file holding these settings.</p>
 <section id="parameters-1" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
 <dl>
 <dt><code><span class="parameter-name"><strong>path</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path">Path</a>]</span> <span class="parameter-default-sep">=</span> <span class="parameter-default">None</span></code></dt>
 <dd>
-<p>File to write. Defaults to <code>labdata.config.config_path</code>. Parent directories are created. An existing file is overwritten.</p>
+<p>File to write. Defaults to <a href="../api/config_path.html#labdata.config.config_path"><code>labdata.config.config_path</code></a>. Parent directories are created. An existing file is overwritten.</p>
 </dd>
 </dl>
 </section>
@@ -702,7 +949,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/munch-group\.github\.io\/labdata\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -1031,13 +1278,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../api/Spec.html" class="pagination-link" aria-label="Spec">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Spec</span>
+      <a href="../api/ManifestError.html" class="pagination-link" aria-label="ManifestError">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">ManifestError</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../api/blob_path.html" class="pagination-link" aria-label="blob_path">
-        <span class="nav-page-text">blob_path</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../api/config_path.html" class="pagination-link" aria-label="config_path">
+        <span class="nav-page-text">config_path</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

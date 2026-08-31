@@ -2,34 +2,78 @@
   {
     "objectID": "pages/example.html",
     "href": "pages/example.html",
-    "title": "Workplace interaction",
+    "title": "Reading another project’s results",
     "section": "",
-    "text": "%load_ext autoreload\n%autoreload 2\nImport some plotting libraries and set some defaults:\nimport sys\nimport numpy as np\nimport pandas as pd\nfrom IPython.display import display, Markdown\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nsns.set()\nsns.set_style(\"whitegrid\")\nnp.random.seed(42)\n%config InlineBackend.figure_formats = ['svg']",
+    "text": "labdata lets one project read result files produced by another, without submodules, without cloning, and without downloading anything by hand.\nA repository publishes by committing a labdata.yml in the results/ directory at its root, naming the files it wants others to see and saying what each one holds. Everything else in results/ stays private to that project.\nThis page builds a small repository so that it runs anywhere, then uses the python API on it. Reading repositories on GitHub works exactly the same way and is shown at the end.\nimport pandas as pd\nimport vscodenb\nimport labdata",
     "crumbs": [
       "Examples",
-      "Workplace interaction"
+      "Reading another project's results"
     ]
   },
   {
-    "objectID": "pages/example.html#sampling",
-    "href": "pages/example.html#sampling",
-    "title": "Workplace interaction",
-    "section": "Sampling",
-    "text": "Sampling\n\nsubjects = pd.read_csv('../../data/data_table.csv')\nsample_size = subjects.shape[0]\n\n\nTip:\nBy adding a label and caption to a cell displaying a table, you can refer to that table elsewhere and insert it in a manuscript.\n\n\nsubjects\n\n\n\nTable 1: People included in the analysis.\n\n\n\n\n\n\n\n\n\n\nname\nage\nsex\nposition\nnationality\n\n\n\n\n0\nJulie\n27\nF\nPhDstudent\nDK\n\n\n1\nThomas\n33\nM\nPostdoc\nGB\n\n\n2\nEmilie\n23\nF\nPhDstudent\nCH\n\n\n3\nSofie\n31\nF\nPostdoc\nDK\n\n\n4\nSara\n29\nF\nPostdoc\nUS\n\n\n5\nCecilie\n34\nF\nPostdoc\nDK\n\n\n6\nAnders\n32\nM\nPhDstudent\nUK\n\n\n7\nEmma\n42\nF\nProfessor\nDK\n\n\n8\nCaroline\n31\nF\nPhDstudent\nDK\n\n\n9\nLaura\n30\nF\nPostdoc\nDK\n\n\n10\nMikkel\n33\nM\nPostdoc\nNL\n\n\n11\nJens\n27\nM\nPhDstudent\nDK\n\n\n12\nAndreas\n29\nM\nPhDstudent\nDK\n\n\n13\nJakob\n28\nM\nPhDstudent\nDK\n\n\n14\nMathilde\n61\nF\nProfessor\nDK\n\n\n15\nKatrine\n35\nF\nPostdoc\nDK\n\n\n16\nPoul\n30\nM\nPostdoc\nDK\n\n\n17\nAnna\n26\nF\nPhDstudent\nDK\n\n\n18\nPeter\n42\nM\nProfessor\nGB\n\n\n19\nIda\n53\nF\nPostdoc\nDK\n\n\n20\nFreja\n30\nF\nPostdoc\nDK\n\n\n21\nMaria\n39\nF\nProfessor\nUK\n\n\n22\nAmalie\n29\nF\nPhDstudent\nDK\n\n\n23\nCamilla\n35\nF\nPostdoc\nDK\n\n\n\n\n\n\n\n\n\n\n\nTip:\nBy generaing markdown for descriptions that will eventually end up in the manuscript, you can imbed python values. It also ensures that the manuscript exactly reflects the notebook.\n\n\n\nThe 24 subjects from workplaces in Denmark were interviewed …. blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah",
+    "objectID": "pages/example.html#what-is-published",
+    "href": "pages/example.html#what-is-published",
+    "title": "Reading another project’s results",
+    "section": "What is published",
+    "text": "What is published\nlabdata.list() is the python side of labdata list. Point it at the directories your clones live in, or at GitHub — here we pass the settings directly so this page does not touch your own configuration.\n\nlabdata.list()\n\nscratch_notes.csv is committed but absent: it is not named in the manifest. by_chrom is one row rather than three, because the manifest names the directory — parts says how many files are behind it.\nThe version is left out by default, since it is a full commit sha and every file a repository publishes carries the same one. Ask for it when you want it:\n\nlabdata.list(version=True)[['name', 'description', 'version']]\n\n\n\n\n\n\n\n\nname\ndescription\nversion\n\n\n\n\n0\nby_chrom\nPer-chromosome effect sizes, one file per chro...\n2c3de82091f58f93cd803a7c43ecdccd7ee92b02\n\n\n1\nhits.csv\nGenome-wide association hits, p &lt; 5e-8\n2c3de82091f58f93cd803a7c43ecdccd7ee92b02\n\n\n2\nsummary.csv\nPer-sample genotyping quality\n2c3de82091f58f93cd803a7c43ecdccd7ee92b02\n\n\n\n\n\n\n\nOne row per repository, as labdata repos prints:\n\nlabdata.repos()\n\n\n\n\n\n\n\n\nrepo\nfiles\nbytes\nlatest\n\n\n\n\n0\nmunch-group/x-gwas\n3\n152\n2026-08-31",
     "crumbs": [
       "Examples",
-      "Workplace interaction"
+      "Reading another project's results"
     ]
   },
   {
-    "objectID": "pages/example.html#interviews",
-    "href": "pages/example.html#interviews",
-    "title": "Workplace interaction",
-    "section": "Interviews",
-    "text": "Interviews\nIn interviewed {python} sample_size workplace individuals were interviewed by …. blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah, blah,\n\n\n#| label: tbl-measured-informality\n#| tbl-cap: \"Informality quantified for subjects in the study.\"\n\ndf = pd.DataFrame({'name': subjects.name, \n                   'seniority': np.random.randint(0, 5, sample_size), \n                   'age': subjects.age})\ndf['informality'] = np.random.normal(loc=10, scale=1, size=sample_size)\ndf\n\n\n\n\n\n\n\n\nname\nseniority\nage\ninformality\n\n\n\n\n0\nJulie\n3\n27\n10.816445\n\n\n1\nThomas\n4\n33\n8.476124\n\n\n2\nEmilie\n2\n23\n9.571954\n\n\n3\nSofie\n4\n31\n9.257593\n\n\n4\nSara\n4\n29\n9.296656\n\n\n5\nCecilie\n1\n34\n7.860379\n\n\n6\nAnders\n2\n32\n9.370525\n\n\n7\nEmma\n2\n42\n10.597720\n\n\n8\nCaroline\n2\n31\n12.559488\n\n\n9\nLaura\n4\n30\n10.394233\n\n\n10\nMikkel\n3\n33\n10.122219\n\n\n11\nJens\n2\n27\n9.484564\n\n\n12\nAndreas\n4\n29\n9.399746\n\n\n13\nJakob\n1\n28\n10.947440\n\n\n14\nMathilde\n3\n61\n10.291034\n\n\n15\nKatrine\n1\n35\n9.364440\n\n\n16\nPoul\n3\n30\n8.978448\n\n\n17\nAnna\n4\n26\n9.838245\n\n\n18\nPeter\n0\n42\n9.466351\n\n\n19\nIda\n3\n53\n9.994472\n\n\n20\nFreja\n1\n30\n9.770550\n\n\n21\nMaria\n4\n39\n10.389349\n\n\n22\nAmalie\n3\n29\n8.734881\n\n\n23\nCamilla\n0\n35\n11.091992\n\n\n\n\n\n\n\n\ndf.groupby(['seniority']).mean(numeric_only=True).reset_index()\n\n\n\nTable 2: Mean interaction scores by seniority and age\n\n\n\n\n\n\n\n\n\n\nseniority\nage\ninformality\n\n\n\n\n0\n0\n38.500000\n10.279172\n\n\n1\n1\n31.750000\n9.485702\n\n\n2\n2\n31.000000\n10.316850\n\n\n3\n3\n38.833333\n9.822917\n\n\n4\n4\n31.000000\n9.578849\n\n\n\n\n\n\n\n\n\n\n\nsns.scatterplot(x='age', y='informality', data=df, hue='seniority', palette='viridis')\nplt.ylabel('How informal you can be')\nplt.xlabel('Age')\nplt.legend(title='Seniority', loc='lower right', labels=['Undergrad', 'Postgrad', 'PhD', 'Postdoc', 'Professor'])\nplt.ylim(bottom=0) ;\n\n\n\n\n\n\n\nFigure 1: Interaction among Danes: How Danes interact is has very little to do with age and seniority, compared to most other contries.\n\n\n\n\n\nSeems Danish people act very informally unaffected by age and seniority.\n\ninformality_age_cor = df.informality.corr(df.age)\ninformality_age_cor\n\nnp.float64(0.10942859782514087)\n\n\n\ninformality_seniority_cor = df.informality.corr(df.seniority)\ninformality_seniority_cor\n\nnp.float64(-0.13673439318448927)\n\n\n\n\nThe correlation between informality and age was 0.109 and the correlation between informality and seniority was -0.137.\n\n\n\nsns.lmplot(x='age', y='informality', data=df, hue='seniority', palette='viridis')\nplt.ylabel('How informal you can be')\nplt.xlabel('Age') ;\n\n\n\n\n\n\n\nFigure 2: Interaction among Danes: Regressions of informality against age for five levels of seniority.",
+    "objectID": "pages/example.html#reading-a-file",
+    "href": "pages/example.html#reading-a-file",
+    "title": "Reading another project’s results",
+    "section": "Reading a file",
+    "text": "Reading a file\nlabdata.get() returns a local path, so it goes straight into read_csv, read_parquet, h5py.File, or anything else that takes a path.\n\ndf = pd.read_csv(labdata.get(\"x-gwas\", \"hits.csv\"))\ndf\n\nmunch-group/x-gwas:results/hits.csv@2c3de82091f58f93cd803a7c43ecdccd7ee92b02  (2026-08-31, 61B)  Genome-wide association hits, p &lt; 5e-8\npin this version:  labdata.get(\"x-gwas\", \"hits.csv\", \"2c3de82091f58f93cd803a7c43ecdccd7ee92b02\")\n\n\n\n\n\n\n\n\n\ngene\nchrom\np\n\n\n\n\n0\nBRCA2\n13\n3.100000e-11\n\n\n1\nAPOE\n19\n7.400000e-09\n\n\n2\nFTO\n16\n2.200000e-08\n\n\n\n\n\n\n\n\nlabdata.get(\"x-gwas\", \"hits.csv\", \"2c3de82091f58f93cd803a7c43ecdccd7ee92b02\")\n\nPosixPath('/var/folders/s6/srs8qkh52w1_h32d65z95tth0000gn/T/tmpt36xjbcn/cache/files/munch-group__x-gwas/2c3de82091f58f93cd803a7c43ecdccd7ee92b02/results/hits.csv')\n\n\nNotice what it printed. Without a version it takes the current one and tells you the sha that pins it, together with the call that does so — paste that back into the cell and the notebook reads the same bytes next year.\nA pinned call is silent, and the sha is a full one, so it also means something to git show or a GitHub URL without labdata in hand.\n\nversion = labdata.list(version=True)[\"version\"].iloc[0]\n\ndf = pd.read_csv(labdata.get(\"x-gwas\", \"hits.csv\", version))\ndf.shape\n\n(3, 3)\n\n\nThe file name is enough when it is unambiguous; otherwise give as much of the path as it takes.\n\npd.read_csv(labdata.get(\"x-gwas\", \"qc/summary.csv\"))\n\nmunch-group/x-gwas:results/qc/summary.csv@2c7b5f1b7395bcea03cac7c13687820afb3f03cf  (2026-08-31, 35B)  Per-sample genotyping quality\npin this version:  labdata.get(\"x-gwas\", \"qc/summary.csv\", \"2c7b5f1b7395bcea03cac7c13687820afb3f03cf\")\n\n\n\n\n\n\n\n\n\nsample\ncall_rate\n\n\n\n\n0\nS1\n0.998\n\n\n1\nS2\n0.991",
     "crumbs": [
       "Examples",
-      "Workplace interaction"
+      "Reading another project's results"
+    ]
+  },
+  {
+    "objectID": "pages/example.html#a-dataset-split-over-many-files",
+    "href": "pages/example.html#a-dataset-split-over-many-files",
+    "title": "Reading another project’s results",
+    "section": "A dataset split over many files",
+    "text": "A dataset split over many files\nA table too large for one file — a .parquet directory partitioned to stay under GitHub’s file size limit — is published by naming the directory. get then returns the directory, with every part in it.\n\ndirectory = labdata.get(\"x-gwas\", \"by_chrom\")\n\nprint(directory.is_dir())\nsorted(p.name for p in directory.iterdir())\n\nmunch-group/x-gwas:results/by_chrom@2c7b5f1b7395bcea03cac7c13687820afb3f03cf  (2026-08-31, 56B)  Per-chromosome effect sizes, one file per chromosome\npin this version:  labdata.get(\"x-gwas\", \"by_chrom\", \"2c7b5f1b7395bcea03cac7c13687820afb3f03cf\")\nTrue\n\n\n['chrom-1.csv', 'chrom-13.csv', 'chrom-2.csv']\n\n\n\npd.concat([pd.read_csv(p) for p in sorted(directory.iterdir())], ignore_index=True)\n\n\n\n\n\n\n\n\nchrom\nbeta\n\n\n\n\n0\n1\n0.010\n\n\n1\n13\n0.013\n\n\n2\n2\n0.020\n\n\n\n\n\n\n\nFor a real partitioned parquet table the last step is simply\npd.read_parquet(labdata.get(\"x-gwas\", \"variants.parquet\"))\nsince read_parquet takes a directory. Nothing about .parquet is special to labdata — naming a directory in the manifest is what makes it a dataset, so .zarr and anything else shaped that way work the same.",
+    "crumbs": [
+      "Examples",
+      "Reading another project's results"
+    ]
+  },
+  {
+    "objectID": "pages/example.html#history",
+    "href": "pages/example.html#history",
+    "title": "Reading another project’s results",
+    "section": "History",
+    "text": "History\nThe catalog stamps every file with the repository’s current commit. labdata.versions() shows the commits in which the file itself changed, which is the useful set to pin.\n\nlabdata.versions(\"x-gwas\", \"hits.csv\")\n\n\n\n\n\n\n\n\nversion\ndate\nbytes\nparts\ntags\nsubject\n\n\n\n\n0\n2c7b5f1b7395bcea03cac7c13687820afb3f03cf\n2026-08-31\n61\n0\n\npublish association results",
+    "crumbs": [
+      "Examples",
+      "Reading another project's results"
+    ]
+  },
+  {
+    "objectID": "pages/example.html#when-nothing-shows-up",
+    "href": "pages/example.html#when-nothing-shows-up",
+    "title": "Reading another project’s results",
+    "section": "When nothing shows up",
+    "text": "When nothing shows up\nAn empty catalog has several ordinary causes and they look alike from outside. labdata.diagnose() says which it is, reading only local git.\n\nprint(\"\\n\".join(labdata.diagnose(Config(roots=[\"~/no-such-place\"]))))\n\n  ~/no-such-place: no such directory\n  github: no owners or repos configured, so nothing is read from GitHub",
+    "crumbs": [
+      "Examples",
+      "Reading another project's results"
+    ]
+  },
+  {
+    "objectID": "pages/example.html#reading-github-without-cloning",
+    "href": "pages/example.html#reading-github-without-cloning",
+    "title": "Reading another project’s results",
+    "section": "Reading GitHub, without cloning",
+    "text": "Reading GitHub, without cloning\nEverything above works the same against repositories on GitHub, which are read over the API — nothing is cloned, and the repositories need not be checked out at all. Name the organisations, or single repositories, in ~/.config/labdata/config.toml:\nowners = [\"munch-group\", \"kaspermunch\"]\nrepos  = [\"someone-else/shared-results\"]   # optional extras\nThen the calls need no cfg= at all:\nlabdata.list()\nlabdata.list(url=True)                     # with the URL of each version\n\ndf = pd.read_csv(labdata.get(\"x-gwas\", \"hits.csv\"))\nAuthentication is GITHUB_TOKEN, or whatever gh auth login already stored. Cataloguing costs three or four requests per repository and is flat in the number of files, and a repository with no labdata.yml costs a single request.\nURLs name the commit rather than a branch, so they keep pointing at the bytes that were cataloged:\nhttps://raw.githubusercontent.com/munch-group/x-gwas/770170789d73.../results/hits.csv\nContent is cached under its git blob sha, so a file you already have is never downloaded twice, whichever way it first arrived.\n\nimport shutil\n\nshutil.rmtree(workspace)          # tidy up after the page",
+    "crumbs": [
+      "Examples",
+      "Reading another project's results"
     ]
   },
   {
@@ -99,6 +143,39 @@
     ]
   },
   {
+    "objectID": "api/cache_root.html",
+    "href": "api/cache_root.html",
+    "title": "cache_root",
+    "section": "",
+    "text": "labdata.config.cache_root()\nLocation of the local cache.\nHonours LABDATA_CACHE first and XDG_CACHE_HOME second.\n\n\n\n : Path\n\nRoot directory of the cache, whether or not it exists.\n\n\n\n\n\nlabdata.cache.blob_path",
+    "crumbs": [
+      "Configuration",
+      "cache_root"
+    ]
+  },
+  {
+    "objectID": "api/cache_root.html#returns",
+    "href": "api/cache_root.html#returns",
+    "title": "cache_root",
+    "section": "",
+    "text": ": Path\n\nRoot directory of the cache, whether or not it exists.",
+    "crumbs": [
+      "Configuration",
+      "cache_root"
+    ]
+  },
+  {
+    "objectID": "api/cache_root.html#see-also",
+    "href": "api/cache_root.html#see-also",
+    "title": "cache_root",
+    "section": "",
+    "text": "labdata.cache.blob_path",
+    "crumbs": [
+      "Configuration",
+      "cache_root"
+    ]
+  },
+  {
     "objectID": "api/repo_identity.html",
     "href": "api/repo_identity.html",
     "title": "repo_identity",
@@ -132,11 +209,55 @@
     ]
   },
   {
+    "objectID": "api/human.html",
+    "href": "api/human.html",
+    "title": "human",
+    "section": "",
+    "text": "labdata.cli.human(n)\nFormat a byte count for display.\n\n\n\nn : int\n\nNumber of bytes. A negative number means the size is unknown.\n\n\n\n\n\n\n : str\n\nA short string such as 948B or 488.5M, or ? when unknown.\n\n\n\n\n\nhuman(512189753)\n# '488.5M'",
+    "crumbs": [
+      "Command line",
+      "human"
+    ]
+  },
+  {
+    "objectID": "api/human.html#parameters",
+    "href": "api/human.html#parameters",
+    "title": "human",
+    "section": "",
+    "text": "n : int\n\nNumber of bytes. A negative number means the size is unknown.",
+    "crumbs": [
+      "Command line",
+      "human"
+    ]
+  },
+  {
+    "objectID": "api/human.html#returns",
+    "href": "api/human.html#returns",
+    "title": "human",
+    "section": "",
+    "text": ": str\n\nA short string such as 948B or 488.5M, or ? when unknown.",
+    "crumbs": [
+      "Command line",
+      "human"
+    ]
+  },
+  {
+    "objectID": "api/human.html#examples",
+    "href": "api/human.html#examples",
+    "title": "human",
+    "section": "",
+    "text": "human(512189753)\n# '488.5M'",
+    "crumbs": [
+      "Command line",
+      "human"
+    ]
+  },
+  {
     "objectID": "api/Entry.html",
     "href": "api/Entry.html",
     "title": "Entry",
     "section": "",
-    "text": "labdata.Entry(owner, repo, path, root, latest)\nA result file in a repository, at its most recent version.\n\n\n\nowner : str\n\nOwner of the repository, taken from the origin remote when there is one and from the parent directory name otherwise.\n\nrepo : str\n\nRepository name.\n\npath : str\n\nPath of the file within the repository, for example results/candidates.csv.\n\nroot : Path\n\nWorking tree of the repository on disk.\n\nlatest : Version\n\nThe most recent version of this file.\n\n\n\n\n\nlabdata.model.Version\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nto_dict\nRepresent the entry as JSON-serialisable data.\n\n\n\n\n\nlabdata.Entry.to_dict()\nRepresent the entry as JSON-serialisable data.\nUsed by the on-disk catalog cache and by labdata list --json.\n\n\n\n : Dict[str, Any]\n\nA dictionary with the dataclass fields plus the derived spec and name, with root converted to a string.",
+    "text": "labdata.Entry(\n    owner,\n    repo,\n    path,\n    root,\n    latest,\n    description='',\n    remote='',\n    source='local',\n)\nA result file in a repository, at its most recent version.\n\n\n\nowner : str\n\nOwner of the repository, taken from the origin remote when there is one and from the parent directory name otherwise.\n\nrepo : str\n\nRepository name.\n\npath : str\n\nPath of the file within the repository, for example results/candidates.csv.\n\nroot : Path\n\nWorking tree of the repository on disk.\n\nlatest : Version\n\nThe most recent version of this file.\n\ndescription : str\n\nWhat the file holds, as given for it in the labdata.yml that publishes it. Empty when the manifest names the file but says nothing about it.\n\nremote : str\n\nowner/repo when the repository is on GitHub, whether it was read over the API or found as a local clone with a GitHub origin. Empty otherwise. This is what gives a version a URL.\n\nsource : str\n\nWhere the entry was cataloged: local from a clone on this machine, github over the API. It decides where history is read from, which is not the same question as where content is read from — a clone can supply content it happens to hold for a version cataloged over the API.\n\n\n\n\n\nlabdata.model.Version labdata.manifest.Manifest\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nto_dict\nRepresent the entry as JSON-serialisable data.\n\n\nurl\nAddress of one version of this file on GitHub.\n\n\n\n\n\nlabdata.Entry.to_dict()\nRepresent the entry as JSON-serialisable data.\nUsed by the on-disk catalog cache and by labdata list --json.\n\n\n\n : Dict[str, Any]\n\nA dictionary with the dataclass fields plus the derived spec and name, with root converted to a string.\n\n\n\n\n\n\nlabdata.Entry.url(version=None)\nAddress of one version of this file on GitHub.\nThe URL names the commit, not a branch, so it keeps pointing at the bytes that were cataloged. For a dataset held in a directory it is the page listing the directory, there being no single file to fetch.\n\n\n\nversion : Optional[Version] = None\n\nVersion to address. Defaults to latest.\n\n\n\n\n\n\n : str\n\nThe URL, or an empty string when the repository is not on GitHub.\n\n\n\n\n\nentry.url()\n# 'https://raw.githubusercontent.com/munch-group/tree-stats/7701707/results/dummy.csv'",
     "crumbs": [
       "Data types",
       "Entry"
@@ -147,7 +268,7 @@
     "href": "api/Entry.html#attributes",
     "title": "Entry",
     "section": "",
-    "text": "owner : str\n\nOwner of the repository, taken from the origin remote when there is one and from the parent directory name otherwise.\n\nrepo : str\n\nRepository name.\n\npath : str\n\nPath of the file within the repository, for example results/candidates.csv.\n\nroot : Path\n\nWorking tree of the repository on disk.\n\nlatest : Version\n\nThe most recent version of this file.",
+    "text": "owner : str\n\nOwner of the repository, taken from the origin remote when there is one and from the parent directory name otherwise.\n\nrepo : str\n\nRepository name.\n\npath : str\n\nPath of the file within the repository, for example results/candidates.csv.\n\nroot : Path\n\nWorking tree of the repository on disk.\n\nlatest : Version\n\nThe most recent version of this file.\n\ndescription : str\n\nWhat the file holds, as given for it in the labdata.yml that publishes it. Empty when the manifest names the file but says nothing about it.\n\nremote : str\n\nowner/repo when the repository is on GitHub, whether it was read over the API or found as a local clone with a GitHub origin. Empty otherwise. This is what gives a version a URL.\n\nsource : str\n\nWhere the entry was cataloged: local from a clone on this machine, github over the API. It decides where history is read from, which is not the same question as where content is read from — a clone can supply content it happens to hold for a version cataloged over the API.",
     "crumbs": [
       "Data types",
       "Entry"
@@ -158,7 +279,7 @@
     "href": "api/Entry.html#see-also",
     "title": "Entry",
     "section": "",
-    "text": "labdata.model.Version",
+    "text": "labdata.model.Version labdata.manifest.Manifest",
     "crumbs": [
       "Data types",
       "Entry"
@@ -169,43 +290,296 @@
     "href": "api/Entry.html#methods",
     "title": "Entry",
     "section": "",
-    "text": "Name\nDescription\n\n\n\n\nto_dict\nRepresent the entry as JSON-serialisable data.\n\n\n\n\n\nlabdata.Entry.to_dict()\nRepresent the entry as JSON-serialisable data.\nUsed by the on-disk catalog cache and by labdata list --json.\n\n\n\n : Dict[str, Any]\n\nA dictionary with the dataclass fields plus the derived spec and name, with root converted to a string.",
+    "text": "Name\nDescription\n\n\n\n\nto_dict\nRepresent the entry as JSON-serialisable data.\n\n\nurl\nAddress of one version of this file on GitHub.\n\n\n\n\n\nlabdata.Entry.to_dict()\nRepresent the entry as JSON-serialisable data.\nUsed by the on-disk catalog cache and by labdata list --json.\n\n\n\n : Dict[str, Any]\n\nA dictionary with the dataclass fields plus the derived spec and name, with root converted to a string.\n\n\n\n\n\n\nlabdata.Entry.url(version=None)\nAddress of one version of this file on GitHub.\nThe URL names the commit, not a branch, so it keeps pointing at the bytes that were cataloged. For a dataset held in a directory it is the page listing the directory, there being no single file to fetch.\n\n\n\nversion : Optional[Version] = None\n\nVersion to address. Defaults to latest.\n\n\n\n\n\n\n : str\n\nThe URL, or an empty string when the repository is not on GitHub.\n\n\n\n\n\nentry.url()\n# 'https://raw.githubusercontent.com/munch-group/tree-stats/7701707/results/dummy.csv'",
     "crumbs": [
       "Data types",
       "Entry"
     ]
   },
   {
-    "objectID": "api/tag_map.html",
-    "href": "api/tag_map.html",
-    "title": "tag_map",
+    "objectID": "api/fingerprint.html",
+    "href": "api/fingerprint.html",
+    "title": "fingerprint",
     "section": "",
-    "text": "labdata.gitutil.tag_map(repo)\nMap commits to the tags pointing at them.\nAnnotated tags are peeled to the commit they wrap. Tags decorate versions but never define them.\n\n\n\nrepo : Path\n\nWorking tree to inspect.\n\n\n\n\n\n\n : Dict[str, Tuple[str, …]]\n\nA mapping of commit sha to a tuple of tag names.",
+    "text": "labdata.core.fingerprint(cfg)\nSummarise the settings that decide what a catalog contains.\nA stored catalog is only reusable for the settings that produced it, and nothing about a catalog file says which those were. This gives the stored catalog a key, so that pointing roots somewhere else takes effect at once instead of after the stored catalog has aged out.\n\n\n\ncfg : Config\n\nSettings to summarise. Only the fields that change which files are cataloged are used, and ~ in roots is expanded first so that two spellings of one directory agree.\n\n\n\n\n\n\n : str\n\nA short hex digest.\n\n\n\n\n\nlabdata.core.catalog",
     "crumbs": [
-      "Git access",
-      "tag_map"
+      "Resolving",
+      "fingerprint"
     ]
   },
   {
-    "objectID": "api/tag_map.html#parameters",
-    "href": "api/tag_map.html#parameters",
-    "title": "tag_map",
+    "objectID": "api/fingerprint.html#parameters",
+    "href": "api/fingerprint.html#parameters",
+    "title": "fingerprint",
     "section": "",
-    "text": "repo : Path\n\nWorking tree to inspect.",
+    "text": "cfg : Config\n\nSettings to summarise. Only the fields that change which files are cataloged are used, and ~ in roots is expanded first so that two spellings of one directory agree.",
     "crumbs": [
-      "Git access",
-      "tag_map"
+      "Resolving",
+      "fingerprint"
     ]
   },
   {
-    "objectID": "api/tag_map.html#returns",
-    "href": "api/tag_map.html#returns",
-    "title": "tag_map",
+    "objectID": "api/fingerprint.html#returns",
+    "href": "api/fingerprint.html#returns",
+    "title": "fingerprint",
     "section": "",
-    "text": ": Dict[str, Tuple[str, …]]\n\nA mapping of commit sha to a tuple of tag names.",
+    "text": ": str\n\nA short hex digest.",
+    "crumbs": [
+      "Resolving",
+      "fingerprint"
+    ]
+  },
+  {
+    "objectID": "api/fingerprint.html#see-also",
+    "href": "api/fingerprint.html#see-also",
+    "title": "fingerprint",
+    "section": "",
+    "text": "labdata.core.catalog",
+    "crumbs": [
+      "Resolving",
+      "fingerprint"
+    ]
+  },
+  {
+    "objectID": "api/version_at.html",
+    "href": "api/version_at.html",
+    "title": "version_at",
+    "section": "",
+    "text": "labdata.remote.version_at(entry, ref, client=None)\nRead one named version of a file on GitHub without listing the others.\nTwo requests, whatever the length of the history: the commit, and the file as of that commit. Listing every version to search it would cost a request per version.\n\n\n\nentry : Entry\n\nEntry whose content to read.\n\nref : str\n\nCommit sha, a unique prefix of one, a tag or a branch.\n\nclient : Optional[Client] = None\n\nClient to read with. Defaults to a new one.\n\n\n\n\n\n\n : Optional[Version]\n\nThe version, or None when ref names nothing that holds this file.",
+    "crumbs": [
+      "GitHub",
+      "version_at"
+    ]
+  },
+  {
+    "objectID": "api/version_at.html#parameters",
+    "href": "api/version_at.html#parameters",
+    "title": "version_at",
+    "section": "",
+    "text": "entry : Entry\n\nEntry whose content to read.\n\nref : str\n\nCommit sha, a unique prefix of one, a tag or a branch.\n\nclient : Optional[Client] = None\n\nClient to read with. Defaults to a new one.",
+    "crumbs": [
+      "GitHub",
+      "version_at"
+    ]
+  },
+  {
+    "objectID": "api/version_at.html#returns",
+    "href": "api/version_at.html#returns",
+    "title": "version_at",
+    "section": "",
+    "text": ": Optional[Version]\n\nThe version, or None when ref names nothing that holds this file.",
+    "crumbs": [
+      "GitHub",
+      "version_at"
+    ]
+  },
+  {
+    "objectID": "api/objects.html",
+    "href": "api/objects.html",
+    "title": "objects",
+    "section": "",
+    "text": "labdata.cache.objects(root=None)\nList every object the store holds.\nReadable hard links are not listed, since they stand for objects listed already, and neither are the temporary files of writes still in flight.\n\n\n\nroot : Optional[Path] = None\n\nCache root. Defaults to labdata.config.cache_root.\n\n\n\n\n\n\n : List[Path]\n\nPaths of the stored objects, in a stable order.\n\n\n\n\n\nlabdata.cache.check_object",
+    "crumbs": [
+      "Cache",
+      "objects"
+    ]
+  },
+  {
+    "objectID": "api/objects.html#parameters",
+    "href": "api/objects.html#parameters",
+    "title": "objects",
+    "section": "",
+    "text": "root : Optional[Path] = None\n\nCache root. Defaults to labdata.config.cache_root.",
+    "crumbs": [
+      "Cache",
+      "objects"
+    ]
+  },
+  {
+    "objectID": "api/objects.html#returns",
+    "href": "api/objects.html#returns",
+    "title": "objects",
+    "section": "",
+    "text": ": List[Path]\n\nPaths of the stored objects, in a stable order.",
+    "crumbs": [
+      "Cache",
+      "objects"
+    ]
+  },
+  {
+    "objectID": "api/objects.html#see-also",
+    "href": "api/objects.html#see-also",
+    "title": "objects",
+    "section": "",
+    "text": "labdata.cache.check_object",
+    "crumbs": [
+      "Cache",
+      "objects"
+    ]
+  },
+  {
+    "objectID": "api/Version.html",
+    "href": "api/Version.html",
+    "title": "Version",
+    "section": "",
+    "text": "labdata.Version(sha, date, subject, blob, size, lfs_oid=None, parts=0, tags=())\nOne commit in which a result file changed.\nA version is defined by a commit, not by a repository tag. Analysis repos are rarely tagged, whereas every change to a result file is a commit, so commits give a version key that exists without extra discipline. Tags, when present, are carried in tags and can be used to address a version, but they never define one.\n\n\n\nsha : str\n\nFull sha of the commit the repository pointed at. This is the user-facing version key, written out in full so that it also means something to git and to GitHub without labdata in hand.\n\ndate : str\n\nCommitter date in ISO-8601 format.\n\nsubject : str\n\nSubject line of the commit.\n\nblob : str\n\nGit blob sha of the file at this commit, a hash of its content, used as the cache key. For a dataset held in a directory this is the git tree sha instead, which hashes the whole directory and so plays the same part.\n\nsize : int\n\nSize in bytes, resolved through Git LFS pointers so that it is the size of the real content rather than of the pointer. For a dataset it is the total over its files.\n\nlfs_oid : Optional[str]\n\nThe sha256 object id when the file is stored in Git LFS, else None.\n\nparts : int\n\nNumber of files the version is made of. Zero for an ordinary file; for a dataset published as a directory, the count of files beneath it.\n\ntags : Tuple[str, …]\n\nAny tags pointing at this commit.",
+    "crumbs": [
+      "Data types",
+      "Version"
+    ]
+  },
+  {
+    "objectID": "api/Version.html#attributes",
+    "href": "api/Version.html#attributes",
+    "title": "Version",
+    "section": "",
+    "text": "sha : str\n\nFull sha of the commit the repository pointed at. This is the user-facing version key, written out in full so that it also means something to git and to GitHub without labdata in hand.\n\ndate : str\n\nCommitter date in ISO-8601 format.\n\nsubject : str\n\nSubject line of the commit.\n\nblob : str\n\nGit blob sha of the file at this commit, a hash of its content, used as the cache key. For a dataset held in a directory this is the git tree sha instead, which hashes the whole directory and so plays the same part.\n\nsize : int\n\nSize in bytes, resolved through Git LFS pointers so that it is the size of the real content rather than of the pointer. For a dataset it is the total over its files.\n\nlfs_oid : Optional[str]\n\nThe sha256 object id when the file is stored in Git LFS, else None.\n\nparts : int\n\nNumber of files the version is made of. Zero for an ordinary file; for a dataset published as a directory, the count of files beneath it.\n\ntags : Tuple[str, …]\n\nAny tags pointing at this commit.",
+    "crumbs": [
+      "Data types",
+      "Version"
+    ]
+  },
+  {
+    "objectID": "api/tree_files.html",
+    "href": "api/tree_files.html",
+    "title": "tree_files",
+    "section": "",
+    "text": "labdata.gitutil.tree_files(repo, rev, path)\nList every file beneath a directory as of a revision.\n\n\n\nrepo : Path\n\nWorking tree to inspect.\n\nrev : str\n\nRevision to read at, typically a commit sha.\n\npath : str\n\nRepository-relative path of the directory.\n\n\n\n\n\n\n : List[Tuple[str, str, int]]\n\nTuples of (path, blob_sha, size), sorted by path. Symbolic links are skipped, as they are elsewhere. Sizes are those of the stored blob, so a Git LFS pointer reports the size of the pointer.\n\n\n\n\n\nlabdata.gitutil.tree_at",
     "crumbs": [
       "Git access",
-      "tag_map"
+      "tree_files"
+    ]
+  },
+  {
+    "objectID": "api/tree_files.html#parameters",
+    "href": "api/tree_files.html#parameters",
+    "title": "tree_files",
+    "section": "",
+    "text": "repo : Path\n\nWorking tree to inspect.\n\nrev : str\n\nRevision to read at, typically a commit sha.\n\npath : str\n\nRepository-relative path of the directory.",
+    "crumbs": [
+      "Git access",
+      "tree_files"
+    ]
+  },
+  {
+    "objectID": "api/tree_files.html#returns",
+    "href": "api/tree_files.html#returns",
+    "title": "tree_files",
+    "section": "",
+    "text": ": List[Tuple[str, str, int]]\n\nTuples of (path, blob_sha, size), sorted by path. Symbolic links are skipped, as they are elsewhere. Sizes are those of the stored blob, so a Git LFS pointer reports the size of the pointer.",
+    "crumbs": [
+      "Git access",
+      "tree_files"
+    ]
+  },
+  {
+    "objectID": "api/tree_files.html#see-also",
+    "href": "api/tree_files.html#see-also",
+    "title": "tree_files",
+    "section": "",
+    "text": "labdata.gitutil.tree_at",
+    "crumbs": [
+      "Git access",
+      "tree_files"
+    ]
+  },
+  {
+    "objectID": "api/copy_out.html",
+    "href": "api/copy_out.html",
+    "title": "copy_out",
+    "section": "",
+    "text": "labdata.core.copy_out(src, out, name)\nWrite a copy of a cached file where the caller asked for it.\nThe copy is streamed rather than buffered, so a large result file does not have to fit in memory.\n\n\n\nsrc : Path\n\nFile to copy, typically a path returned by labdata.core.materialize.\n\nout : Union[str, Path]\n\nDestination. An existing directory, or a path written with a trailing separator, keeps name; anything else is used as the file name itself. Missing parent directories are created.\n\nname : str\n\nFile name to use when out names a directory.\n\n\n\n\n\n\n : Path\n\nThe path written.\n\n\n\n\n\nlabdata.core.get",
+    "crumbs": [
+      "Resolving",
+      "copy_out"
+    ]
+  },
+  {
+    "objectID": "api/copy_out.html#parameters",
+    "href": "api/copy_out.html#parameters",
+    "title": "copy_out",
+    "section": "",
+    "text": "src : Path\n\nFile to copy, typically a path returned by labdata.core.materialize.\n\nout : Union[str, Path]\n\nDestination. An existing directory, or a path written with a trailing separator, keeps name; anything else is used as the file name itself. Missing parent directories are created.\n\nname : str\n\nFile name to use when out names a directory.",
+    "crumbs": [
+      "Resolving",
+      "copy_out"
+    ]
+  },
+  {
+    "objectID": "api/copy_out.html#returns",
+    "href": "api/copy_out.html#returns",
+    "title": "copy_out",
+    "section": "",
+    "text": ": Path\n\nThe path written.",
+    "crumbs": [
+      "Resolving",
+      "copy_out"
+    ]
+  },
+  {
+    "objectID": "api/copy_out.html#see-also",
+    "href": "api/copy_out.html#see-also",
+    "title": "copy_out",
+    "section": "",
+    "text": "labdata.core.get",
+    "crumbs": [
+      "Resolving",
+      "copy_out"
+    ]
+  },
+  {
+    "objectID": "api/refresh.html",
+    "href": "api/refresh.html",
+    "title": "refresh",
+    "section": "",
+    "text": "labdata.refresh(cfg=None, progress=True, **kwargs)\nRescan the repositories and store the catalog.\nThe python side of labdata refresh. The rebuilt catalog is returned, so a notebook cell shows what is there now.\n\n\n\ncfg :  = None\n\nSettings. Defaults to labdata.config.Config.load.\n\nprogress : bool = True\n\nShow a progress bar, one step per repository. On by default: this is the one call that can take a while, and it is otherwise silent throughout.\n\n****kwargs** :  = {}\n\nPassed to labdata.list, so version=True and url=True work here too.\n\n\n\n\n\n\n : \n\nA pandas.DataFrame, as labdata.list returns.\n\n\n\n\n\n\n: ImportError\n\nIf pandas is not installed.\n\n\n\n\n\nlabdata.refresh()                  # with a progress bar\nlabdata.refresh(progress=False)    # without",
+    "crumbs": [
+      "Catalog",
+      "refresh"
+    ]
+  },
+  {
+    "objectID": "api/refresh.html#parameters",
+    "href": "api/refresh.html#parameters",
+    "title": "refresh",
+    "section": "",
+    "text": "cfg :  = None\n\nSettings. Defaults to labdata.config.Config.load.\n\nprogress : bool = True\n\nShow a progress bar, one step per repository. On by default: this is the one call that can take a while, and it is otherwise silent throughout.\n\n****kwargs** :  = {}\n\nPassed to labdata.list, so version=True and url=True work here too.",
+    "crumbs": [
+      "Catalog",
+      "refresh"
+    ]
+  },
+  {
+    "objectID": "api/refresh.html#returns",
+    "href": "api/refresh.html#returns",
+    "title": "refresh",
+    "section": "",
+    "text": ": \n\nA pandas.DataFrame, as labdata.list returns.",
+    "crumbs": [
+      "Catalog",
+      "refresh"
+    ]
+  },
+  {
+    "objectID": "api/refresh.html#raises",
+    "href": "api/refresh.html#raises",
+    "title": "refresh",
+    "section": "",
+    "text": ": ImportError\n\nIf pandas is not installed.",
+    "crumbs": [
+      "Catalog",
+      "refresh"
+    ]
+  },
+  {
+    "objectID": "api/refresh.html#examples",
+    "href": "api/refresh.html#examples",
+    "title": "refresh",
+    "section": "",
+    "text": "labdata.refresh()                  # with a progress bar\nlabdata.refresh(progress=False)    # without",
+    "crumbs": [
+      "Catalog",
+      "refresh"
     ]
   },
   {
@@ -213,7 +587,7 @@
     "href": "api/scan_repo.html",
     "title": "scan_repo",
     "section": "",
-    "text": "labdata.core.scan_repo(root, cfg)\nCatalog the result files of one repository.\n\n\n\nroot : Path\n\nWorking tree of the repository.\n\ncfg : Config\n\nSettings supplying the results directories and filters.\n\n\n\n\n\n\n : List[Entry]\n\nOne entry per result file, at its most recent version.\n\n\n\n\n\nlabdata.core.build",
+    "text": "labdata.remote.scan_repo(client, owner, repo, cfg, ref=None)\nCatalog the result files one GitHub repository publishes.\n\n\n\nclient : Client\n\nClient to read with.\n\nowner : str\n\nRepository owner.\n\nrepo : str\n\nRepository name.\n\ncfg : Config\n\nSettings supplying the results directories and the reading side filters.\n\nref : Optional[str] = None\n\nBranch, tag or commit to read. Defaults to the repository’s default branch.\n\n\n\n\n\n\n : List[Entry]\n\nOne entry per published result file or dataset, each stamped with the commit the repository points at. Empty, at the cost of a single request, when the repository publishes nothing.\n\n\n\n\n\nlabdata.core.scan_repo",
     "crumbs": [
       "Resolving",
       "scan_repo"
@@ -224,7 +598,7 @@
     "href": "api/scan_repo.html#parameters",
     "title": "scan_repo",
     "section": "",
-    "text": "root : Path\n\nWorking tree of the repository.\n\ncfg : Config\n\nSettings supplying the results directories and filters.",
+    "text": "client : Client\n\nClient to read with.\n\nowner : str\n\nRepository owner.\n\nrepo : str\n\nRepository name.\n\ncfg : Config\n\nSettings supplying the results directories and the reading side filters.\n\nref : Optional[str] = None\n\nBranch, tag or commit to read. Defaults to the repository’s default branch.",
     "crumbs": [
       "Resolving",
       "scan_repo"
@@ -235,7 +609,7 @@
     "href": "api/scan_repo.html#returns",
     "title": "scan_repo",
     "section": "",
-    "text": ": List[Entry]\n\nOne entry per result file, at its most recent version.",
+    "text": ": List[Entry]\n\nOne entry per published result file or dataset, each stamped with the commit the repository points at. Empty, at the cost of a single request, when the repository publishes nothing.",
     "crumbs": [
       "Resolving",
       "scan_repo"
@@ -246,7 +620,7 @@
     "href": "api/scan_repo.html#see-also",
     "title": "scan_repo",
     "section": "",
-    "text": "labdata.core.build",
+    "text": "labdata.core.scan_repo",
     "crumbs": [
       "Resolving",
       "scan_repo"
@@ -257,7 +631,7 @@
     "href": "api/discover_repos.html",
     "title": "discover_repos",
     "section": "",
-    "text": "labdata.gitutil.discover_repos(roots, depth=2)\nFind git working trees under a set of root directories.\nA root that is itself a working tree is returned directly; otherwise its subdirectories are searched. Descent stops at each working tree, so nested repositories such as submodules are not reported separately.\n\n\n\nroots : Iterable[Union[str, Path]]\n\nDirectories to search. ~ is expanded. Roots that do not exist are skipped silently.\n\ndepth : int = 2\n\nHow many levels below each root to search.\n\n\n\n\n\n\n : List[Path]\n\nAbsolute paths of the working trees found, without duplicates.\n\n\n\n\n\ndiscover_repos([\"~/github-backup/munch-group\"], depth=1)",
+    "text": "labdata.gitutil.discover_repos(roots, depth=2)\nFind git working trees under a set of root directories.\nA root that is itself a working tree is returned directly; otherwise its subdirectories are searched. Descent stops at each working tree, so nested repositories such as submodules are not reported separately.\n\n\n\nroots : Iterable[Union[str, Path]]\n\nDirectories to search. ~ is expanded. A root that does not exist, or that cannot be read, is skipped silently.\n\ndepth : int = 2\n\nHow many levels below each root to search.\n\n\n\n\n\n\n : List[Path]\n\nAbsolute paths of the working trees found, without duplicates.\n\n\n\n\n\ndiscover_repos([\"~/github-backup/munch-group\"], depth=1)",
     "crumbs": [
       "Git access",
       "discover_repos"
@@ -268,7 +642,7 @@
     "href": "api/discover_repos.html#parameters",
     "title": "discover_repos",
     "section": "",
-    "text": "roots : Iterable[Union[str, Path]]\n\nDirectories to search. ~ is expanded. Roots that do not exist are skipped silently.\n\ndepth : int = 2\n\nHow many levels below each root to search.",
+    "text": "roots : Iterable[Union[str, Path]]\n\nDirectories to search. ~ is expanded. A root that does not exist, or that cannot be read, is skipped silently.\n\ndepth : int = 2\n\nHow many levels below each root to search.",
     "crumbs": [
       "Git access",
       "discover_repos"
@@ -330,11 +704,77 @@
     ]
   },
   {
+    "objectID": "api/store_from_file.html",
+    "href": "api/store_from_file.html",
+    "title": "store_from_file",
+    "section": "",
+    "text": "labdata.cache.store_from_file(sha, src, root=None)\nStore an object that already exists on disk, such as a Git LFS object.\nA hard link is used when the cache and src are on one filesystem, so nothing is copied. Otherwise the file is streamed, and a large file does not have to fit in memory.\n\n\n\nsha : str\n\nKey to store the object under.\n\nsrc : Path\n\nExisting file holding the content.\n\nroot : Optional[Path] = None\n\nCache root. Defaults to labdata.config.cache_root.\n\n\n\n\n\n\n : Path\n\nPath of the cached object. An object already present is not rewritten.",
+    "crumbs": [
+      "Cache",
+      "store_from_file"
+    ]
+  },
+  {
+    "objectID": "api/store_from_file.html#parameters",
+    "href": "api/store_from_file.html#parameters",
+    "title": "store_from_file",
+    "section": "",
+    "text": "sha : str\n\nKey to store the object under.\n\nsrc : Path\n\nExisting file holding the content.\n\nroot : Optional[Path] = None\n\nCache root. Defaults to labdata.config.cache_root.",
+    "crumbs": [
+      "Cache",
+      "store_from_file"
+    ]
+  },
+  {
+    "objectID": "api/store_from_file.html#returns",
+    "href": "api/store_from_file.html#returns",
+    "title": "store_from_file",
+    "section": "",
+    "text": ": Path\n\nPath of the cached object. An object already present is not rewritten.",
+    "crumbs": [
+      "Cache",
+      "store_from_file"
+    ]
+  },
+  {
+    "objectID": "api/download.html",
+    "href": "api/download.html",
+    "title": "download",
+    "section": "",
+    "text": "labdata.remote.download(entry, blob_sha, lfs_oid, size, dest, client=None)\nStream one file’s content from GitHub into a local path.\n\n\n\nentry : Entry\n\nEntry naming the repository.\n\nblob_sha : str\n\nBlob sha of the content, used for an ordinary file.\n\nlfs_oid : Optional[str]\n\nGit LFS object id, used instead when the file is held in LFS.\n\nsize : int\n\nSize of the real content, which the LFS batch endpoint asks for.\n\ndest : Path\n\nFile to write.\n\nclient : Optional[Client] = None\n\nClient to read with. Defaults to a new one.\n\n\n\n\n\n\n: GitHubError\n\nIf the content cannot be read.",
+    "crumbs": [
+      "GitHub",
+      "download"
+    ]
+  },
+  {
+    "objectID": "api/download.html#parameters",
+    "href": "api/download.html#parameters",
+    "title": "download",
+    "section": "",
+    "text": "entry : Entry\n\nEntry naming the repository.\n\nblob_sha : str\n\nBlob sha of the content, used for an ordinary file.\n\nlfs_oid : Optional[str]\n\nGit LFS object id, used instead when the file is held in LFS.\n\nsize : int\n\nSize of the real content, which the LFS batch endpoint asks for.\n\ndest : Path\n\nFile to write.\n\nclient : Optional[Client] = None\n\nClient to read with. Defaults to a new one.",
+    "crumbs": [
+      "GitHub",
+      "download"
+    ]
+  },
+  {
+    "objectID": "api/download.html#raises",
+    "href": "api/download.html#raises",
+    "title": "download",
+    "section": "",
+    "text": ": GitHubError\n\nIf the content cannot be read.",
+    "crumbs": [
+      "GitHub",
+      "download"
+    ]
+  },
+  {
     "objectID": "api/index.html",
     "href": "api/index.html",
     "title": "Function reference",
     "section": "",
-    "text": "Finding out what the repositories publish.\n\n\n\ncatalog\nGet the catalog, rescanning only when needed.\n\n\nbuild\nCatalog every repository under the configured roots.\n\n\nframe\nRepresent the catalog as a data frame.\n\n\n\n\n\n\nGetting a local path to one version of a result file.\n\n\n\nfetch\nGet a local path to a result file, fetching it if it is not cached.\n\n\nversions\nList every version of one result file, newest first.\n\n\n\n\n\n\nTurning a spec such as repo:file@version into one entry and one version.\n\n\n\nresolve_one\nFind the single entry a spec refers to.\n\n\nmatch\nFind the entries a spec refers to, ignoring its version.\n\n\nfind_version\nResolve a version reference against a file’s history.\n\n\nscan_repo\nCatalog the result files of one repository.\n\n\nrepo_identity\nDetermine the owner and name of a repository.\n\n\nmaterialize\nPlace one version of a result file in the cache and return its path.\n\n\n\n\n\n\nWhat the catalog is made of.\n\n\n\nEntry\nA result file in a repository, at its most recent version.\n\n\nVersion\nOne commit in which a result file changed.\n\n\nSpec\nA parsed reference to a result file.\n\n\n\n\n\n\nWhich directories are searched and which files are cataloged.\n\n\n\nConfig\nSettings controlling which files are cataloged.\n\n\n\n\n\n\nThe content-addressed store keyed by git blob sha.\n\n\n\nblob_path\nLocation of a cached object.\n\n\nreadable_path\nLocation of the readable hard link for a cached object.\n\n\nstore\nStore an object held in memory.\n\n\nstore_from_file\nStore an object that already exists on disk, such as a Git LFS object.\n\n\nopen_for_write\nPrepare to stream an object into the cache.\n\n\nlink\nExpose a cached object under a readable name.\n\n\nusage\nMeasure how much the cache holds.\n\n\n\n\n\n\nPlumbing wrappers used to read repositories.\n\n\n\ndiscover_repos\nFind git working trees under a set of root directories.\n\n\ntracked_blobs\nList files tracked at HEAD under a directory, with blob shas and sizes.\n\n\nlast_commits\nFind the commit in which each file under a directory last changed.\n\n\nfile_history\nList every commit that changed one file, newest first.\n\n\nblob_at\nFind the blob sha and size of a file as of a revision.\n\n\ntag_map\nMap commits to the tags pointing at them.\n\n\nread_blob\nRead the content of a blob into memory.\n\n\nwrite_blob_to\nStream the content of a blob to a file.\n\n\nparse_lfs_pointer\nRead a Git LFS pointer file.\n\n\nlfs_object_path\nLocate the real content of a Git LFS object in a repository.\n\n\n\n\n\n\nEntry points behind the labdata command.\n\n\n\nmain\nRun the command line interface.\n\n\nbuild_parser\nConstruct the argument parser.",
+    "text": "Finding out what the repositories publish.\n\n\n\nlist\nTabulate what the configured repositories publish.\n\n\nrepos\nTabulate one row per repository that publishes something.\n\n\nversions\nTabulate the history of one published file or dataset.\n\n\nrefresh\nRescan the repositories and store the catalog.\n\n\nframe\nRepresent the catalog as a data frame.\n\n\ncatalog\nGet the catalog, rescanning only when needed.\n\n\nbuild\nCatalog every repository under the configured roots.\n\n\ndiagnose\nExplain why a scan found nothing.\n\n\n\n\n\n\nGetting a local path to one version of a result file.\n\n\n\nget\nDownload one result file, addressed by repository and file name.\n\n\nfetch\nGet a local path to a result file, fetching it if it is not cached.\n\n\noutdated\nSay whether a pinned version has been overtaken.\n\n\n\n\n\n\nTurning a spec such as repo:file@version into one entry and one version.\n\n\n\nresolve_one\nFind the single entry a spec refers to.\n\n\nmatch\nFind the entries a spec refers to, ignoring its version.\n\n\nfind_version\nResolve a version reference against a file’s history.\n\n\nfingerprint\nSummarise the settings that decide what a catalog contains.\n\n\nscan_repo\nCatalog the result files of one repository.\n\n\nrepo_identity\nDetermine the owner and name of a repository.\n\n\nmaterialize\nPlace one version of a result file in the cache and return its path.\n\n\nprogress_bar\nWrap an iterable in a progress bar when one is wanted.\n\n\ncopy_out\nWrite a copy of a cached file where the caller asked for it.\n\n\n\n\n\n\nWhat the catalog is made of.\n\n\n\nEntry\nA result file in a repository, at its most recent version.\n\n\nVersion\nOne commit in which a result file changed.\n\n\nSpec\nA parsed reference to a result file.\n\n\n\n\n\n\nCataloguing and fetching repositories over the GitHub API, without cloning them.\n\n\n\nbuild\nCatalog every repository the settings name on GitHub.\n\n\nscan_repo\nCatalog the result files one GitHub repository publishes.\n\n\nversions\nList every version of one published file or dataset on GitHub.\n\n\nversion_at\nRead one named version of a file on GitHub without listing the others.\n\n\ndataset_files\nList the parts of a dataset at one commit.\n\n\ndownload\nStream one file’s content from GitHub into a local path.\n\n\n\n\n\n\nThe client the GitHub backend reads with.\n\n\n\nClient\nA thin, streaming client for the parts of the GitHub API labdata needs.\n\n\ntoken\nFind a GitHub token to authenticate with.\n\n\nblob_url\nBuild a stable URL for one version of a published file.\n\n\nGitHubError\nRaised when GitHub cannot be read.\n\n\n\n\n\n\nThe labdata.yml by which a repository states what it publishes, and what each published file holds.\n\n\n\nManifest\nWhat one directory of a repository publishes.\n\n\nparse\nRead a manifest.\n\n\nis_manifest\nTest whether a repository path is a manifest.\n\n\nmanifest_path\nWhere a results directory’s manifest must sit to be read.\n\n\nManifestError\nRaised when a manifest cannot be understood.\n\n\n\n\n\n\nWhich directories are searched, which files are cataloged, and where settings and the cache live.\n\n\n\nConfig\nSettings controlling which files are cataloged.\n\n\nconfig_path\nLocation of the configuration file.\n\n\ncache_root\nLocation of the local cache.\n\n\n\n\n\n\nThe content-addressed store keyed by git blob sha.\n\n\n\nblob_path\nLocation of a cached object.\n\n\nreadable_path\nLocation of the readable hard link for a cached object.\n\n\nstore\nStore an object held in memory.\n\n\nstore_from_file\nStore an object that already exists on disk, such as a Git LFS object.\n\n\nopen_for_write\nPrepare to stream an object into the cache.\n\n\nlink\nExpose a cached object under a readable name.\n\n\nobjects\nList every object the store holds.\n\n\ncheck_object\nTest whether a cached object holds the content its key promises.\n\n\ndiscard\nRemove a cached object, and the readable links that stand for it.\n\n\nusage\nMeasure how much the cache holds.\n\n\n\n\n\n\nPlumbing wrappers used to read repositories.\n\n\n\ndiscover_repos\nFind git working trees under a set of root directories.\n\n\ntracked_blobs\nList files tracked at HEAD under a directory, with blob shas and sizes.\n\n\nhead_commit\nRead the commit a repository currently points at.\n\n\nfile_history\nList every commit that changed one file, newest first.\n\n\nblob_at\nFind the blob sha and size of a file as of a revision.\n\n\ntree_at\nFind the tree sha of a directory as of a revision.\n\n\ntree_files\nList every file beneath a directory as of a revision.\n\n\ntag_map\nMap commits to the tags pointing at them.\n\n\nread_blob\nRead the content of a blob into memory.\n\n\nwrite_blob_to\nStream the content of a blob to a file.\n\n\nparse_lfs_pointer\nRead a Git LFS pointer file.\n\n\nlfs_object_path\nLocate the real content of a Git LFS object in a repository.\n\n\nGitError\nRaised when a git command fails.\n\n\n\n\n\n\nEntry points behind the labdata command.\n\n\n\nmain\nRun the command line interface.\n\n\ntable\nRender rows as a plain text table with aligned columns.\n\n\nhuman\nFormat a byte count for display.\n\n\nnote\nSummarise what is unusual about a version, for the table’s NOTE column.",
     "crumbs": [
       "Function reference"
     ]
@@ -344,7 +784,7 @@
     "href": "api/index.html#catalog",
     "title": "Function reference",
     "section": "",
-    "text": "Finding out what the repositories publish.\n\n\n\ncatalog\nGet the catalog, rescanning only when needed.\n\n\nbuild\nCatalog every repository under the configured roots.\n\n\nframe\nRepresent the catalog as a data frame.",
+    "text": "Finding out what the repositories publish.\n\n\n\nlist\nTabulate what the configured repositories publish.\n\n\nrepos\nTabulate one row per repository that publishes something.\n\n\nversions\nTabulate the history of one published file or dataset.\n\n\nrefresh\nRescan the repositories and store the catalog.\n\n\nframe\nRepresent the catalog as a data frame.\n\n\ncatalog\nGet the catalog, rescanning only when needed.\n\n\nbuild\nCatalog every repository under the configured roots.\n\n\ndiagnose\nExplain why a scan found nothing.",
     "crumbs": [
       "Function reference"
     ]
@@ -354,7 +794,7 @@
     "href": "api/index.html#fetching",
     "title": "Function reference",
     "section": "",
-    "text": "Getting a local path to one version of a result file.\n\n\n\nfetch\nGet a local path to a result file, fetching it if it is not cached.\n\n\nversions\nList every version of one result file, newest first.",
+    "text": "Getting a local path to one version of a result file.\n\n\n\nget\nDownload one result file, addressed by repository and file name.\n\n\nfetch\nGet a local path to a result file, fetching it if it is not cached.\n\n\noutdated\nSay whether a pinned version has been overtaken.",
     "crumbs": [
       "Function reference"
     ]
@@ -364,7 +804,7 @@
     "href": "api/index.html#resolving",
     "title": "Function reference",
     "section": "",
-    "text": "Turning a spec such as repo:file@version into one entry and one version.\n\n\n\nresolve_one\nFind the single entry a spec refers to.\n\n\nmatch\nFind the entries a spec refers to, ignoring its version.\n\n\nfind_version\nResolve a version reference against a file’s history.\n\n\nscan_repo\nCatalog the result files of one repository.\n\n\nrepo_identity\nDetermine the owner and name of a repository.\n\n\nmaterialize\nPlace one version of a result file in the cache and return its path.",
+    "text": "Turning a spec such as repo:file@version into one entry and one version.\n\n\n\nresolve_one\nFind the single entry a spec refers to.\n\n\nmatch\nFind the entries a spec refers to, ignoring its version.\n\n\nfind_version\nResolve a version reference against a file’s history.\n\n\nfingerprint\nSummarise the settings that decide what a catalog contains.\n\n\nscan_repo\nCatalog the result files of one repository.\n\n\nrepo_identity\nDetermine the owner and name of a repository.\n\n\nmaterialize\nPlace one version of a result file in the cache and return its path.\n\n\nprogress_bar\nWrap an iterable in a progress bar when one is wanted.\n\n\ncopy_out\nWrite a copy of a cached file where the caller asked for it.",
     "crumbs": [
       "Function reference"
     ]
@@ -380,11 +820,41 @@
     ]
   },
   {
+    "objectID": "api/index.html#github",
+    "href": "api/index.html#github",
+    "title": "Function reference",
+    "section": "",
+    "text": "Cataloguing and fetching repositories over the GitHub API, without cloning them.\n\n\n\nbuild\nCatalog every repository the settings name on GitHub.\n\n\nscan_repo\nCatalog the result files one GitHub repository publishes.\n\n\nversions\nList every version of one published file or dataset on GitHub.\n\n\nversion_at\nRead one named version of a file on GitHub without listing the others.\n\n\ndataset_files\nList the parts of a dataset at one commit.\n\n\ndownload\nStream one file’s content from GitHub into a local path.",
+    "crumbs": [
+      "Function reference"
+    ]
+  },
+  {
+    "objectID": "api/index.html#github-api",
+    "href": "api/index.html#github-api",
+    "title": "Function reference",
+    "section": "",
+    "text": "The client the GitHub backend reads with.\n\n\n\nClient\nA thin, streaming client for the parts of the GitHub API labdata needs.\n\n\ntoken\nFind a GitHub token to authenticate with.\n\n\nblob_url\nBuild a stable URL for one version of a published file.\n\n\nGitHubError\nRaised when GitHub cannot be read.",
+    "crumbs": [
+      "Function reference"
+    ]
+  },
+  {
+    "objectID": "api/index.html#manifests",
+    "href": "api/index.html#manifests",
+    "title": "Function reference",
+    "section": "",
+    "text": "The labdata.yml by which a repository states what it publishes, and what each published file holds.\n\n\n\nManifest\nWhat one directory of a repository publishes.\n\n\nparse\nRead a manifest.\n\n\nis_manifest\nTest whether a repository path is a manifest.\n\n\nmanifest_path\nWhere a results directory’s manifest must sit to be read.\n\n\nManifestError\nRaised when a manifest cannot be understood.",
+    "crumbs": [
+      "Function reference"
+    ]
+  },
+  {
     "objectID": "api/index.html#configuration",
     "href": "api/index.html#configuration",
     "title": "Function reference",
     "section": "",
-    "text": "Which directories are searched and which files are cataloged.\n\n\n\nConfig\nSettings controlling which files are cataloged.",
+    "text": "Which directories are searched, which files are cataloged, and where settings and the cache live.\n\n\n\nConfig\nSettings controlling which files are cataloged.\n\n\nconfig_path\nLocation of the configuration file.\n\n\ncache_root\nLocation of the local cache.",
     "crumbs": [
       "Function reference"
     ]
@@ -394,7 +864,7 @@
     "href": "api/index.html#cache",
     "title": "Function reference",
     "section": "",
-    "text": "The content-addressed store keyed by git blob sha.\n\n\n\nblob_path\nLocation of a cached object.\n\n\nreadable_path\nLocation of the readable hard link for a cached object.\n\n\nstore\nStore an object held in memory.\n\n\nstore_from_file\nStore an object that already exists on disk, such as a Git LFS object.\n\n\nopen_for_write\nPrepare to stream an object into the cache.\n\n\nlink\nExpose a cached object under a readable name.\n\n\nusage\nMeasure how much the cache holds.",
+    "text": "The content-addressed store keyed by git blob sha.\n\n\n\nblob_path\nLocation of a cached object.\n\n\nreadable_path\nLocation of the readable hard link for a cached object.\n\n\nstore\nStore an object held in memory.\n\n\nstore_from_file\nStore an object that already exists on disk, such as a Git LFS object.\n\n\nopen_for_write\nPrepare to stream an object into the cache.\n\n\nlink\nExpose a cached object under a readable name.\n\n\nobjects\nList every object the store holds.\n\n\ncheck_object\nTest whether a cached object holds the content its key promises.\n\n\ndiscard\nRemove a cached object, and the readable links that stand for it.\n\n\nusage\nMeasure how much the cache holds.",
     "crumbs": [
       "Function reference"
     ]
@@ -404,7 +874,7 @@
     "href": "api/index.html#git-access",
     "title": "Function reference",
     "section": "",
-    "text": "Plumbing wrappers used to read repositories.\n\n\n\ndiscover_repos\nFind git working trees under a set of root directories.\n\n\ntracked_blobs\nList files tracked at HEAD under a directory, with blob shas and sizes.\n\n\nlast_commits\nFind the commit in which each file under a directory last changed.\n\n\nfile_history\nList every commit that changed one file, newest first.\n\n\nblob_at\nFind the blob sha and size of a file as of a revision.\n\n\ntag_map\nMap commits to the tags pointing at them.\n\n\nread_blob\nRead the content of a blob into memory.\n\n\nwrite_blob_to\nStream the content of a blob to a file.\n\n\nparse_lfs_pointer\nRead a Git LFS pointer file.\n\n\nlfs_object_path\nLocate the real content of a Git LFS object in a repository.",
+    "text": "Plumbing wrappers used to read repositories.\n\n\n\ndiscover_repos\nFind git working trees under a set of root directories.\n\n\ntracked_blobs\nList files tracked at HEAD under a directory, with blob shas and sizes.\n\n\nhead_commit\nRead the commit a repository currently points at.\n\n\nfile_history\nList every commit that changed one file, newest first.\n\n\nblob_at\nFind the blob sha and size of a file as of a revision.\n\n\ntree_at\nFind the tree sha of a directory as of a revision.\n\n\ntree_files\nList every file beneath a directory as of a revision.\n\n\ntag_map\nMap commits to the tags pointing at them.\n\n\nread_blob\nRead the content of a blob into memory.\n\n\nwrite_blob_to\nStream the content of a blob to a file.\n\n\nparse_lfs_pointer\nRead a Git LFS pointer file.\n\n\nlfs_object_path\nLocate the real content of a Git LFS object in a repository.\n\n\nGitError\nRaised when a git command fails.",
     "crumbs": [
       "Function reference"
     ]
@@ -414,7 +884,7 @@
     "href": "api/index.html#command-line",
     "title": "Function reference",
     "section": "",
-    "text": "Entry points behind the labdata command.\n\n\n\nmain\nRun the command line interface.\n\n\nbuild_parser\nConstruct the argument parser.",
+    "text": "Entry points behind the labdata command.\n\n\n\nmain\nRun the command line interface.\n\n\ntable\nRender rows as a plain text table with aligned columns.\n\n\nhuman\nFormat a byte count for display.\n\n\nnote\nSummarise what is unusual about a version, for the table’s NOTE column.",
     "crumbs": [
       "Function reference"
     ]
@@ -453,91 +923,135 @@
     ]
   },
   {
-    "objectID": "api/link.html",
-    "href": "api/link.html",
-    "title": "link",
+    "objectID": "api/get.html",
+    "href": "api/get.html",
+    "title": "get",
     "section": "",
-    "text": "labdata.cache.link(blob, dest)\nExpose a cached object under a readable name.\nA hard link is preferred, a symbolic link is the first fallback and a copy the last, so the function works on filesystems that support neither.\n\n\n\nblob : Path\n\nCached object to expose.\n\ndest : Path\n\nPath to create. An existing path is left alone, since cached content is immutable.\n\n\n\n\n\n\n : Path\n\ndest.",
+    "text": "labdata.get(\n    repo,\n    filename,\n    version=None,\n    *,\n    owner=None,\n    out=None,\n    refresh=False,\n    quiet=False,\n    cfg=None,\n)\nDownload one result file, addressed by repository and file name.\nThis is the form meant for a notebook. Passing version pins the result, and the call is then silent and reproducible. Leaving it out takes the latest version and prints its hash together with the call that pins it, so the pinned form can be copied straight back into the cell.\n\n\n\nrepo : str\n\nRepository name, optionally written owner/repo when the name alone is used by two organisations.\n\nfilename : str\n\nFile name, or as much of the path as is needed to be unambiguous within the repository.\n\nversion : Optional[str] = None\n\nHash of the commit holding the wanted version, a unique prefix of one, or a tag name. None takes the latest version and prints its hash.\n\nowner : Optional[str] = None\n\nRepository owner, an alternative to writing owner/repo in repo.\n\nout : Optional[Union[str, Path]] = None\n\nAlso write a copy here. A directory, or a path written with a trailing separator, keeps the original file name, and missing parent directories are created.\n\nrefresh : bool = False\n\nRescan the repositories before resolving, instead of using the stored catalog.\n\nquiet : bool = False\n\nDo not print the hash even when version was not given. The warning that a pinned version has been overtaken is still printed, on standard error: it says something happened rather than merely reporting.\n\ncfg : Optional[Config] = None\n\nSettings. Defaults to labdata.config.Config.load.\n\n\n\n\n\n\n : Path\n\nPath of the file in the local cache, ready to hand to a reader.\n\n\n\n\n\n\n: LookupError\n\nIf nothing matches, if several files match, or if there is no such version. The message lists the candidates as full specs.\n\n: FileNotFoundError\n\nIf the file is held in Git LFS and its content has not been fetched into the repository.\n\n\n\n\n\nRead the latest version, and be told the hash that pins it:\nimport labdata\nimport pandas as pd\n\ndf = pd.read_csv(labdata.get(\"x-gwas\", \"hits.csv\"))\n# munch-group/x-gwas:results/hits.csv@e4f5a6b  (2026-04-11, 1.2M)\n# pin this version:  labdata.get(\"x-gwas\", \"hits.csv\", \"e4f5a6b\")\nPin it, so the notebook reads the same bytes next year:\ndf = pd.read_csv(labdata.get(\"x-gwas\", \"hits.csv\", \"e4f5a6b\"))\n\n\n\nlabdata.core.fetch labdata.versions labdata.core.outdated",
     "crumbs": [
-      "Cache",
-      "link"
+      "Fetching",
+      "get"
     ]
   },
   {
-    "objectID": "api/link.html#parameters",
-    "href": "api/link.html#parameters",
-    "title": "link",
+    "objectID": "api/get.html#parameters",
+    "href": "api/get.html#parameters",
+    "title": "get",
     "section": "",
-    "text": "blob : Path\n\nCached object to expose.\n\ndest : Path\n\nPath to create. An existing path is left alone, since cached content is immutable.",
+    "text": "repo : str\n\nRepository name, optionally written owner/repo when the name alone is used by two organisations.\n\nfilename : str\n\nFile name, or as much of the path as is needed to be unambiguous within the repository.\n\nversion : Optional[str] = None\n\nHash of the commit holding the wanted version, a unique prefix of one, or a tag name. None takes the latest version and prints its hash.\n\nowner : Optional[str] = None\n\nRepository owner, an alternative to writing owner/repo in repo.\n\nout : Optional[Union[str, Path]] = None\n\nAlso write a copy here. A directory, or a path written with a trailing separator, keeps the original file name, and missing parent directories are created.\n\nrefresh : bool = False\n\nRescan the repositories before resolving, instead of using the stored catalog.\n\nquiet : bool = False\n\nDo not print the hash even when version was not given. The warning that a pinned version has been overtaken is still printed, on standard error: it says something happened rather than merely reporting.\n\ncfg : Optional[Config] = None\n\nSettings. Defaults to labdata.config.Config.load.",
     "crumbs": [
-      "Cache",
-      "link"
+      "Fetching",
+      "get"
     ]
   },
   {
-    "objectID": "api/link.html#returns",
-    "href": "api/link.html#returns",
-    "title": "link",
+    "objectID": "api/get.html#returns",
+    "href": "api/get.html#returns",
+    "title": "get",
     "section": "",
-    "text": ": Path\n\ndest.",
+    "text": ": Path\n\nPath of the file in the local cache, ready to hand to a reader.",
     "crumbs": [
-      "Cache",
-      "link"
+      "Fetching",
+      "get"
     ]
   },
   {
-    "objectID": "api/build.html",
-    "href": "api/build.html",
-    "title": "build",
+    "objectID": "api/get.html#raises",
+    "href": "api/get.html#raises",
+    "title": "get",
     "section": "",
-    "text": "labdata.build(cfg=None)\nCatalog every repository under the configured roots.\nRepositories that cannot be read are skipped rather than failing the scan, so one broken working tree does not hide the rest.\n\n\n\ncfg : Optional[Config] = None\n\nSettings. Defaults to labdata.config.Config.load.\n\n\n\n\n\n\n : List[Entry]\n\nEntries sorted by repository and path.\n\n\n\n\n\nentries = build(Config(roots=[\"~/github-backup/munch-group\"], depth=1))\nlen(entries)\n\n\n\nlabdata.core.catalog",
+    "text": ": LookupError\n\nIf nothing matches, if several files match, or if there is no such version. The message lists the candidates as full specs.\n\n: FileNotFoundError\n\nIf the file is held in Git LFS and its content has not been fetched into the repository.",
     "crumbs": [
-      "Catalog",
-      "build"
+      "Fetching",
+      "get"
     ]
   },
   {
-    "objectID": "api/build.html#parameters",
-    "href": "api/build.html#parameters",
-    "title": "build",
+    "objectID": "api/get.html#examples",
+    "href": "api/get.html#examples",
+    "title": "get",
     "section": "",
-    "text": "cfg : Optional[Config] = None\n\nSettings. Defaults to labdata.config.Config.load.",
+    "text": "Read the latest version, and be told the hash that pins it:\nimport labdata\nimport pandas as pd\n\ndf = pd.read_csv(labdata.get(\"x-gwas\", \"hits.csv\"))\n# munch-group/x-gwas:results/hits.csv@e4f5a6b  (2026-04-11, 1.2M)\n# pin this version:  labdata.get(\"x-gwas\", \"hits.csv\", \"e4f5a6b\")\nPin it, so the notebook reads the same bytes next year:\ndf = pd.read_csv(labdata.get(\"x-gwas\", \"hits.csv\", \"e4f5a6b\"))",
     "crumbs": [
-      "Catalog",
-      "build"
+      "Fetching",
+      "get"
     ]
   },
   {
-    "objectID": "api/build.html#returns",
-    "href": "api/build.html#returns",
-    "title": "build",
+    "objectID": "api/get.html#see-also",
+    "href": "api/get.html#see-also",
+    "title": "get",
     "section": "",
-    "text": ": List[Entry]\n\nEntries sorted by repository and path.",
+    "text": "labdata.core.fetch labdata.versions labdata.core.outdated",
     "crumbs": [
-      "Catalog",
-      "build"
+      "Fetching",
+      "get"
     ]
   },
   {
-    "objectID": "api/build.html#examples",
-    "href": "api/build.html#examples",
-    "title": "build",
+    "objectID": "api/blob_at.html",
+    "href": "api/blob_at.html",
+    "title": "blob_at",
     "section": "",
-    "text": "entries = build(Config(roots=[\"~/github-backup/munch-group\"], depth=1))\nlen(entries)",
+    "text": "labdata.gitutil.blob_at(repo, rev, path)\nFind the blob sha and size of a file as of a revision.\n\n\n\nrepo : Path\n\nWorking tree to inspect.\n\nrev : str\n\nRevision to read the file at, typically a commit sha.\n\npath : str\n\nRepository-relative path of the file.\n\n\n\n\n\n\n : Optional[Tuple[str, int]]\n\n(blob_sha, size), or None if the file does not exist at rev.",
     "crumbs": [
-      "Catalog",
-      "build"
+      "Git access",
+      "blob_at"
     ]
   },
   {
-    "objectID": "api/build.html#see-also",
-    "href": "api/build.html#see-also",
-    "title": "build",
+    "objectID": "api/blob_at.html#parameters",
+    "href": "api/blob_at.html#parameters",
+    "title": "blob_at",
     "section": "",
-    "text": "labdata.core.catalog",
+    "text": "repo : Path\n\nWorking tree to inspect.\n\nrev : str\n\nRevision to read the file at, typically a commit sha.\n\npath : str\n\nRepository-relative path of the file.",
     "crumbs": [
-      "Catalog",
-      "build"
+      "Git access",
+      "blob_at"
+    ]
+  },
+  {
+    "objectID": "api/blob_at.html#returns",
+    "href": "api/blob_at.html#returns",
+    "title": "blob_at",
+    "section": "",
+    "text": ": Optional[Tuple[str, int]]\n\n(blob_sha, size), or None if the file does not exist at rev.",
+    "crumbs": [
+      "Git access",
+      "blob_at"
+    ]
+  },
+  {
+    "objectID": "api/manifest_path.html",
+    "href": "api/manifest_path.html",
+    "title": "manifest_path",
+    "section": "",
+    "text": "labdata.manifest.manifest_path(results_dir)\nWhere a results directory’s manifest must sit to be read.\n\n\n\nresults_dir : str\n\nRepository-relative results directory, as the repository spells it.\n\n\n\n\n\n\n : str\n\nThe path of the one manifest governing it.",
+    "crumbs": [
+      "Manifests",
+      "manifest_path"
+    ]
+  },
+  {
+    "objectID": "api/manifest_path.html#parameters",
+    "href": "api/manifest_path.html#parameters",
+    "title": "manifest_path",
+    "section": "",
+    "text": "results_dir : str\n\nRepository-relative results directory, as the repository spells it.",
+    "crumbs": [
+      "Manifests",
+      "manifest_path"
+    ]
+  },
+  {
+    "objectID": "api/manifest_path.html#returns",
+    "href": "api/manifest_path.html#returns",
+    "title": "manifest_path",
+    "section": "",
+    "text": ": str\n\nThe path of the one manifest governing it.",
+    "crumbs": [
+      "Manifests",
+      "manifest_path"
     ]
   },
   {
@@ -545,9 +1059,9 @@
     "href": "api/versions.html",
     "title": "versions",
     "section": "",
-    "text": "labdata.versions(entry)\nList every version of one result file, newest first.\n\n\n\nentry : Entry\n\nEntry whose history to read.\n\n\n\n\n\n\n : List[Version]\n\nVersions newest first, each with the size the file had at that commit.\n\n\n\n\n\nfor v in versions(entry):\n    print(v.short, v.date[:10], v.size, v.subject)",
+    "text": "labdata.remote.versions(entry, client=None)\nList every version of one published file or dataset on GitHub.\n\n\n\nentry : Entry\n\nEntry whose history to read. Its remote names the repository.\n\nclient : Optional[Client] = None\n\nClient to read with. Defaults to a new one.\n\n\n\n\n\n\n : List[Version]\n\nVersions newest first.\n\n\n\n\n\nlabdata.versions",
     "crumbs": [
-      "Fetching",
+      "Catalog",
       "versions"
     ]
   },
@@ -556,9 +1070,9 @@
     "href": "api/versions.html#parameters",
     "title": "versions",
     "section": "",
-    "text": "entry : Entry\n\nEntry whose history to read.",
+    "text": "entry : Entry\n\nEntry whose history to read. Its remote names the repository.\n\nclient : Optional[Client] = None\n\nClient to read with. Defaults to a new one.",
     "crumbs": [
-      "Fetching",
+      "Catalog",
       "versions"
     ]
   },
@@ -567,131 +1081,274 @@
     "href": "api/versions.html#returns",
     "title": "versions",
     "section": "",
-    "text": ": List[Version]\n\nVersions newest first, each with the size the file had at that commit.",
+    "text": ": List[Version]\n\nVersions newest first.",
     "crumbs": [
-      "Fetching",
+      "Catalog",
       "versions"
     ]
   },
   {
-    "objectID": "api/versions.html#examples",
-    "href": "api/versions.html#examples",
+    "objectID": "api/versions.html#see-also",
+    "href": "api/versions.html#see-also",
     "title": "versions",
     "section": "",
-    "text": "for v in versions(entry):\n    print(v.short, v.date[:10], v.size, v.subject)",
+    "text": "labdata.versions",
     "crumbs": [
-      "Fetching",
+      "Catalog",
       "versions"
     ]
   },
   {
-    "objectID": "api/materialize.html",
-    "href": "api/materialize.html",
-    "title": "materialize",
+    "objectID": "api/catalog.html",
+    "href": "api/catalog.html",
+    "title": "catalog",
     "section": "",
-    "text": "labdata.core.materialize(entry, version)\nPlace one version of a result file in the cache and return its path.\nContent already cached is not fetched again, which is why an unchanged file costs nothing across versions and repositories. Git LFS content is taken from the repository’s own object store.\n\n\n\nentry : Entry\n\nEntry the version belongs to.\n\nversion : Version\n\nVersion to materialize.\n\n\n\n\n\n\n : Path\n\nReadable path of the cached content, under &lt;cache&gt;/files/&lt;repo&gt;/&lt;version&gt;/&lt;name&gt;.\n\n\n\n\n\n\n: FileNotFoundError\n\nIf the content is held in Git LFS and has not been fetched. The message names the git lfs fetch command to run.",
+    "text": "labdata.catalog(refresh=False, max_age=3600.0, cfg=None, progress=False)\nGet the catalog, rescanning only when needed.\n\n\n\nrefresh : bool = False\n\nRescan the repositories even if a fresh catalog is on disk.\n\nmax_age : float = 3600.0\n\nAge in seconds beyond which the stored catalog is rescanned.\n\ncfg : Optional[Config] = None\n\nSettings. Defaults to labdata.config.Config.load. A stored catalog built with different settings is rescanned rather than reused.\n\nprogress : bool = False\n\nShow a progress bar while rescanning. Nothing is drawn when the stored catalog is used, since there is nothing to wait for.\n\n\n\n\n\n\n : List[Entry]\n\nEntries sorted by repository and path.\n\n\n\n\n\nfor entry in catalog():\n    print(entry.spec, entry.latest.size)",
     "crumbs": [
-      "Resolving",
-      "materialize"
+      "Catalog",
+      "catalog"
     ]
   },
   {
-    "objectID": "api/materialize.html#parameters",
-    "href": "api/materialize.html#parameters",
-    "title": "materialize",
+    "objectID": "api/catalog.html#parameters",
+    "href": "api/catalog.html#parameters",
+    "title": "catalog",
     "section": "",
-    "text": "entry : Entry\n\nEntry the version belongs to.\n\nversion : Version\n\nVersion to materialize.",
+    "text": "refresh : bool = False\n\nRescan the repositories even if a fresh catalog is on disk.\n\nmax_age : float = 3600.0\n\nAge in seconds beyond which the stored catalog is rescanned.\n\ncfg : Optional[Config] = None\n\nSettings. Defaults to labdata.config.Config.load. A stored catalog built with different settings is rescanned rather than reused.\n\nprogress : bool = False\n\nShow a progress bar while rescanning. Nothing is drawn when the stored catalog is used, since there is nothing to wait for.",
     "crumbs": [
-      "Resolving",
-      "materialize"
+      "Catalog",
+      "catalog"
     ]
   },
   {
-    "objectID": "api/materialize.html#returns",
-    "href": "api/materialize.html#returns",
-    "title": "materialize",
+    "objectID": "api/catalog.html#returns",
+    "href": "api/catalog.html#returns",
+    "title": "catalog",
     "section": "",
-    "text": ": Path\n\nReadable path of the cached content, under &lt;cache&gt;/files/&lt;repo&gt;/&lt;version&gt;/&lt;name&gt;.",
+    "text": ": List[Entry]\n\nEntries sorted by repository and path.",
     "crumbs": [
-      "Resolving",
-      "materialize"
+      "Catalog",
+      "catalog"
     ]
   },
   {
-    "objectID": "api/materialize.html#raises",
-    "href": "api/materialize.html#raises",
-    "title": "materialize",
+    "objectID": "api/catalog.html#examples",
+    "href": "api/catalog.html#examples",
+    "title": "catalog",
     "section": "",
-    "text": ": FileNotFoundError\n\nIf the content is held in Git LFS and has not been fetched. The message names the git lfs fetch command to run.",
+    "text": "for entry in catalog():\n    print(entry.spec, entry.latest.size)",
     "crumbs": [
-      "Resolving",
-      "materialize"
+      "Catalog",
+      "catalog"
     ]
   },
   {
-    "objectID": "api/last_commits.html",
-    "href": "api/last_commits.html",
-    "title": "last_commits",
+    "objectID": "api/check_object.html",
+    "href": "api/check_object.html",
+    "title": "check_object",
     "section": "",
-    "text": "labdata.gitutil.last_commits(repo, subdir)\nFind the commit in which each file under a directory last changed.\nA single git log --name-only walk covers every file, which matters when a results directory holds hundreds of them.\n\n\n\nrepo : Path\n\nWorking tree to inspect.\n\nsubdir : str\n\nPathspec limiting the walk, for example :(icase)results.\n\n\n\n\n\n\n : Dict[str, Tuple[str, str, str, str]]\n\nA mapping of repository-relative path to (sha, short_sha, iso_date, subject).\n\n\n\n\n\nlabdata.gitutil.file_history",
+    "text": "labdata.cache.check_object(path)\nTest whether a cached object holds the content its key promises.\nThe key is the file name, and says which hash to use: forty hex digits is a git blob id and sixty-four is a Git LFS object id. Content is streamed, so checking a large object costs no memory.\n\n\n\npath : Path\n\nObject to check, as listed by labdata.cache.objects.\n\n\n\n\n\n\n : Optional[str]\n\nNone when the object is sound, else a short account of what is wrong with it.\n\n\n\n\n\ncheck_object(blob_path(\"6f5d1ec6703f83e4b69c0b0d3cc3912697ba93c1\"))\n# None\n\n\n\nlabdata.cache.discard",
+    "crumbs": [
+      "Cache",
+      "check_object"
+    ]
+  },
+  {
+    "objectID": "api/check_object.html#parameters",
+    "href": "api/check_object.html#parameters",
+    "title": "check_object",
+    "section": "",
+    "text": "path : Path\n\nObject to check, as listed by labdata.cache.objects.",
+    "crumbs": [
+      "Cache",
+      "check_object"
+    ]
+  },
+  {
+    "objectID": "api/check_object.html#returns",
+    "href": "api/check_object.html#returns",
+    "title": "check_object",
+    "section": "",
+    "text": ": Optional[str]\n\nNone when the object is sound, else a short account of what is wrong with it.",
+    "crumbs": [
+      "Cache",
+      "check_object"
+    ]
+  },
+  {
+    "objectID": "api/check_object.html#examples",
+    "href": "api/check_object.html#examples",
+    "title": "check_object",
+    "section": "",
+    "text": "check_object(blob_path(\"6f5d1ec6703f83e4b69c0b0d3cc3912697ba93c1\"))\n# None",
+    "crumbs": [
+      "Cache",
+      "check_object"
+    ]
+  },
+  {
+    "objectID": "api/check_object.html#see-also",
+    "href": "api/check_object.html#see-also",
+    "title": "check_object",
+    "section": "",
+    "text": "labdata.cache.discard",
+    "crumbs": [
+      "Cache",
+      "check_object"
+    ]
+  },
+  {
+    "objectID": "api/readable_path.html",
+    "href": "api/readable_path.html",
+    "title": "readable_path",
+    "section": "",
+    "text": "labdata.cache.readable_path(repo_key, version, path, root=None)\nLocation of the readable hard link for a cached object.\nThe whole repository-relative path is kept, not just the file name, because a file name is not unique within a repository. Two directories may hold files of the same name that last changed in the same commit, which gives them one version key, and naming the links by file name alone would then point both at whichever was fetched first.\n\n\n\nrepo_key : str\n\nRepository identifier, as labdata.model.Entry.repo_key.\n\nversion : str\n\nAbbreviated commit sha of the version.\n\npath : str\n\nRepository-relative path to expose the content under, for example results/sub/stable.csv.\n\nroot : Optional[Path] = None\n\nCache root. Defaults to labdata.config.cache_root.\n\n\n\n\n\n\n : Path\n\nPath of the link, whether or not it exists.",
+    "crumbs": [
+      "Cache",
+      "readable_path"
+    ]
+  },
+  {
+    "objectID": "api/readable_path.html#parameters",
+    "href": "api/readable_path.html#parameters",
+    "title": "readable_path",
+    "section": "",
+    "text": "repo_key : str\n\nRepository identifier, as labdata.model.Entry.repo_key.\n\nversion : str\n\nAbbreviated commit sha of the version.\n\npath : str\n\nRepository-relative path to expose the content under, for example results/sub/stable.csv.\n\nroot : Optional[Path] = None\n\nCache root. Defaults to labdata.config.cache_root.",
+    "crumbs": [
+      "Cache",
+      "readable_path"
+    ]
+  },
+  {
+    "objectID": "api/readable_path.html#returns",
+    "href": "api/readable_path.html#returns",
+    "title": "readable_path",
+    "section": "",
+    "text": ": Path\n\nPath of the link, whether or not it exists.",
+    "crumbs": [
+      "Cache",
+      "readable_path"
+    ]
+  },
+  {
+    "objectID": "api/Manifest.html",
+    "href": "api/Manifest.html",
+    "title": "Manifest",
+    "section": "",
+    "text": "labdata.manifest.Manifest(directory, files)\nWhat one directory of a repository publishes.\n\n\n\ndirectory : str\n\nRepository-relative directory the manifest governs, \"\" at the root of the repository.\n\nfiles : Dict[str, str]\n\nKeys in the order they were written, each mapped to its description. A key is a path relative to directory, a bare file name, or a glob pattern over either.\n\n\n\n\n\nlabdata.manifest.parse\n\n\n\n\n\n\nName\nDescription\n\n\n\n\ndescribe\nLook up what a file is, and thereby whether it is published at all.\n\n\ngoverns\nTest whether a file lies in the part of the tree this manifest covers.\n\n\nrelative\nExpress a repository path relative to the manifest.\n\n\n\n\n\nlabdata.manifest.Manifest.describe(path)\nLook up what a file is, and thereby whether it is published at all.\nAn exact key wins over a glob, and a full path wins over a bare file name, so a specific description can be given for one file among many covered by a pattern. Globs are tried in the order they were written.\n\n\n\npath : str\n\nRepository-relative path of the file.\n\n\n\n\n\n\n : Optional[str]\n\nThe description, \"\" when the file is published with none, or None when it is not published.\n\n\n\n\n\nm = parse('files:\\n  \"*.csv\": a table\\n  hits.csv: the good one\\n', \"results\")\nm.describe(\"results/hits.csv\")\n# 'the good one'\n\n\n\n\nlabdata.manifest.Manifest.governs(path)\nTest whether a file lies in the part of the tree this manifest covers.\n\n\n\npath : str\n\nRepository-relative path of the file.\n\n\n\n\n\n\n : bool\n\nTrue if path is inside directory.\n\n\n\n\n\n\nlabdata.manifest.Manifest.relative(path)\nExpress a repository path relative to the manifest.\n\n\n\npath : str\n\nRepository-relative path of a file this manifest governs.\n\n\n\n\n\n\n : str\n\nThe path as the manifest would write it.",
+    "crumbs": [
+      "Manifests",
+      "Manifest"
+    ]
+  },
+  {
+    "objectID": "api/Manifest.html#attributes",
+    "href": "api/Manifest.html#attributes",
+    "title": "Manifest",
+    "section": "",
+    "text": "directory : str\n\nRepository-relative directory the manifest governs, \"\" at the root of the repository.\n\nfiles : Dict[str, str]\n\nKeys in the order they were written, each mapped to its description. A key is a path relative to directory, a bare file name, or a glob pattern over either.",
+    "crumbs": [
+      "Manifests",
+      "Manifest"
+    ]
+  },
+  {
+    "objectID": "api/Manifest.html#see-also",
+    "href": "api/Manifest.html#see-also",
+    "title": "Manifest",
+    "section": "",
+    "text": "labdata.manifest.parse",
+    "crumbs": [
+      "Manifests",
+      "Manifest"
+    ]
+  },
+  {
+    "objectID": "api/Manifest.html#methods",
+    "href": "api/Manifest.html#methods",
+    "title": "Manifest",
+    "section": "",
+    "text": "Name\nDescription\n\n\n\n\ndescribe\nLook up what a file is, and thereby whether it is published at all.\n\n\ngoverns\nTest whether a file lies in the part of the tree this manifest covers.\n\n\nrelative\nExpress a repository path relative to the manifest.\n\n\n\n\n\nlabdata.manifest.Manifest.describe(path)\nLook up what a file is, and thereby whether it is published at all.\nAn exact key wins over a glob, and a full path wins over a bare file name, so a specific description can be given for one file among many covered by a pattern. Globs are tried in the order they were written.\n\n\n\npath : str\n\nRepository-relative path of the file.\n\n\n\n\n\n\n : Optional[str]\n\nThe description, \"\" when the file is published with none, or None when it is not published.\n\n\n\n\n\nm = parse('files:\\n  \"*.csv\": a table\\n  hits.csv: the good one\\n', \"results\")\nm.describe(\"results/hits.csv\")\n# 'the good one'\n\n\n\n\nlabdata.manifest.Manifest.governs(path)\nTest whether a file lies in the part of the tree this manifest covers.\n\n\n\npath : str\n\nRepository-relative path of the file.\n\n\n\n\n\n\n : bool\n\nTrue if path is inside directory.\n\n\n\n\n\n\nlabdata.manifest.Manifest.relative(path)\nExpress a repository path relative to the manifest.\n\n\n\npath : str\n\nRepository-relative path of a file this manifest governs.\n\n\n\n\n\n\n : str\n\nThe path as the manifest would write it.",
+    "crumbs": [
+      "Manifests",
+      "Manifest"
+    ]
+  },
+  {
+    "objectID": "api/lfs_object_path.html",
+    "href": "api/lfs_object_path.html",
+    "title": "lfs_object_path",
+    "section": "",
+    "text": "labdata.gitutil.lfs_object_path(repo, oid)\nLocate the real content of a Git LFS object in a repository.\n\n\n\nrepo : Path\n\nWorking tree to look in.\n\noid : str\n\nThe sha256 object id from the pointer file.\n\n\n\n\n\n\n : Optional[Path]\n\nPath of the object in the repository’s LFS store, or None when the object has not been fetched.",
     "crumbs": [
       "Git access",
-      "last_commits"
+      "lfs_object_path"
     ]
   },
   {
-    "objectID": "api/last_commits.html#parameters",
-    "href": "api/last_commits.html#parameters",
-    "title": "last_commits",
+    "objectID": "api/lfs_object_path.html#parameters",
+    "href": "api/lfs_object_path.html#parameters",
+    "title": "lfs_object_path",
     "section": "",
-    "text": "repo : Path\n\nWorking tree to inspect.\n\nsubdir : str\n\nPathspec limiting the walk, for example :(icase)results.",
+    "text": "repo : Path\n\nWorking tree to look in.\n\noid : str\n\nThe sha256 object id from the pointer file.",
     "crumbs": [
       "Git access",
-      "last_commits"
+      "lfs_object_path"
     ]
   },
   {
-    "objectID": "api/last_commits.html#returns",
-    "href": "api/last_commits.html#returns",
-    "title": "last_commits",
+    "objectID": "api/lfs_object_path.html#returns",
+    "href": "api/lfs_object_path.html#returns",
+    "title": "lfs_object_path",
     "section": "",
-    "text": ": Dict[str, Tuple[str, str, str, str]]\n\nA mapping of repository-relative path to (sha, short_sha, iso_date, subject).",
+    "text": ": Optional[Path]\n\nPath of the object in the repository’s LFS store, or None when the object has not been fetched.",
     "crumbs": [
       "Git access",
-      "last_commits"
+      "lfs_object_path"
     ]
   },
   {
-    "objectID": "api/last_commits.html#see-also",
-    "href": "api/last_commits.html#see-also",
-    "title": "last_commits",
+    "objectID": "api/dataset_files.html",
+    "href": "api/dataset_files.html",
+    "title": "dataset_files",
     "section": "",
-    "text": "labdata.gitutil.file_history",
+    "text": "labdata.remote.dataset_files(entry, commit, client=None)\nList the parts of a dataset at one commit.\n\n\n\nentry : Entry\n\nEntry naming the dataset.\n\ncommit : str\n\nCommit sha to read at.\n\nclient : Optional[Client] = None\n\nClient to read with. Defaults to a new one.\n\n\n\n\n\n\n : List[Tuple[str, str, int]]\n\nTuples of (path, blob_sha, size), sorted by path.\n\n\n\n\n\nlabdata.gitutil.tree_files",
     "crumbs": [
-      "Git access",
-      "last_commits"
+      "GitHub",
+      "dataset_files"
     ]
   },
   {
-    "objectID": "api/build_parser.html",
-    "href": "api/build_parser.html",
-    "title": "build_parser",
+    "objectID": "api/dataset_files.html#parameters",
+    "href": "api/dataset_files.html#parameters",
+    "title": "dataset_files",
     "section": "",
-    "text": "labdata.cli.build_parser()\nConstruct the argument parser.\n\n\n\n : argparse.ArgumentParser\n\nA parser whose subcommands each set a func default.",
+    "text": "entry : Entry\n\nEntry naming the dataset.\n\ncommit : str\n\nCommit sha to read at.\n\nclient : Optional[Client] = None\n\nClient to read with. Defaults to a new one.",
     "crumbs": [
-      "Command line",
-      "build_parser"
+      "GitHub",
+      "dataset_files"
     ]
   },
   {
-    "objectID": "api/build_parser.html#returns",
-    "href": "api/build_parser.html#returns",
-    "title": "build_parser",
+    "objectID": "api/dataset_files.html#returns",
+    "href": "api/dataset_files.html#returns",
+    "title": "dataset_files",
     "section": "",
-    "text": ": argparse.ArgumentParser\n\nA parser whose subcommands each set a func default.",
+    "text": ": List[Tuple[str, str, int]]\n\nTuples of (path, blob_sha, size), sorted by path.",
     "crumbs": [
-      "Command line",
-      "build_parser"
+      "GitHub",
+      "dataset_files"
+    ]
+  },
+  {
+    "objectID": "api/dataset_files.html#see-also",
+    "href": "api/dataset_files.html#see-also",
+    "title": "dataset_files",
+    "section": "",
+    "text": "labdata.gitutil.tree_files",
+    "crumbs": [
+      "GitHub",
+      "dataset_files"
     ]
   },
   {
@@ -739,69 +1396,80 @@
     ]
   },
   {
-    "objectID": "api/file_history.html",
-    "href": "api/file_history.html",
-    "title": "file_history",
+    "objectID": "api/tree_at.html",
+    "href": "api/tree_at.html",
+    "title": "tree_at",
     "section": "",
-    "text": "labdata.gitutil.file_history(repo, path)\nList every commit that changed one file, newest first.\nRenames are followed, so history reaches back past a rename of the file.\n\n\n\nrepo : Path\n\nWorking tree to inspect.\n\npath : str\n\nRepository-relative path of the file.\n\n\n\n\n\n\n : List[Tuple[str, str, str, str]]\n\nTuples of (sha, short_sha, iso_date, subject), newest first.",
+    "text": "labdata.gitutil.tree_at(repo, rev, path)\nFind the tree sha of a directory as of a revision.\nA tree sha is a hash of the directory’s whole content — every name, mode and blob beneath it — so it identifies a dataset split across many files exactly as a blob sha identifies a single file, and two identical datasets share one.\n\n\n\nrepo : Path\n\nWorking tree to inspect.\n\nrev : str\n\nRevision to read at, typically a commit sha.\n\npath : str\n\nRepository-relative path of the directory.\n\n\n\n\n\n\n : Optional[str]\n\nThe tree sha, or None when path is not a directory at rev.\n\n\n\n\n\nlabdata.gitutil.tree_files",
     "crumbs": [
       "Git access",
-      "file_history"
+      "tree_at"
     ]
   },
   {
-    "objectID": "api/file_history.html#parameters",
-    "href": "api/file_history.html#parameters",
-    "title": "file_history",
+    "objectID": "api/tree_at.html#parameters",
+    "href": "api/tree_at.html#parameters",
+    "title": "tree_at",
     "section": "",
-    "text": "repo : Path\n\nWorking tree to inspect.\n\npath : str\n\nRepository-relative path of the file.",
+    "text": "repo : Path\n\nWorking tree to inspect.\n\nrev : str\n\nRevision to read at, typically a commit sha.\n\npath : str\n\nRepository-relative path of the directory.",
     "crumbs": [
       "Git access",
-      "file_history"
+      "tree_at"
     ]
   },
   {
-    "objectID": "api/file_history.html#returns",
-    "href": "api/file_history.html#returns",
-    "title": "file_history",
+    "objectID": "api/tree_at.html#returns",
+    "href": "api/tree_at.html#returns",
+    "title": "tree_at",
     "section": "",
-    "text": ": List[Tuple[str, str, str, str]]\n\nTuples of (sha, short_sha, iso_date, subject), newest first.",
+    "text": ": Optional[str]\n\nThe tree sha, or None when path is not a directory at rev.",
     "crumbs": [
       "Git access",
-      "file_history"
+      "tree_at"
     ]
   },
   {
-    "objectID": "api/blob_path.html",
-    "href": "api/blob_path.html",
-    "title": "blob_path",
+    "objectID": "api/tree_at.html#see-also",
+    "href": "api/tree_at.html#see-also",
+    "title": "tree_at",
     "section": "",
-    "text": "labdata.cache.blob_path(sha, root=None)\nLocation of a cached object.\n\n\n\nsha : str\n\nGit blob sha, or the sha256 object id for content held in Git LFS.\n\nroot : Optional[Path] = None\n\nCache root. Defaults to labdata.config.cache_root.\n\n\n\n\n\n\n : Path\n\nPath of the object, whether or not it exists.",
+    "text": "labdata.gitutil.tree_files",
     "crumbs": [
-      "Cache",
-      "blob_path"
+      "Git access",
+      "tree_at"
     ]
   },
   {
-    "objectID": "api/blob_path.html#parameters",
-    "href": "api/blob_path.html#parameters",
-    "title": "blob_path",
+    "objectID": "api/discard.html",
+    "href": "api/discard.html",
+    "title": "discard",
     "section": "",
-    "text": "sha : str\n\nGit blob sha, or the sha256 object id for content held in Git LFS.\n\nroot : Optional[Path] = None\n\nCache root. Defaults to labdata.config.cache_root.",
+    "text": "labdata.cache.discard(path, root=None)\nRemove a cached object, and the readable links that stand for it.\nThe links have to go too. A hard link keeps the content alive after the object is unlinked, and a readable path whose size still matches would then be reused in place of the content fetched to replace it. Links are found by inode, which covers the hard link and symbolic link cases; on a filesystem that supports neither, labdata.cache.link leaves copies, and those are not found.\n\n\n\npath : Path\n\nObject to remove.\n\nroot : Optional[Path] = None\n\nCache root. Defaults to labdata.config.cache_root.\n\n\n\n\n\n\n : List[Path]\n\nThe paths removed. The content is fetched again the next time it is asked for.",
     "crumbs": [
       "Cache",
-      "blob_path"
+      "discard"
     ]
   },
   {
-    "objectID": "api/blob_path.html#returns",
-    "href": "api/blob_path.html#returns",
-    "title": "blob_path",
+    "objectID": "api/discard.html#parameters",
+    "href": "api/discard.html#parameters",
+    "title": "discard",
     "section": "",
-    "text": ": Path\n\nPath of the object, whether or not it exists.",
+    "text": "path : Path\n\nObject to remove.\n\nroot : Optional[Path] = None\n\nCache root. Defaults to labdata.config.cache_root.",
     "crumbs": [
       "Cache",
-      "blob_path"
+      "discard"
+    ]
+  },
+  {
+    "objectID": "api/discard.html#returns",
+    "href": "api/discard.html#returns",
+    "title": "discard",
+    "section": "",
+    "text": ": List[Path]\n\nThe paths removed. The content is fetched again the next time it is asked for.",
+    "crumbs": [
+      "Cache",
+      "discard"
     ]
   },
   {
@@ -849,6 +1517,127 @@
     ]
   },
   {
+    "objectID": "api/blob_path.html",
+    "href": "api/blob_path.html",
+    "title": "blob_path",
+    "section": "",
+    "text": "labdata.cache.blob_path(sha, root=None)\nLocation of a cached object.\n\n\n\nsha : str\n\nGit blob sha, or the sha256 object id for content held in Git LFS.\n\nroot : Optional[Path] = None\n\nCache root. Defaults to labdata.config.cache_root.\n\n\n\n\n\n\n : Path\n\nPath of the object, whether or not it exists.",
+    "crumbs": [
+      "Cache",
+      "blob_path"
+    ]
+  },
+  {
+    "objectID": "api/blob_path.html#parameters",
+    "href": "api/blob_path.html#parameters",
+    "title": "blob_path",
+    "section": "",
+    "text": "sha : str\n\nGit blob sha, or the sha256 object id for content held in Git LFS.\n\nroot : Optional[Path] = None\n\nCache root. Defaults to labdata.config.cache_root.",
+    "crumbs": [
+      "Cache",
+      "blob_path"
+    ]
+  },
+  {
+    "objectID": "api/blob_path.html#returns",
+    "href": "api/blob_path.html#returns",
+    "title": "blob_path",
+    "section": "",
+    "text": ": Path\n\nPath of the object, whether or not it exists.",
+    "crumbs": [
+      "Cache",
+      "blob_path"
+    ]
+  },
+  {
+    "objectID": "api/file_history.html",
+    "href": "api/file_history.html",
+    "title": "file_history",
+    "section": "",
+    "text": "labdata.gitutil.file_history(repo, path, follow=True)\nList every commit that changed one file, newest first.\n\n\n\nrepo : Path\n\nWorking tree to inspect.\n\npath : str\n\nRepository-relative path of the file.\n\nfollow : bool = True\n\nFollow renames, so history reaches back past a rename. Only meaningful for a single file; pass False for a directory, which --follow does not describe.\n\n\n\n\n\n\n : List[Tuple[str, str, str]]\n\nTuples of (sha, iso_date, subject), newest first.",
+    "crumbs": [
+      "Git access",
+      "file_history"
+    ]
+  },
+  {
+    "objectID": "api/file_history.html#parameters",
+    "href": "api/file_history.html#parameters",
+    "title": "file_history",
+    "section": "",
+    "text": "repo : Path\n\nWorking tree to inspect.\n\npath : str\n\nRepository-relative path of the file.\n\nfollow : bool = True\n\nFollow renames, so history reaches back past a rename. Only meaningful for a single file; pass False for a directory, which --follow does not describe.",
+    "crumbs": [
+      "Git access",
+      "file_history"
+    ]
+  },
+  {
+    "objectID": "api/file_history.html#returns",
+    "href": "api/file_history.html#returns",
+    "title": "file_history",
+    "section": "",
+    "text": ": List[Tuple[str, str, str]]\n\nTuples of (sha, iso_date, subject), newest first.",
+    "crumbs": [
+      "Git access",
+      "file_history"
+    ]
+  },
+  {
+    "objectID": "api/repos.html",
+    "href": "api/repos.html",
+    "title": "repos",
+    "section": "",
+    "text": "labdata.repos(refresh=False, cfg=None)\nTabulate one row per repository that publishes something.\nThe python side of labdata repos.\n\n\n\nrefresh : bool = False\n\nRescan before listing, rather than using the stored catalog.\n\ncfg :  = None\n\nSettings. Defaults to labdata.config.Config.load.\n\n\n\n\n\n\n : \n\nA pandas.DataFrame with columns repo, files, bytes and latest.\n\n\n\n\n\n\n: ImportError\n\nIf pandas is not installed.\n\n\n\n\n\nlabdata.repos().sort_values(\"bytes\", ascending=False)",
+    "crumbs": [
+      "Catalog",
+      "repos"
+    ]
+  },
+  {
+    "objectID": "api/repos.html#parameters",
+    "href": "api/repos.html#parameters",
+    "title": "repos",
+    "section": "",
+    "text": "refresh : bool = False\n\nRescan before listing, rather than using the stored catalog.\n\ncfg :  = None\n\nSettings. Defaults to labdata.config.Config.load.",
+    "crumbs": [
+      "Catalog",
+      "repos"
+    ]
+  },
+  {
+    "objectID": "api/repos.html#returns",
+    "href": "api/repos.html#returns",
+    "title": "repos",
+    "section": "",
+    "text": ": \n\nA pandas.DataFrame with columns repo, files, bytes and latest.",
+    "crumbs": [
+      "Catalog",
+      "repos"
+    ]
+  },
+  {
+    "objectID": "api/repos.html#raises",
+    "href": "api/repos.html#raises",
+    "title": "repos",
+    "section": "",
+    "text": ": ImportError\n\nIf pandas is not installed.",
+    "crumbs": [
+      "Catalog",
+      "repos"
+    ]
+  },
+  {
+    "objectID": "api/repos.html#examples",
+    "href": "api/repos.html#examples",
+    "title": "repos",
+    "section": "",
+    "text": "labdata.repos().sort_values(\"bytes\", ascending=False)",
+    "crumbs": [
+      "Catalog",
+      "repos"
+    ]
+  },
+  {
     "objectID": "api/write_blob_to.html",
     "href": "api/write_blob_to.html",
     "title": "write_blob_to",
@@ -886,7 +1675,7 @@
     "href": "api/Config.html",
     "title": "Config",
     "section": "",
-    "text": "labdata.Config(\n    roots=(lambda: ['~'])(),\n    depth=2,\n    results_dirs=(lambda: ['results'])(),\n    include=(lambda: list(DEFAULT_INCLUDE))(),\n    exclude=(lambda: list(DEFAULT_EXCLUDE))(),\n    min_bytes=0,\n    max_bytes=0,\n)\nSettings controlling which files are cataloged.\n\n\n\nroots : List[str]\n\nDirectories searched for git working trees. ~ is expanded.\n\ndepth : int\n\nHow many levels below each root to search.\n\nresults_dirs : List[str]\n\nDirectories within a repository holding published result files. Matching is case-insensitive, so a repository that committed Results/ is found as well.\n\ninclude : List[str]\n\nFile name patterns to catalog.\n\nexclude : List[str]\n\nFile name patterns to skip, applied before include.\n\nmin_bytes : int\n\nSkip files smaller than this. Zero disables the check.\n\nmax_bytes : int\n\nSkip files larger than this. Zero disables the check.\n\n\n\n\n\ncfg = Config(roots=[\"~/github-backup/munch-group\"], depth=1)\nentries = build(cfg)\n\n\n\nlabdata.core.build\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nload\nRead settings from a TOML file.\n\n\nwrite_default\nWrite a commented configuration file holding these settings.\n\n\n\n\n\nlabdata.Config.load(path=None)\nRead settings from a TOML file.\n\n\n\npath : Optional[Path] = None\n\nFile to read. Defaults to labdata.config.config_path. A missing file is not an error and yields the defaults.\n\n\n\n\n\n\n : 'Config'\n\nThe settings.\n\n\n\n\n\n\n: ValueError\n\nIf the file contains keys that are not settings.\n\n: RuntimeError\n\nOn Python older than 3.11 when tomli is not installed.\n\n\n\n\n\n\nlabdata.Config.write_default(path=None)\nWrite a commented configuration file holding these settings.\n\n\n\npath : Optional[Path] = None\n\nFile to write. Defaults to labdata.config.config_path. Parent directories are created. An existing file is overwritten.\n\n\n\n\n\n\n : Path\n\nThe path written.",
+    "text": "labdata.config.Config(\n    roots=list(),\n    owners=list(),\n    repos=list(),\n    depth=2,\n    results_dirs=(lambda: ['results'])(),\n    include=(lambda: list(DEFAULT_INCLUDE))(),\n    exclude=(lambda: list(DEFAULT_EXCLUDE))(),\n    min_bytes=0,\n    max_bytes=0,\n)\nSettings controlling which files are cataloged.\n\n\n\nroots : List[str]\n\nDirectories searched for git working trees. ~ is expanded. Empty by default: nothing is scanned until this is set. Naming the directories your repositories are in keeps the scan away from synced folders such as OneDrive, which can block for a long time on a directory that is not there.\n\nowners : List[str]\n\nGitHub organisations or users whose repositories are cataloged over the API, without being cloned. Every repository they own is looked at, at the cost of one request each for those that publish nothing.\n\nrepos : List[str]\n\nFurther GitHub repositories to catalog, written owner/repo, for ones outside owners.\n\ndepth : int\n\nHow many levels below each root to search.\n\nresults_dirs : List[str]\n\nDirectories within a repository holding published result files, given as paths relative to the repository root. They may be at any depth, so analysis/step3/results works as well as results. Matching is case-insensitive, so a repository that committed Results/ is found too. Each is searched, and each needs its own labdata.yml.\n\ninclude : List[str]\n\nFile name patterns to catalog, on top of what the manifests publish. Empty means everything published.\n\nexclude : List[str]\n\nFile name patterns to skip, applied before include.\n\nmin_bytes : int\n\nSkip files smaller than this. Zero disables the check.\n\nmax_bytes : int\n\nSkip files larger than this. Zero disables the check.\n\n\n\n\n\ncfg = Config(roots=[\"~/github-backup/munch-group\"], depth=1)\nentries = build(cfg)\n\n\n\nlabdata.core.build\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nload\nRead settings from a TOML file.\n\n\nwrite_default\nWrite a commented configuration file holding these settings.\n\n\n\n\n\nlabdata.config.Config.load(path=None)\nRead settings from a TOML file.\n\n\n\npath : Optional[Path] = None\n\nFile to read. Defaults to labdata.config.config_path. A missing file is not an error and yields the defaults.\n\n\n\n\n\n\n : 'Config'\n\nThe settings.\n\n\n\n\n\n\n: ValueError\n\nIf the file contains keys that are not settings.\n\n: RuntimeError\n\nOn Python older than 3.11 when tomli is not installed.\n\n\n\n\n\n\nlabdata.config.Config.write_default(path=None)\nWrite a commented configuration file holding these settings.\n\n\n\npath : Optional[Path] = None\n\nFile to write. Defaults to labdata.config.config_path. Parent directories are created. An existing file is overwritten.\n\n\n\n\n\n\n : Path\n\nThe path written.",
     "crumbs": [
       "Configuration",
       "Config"
@@ -897,7 +1686,7 @@
     "href": "api/Config.html#attributes",
     "title": "Config",
     "section": "",
-    "text": "roots : List[str]\n\nDirectories searched for git working trees. ~ is expanded.\n\ndepth : int\n\nHow many levels below each root to search.\n\nresults_dirs : List[str]\n\nDirectories within a repository holding published result files. Matching is case-insensitive, so a repository that committed Results/ is found as well.\n\ninclude : List[str]\n\nFile name patterns to catalog.\n\nexclude : List[str]\n\nFile name patterns to skip, applied before include.\n\nmin_bytes : int\n\nSkip files smaller than this. Zero disables the check.\n\nmax_bytes : int\n\nSkip files larger than this. Zero disables the check.",
+    "text": "roots : List[str]\n\nDirectories searched for git working trees. ~ is expanded. Empty by default: nothing is scanned until this is set. Naming the directories your repositories are in keeps the scan away from synced folders such as OneDrive, which can block for a long time on a directory that is not there.\n\nowners : List[str]\n\nGitHub organisations or users whose repositories are cataloged over the API, without being cloned. Every repository they own is looked at, at the cost of one request each for those that publish nothing.\n\nrepos : List[str]\n\nFurther GitHub repositories to catalog, written owner/repo, for ones outside owners.\n\ndepth : int\n\nHow many levels below each root to search.\n\nresults_dirs : List[str]\n\nDirectories within a repository holding published result files, given as paths relative to the repository root. They may be at any depth, so analysis/step3/results works as well as results. Matching is case-insensitive, so a repository that committed Results/ is found too. Each is searched, and each needs its own labdata.yml.\n\ninclude : List[str]\n\nFile name patterns to catalog, on top of what the manifests publish. Empty means everything published.\n\nexclude : List[str]\n\nFile name patterns to skip, applied before include.\n\nmin_bytes : int\n\nSkip files smaller than this. Zero disables the check.\n\nmax_bytes : int\n\nSkip files larger than this. Zero disables the check.",
     "crumbs": [
       "Configuration",
       "Config"
@@ -930,120 +1719,219 @@
     "href": "api/Config.html#methods",
     "title": "Config",
     "section": "",
-    "text": "Name\nDescription\n\n\n\n\nload\nRead settings from a TOML file.\n\n\nwrite_default\nWrite a commented configuration file holding these settings.\n\n\n\n\n\nlabdata.Config.load(path=None)\nRead settings from a TOML file.\n\n\n\npath : Optional[Path] = None\n\nFile to read. Defaults to labdata.config.config_path. A missing file is not an error and yields the defaults.\n\n\n\n\n\n\n : 'Config'\n\nThe settings.\n\n\n\n\n\n\n: ValueError\n\nIf the file contains keys that are not settings.\n\n: RuntimeError\n\nOn Python older than 3.11 when tomli is not installed.\n\n\n\n\n\n\nlabdata.Config.write_default(path=None)\nWrite a commented configuration file holding these settings.\n\n\n\npath : Optional[Path] = None\n\nFile to write. Defaults to labdata.config.config_path. Parent directories are created. An existing file is overwritten.\n\n\n\n\n\n\n : Path\n\nThe path written.",
+    "text": "Name\nDescription\n\n\n\n\nload\nRead settings from a TOML file.\n\n\nwrite_default\nWrite a commented configuration file holding these settings.\n\n\n\n\n\nlabdata.config.Config.load(path=None)\nRead settings from a TOML file.\n\n\n\npath : Optional[Path] = None\n\nFile to read. Defaults to labdata.config.config_path. A missing file is not an error and yields the defaults.\n\n\n\n\n\n\n : 'Config'\n\nThe settings.\n\n\n\n\n\n\n: ValueError\n\nIf the file contains keys that are not settings.\n\n: RuntimeError\n\nOn Python older than 3.11 when tomli is not installed.\n\n\n\n\n\n\nlabdata.config.Config.write_default(path=None)\nWrite a commented configuration file holding these settings.\n\n\n\npath : Optional[Path] = None\n\nFile to write. Defaults to labdata.config.config_path. Parent directories are created. An existing file is overwritten.\n\n\n\n\n\n\n : Path\n\nThe path written.",
     "crumbs": [
       "Configuration",
       "Config"
     ]
   },
   {
-    "objectID": "api/lfs_object_path.html",
-    "href": "api/lfs_object_path.html",
-    "title": "lfs_object_path",
+    "objectID": "api/list.html",
+    "href": "api/list.html",
+    "title": "list",
     "section": "",
-    "text": "labdata.gitutil.lfs_object_path(repo, oid)\nLocate the real content of a Git LFS object in a repository.\n\n\n\nrepo : Path\n\nWorking tree to look in.\n\noid : str\n\nThe sha256 object id from the pointer file.\n\n\n\n\n\n\n : Optional[Path]\n\nPath of the object in the repository’s LFS store, or None when the object has not been fetched.",
+    "text": "labdata.list(\n    repo=None,\n    pattern=None,\n    *,\n    version=False,\n    url=False,\n    refresh=False,\n    progress=False,\n    cfg=None,\n)\nTabulate what the configured repositories publish.\nThe python side of labdata list, and like it the version is left out unless asked for: it is a full commit sha, and every file a repository publishes carries the same one.\n\n\n\nrepo :  = None\n\nKeep only repositories whose owner/repo contains this, as labdata list &lt;repo&gt; does.\n\npattern :  = None\n\nKeep only files whose name matches this glob, such as \"*.csv\".\n\nversion : bool = False\n\nInclude the version column, the full commit sha.\n\nurl : bool = False\n\nInclude the url column, addressing that version on GitHub.\n\nrefresh : bool = False\n\nRescan before listing, rather than using the stored catalog.\n\nprogress : bool = False\n\nShow a progress bar while rescanning. Only meaningful with refresh, since a stored catalog is read at once.\n\ncfg :  = None\n\nSettings. Defaults to labdata.config.Config.load.\n\n\n\n\n\n\n : \n\nA pandas.DataFrame with one row per published file or dataset.\n\n\n\n\n\n\n: ImportError\n\nIf pandas is not installed. It is not a dependency of labdata.\n\n\n\n\n\nimport labdata\n\nlabdata.list()                        # everything published\nlabdata.list(\"x-gwas\")                # one repository\nlabdata.list(pattern=\"*.parquet\")     # by file name\nlabdata.list(version=True)            # with the sha that pins each file\n\n\n\nlabdata.get labdata.repos",
+    "crumbs": [
+      "Catalog",
+      "list"
+    ]
+  },
+  {
+    "objectID": "api/list.html#parameters",
+    "href": "api/list.html#parameters",
+    "title": "list",
+    "section": "",
+    "text": "repo :  = None\n\nKeep only repositories whose owner/repo contains this, as labdata list &lt;repo&gt; does.\n\npattern :  = None\n\nKeep only files whose name matches this glob, such as \"*.csv\".\n\nversion : bool = False\n\nInclude the version column, the full commit sha.\n\nurl : bool = False\n\nInclude the url column, addressing that version on GitHub.\n\nrefresh : bool = False\n\nRescan before listing, rather than using the stored catalog.\n\nprogress : bool = False\n\nShow a progress bar while rescanning. Only meaningful with refresh, since a stored catalog is read at once.\n\ncfg :  = None\n\nSettings. Defaults to labdata.config.Config.load.",
+    "crumbs": [
+      "Catalog",
+      "list"
+    ]
+  },
+  {
+    "objectID": "api/list.html#returns",
+    "href": "api/list.html#returns",
+    "title": "list",
+    "section": "",
+    "text": ": \n\nA pandas.DataFrame with one row per published file or dataset.",
+    "crumbs": [
+      "Catalog",
+      "list"
+    ]
+  },
+  {
+    "objectID": "api/list.html#raises",
+    "href": "api/list.html#raises",
+    "title": "list",
+    "section": "",
+    "text": ": ImportError\n\nIf pandas is not installed. It is not a dependency of labdata.",
+    "crumbs": [
+      "Catalog",
+      "list"
+    ]
+  },
+  {
+    "objectID": "api/list.html#examples",
+    "href": "api/list.html#examples",
+    "title": "list",
+    "section": "",
+    "text": "import labdata\n\nlabdata.list()                        # everything published\nlabdata.list(\"x-gwas\")                # one repository\nlabdata.list(pattern=\"*.parquet\")     # by file name\nlabdata.list(version=True)            # with the sha that pins each file",
+    "crumbs": [
+      "Catalog",
+      "list"
+    ]
+  },
+  {
+    "objectID": "api/list.html#see-also",
+    "href": "api/list.html#see-also",
+    "title": "list",
+    "section": "",
+    "text": "labdata.get labdata.repos",
+    "crumbs": [
+      "Catalog",
+      "list"
+    ]
+  },
+  {
+    "objectID": "api/head_commit.html",
+    "href": "api/head_commit.html",
+    "title": "head_commit",
+    "section": "",
+    "text": "labdata.gitutil.head_commit(repo)\nRead the commit a repository currently points at.\nEvery published file is stamped with this, so one call covers a whole repository however many files it publishes.\n\n\n\nrepo : Path\n\nWorking tree to inspect.\n\n\n\n\n\n\n : Optional[Tuple[str, str, str]]\n\n(sha, iso_date, subject), or None for a repository with no commits. The sha is full: it is the version key, and a full sha is what git and GitHub understand.",
     "crumbs": [
       "Git access",
-      "lfs_object_path"
+      "head_commit"
     ]
   },
   {
-    "objectID": "api/lfs_object_path.html#parameters",
-    "href": "api/lfs_object_path.html#parameters",
-    "title": "lfs_object_path",
+    "objectID": "api/head_commit.html#parameters",
+    "href": "api/head_commit.html#parameters",
+    "title": "head_commit",
     "section": "",
-    "text": "repo : Path\n\nWorking tree to look in.\n\noid : str\n\nThe sha256 object id from the pointer file.",
+    "text": "repo : Path\n\nWorking tree to inspect.",
     "crumbs": [
       "Git access",
-      "lfs_object_path"
+      "head_commit"
     ]
   },
   {
-    "objectID": "api/lfs_object_path.html#returns",
-    "href": "api/lfs_object_path.html#returns",
-    "title": "lfs_object_path",
+    "objectID": "api/head_commit.html#returns",
+    "href": "api/head_commit.html#returns",
+    "title": "head_commit",
     "section": "",
-    "text": ": Optional[Path]\n\nPath of the object in the repository’s LFS store, or None when the object has not been fetched.",
+    "text": ": Optional[Tuple[str, str, str]]\n\n(sha, iso_date, subject), or None for a repository with no commits. The sha is full: it is the version key, and a full sha is what git and GitHub understand.",
     "crumbs": [
       "Git access",
-      "lfs_object_path"
+      "head_commit"
     ]
   },
   {
-    "objectID": "api/readable_path.html",
-    "href": "api/readable_path.html",
-    "title": "readable_path",
+    "objectID": "api/is_manifest.html",
+    "href": "api/is_manifest.html",
+    "title": "is_manifest",
     "section": "",
-    "text": "labdata.cache.readable_path(repo_key, version, name, root=None)\nLocation of the readable hard link for a cached object.\n\n\n\nrepo_key : str\n\nRepository identifier, as labdata.model.Entry.repo_key.\n\nversion : str\n\nAbbreviated commit sha of the version.\n\nname : str\n\nFile name to expose the content under.\n\nroot : Optional[Path] = None\n\nCache root. Defaults to labdata.config.cache_root.\n\n\n\n\n\n\n : Path\n\nPath of the link, whether or not it exists.",
+    "text": "labdata.manifest.is_manifest(path)\nTest whether a repository path is a manifest.\n\n\n\npath : str\n\nRepository-relative path.\n\n\n\n\n\n\n : bool\n\nTrue for a manifest, which is never itself a published result file.",
     "crumbs": [
-      "Cache",
-      "readable_path"
+      "Manifests",
+      "is_manifest"
     ]
   },
   {
-    "objectID": "api/readable_path.html#parameters",
-    "href": "api/readable_path.html#parameters",
-    "title": "readable_path",
+    "objectID": "api/is_manifest.html#parameters",
+    "href": "api/is_manifest.html#parameters",
+    "title": "is_manifest",
     "section": "",
-    "text": "repo_key : str\n\nRepository identifier, as labdata.model.Entry.repo_key.\n\nversion : str\n\nAbbreviated commit sha of the version.\n\nname : str\n\nFile name to expose the content under.\n\nroot : Optional[Path] = None\n\nCache root. Defaults to labdata.config.cache_root.",
+    "text": "path : str\n\nRepository-relative path.",
     "crumbs": [
-      "Cache",
-      "readable_path"
+      "Manifests",
+      "is_manifest"
     ]
   },
   {
-    "objectID": "api/readable_path.html#returns",
-    "href": "api/readable_path.html#returns",
-    "title": "readable_path",
+    "objectID": "api/is_manifest.html#returns",
+    "href": "api/is_manifest.html#returns",
+    "title": "is_manifest",
     "section": "",
-    "text": ": Path\n\nPath of the link, whether or not it exists.",
+    "text": ": bool\n\nTrue for a manifest, which is never itself a published result file.",
     "crumbs": [
-      "Cache",
-      "readable_path"
+      "Manifests",
+      "is_manifest"
     ]
   },
   {
-    "objectID": "api/catalog.html",
-    "href": "api/catalog.html",
-    "title": "catalog",
+    "objectID": "api/config_path.html",
+    "href": "api/config_path.html",
+    "title": "config_path",
     "section": "",
-    "text": "labdata.catalog(refresh=False, max_age=3600.0, cfg=None)\nGet the catalog, rescanning only when needed.\n\n\n\nrefresh : bool = False\n\nRescan the repositories even if a fresh catalog is on disk.\n\nmax_age : float = 3600.0\n\nAge in seconds beyond which the stored catalog is rescanned.\n\ncfg : Optional[Config] = None\n\nSettings. Defaults to labdata.config.Config.load.\n\n\n\n\n\n\n : List[Entry]\n\nEntries sorted by repository and path.\n\n\n\n\n\nfor entry in catalog():\n    print(entry.spec, entry.latest.size)",
+    "text": "labdata.config.config_path()\nLocation of the configuration file.\nHonours XDG_CONFIG_HOME.\n\n\n\n : Path\n\nPath of config.toml, whether or not it exists.",
     "crumbs": [
-      "Catalog",
-      "catalog"
+      "Configuration",
+      "config_path"
     ]
   },
   {
-    "objectID": "api/catalog.html#parameters",
-    "href": "api/catalog.html#parameters",
-    "title": "catalog",
+    "objectID": "api/config_path.html#returns",
+    "href": "api/config_path.html#returns",
+    "title": "config_path",
     "section": "",
-    "text": "refresh : bool = False\n\nRescan the repositories even if a fresh catalog is on disk.\n\nmax_age : float = 3600.0\n\nAge in seconds beyond which the stored catalog is rescanned.\n\ncfg : Optional[Config] = None\n\nSettings. Defaults to labdata.config.Config.load.",
+    "text": ": Path\n\nPath of config.toml, whether or not it exists.",
     "crumbs": [
-      "Catalog",
-      "catalog"
+      "Configuration",
+      "config_path"
     ]
   },
   {
-    "objectID": "api/catalog.html#returns",
-    "href": "api/catalog.html#returns",
-    "title": "catalog",
+    "objectID": "api/materialize.html",
+    "href": "api/materialize.html",
+    "title": "materialize",
     "section": "",
-    "text": ": List[Entry]\n\nEntries sorted by repository and path.",
+    "text": "labdata.core.materialize(entry, version)\nPlace one version of a result file in the cache and return its path.\nContent already cached is not fetched again, which is why an unchanged file costs nothing across versions and repositories. Git LFS content is taken from the repository’s own object store.\n\n\n\nentry : Entry\n\nEntry the version belongs to.\n\nversion : Version\n\nVersion to materialize.\n\n\n\n\n\n\n : Path\n\nReadable path of the cached content, under &lt;cache&gt;/files/&lt;repo&gt;/&lt;version&gt;/&lt;path&gt;. For a dataset published as a directory this is the directory, with every part inside it.\n\n\n\n\n\n\n: FileNotFoundError\n\nIf the content is held in Git LFS and has not been fetched. The message names the git lfs fetch command to run.",
     "crumbs": [
-      "Catalog",
-      "catalog"
+      "Resolving",
+      "materialize"
     ]
   },
   {
-    "objectID": "api/catalog.html#examples",
-    "href": "api/catalog.html#examples",
-    "title": "catalog",
+    "objectID": "api/materialize.html#parameters",
+    "href": "api/materialize.html#parameters",
+    "title": "materialize",
     "section": "",
-    "text": "for entry in catalog():\n    print(entry.spec, entry.latest.size)",
+    "text": "entry : Entry\n\nEntry the version belongs to.\n\nversion : Version\n\nVersion to materialize.",
     "crumbs": [
-      "Catalog",
-      "catalog"
+      "Resolving",
+      "materialize"
+    ]
+  },
+  {
+    "objectID": "api/materialize.html#returns",
+    "href": "api/materialize.html#returns",
+    "title": "materialize",
+    "section": "",
+    "text": ": Path\n\nReadable path of the cached content, under &lt;cache&gt;/files/&lt;repo&gt;/&lt;version&gt;/&lt;path&gt;. For a dataset published as a directory this is the directory, with every part inside it.",
+    "crumbs": [
+      "Resolving",
+      "materialize"
+    ]
+  },
+  {
+    "objectID": "api/materialize.html#raises",
+    "href": "api/materialize.html#raises",
+    "title": "materialize",
+    "section": "",
+    "text": ": FileNotFoundError\n\nIf the content is held in Git LFS and has not been fetched. The message names the git lfs fetch command to run.",
+    "crumbs": [
+      "Resolving",
+      "materialize"
+    ]
+  },
+  {
+    "objectID": "api/GitHubError.html",
+    "href": "api/GitHubError.html",
+    "title": "GitHubError",
+    "section": "",
+    "text": "GitHubError\nlabdata.github.GitHubError()\nRaised when GitHub cannot be read.",
+    "crumbs": [
+      "GitHub API",
+      "GitHubError"
     ]
   },
   {
@@ -1091,36 +1979,80 @@
     ]
   },
   {
-    "objectID": "api/blob_at.html",
-    "href": "api/blob_at.html",
-    "title": "blob_at",
+    "objectID": "api/build.html",
+    "href": "api/build.html",
+    "title": "build",
     "section": "",
-    "text": "labdata.gitutil.blob_at(repo, rev, path)\nFind the blob sha and size of a file as of a revision.\n\n\n\nrepo : Path\n\nWorking tree to inspect.\n\nrev : str\n\nRevision to read the file at, typically a commit sha.\n\npath : str\n\nRepository-relative path of the file.\n\n\n\n\n\n\n : Optional[Tuple[str, int]]\n\n(blob_sha, size), or None if the file does not exist at rev.",
+    "text": "labdata.remote.build(cfg, client=None, progress=False)\nCatalog every repository the settings name on GitHub.\n\n\n\ncfg : Config\n\nSettings supplying owners and repos.\n\nclient : Optional[Client] = None\n\nClient to read with. Defaults to a new one, authenticated as labdata.github.token finds.\n\nprogress : bool = False\n\nShow a progress bar, one step per repository. Reading a whole organisation is otherwise silent for as long as it takes.\n\n\n\n\n\n\n : List[Entry]\n\nEntries from every repository that publishes something. A repository that cannot be read is skipped with a warning rather than failing the scan.\n\n\n\n\n\nlabdata.remote.scan_repo",
     "crumbs": [
-      "Git access",
-      "blob_at"
+      "Catalog",
+      "build"
     ]
   },
   {
-    "objectID": "api/blob_at.html#parameters",
-    "href": "api/blob_at.html#parameters",
-    "title": "blob_at",
+    "objectID": "api/build.html#parameters",
+    "href": "api/build.html#parameters",
+    "title": "build",
     "section": "",
-    "text": "repo : Path\n\nWorking tree to inspect.\n\nrev : str\n\nRevision to read the file at, typically a commit sha.\n\npath : str\n\nRepository-relative path of the file.",
+    "text": "cfg : Config\n\nSettings supplying owners and repos.\n\nclient : Optional[Client] = None\n\nClient to read with. Defaults to a new one, authenticated as labdata.github.token finds.\n\nprogress : bool = False\n\nShow a progress bar, one step per repository. Reading a whole organisation is otherwise silent for as long as it takes.",
     "crumbs": [
-      "Git access",
-      "blob_at"
+      "Catalog",
+      "build"
     ]
   },
   {
-    "objectID": "api/blob_at.html#returns",
-    "href": "api/blob_at.html#returns",
-    "title": "blob_at",
+    "objectID": "api/build.html#returns",
+    "href": "api/build.html#returns",
+    "title": "build",
     "section": "",
-    "text": ": Optional[Tuple[str, int]]\n\n(blob_sha, size), or None if the file does not exist at rev.",
+    "text": ": List[Entry]\n\nEntries from every repository that publishes something. A repository that cannot be read is skipped with a warning rather than failing the scan.",
     "crumbs": [
-      "Git access",
-      "blob_at"
+      "Catalog",
+      "build"
+    ]
+  },
+  {
+    "objectID": "api/build.html#see-also",
+    "href": "api/build.html#see-also",
+    "title": "build",
+    "section": "",
+    "text": "labdata.remote.scan_repo",
+    "crumbs": [
+      "Catalog",
+      "build"
+    ]
+  },
+  {
+    "objectID": "api/link.html",
+    "href": "api/link.html",
+    "title": "link",
+    "section": "",
+    "text": "labdata.cache.link(blob, dest)\nExpose a cached object under a readable name.\nA hard link is preferred, a symbolic link is the first fallback and a copy the last, so the function works on filesystems that support neither.\n\n\n\nblob : Path\n\nCached object to expose.\n\ndest : Path\n\nPath to create. An existing path is reused when it already stands for blob, cached content being immutable, and is replaced otherwise, so that a link left by an earlier cache layout is never trusted.\n\n\n\n\n\n\n : Path\n\ndest.",
+    "crumbs": [
+      "Cache",
+      "link"
+    ]
+  },
+  {
+    "objectID": "api/link.html#parameters",
+    "href": "api/link.html#parameters",
+    "title": "link",
+    "section": "",
+    "text": "blob : Path\n\nCached object to expose.\n\ndest : Path\n\nPath to create. An existing path is reused when it already stands for blob, cached content being immutable, and is replaced otherwise, so that a link left by an earlier cache layout is never trusted.",
+    "crumbs": [
+      "Cache",
+      "link"
+    ]
+  },
+  {
+    "objectID": "api/link.html#returns",
+    "href": "api/link.html#returns",
+    "title": "link",
+    "section": "",
+    "text": ": Path\n\ndest.",
+    "crumbs": [
+      "Cache",
+      "link"
     ]
   },
   {
@@ -1128,7 +2060,7 @@
     "href": "api/main.html",
     "title": "main",
     "section": "",
-    "text": "labdata.cli.main(argv=None)\nRun the command line interface.\nExpected failures are reported as a one line message on standard error rather than a traceback.\n\n\n\nargv : Optional[List[str]] = None\n\nArguments to parse. Defaults to sys.argv.\n\n\n\n\n\n\n : int\n\nProcess exit status.\n\n\n\n\n\nmain([\"list\", \"--pattern\", \"*.csv\"])",
+    "text": "labdata.cli.main(argv=None)\nRun the command line interface.\nExpected failures are reported as a short message on standard error rather than a traceback, and the exit status is returned rather than raised, so the entry point can be called from a test. OSError is among them because a directory on the way can be unreadable or simply never answer.\n\n\n\nargv : Optional[List[str]] = None\n\nArguments to parse. Defaults to sys.argv.\n\n\n\n\n\n\n : int\n\nProcess exit status.\n\n\n\n\n\nmain([\"list\", \"--pattern\", \"*.csv\"])",
     "crumbs": [
       "Command line",
       "main"
@@ -1172,7 +2104,7 @@
     "href": "api/open_for_write.html",
     "title": "open_for_write",
     "section": "",
-    "text": "labdata.cache.open_for_write(sha, root=None)\nPrepare to stream an object into the cache.\nContent is written to the temporary path and then renamed, so an interrupted write cannot leave a truncated object in the cache.\n\n\n\nsha : str\n\nKey to store the object under.\n\nroot : Optional[Path] = None\n\nCache root. Defaults to labdata.config.cache_root.\n\n\n\n\n\n\n : Tuple[Path, Path]\n\n(temporary_path, final_path). Parent directories are created.\n\n\n\n\n\nlabdata.gitutil.write_blob_to",
+    "text": "labdata.cache.open_for_write(sha, root=None)\nPrepare to stream an object into the cache.\nContent is written to the temporary path and then renamed, so an interrupted write cannot leave a truncated object in the cache. The temporary path is unique to the caller, so neither can a concurrent one.\n\n\n\nsha : str\n\nKey to store the object under.\n\nroot : Optional[Path] = None\n\nCache root. Defaults to labdata.config.cache_root.\n\n\n\n\n\n\n : Tuple[Path, Path]\n\n(temporary_path, final_path). Parent directories are created. The temporary path differs on every call; the final path does not.\n\n\n\n\n\nlabdata.gitutil.write_blob_to",
     "crumbs": [
       "Cache",
       "open_for_write"
@@ -1194,7 +2126,7 @@
     "href": "api/open_for_write.html#returns",
     "title": "open_for_write",
     "section": "",
-    "text": ": Tuple[Path, Path]\n\n(temporary_path, final_path). Parent directories are created.",
+    "text": ": Tuple[Path, Path]\n\n(temporary_path, final_path). Parent directories are created. The temporary path differs on every call; the final path does not.",
     "crumbs": [
       "Cache",
       "open_for_write"
@@ -1212,36 +2144,113 @@
     ]
   },
   {
-    "objectID": "api/store_from_file.html",
-    "href": "api/store_from_file.html",
-    "title": "store_from_file",
+    "objectID": "api/token.html",
+    "href": "api/token.html",
+    "title": "token",
     "section": "",
-    "text": "labdata.cache.store_from_file(sha, src, root=None)\nStore an object that already exists on disk, such as a Git LFS object.\nA hard link is used when the cache and src are on one filesystem, so nothing is copied. Otherwise the file is streamed, and a large file does not have to fit in memory.\n\n\n\nsha : str\n\nKey to store the object under.\n\nsrc : Path\n\nExisting file holding the content.\n\nroot : Optional[Path] = None\n\nCache root. Defaults to labdata.config.cache_root.\n\n\n\n\n\n\n : Path\n\nPath of the cached object. An object already present is not rewritten.",
+    "text": "labdata.github.token()\nFind a GitHub token to authenticate with.\nGITHUB_TOKEN is used when set; otherwise the token the gh command line is logged in with, which is usually already there on a machine that uses GitHub at all. Without one only public repositories are readable, and the rate limit is sixty requests an hour rather than five thousand.\n\n\n\n : Optional[str]\n\nThe token, or None when there is none.",
     "crumbs": [
-      "Cache",
-      "store_from_file"
+      "GitHub API",
+      "token"
     ]
   },
   {
-    "objectID": "api/store_from_file.html#parameters",
-    "href": "api/store_from_file.html#parameters",
-    "title": "store_from_file",
+    "objectID": "api/token.html#returns",
+    "href": "api/token.html#returns",
+    "title": "token",
     "section": "",
-    "text": "sha : str\n\nKey to store the object under.\n\nsrc : Path\n\nExisting file holding the content.\n\nroot : Optional[Path] = None\n\nCache root. Defaults to labdata.config.cache_root.",
+    "text": ": Optional[str]\n\nThe token, or None when there is none.",
     "crumbs": [
-      "Cache",
-      "store_from_file"
+      "GitHub API",
+      "token"
     ]
   },
   {
-    "objectID": "api/store_from_file.html#returns",
-    "href": "api/store_from_file.html#returns",
-    "title": "store_from_file",
+    "objectID": "api/note.html",
+    "href": "api/note.html",
+    "title": "note",
     "section": "",
-    "text": ": Path\n\nPath of the cached object. An object already present is not rewritten.",
+    "text": "labdata.cli.note(version)\nSummarise what is unusual about a version, for the table’s NOTE column.\n\n\n\nversion : \n\nVersion to describe.\n\n\n\n\n\n\n : str\n\nIts tags, whether it is held in Git LFS, and how many parts it has if it is a dataset, comma separated; empty for an ordinary tagless file.\n\n\n\n\n\nnote(entry.latest)\n# 'v1.0,12 parts'",
     "crumbs": [
-      "Cache",
-      "store_from_file"
+      "Command line",
+      "note"
+    ]
+  },
+  {
+    "objectID": "api/note.html#parameters",
+    "href": "api/note.html#parameters",
+    "title": "note",
+    "section": "",
+    "text": "version : \n\nVersion to describe.",
+    "crumbs": [
+      "Command line",
+      "note"
+    ]
+  },
+  {
+    "objectID": "api/note.html#returns",
+    "href": "api/note.html#returns",
+    "title": "note",
+    "section": "",
+    "text": ": str\n\nIts tags, whether it is held in Git LFS, and how many parts it has if it is a dataset, comma separated; empty for an ordinary tagless file.",
+    "crumbs": [
+      "Command line",
+      "note"
+    ]
+  },
+  {
+    "objectID": "api/note.html#examples",
+    "href": "api/note.html#examples",
+    "title": "note",
+    "section": "",
+    "text": "note(entry.latest)\n# 'v1.0,12 parts'",
+    "crumbs": [
+      "Command line",
+      "note"
+    ]
+  },
+  {
+    "objectID": "api/diagnose.html",
+    "href": "api/diagnose.html",
+    "title": "diagnose",
+    "section": "",
+    "text": "labdata.diagnose(cfg=None)\nExplain why a scan found nothing.\n\nAn empty catalog has several ordinary causes, and they look identical from\nthe outside: a root that does not exist, repositories that have no results\ndirectory, results directories with no manifest, or simply no GitHub owner\nconfigured. This reports which it is, reading only local git and making no\nrequest.\n\n\ncfg :\n    Settings to account for. Defaults to\n    [](`labdata.config.Config.load`).\n\n\n\n:\n    Lines describing what was looked at and what was missing.\n\n\n\n```python\nprint(\"\n“.join(diagnose())) ```",
+    "crumbs": [
+      "Catalog",
+      "diagnose"
+    ]
+  },
+  {
+    "objectID": "api/diagnose.html#parameters",
+    "href": "api/diagnose.html#parameters",
+    "title": "diagnose",
+    "section": "",
+    "text": "cfg :\n    Settings to account for. Defaults to\n    [](`labdata.config.Config.load`).",
+    "crumbs": [
+      "Catalog",
+      "diagnose"
+    ]
+  },
+  {
+    "objectID": "api/diagnose.html#returns",
+    "href": "api/diagnose.html#returns",
+    "title": "diagnose",
+    "section": "",
+    "text": ":\n    Lines describing what was looked at and what was missing.",
+    "crumbs": [
+      "Catalog",
+      "diagnose"
+    ]
+  },
+  {
+    "objectID": "api/diagnose.html#examples",
+    "href": "api/diagnose.html#examples",
+    "title": "diagnose",
+    "section": "",
+    "text": "```python\nprint(\"\n“.join(diagnose())) ```",
+    "crumbs": [
+      "Catalog",
+      "diagnose"
     ]
   },
   {
@@ -1293,7 +2302,7 @@
     "href": "api/frame.html",
     "title": "frame",
     "section": "",
-    "text": "labdata.frame(entries=None)\nRepresent the catalog as a data frame.\n\n\n\nentries :  = None\n\nEntries to tabulate. Defaults to the whole catalog.\n\n\n\n\n\n\n : \n\nA pandas.DataFrame with one row per result file and columns repo, path, name, version, date, bytes, tags, lfs and spec.\n\n\n\n\n\n\n: ImportError\n\nIf pandas is not installed. It is not a dependency of labdata.\n\n\n\n\n\nFind the largest result file in each repository:\nfrom labdata import frame\n\ndf = frame()\ndf.sort_values(\"bytes\").groupby(\"repo\").last()\n\n\n\nlabdata.core.catalog",
+    "text": "labdata.frame(entries=None)\nRepresent the catalog as a data frame.\n\n\n\nentries :  = None\n\nEntries to tabulate. Defaults to the whole catalog.\n\n\n\n\n\n\n : \n\nA pandas.DataFrame with one row per result file and columns repo, path, name, description, version, date, bytes, parts, tags, lfs, spec and url. parts is zero for an ordinary file and the number of files for a dataset published as a directory.\n\n\n\n\n\n\n: ImportError\n\nIf pandas is not installed. It is not a dependency of labdata.\n\n\n\n\n\nFind the largest result file in each repository:\nfrom labdata import frame\n\ndf = frame()\ndf.sort_values(\"bytes\").groupby(\"repo\").last()\n\n\n\nlabdata.core.catalog",
     "crumbs": [
       "Catalog",
       "frame"
@@ -1315,7 +2324,7 @@
     "href": "api/frame.html#returns",
     "title": "frame",
     "section": "",
-    "text": ": \n\nA pandas.DataFrame with one row per result file and columns repo, path, name, version, date, bytes, tags, lfs and spec.",
+    "text": ": \n\nA pandas.DataFrame with one row per result file and columns repo, path, name, description, version, date, bytes, parts, tags, lfs, spec and url. parts is zero for an ordinary file and the number of files for a dataset published as a directory.",
     "crumbs": [
       "Catalog",
       "frame"
@@ -1355,25 +2364,212 @@
     ]
   },
   {
-    "objectID": "api/Version.html",
-    "href": "api/Version.html",
-    "title": "Version",
+    "objectID": "api/blob_url.html",
+    "href": "api/blob_url.html",
+    "title": "blob_url",
     "section": "",
-    "text": "labdata.Version(sha, short, date, subject, blob, size, lfs_oid=None, tags=())\nOne commit in which a result file changed.\nA version is defined by a commit, not by a repository tag. Analysis repos are rarely tagged, whereas every change to a result file is a commit, so commits give a version key that exists without extra discipline. Tags, when present, are carried in tags and can be used to address a version, but they never define one.\n\n\n\nsha : str\n\nFull sha of the commit in which the file last changed.\n\nshort : str\n\nAbbreviated commit sha. This is the user-facing version key.\n\ndate : str\n\nCommitter date in ISO-8601 format.\n\nsubject : str\n\nSubject line of the commit.\n\nblob : str\n\nGit blob sha of the file at this commit. This is a hash of the file content, and is used as the cache key.\n\nsize : int\n\nSize of the file in bytes, resolved through Git LFS pointers so that it is the size of the real content rather than of the pointer.\n\nlfs_oid : Optional[str]\n\nThe sha256 object id when the file is stored in Git LFS, else None.\n\ntags : Tuple[str, …]\n\nAny tags pointing at this commit.",
+    "text": "labdata.github.blob_url(owner, repo, commit, path, directory=False)\nBuild a stable URL for one version of a published file.\nThe URL names the commit rather than a branch, so it keeps pointing at the bytes that were cataloged rather than at whatever the branch holds later.\n\n\n\nowner : str\n\nRepository owner.\n\nrepo : str\n\nRepository name.\n\ncommit : str\n\nCommit sha of the version.\n\npath : str\n\nRepository-relative path.\n\ndirectory : bool = False\n\nWhether path is a dataset held in a directory, which has a page rather than a download.\n\n\n\n\n\n\n : str\n\nA URL to the content, or to the directory listing for a dataset.\n\n\n\n\n\nblob_url(\"munch-group\", \"tree-stats\", \"7701707\", \"results/dummy.csv\")\n# 'https://raw.githubusercontent.com/munch-group/tree-stats/7701707/results/dummy.csv'",
     "crumbs": [
-      "Data types",
-      "Version"
+      "GitHub API",
+      "blob_url"
     ]
   },
   {
-    "objectID": "api/Version.html#attributes",
-    "href": "api/Version.html#attributes",
-    "title": "Version",
+    "objectID": "api/blob_url.html#parameters",
+    "href": "api/blob_url.html#parameters",
+    "title": "blob_url",
     "section": "",
-    "text": "sha : str\n\nFull sha of the commit in which the file last changed.\n\nshort : str\n\nAbbreviated commit sha. This is the user-facing version key.\n\ndate : str\n\nCommitter date in ISO-8601 format.\n\nsubject : str\n\nSubject line of the commit.\n\nblob : str\n\nGit blob sha of the file at this commit. This is a hash of the file content, and is used as the cache key.\n\nsize : int\n\nSize of the file in bytes, resolved through Git LFS pointers so that it is the size of the real content rather than of the pointer.\n\nlfs_oid : Optional[str]\n\nThe sha256 object id when the file is stored in Git LFS, else None.\n\ntags : Tuple[str, …]\n\nAny tags pointing at this commit.",
+    "text": "owner : str\n\nRepository owner.\n\nrepo : str\n\nRepository name.\n\ncommit : str\n\nCommit sha of the version.\n\npath : str\n\nRepository-relative path.\n\ndirectory : bool = False\n\nWhether path is a dataset held in a directory, which has a page rather than a download.",
     "crumbs": [
-      "Data types",
-      "Version"
+      "GitHub API",
+      "blob_url"
+    ]
+  },
+  {
+    "objectID": "api/blob_url.html#returns",
+    "href": "api/blob_url.html#returns",
+    "title": "blob_url",
+    "section": "",
+    "text": ": str\n\nA URL to the content, or to the directory listing for a dataset.",
+    "crumbs": [
+      "GitHub API",
+      "blob_url"
+    ]
+  },
+  {
+    "objectID": "api/blob_url.html#examples",
+    "href": "api/blob_url.html#examples",
+    "title": "blob_url",
+    "section": "",
+    "text": "blob_url(\"munch-group\", \"tree-stats\", \"7701707\", \"results/dummy.csv\")\n# 'https://raw.githubusercontent.com/munch-group/tree-stats/7701707/results/dummy.csv'",
+    "crumbs": [
+      "GitHub API",
+      "blob_url"
+    ]
+  },
+  {
+    "objectID": "api/Client.html",
+    "href": "api/Client.html",
+    "title": "Client",
+    "section": "",
+    "text": "labdata.github.Client(auth=None, api=API)\nA thin, streaming client for the parts of the GitHub API labdata needs.\n\n\n\nauth : Optional[str] = None\n\nToken to authenticate with. Defaults to labdata.github.token.\n\napi : str = API\n\nBase address of the API, so a test can point this somewhere else.\n\n\n\n\n\nclient = Client()\nclient.tree(\"munch-group\", \"tree-stats\", \"main\")\n\n\n\n\n\n\nName\nDescription\n\n\n\n\ncommit\nRead one commit.\n\n\ncommits\nList the commits that touched a path, newest first.\n\n\ndefault_branch\nFind the branch a repository is read at by default.\n\n\ndownload_blob\nStream a blob to a file.\n\n\nget\nFetch one JSON document.\n\n\nlfs_download\nStream a Git LFS object to a file.\n\n\npaginate\nFetch every page of a listing.\n\n\nread_blob\nRead a blob into memory.\n\n\nrepositories\nList the repositories an organisation or user owns.\n\n\ntree\nList everything in a repository at a revision, in one request.\n\n\n\n\n\nlabdata.github.Client.commit(owner, repo, ref)\nRead one commit.\n\n\n\nowner : str\n\nRepository owner.\n\nrepo : str\n\nRepository name.\n\nref : str\n\nBranch, tag or commit sha. A branch gives the commit it points at, which is what stamps everything the repository publishes.\n\n\n\n\n\n\n : Optional[dict]\n\nThe commit document, or None when there is no such revision.\n\n\n\n\n\n\nlabdata.github.Client.commits(owner, repo, path, limit=100)\nList the commits that touched a path, newest first.\n\n\n\nowner : str\n\nRepository owner.\n\nrepo : str\n\nRepository name.\n\npath : str\n\nRepository-relative path of a file or directory.\n\nlimit : int = 100\n\nMost commits to return.\n\n\n\n\n\n\n : List[dict]\n\nRaw commit documents, newest first.\n\n\n\n\n\n\nlabdata.github.Client.default_branch(owner, repo)\nFind the branch a repository is read at by default.\n\n\n\nowner : str\n\nRepository owner.\n\nrepo : str\n\nRepository name.\n\n\n\n\n\n\n : str\n\nThe default branch name.\n\n\n\n\n\n\nlabdata.github.Client.download_blob(owner, repo, sha, dest)\nStream a blob to a file.\nThe content is copied straight from the socket to the file, so peak memory does not grow with the size of the result.\n\n\n\nowner : str\n\nRepository owner.\n\nrepo : str\n\nRepository name.\n\nsha : str\n\nBlob sha.\n\ndest : Path\n\nFile to write.\n\n\n\n\n\n\nlabdata.github.Client.get(endpoint, **params)\nFetch one JSON document.\n\n\n\nendpoint : str\n\nAPI path, such as repos/owner/name/git/trees/main. Named so rather than path because path is itself a query parameter GitHub takes, on the commits endpoint among others.\n\n****params** : Any = {}\n\nQuery parameters.\n\n\n\n\n\n\n : Any\n\nThe decoded document.\n\n\n\n\n\n\nlabdata.github.Client.lfs_download(owner, repo, oid, size, dest)\nStream a Git LFS object to a file.\nLFS content is not in the git tree — the tree holds a pointer — so it is asked for through the batch endpoint, which hands back a URL to fetch it from.\n\n\n\nowner : str\n\nRepository owner.\n\nrepo : str\n\nRepository name.\n\noid : str\n\nThe sha256 object id from the pointer file.\n\nsize : int\n\nSize of the real content, from the pointer file.\n\ndest : Path\n\nFile to write.\n\n\n\n\n\n\n: GitHubError\n\nIf the batch endpoint refuses, or names no download for the object.\n\n\n\n\n\n\nlabdata.github.Client.paginate(endpoint, **params)\nFetch every page of a listing.\n\n\n\nendpoint : str\n\nAPI path returning a JSON array.\n\n****params** : Any = {}\n\nQuery parameters. per_page defaults to the maximum of 100.\n\n\n\n\n\n\n : Iterator[dict]\n\nAn iterator over every item, across all pages. Pages are fetched as it is consumed, so stopping early stops requesting.\n\n\n\n\n\n\nlabdata.github.Client.read_blob(owner, repo, sha)\nRead a blob into memory.\nOnly for content known to be small, such as a manifest or a Git LFS pointer. Use labdata.github.Client.download_blob for result files.\n\n\n\nowner : str\n\nRepository owner.\n\nrepo : str\n\nRepository name.\n\nsha : str\n\nBlob sha.\n\n\n\n\n\n\n : bytes\n\nThe raw content.\n\n\n\n\n\n\nlabdata.github.Client.repositories(owner)\nList the repositories an organisation or user owns.\n\n\n\nowner : str\n\nOrganisation or user name.\n\n\n\n\n\n\n : List[Tuple[str, str]]\n\nTuples of (name, default_branch), skipping empty repositories.\n\n\n\n\n\n\nlabdata.github.Client.tree(owner, repo, ref)\nList everything in a repository at a revision, in one request.\n\n\n\nowner : str\n\nRepository owner.\n\nrepo : str\n\nRepository name.\n\nref : str\n\nBranch, tag or commit sha.\n\n\n\n\n\n\n : List[dict]\n\nEntries with path, type, sha and, for blobs, size. An empty list when the repository has no such revision.",
+    "crumbs": [
+      "GitHub API",
+      "Client"
+    ]
+  },
+  {
+    "objectID": "api/Client.html#parameters",
+    "href": "api/Client.html#parameters",
+    "title": "Client",
+    "section": "",
+    "text": "auth : Optional[str] = None\n\nToken to authenticate with. Defaults to labdata.github.token.\n\napi : str = API\n\nBase address of the API, so a test can point this somewhere else.",
+    "crumbs": [
+      "GitHub API",
+      "Client"
+    ]
+  },
+  {
+    "objectID": "api/Client.html#examples",
+    "href": "api/Client.html#examples",
+    "title": "Client",
+    "section": "",
+    "text": "client = Client()\nclient.tree(\"munch-group\", \"tree-stats\", \"main\")",
+    "crumbs": [
+      "GitHub API",
+      "Client"
+    ]
+  },
+  {
+    "objectID": "api/Client.html#methods",
+    "href": "api/Client.html#methods",
+    "title": "Client",
+    "section": "",
+    "text": "Name\nDescription\n\n\n\n\ncommit\nRead one commit.\n\n\ncommits\nList the commits that touched a path, newest first.\n\n\ndefault_branch\nFind the branch a repository is read at by default.\n\n\ndownload_blob\nStream a blob to a file.\n\n\nget\nFetch one JSON document.\n\n\nlfs_download\nStream a Git LFS object to a file.\n\n\npaginate\nFetch every page of a listing.\n\n\nread_blob\nRead a blob into memory.\n\n\nrepositories\nList the repositories an organisation or user owns.\n\n\ntree\nList everything in a repository at a revision, in one request.\n\n\n\n\n\nlabdata.github.Client.commit(owner, repo, ref)\nRead one commit.\n\n\n\nowner : str\n\nRepository owner.\n\nrepo : str\n\nRepository name.\n\nref : str\n\nBranch, tag or commit sha. A branch gives the commit it points at, which is what stamps everything the repository publishes.\n\n\n\n\n\n\n : Optional[dict]\n\nThe commit document, or None when there is no such revision.\n\n\n\n\n\n\nlabdata.github.Client.commits(owner, repo, path, limit=100)\nList the commits that touched a path, newest first.\n\n\n\nowner : str\n\nRepository owner.\n\nrepo : str\n\nRepository name.\n\npath : str\n\nRepository-relative path of a file or directory.\n\nlimit : int = 100\n\nMost commits to return.\n\n\n\n\n\n\n : List[dict]\n\nRaw commit documents, newest first.\n\n\n\n\n\n\nlabdata.github.Client.default_branch(owner, repo)\nFind the branch a repository is read at by default.\n\n\n\nowner : str\n\nRepository owner.\n\nrepo : str\n\nRepository name.\n\n\n\n\n\n\n : str\n\nThe default branch name.\n\n\n\n\n\n\nlabdata.github.Client.download_blob(owner, repo, sha, dest)\nStream a blob to a file.\nThe content is copied straight from the socket to the file, so peak memory does not grow with the size of the result.\n\n\n\nowner : str\n\nRepository owner.\n\nrepo : str\n\nRepository name.\n\nsha : str\n\nBlob sha.\n\ndest : Path\n\nFile to write.\n\n\n\n\n\n\nlabdata.github.Client.get(endpoint, **params)\nFetch one JSON document.\n\n\n\nendpoint : str\n\nAPI path, such as repos/owner/name/git/trees/main. Named so rather than path because path is itself a query parameter GitHub takes, on the commits endpoint among others.\n\n****params** : Any = {}\n\nQuery parameters.\n\n\n\n\n\n\n : Any\n\nThe decoded document.\n\n\n\n\n\n\nlabdata.github.Client.lfs_download(owner, repo, oid, size, dest)\nStream a Git LFS object to a file.\nLFS content is not in the git tree — the tree holds a pointer — so it is asked for through the batch endpoint, which hands back a URL to fetch it from.\n\n\n\nowner : str\n\nRepository owner.\n\nrepo : str\n\nRepository name.\n\noid : str\n\nThe sha256 object id from the pointer file.\n\nsize : int\n\nSize of the real content, from the pointer file.\n\ndest : Path\n\nFile to write.\n\n\n\n\n\n\n: GitHubError\n\nIf the batch endpoint refuses, or names no download for the object.\n\n\n\n\n\n\nlabdata.github.Client.paginate(endpoint, **params)\nFetch every page of a listing.\n\n\n\nendpoint : str\n\nAPI path returning a JSON array.\n\n****params** : Any = {}\n\nQuery parameters. per_page defaults to the maximum of 100.\n\n\n\n\n\n\n : Iterator[dict]\n\nAn iterator over every item, across all pages. Pages are fetched as it is consumed, so stopping early stops requesting.\n\n\n\n\n\n\nlabdata.github.Client.read_blob(owner, repo, sha)\nRead a blob into memory.\nOnly for content known to be small, such as a manifest or a Git LFS pointer. Use labdata.github.Client.download_blob for result files.\n\n\n\nowner : str\n\nRepository owner.\n\nrepo : str\n\nRepository name.\n\nsha : str\n\nBlob sha.\n\n\n\n\n\n\n : bytes\n\nThe raw content.\n\n\n\n\n\n\nlabdata.github.Client.repositories(owner)\nList the repositories an organisation or user owns.\n\n\n\nowner : str\n\nOrganisation or user name.\n\n\n\n\n\n\n : List[Tuple[str, str]]\n\nTuples of (name, default_branch), skipping empty repositories.\n\n\n\n\n\n\nlabdata.github.Client.tree(owner, repo, ref)\nList everything in a repository at a revision, in one request.\n\n\n\nowner : str\n\nRepository owner.\n\nrepo : str\n\nRepository name.\n\nref : str\n\nBranch, tag or commit sha.\n\n\n\n\n\n\n : List[dict]\n\nEntries with path, type, sha and, for blobs, size. An empty list when the repository has no such revision.",
+    "crumbs": [
+      "GitHub API",
+      "Client"
+    ]
+  },
+  {
+    "objectID": "api/parse.html",
+    "href": "api/parse.html",
+    "title": "parse",
+    "section": "",
+    "text": "labdata.manifest.parse(text, directory)\nRead a manifest.\n\n\n\ntext : str\n\nContent of the labdata.yml file.\n\ndirectory : str\n\nRepository-relative directory the manifest sits in, used to make its keys relative and to report where a problem is.\n\n\n\n\n\n\n : Manifest\n\nThe parsed manifest. An empty files mapping is allowed and publishes nothing.\n\n\n\n\n\n\n: ManifestError\n\nIf the file is not valid YAML, has no files mapping, or gives an entry a value that is neither a description nor a mapping holding one.\n\n\n\n\n\nparse(\"files:\\n  hits.csv: candidate hits\\n\", \"results\")\n# Manifest(directory='results', files={'hits.csv': 'candidate hits'})",
+    "crumbs": [
+      "Manifests",
+      "parse"
+    ]
+  },
+  {
+    "objectID": "api/parse.html#parameters",
+    "href": "api/parse.html#parameters",
+    "title": "parse",
+    "section": "",
+    "text": "text : str\n\nContent of the labdata.yml file.\n\ndirectory : str\n\nRepository-relative directory the manifest sits in, used to make its keys relative and to report where a problem is.",
+    "crumbs": [
+      "Manifests",
+      "parse"
+    ]
+  },
+  {
+    "objectID": "api/parse.html#returns",
+    "href": "api/parse.html#returns",
+    "title": "parse",
+    "section": "",
+    "text": ": Manifest\n\nThe parsed manifest. An empty files mapping is allowed and publishes nothing.",
+    "crumbs": [
+      "Manifests",
+      "parse"
+    ]
+  },
+  {
+    "objectID": "api/parse.html#raises",
+    "href": "api/parse.html#raises",
+    "title": "parse",
+    "section": "",
+    "text": ": ManifestError\n\nIf the file is not valid YAML, has no files mapping, or gives an entry a value that is neither a description nor a mapping holding one.",
+    "crumbs": [
+      "Manifests",
+      "parse"
+    ]
+  },
+  {
+    "objectID": "api/parse.html#examples",
+    "href": "api/parse.html#examples",
+    "title": "parse",
+    "section": "",
+    "text": "parse(\"files:\\n  hits.csv: candidate hits\\n\", \"results\")\n# Manifest(directory='results', files={'hits.csv': 'candidate hits'})",
+    "crumbs": [
+      "Manifests",
+      "parse"
+    ]
+  },
+  {
+    "objectID": "api/table.html",
+    "href": "api/table.html",
+    "title": "table",
+    "section": "",
+    "text": "labdata.cli.table(rows, headers)\nRender rows as a plain text table with aligned columns.\n\n\n\nrows : List[List[str]]\n\nRows of cells, each row the same length as headers.\n\nheaders : List[str]\n\nColumn headings.\n\n\n\n\n\n\n : str\n\nThe rendered table, or an empty string when there are no rows.",
+    "crumbs": [
+      "Command line",
+      "table"
+    ]
+  },
+  {
+    "objectID": "api/table.html#parameters",
+    "href": "api/table.html#parameters",
+    "title": "table",
+    "section": "",
+    "text": "rows : List[List[str]]\n\nRows of cells, each row the same length as headers.\n\nheaders : List[str]\n\nColumn headings.",
+    "crumbs": [
+      "Command line",
+      "table"
+    ]
+  },
+  {
+    "objectID": "api/table.html#returns",
+    "href": "api/table.html#returns",
+    "title": "table",
+    "section": "",
+    "text": ": str\n\nThe rendered table, or an empty string when there are no rows.",
+    "crumbs": [
+      "Command line",
+      "table"
+    ]
+  },
+  {
+    "objectID": "api/tag_map.html",
+    "href": "api/tag_map.html",
+    "title": "tag_map",
+    "section": "",
+    "text": "labdata.gitutil.tag_map(repo)\nMap commits to the tags pointing at them.\nAnnotated tags are peeled to the commit they wrap. Tags decorate versions but never define them.\n\n\n\nrepo : Path\n\nWorking tree to inspect.\n\n\n\n\n\n\n : Dict[str, Tuple[str, …]]\n\nA mapping of commit sha to a tuple of tag names.",
+    "crumbs": [
+      "Git access",
+      "tag_map"
+    ]
+  },
+  {
+    "objectID": "api/tag_map.html#parameters",
+    "href": "api/tag_map.html#parameters",
+    "title": "tag_map",
+    "section": "",
+    "text": "repo : Path\n\nWorking tree to inspect.",
+    "crumbs": [
+      "Git access",
+      "tag_map"
+    ]
+  },
+  {
+    "objectID": "api/tag_map.html#returns",
+    "href": "api/tag_map.html#returns",
+    "title": "tag_map",
+    "section": "",
+    "text": ": Dict[str, Tuple[str, …]]\n\nA mapping of commit sha to a tuple of tag names.",
+    "crumbs": [
+      "Git access",
+      "tag_map"
     ]
   },
   {
@@ -1381,7 +2577,7 @@
     "href": "api/tracked_blobs.html",
     "title": "tracked_blobs",
     "section": "",
-    "text": "labdata.gitutil.tracked_blobs(repo, subdir)\nList files tracked at HEAD under a directory, with blob shas and sizes.\nOnly tracked files are reported, so untracked scratch output sitting in a results directory is invisible to the catalog: committing a file is the act of publishing it. Symbolic links are skipped.\n\n\n\nrepo : Path\n\nWorking tree to inspect.\n\nsubdir : str\n\nPathspec limiting the listing, for example :(icase)results.\n\n\n\n\n\n\n : Dict[str, Tuple[str, int]]\n\nA mapping of repository-relative path to (blob_sha, size). Sizes are those of the stored blob, so a Git LFS pointer reports the size of the pointer; use labdata.gitutil.parse_lfs_pointer to resolve it.\n\n\n\n\n\nlabdata.gitutil.last_commits",
+    "text": "labdata.gitutil.tracked_blobs(repo, subdir)\nList files tracked at HEAD under a directory, with blob shas and sizes.\nOnly tracked files are reported, so untracked scratch output sitting in a results directory is invisible to the catalog: committing a file is the act of publishing it. Symbolic links are skipped.\n\n\n\nrepo : Path\n\nWorking tree to inspect.\n\nsubdir : str\n\nPathspec limiting the listing, for example :(icase)results.\n\n\n\n\n\n\n : Dict[str, Tuple[str, int]]\n\nA mapping of repository-relative path to (blob_sha, size). Sizes are those of the stored blob, so a Git LFS pointer reports the size of the pointer; use labdata.gitutil.parse_lfs_pointer to resolve it.\n\n\n\n\n\nlabdata.gitutil.head_commit",
     "crumbs": [
       "Git access",
       "tracked_blobs"
@@ -1414,10 +2610,98 @@
     "href": "api/tracked_blobs.html#see-also",
     "title": "tracked_blobs",
     "section": "",
-    "text": "labdata.gitutil.last_commits",
+    "text": "labdata.gitutil.head_commit",
     "crumbs": [
       "Git access",
       "tracked_blobs"
+    ]
+  },
+  {
+    "objectID": "api/outdated.html",
+    "href": "api/outdated.html",
+    "title": "outdated",
+    "section": "",
+    "text": "labdata.outdated(entry, version)\nSay whether a pinned version has been overtaken.\nComparing content rather than commits is what makes this worth reading. A version names a state of the whole repository, so a pinned sha falls behind whenever anything in the repository changes; that is not news. The file having actually changed is.\n\n\n\nentry : Entry\n\nEntry holding the current version.\n\nversion : Version\n\nVersion that was asked for.\n\n\n\n\n\n\n : Optional[str]\n\nA message naming the newer version, or None when the pin is still the current content. It is only as current as the catalog: a stored catalog that has not been refreshed cannot know about a change made since.\n\n\n\n\n\noutdated(entry, pinned)\n# 'a newer version of x-gwas:results/hits.csv exists: 9f3c... (2026-04-11);\n#  you asked for e4f5... (2025-11-02)'",
+    "crumbs": [
+      "Fetching",
+      "outdated"
+    ]
+  },
+  {
+    "objectID": "api/outdated.html#parameters",
+    "href": "api/outdated.html#parameters",
+    "title": "outdated",
+    "section": "",
+    "text": "entry : Entry\n\nEntry holding the current version.\n\nversion : Version\n\nVersion that was asked for.",
+    "crumbs": [
+      "Fetching",
+      "outdated"
+    ]
+  },
+  {
+    "objectID": "api/outdated.html#returns",
+    "href": "api/outdated.html#returns",
+    "title": "outdated",
+    "section": "",
+    "text": ": Optional[str]\n\nA message naming the newer version, or None when the pin is still the current content. It is only as current as the catalog: a stored catalog that has not been refreshed cannot know about a change made since.",
+    "crumbs": [
+      "Fetching",
+      "outdated"
+    ]
+  },
+  {
+    "objectID": "api/outdated.html#examples",
+    "href": "api/outdated.html#examples",
+    "title": "outdated",
+    "section": "",
+    "text": "outdated(entry, pinned)\n# 'a newer version of x-gwas:results/hits.csv exists: 9f3c... (2026-04-11);\n#  you asked for e4f5... (2025-11-02)'",
+    "crumbs": [
+      "Fetching",
+      "outdated"
+    ]
+  },
+  {
+    "objectID": "api/progress_bar.html",
+    "href": "api/progress_bar.html",
+    "title": "progress_bar",
+    "section": "",
+    "text": "labdata.core.progress_bar(items, description, enabled)\nWrap an iterable in a progress bar when one is wanted.\nScanning is one step per repository, so that is what the bar counts. tqdm.auto is used, which draws a widget in a notebook and a text bar in a terminal, so the same call suits both.\n\n\n\nitems : \n\nWhat is about to be iterated. Its length is the total.\n\ndescription : str\n\nLabel shown beside the bar.\n\nenabled : bool\n\nWhether to draw one at all. The caller decides: a command line hides it when its output is not a terminal, a notebook always shows it.\n\n\n\n\n\n\n : \n\nitems, wrapped when a bar is wanted and unchanged otherwise. A missing tqdm also leaves it unchanged rather than failing.",
+    "crumbs": [
+      "Resolving",
+      "progress_bar"
+    ]
+  },
+  {
+    "objectID": "api/progress_bar.html#parameters",
+    "href": "api/progress_bar.html#parameters",
+    "title": "progress_bar",
+    "section": "",
+    "text": "items : \n\nWhat is about to be iterated. Its length is the total.\n\ndescription : str\n\nLabel shown beside the bar.\n\nenabled : bool\n\nWhether to draw one at all. The caller decides: a command line hides it when its output is not a terminal, a notebook always shows it.",
+    "crumbs": [
+      "Resolving",
+      "progress_bar"
+    ]
+  },
+  {
+    "objectID": "api/progress_bar.html#returns",
+    "href": "api/progress_bar.html#returns",
+    "title": "progress_bar",
+    "section": "",
+    "text": ": \n\nitems, wrapped when a bar is wanted and unchanged otherwise. A missing tqdm also leaves it unchanged rather than failing.",
+    "crumbs": [
+      "Resolving",
+      "progress_bar"
+    ]
+  },
+  {
+    "objectID": "api/GitError.html",
+    "href": "api/GitError.html",
+    "title": "GitError",
+    "section": "",
+    "text": "GitError\nlabdata.gitutil.GitError()\nRaised when a git command fails.",
+    "crumbs": [
+      "Git access",
+      "GitError"
     ]
   },
   {
@@ -1458,7 +2742,7 @@
     "href": "api/usage.html",
     "title": "usage",
     "section": "",
-    "text": "labdata.cache.usage(root=None)\nMeasure how much the cache holds.\nReadable hard links are not counted, since they point at objects already counted.\n\n\n\nroot : Optional[Path] = None\n\nCache root. Defaults to labdata.config.cache_root.\n\n\n\n\n\n\n : Tuple[int, int]\n\n(object_count, total_bytes).",
+    "text": "labdata.cache.usage(root=None)\nMeasure how much the cache holds.\n\n\n\nroot : Optional[Path] = None\n\nCache root. Defaults to labdata.config.cache_root.\n\n\n\n\n\n\n : Tuple[int, int]\n\n(object_count, total_bytes).",
     "crumbs": [
       "Cache",
       "usage"
@@ -1484,6 +2768,17 @@
     "crumbs": [
       "Cache",
       "usage"
+    ]
+  },
+  {
+    "objectID": "api/ManifestError.html",
+    "href": "api/ManifestError.html",
+    "title": "ManifestError",
+    "section": "",
+    "text": "ManifestError\nlabdata.manifest.ManifestError()\nRaised when a manifest cannot be understood.",
+    "crumbs": [
+      "Manifests",
+      "ManifestError"
     ]
   },
   {
@@ -1521,7 +2816,7 @@
     "href": "pages/overview.html#some-use-case",
     "title": "Overview",
     "section": "Some use case",
-    "text": "Some use case\nThe functionname function does … labdata.modulename.functionname does … functionname does …\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sagittis posuere ligula sit amet lacinia. Duis dignissim pellentesque magna, rhoncus congue sapien finibus mollis. Ut eu sem laoreet, vehicula ipsum in, convallis erat. Vestibulum magna sem, blandit pulvinar augue sit amet, auctor malesuada sapien. Nullam faucibus leo eget eros hendrerit, non laoreet ipsum lacinia. Curabitur cursus diam elit, non tempus ante volutpat a. Quisque hendrerit blandit purus non fringilla. Integer sit amet elit viverra ante dapibus semper. Vestibulum viverra rutrum enim, at luctus enim posuere eu. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.\n\n# from labdata.modulename import functionname\n# functionname(3, 4)\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sagittis posuere ligula sit amet lacinia. Duis dignissim pellentesque magna, rhoncus congue sapien finibus mollis. Ut eu sem laoreet, vehicula ipsum in, convallis erat. Vestibulum magna sem, blandit pulvinar augue sit amet, auctor malesuada sapien. Nullam faucibus leo eget eros hendrerit, non laoreet ipsum lacinia. Curabitur cursus diam elit, non tempus ante volutpat a. Quisque hendrerit blandit purus non fringilla. Integer sit amet elit viverra ante dapibus semper. Vestibulum viverra rutrum enim, at luctus enim posuere eu. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.\ncontents:\n  - MdRenderer\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sagittis posuere ligula sit amet lacinia. Duis dignissim pellentesque magna, rhoncus congue sapien finibus mollis. Ut eu sem laoreet, vehicula ipsum in, convallis erat. Vestibulum magna sem, blandit pulvinar augue sit amet, auctor malesuada sapien. Nullam faucibus leo eget eros hendrerit, non laoreet ipsum lacinia. Curabitur cursus diam elit, non tempus ante volutpat a. Quisque hendrerit blandit purus non fringilla. Integer sit amet elit viverra ante dapibus semper. Vestibulum viverra rutrum enim, at luctus enim posuere eu. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.",
+    "text": "Some use case\nThe get function does … labdata.get does … get does …\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sagittis posuere ligula sit amet lacinia. Duis dignissim pellentesque magna, rhoncus congue sapien finibus mollis. Ut eu sem laoreet, vehicula ipsum in, convallis erat. Vestibulum magna sem, blandit pulvinar augue sit amet, auctor malesuada sapien. Nullam faucibus leo eget eros hendrerit, non laoreet ipsum lacinia. Curabitur cursus diam elit, non tempus ante volutpat a. Quisque hendrerit blandit purus non fringilla. Integer sit amet elit viverra ante dapibus semper. Vestibulum viverra rutrum enim, at luctus enim posuere eu. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.\n\n# from labdata import get\n# get('x-gwas', 'hits.csv')\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sagittis posuere ligula sit amet lacinia. Duis dignissim pellentesque magna, rhoncus congue sapien finibus mollis. Ut eu sem laoreet, vehicula ipsum in, convallis erat. Vestibulum magna sem, blandit pulvinar augue sit amet, auctor malesuada sapien. Nullam faucibus leo eget eros hendrerit, non laoreet ipsum lacinia. Curabitur cursus diam elit, non tempus ante volutpat a. Quisque hendrerit blandit purus non fringilla. Integer sit amet elit viverra ante dapibus semper. Vestibulum viverra rutrum enim, at luctus enim posuere eu. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.\ncontents:\n  - MdRenderer\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sagittis posuere ligula sit amet lacinia. Duis dignissim pellentesque magna, rhoncus congue sapien finibus mollis. Ut eu sem laoreet, vehicula ipsum in, convallis erat. Vestibulum magna sem, blandit pulvinar augue sit amet, auctor malesuada sapien. Nullam faucibus leo eget eros hendrerit, non laoreet ipsum lacinia. Curabitur cursus diam elit, non tempus ante volutpat a. Quisque hendrerit blandit purus non fringilla. Integer sit amet elit viverra ante dapibus semper. Vestibulum viverra rutrum enim, at luctus enim posuere eu. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.",
     "crumbs": [
       "Overview"
     ]
