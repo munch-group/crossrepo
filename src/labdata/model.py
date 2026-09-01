@@ -11,8 +11,9 @@ from __future__ import annotations
 
 import re
 from dataclasses import asdict, dataclass
-from pathlib import Path
 from typing import Any, Dict, Optional, Tuple
+
+from .location import Location
 
 
 @dataclass(frozen=True)
@@ -29,32 +30,37 @@ class Version:
     Attributes
     ----------
     sha :
-        Full sha of the commit in which the file last changed.
-    short :
-        Abbreviated commit sha. This is the user-facing version key.
+        Full sha of the commit the repository pointed at. This is the
+        user-facing version key, written out in full so that it also means
+        something to git and to GitHub without labdata in hand.
     date :
         Committer date in ISO-8601 format.
     subject :
         Subject line of the commit.
     blob :
-        Git blob sha of the file at this commit. This is a hash of the file
-        content, and is used as the cache key.
+        Git blob sha of the file at this commit, a hash of its content, used as
+        the cache key. For a dataset held in a directory this is the git tree
+        sha instead, which hashes the whole directory and so plays the same part.
     size :
-        Size of the file in bytes, resolved through Git LFS pointers so that it
-        is the size of the real content rather than of the pointer.
+        Size in bytes, resolved through Git LFS pointers so that it is the size
+        of the real content rather than of the pointer. For a dataset it is the
+        total over its files.
     lfs_oid :
         The sha256 object id when the file is stored in Git LFS, else `None`.
+    parts :
+        Number of files the version is made of. Zero for an ordinary file; for a
+        dataset published as a directory, the count of files beneath it.
     tags :
         Any tags pointing at this commit.
     """
 
     sha: str
-    short: str
     date: str
     subject: str
     blob: str
     size: int
     lfs_oid: Optional[str] = None
+    parts: int = 0
     tags: Tuple[str, ...] = ()
 
 
@@ -74,20 +80,74 @@ class Entry:
         Path of the file within the repository, for example
         ``results/candidates.csv``.
     root :
-        Working tree of the repository on disk.
+        Working tree of the repository, on this machine or on a server reached
+        over ssh. Empty for a repository read over the GitHub API, which was
+        never checked out at all.
     latest :
         The most recent version of this file.
+    description :
+        What the file holds, as given for it in the ``labdata.yml`` that
+        publishes it. Empty when the manifest names the file but says nothing
+        about it.
+    remote :
+        ``owner/repo`` when the repository is on GitHub, whether it was read
+        over the API or found as a local clone with a GitHub origin. Empty
+        otherwise. This is what gives a version a URL.
+    source :
+        Where the entry was cataloged: ``local`` from a clone on this machine,
+        ``ssh`` from a clone on another machine, ``github`` over the API. It
+        decides where history is read from, which is not the same question as
+        where content is read from — a clone can supply content it happens to
+        hold for a version cataloged over the API.
 
     See Also
     --------
     [](`labdata.model.Version`)
+    [](`labdata.manifest.Manifest`)
     """
 
     owner: str
     repo: str
     path: str
-    root: Path
+    root: Location
     latest: Version
+    description: str = ""
+    remote: str = ""
+    source: str = "local"
+
+    def url(self, version: Optional[Version] = None) -> str:
+        """
+        Address of one version of this file on GitHub.
+
+        The URL names the commit, not a branch, so it keeps pointing at the
+        bytes that were cataloged. For a dataset held in a directory it is the
+        page listing the directory, there being no single file to fetch.
+
+        Parameters
+        ----------
+        version :
+            Version to address. Defaults to `latest`.
+
+        Returns
+        -------
+        :
+            The URL, or an empty string when the repository is not on GitHub.
+
+        Examples
+        --------
+
+        ```python
+        entry.url()
+        # 'https://raw.githubusercontent.com/munch-group/tree-stats/7701707/results/dummy.csv'
+        ```
+        """
+        if not self.remote:
+            return ""
+        from .github import blob_url
+
+        v = version or self.latest
+        owner, _, repo = self.remote.partition("/")
+        return blob_url(owner, repo, v.sha, self.path, directory=bool(v.parts))
 
     @property
     def name(self) -> str:
@@ -128,10 +188,10 @@ class Entry:
 
         ```python
         entry.spec
-        # 'munch-group/primate-ils:results/ils_data.h5@4e6472a'
+        # 'munch-group/primate-ils:results/ils_data.h5@4e6472a1b...'
         ```
         """
-        return f"{self.repo_key}:{self.path}@{self.latest.short}"
+        return f"{self.repo_key}:{self.path}@{self.latest.sha}"
 
     def to_dict(self) -> Dict[str, Any]:
         """
@@ -149,6 +209,7 @@ class Entry:
         d["root"] = str(self.root)
         d["spec"] = self.spec
         d["name"] = self.name
+        d["url"] = self.url()
         return d
 
 

@@ -1,0 +1,29 @@
+# find_version { #labdata.core.find_version }
+
+```python
+labdata.core.find_version(entry, ref)
+```
+
+Resolve a version reference against a file's history.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**entry**]{.parameter-name} [:]{.parameter-annotation-sep} [[Entry](`labdata.model.Entry`)]{.parameter-annotation}</code>
+
+:   Entry whose history to search.
+
+<code>[**ref**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   A commit sha or unique prefix of one, a tag name, or ``latest`` for the most recent version.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Version](`labdata.model.Version`)]{.parameter-annotation}</code>
+
+:   The matching version.
+
+## Raises {.doc-section .doc-section-raises}
+
+<code>[:]{.parameter-annotation-sep} [[LookupError](`LookupError`)]{.parameter-annotation}</code>
+
+:   If no version matches. The message lists recent versions.

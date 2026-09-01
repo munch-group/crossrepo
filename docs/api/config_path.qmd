@@ -1,0 +1,15 @@
+# config_path { #labdata.config.config_path }
+
+```python
+labdata.config.config_path()
+```
+
+Location of the configuration file.
+
+Honours ``XDG_CONFIG_HOME``.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Path](`pathlib.Path`)]{.parameter-annotation}</code>
+
+:   Path of ``config.toml``, whether or not it exists.

@@ -1,0 +1,38 @@
+# catalog { #labdata.catalog }
+
+```python
+labdata.catalog(refresh=False, max_age=3600.0, cfg=None, progress=False)
+```
+
+Get the catalog, rescanning only when needed.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**refresh**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [False]{.parameter-default}</code>
+
+:   Rescan the repositories even if a fresh catalog is on disk.
+
+<code>[**max_age**]{.parameter-name} [:]{.parameter-annotation-sep} [[float](`float`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [3600.0]{.parameter-default}</code>
+
+:   Age in seconds beyond which the stored catalog is rescanned.
+
+<code>[**cfg**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Config](`labdata.config.Config`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   Settings. Defaults to [](`labdata.config.Config.load`). A stored catalog built with different settings is rescanned rather than reused.
+
+<code>[**progress**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [False]{.parameter-default}</code>
+
+:   Show a progress bar while rescanning. Nothing is drawn when the stored catalog is used, since there is nothing to wait for.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[Entry](`labdata.model.Entry`)\]]{.parameter-annotation}</code>
+
+:   Entries sorted by repository and path.
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+for entry in catalog():
+    print(entry.spec, entry.latest.size)
+```

@@ -1,0 +1,33 @@
+# materialize { #labdata.core.materialize }
+
+```python
+labdata.core.materialize(entry, version)
+```
+
+Place one version of a result file in the cache and return its path.
+
+Content already cached is not fetched again, which is why an unchanged file
+costs nothing across versions and repositories. Git LFS content is taken
+from the repository's own object store.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**entry**]{.parameter-name} [:]{.parameter-annotation-sep} [[Entry](`labdata.model.Entry`)]{.parameter-annotation}</code>
+
+:   Entry the version belongs to.
+
+<code>[**version**]{.parameter-name} [:]{.parameter-annotation-sep} [[Version](`labdata.model.Version`)]{.parameter-annotation}</code>
+
+:   Version to materialize.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Path](`pathlib.Path`)]{.parameter-annotation}</code>
+
+:   Readable path of the cached content, under ``<cache>/files/<repo>/<version>/<path>``. For a dataset published as a directory this is the directory, with every part inside it.
+
+## Raises {.doc-section .doc-section-raises}
+
+<code>[:]{.parameter-annotation-sep} [[FileNotFoundError](`FileNotFoundError`)]{.parameter-annotation}</code>
+
+:   If the content is held in Git LFS and has not been fetched. The message names the ``git lfs fetch`` command to run.

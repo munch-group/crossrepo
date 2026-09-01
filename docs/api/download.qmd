@@ -1,0 +1,39 @@
+# download { #labdata.remote.download }
+
+```python
+labdata.remote.download(entry, blob_sha, lfs_oid, size, dest, client=None)
+```
+
+Stream one file's content from GitHub into a local path.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**entry**]{.parameter-name} [:]{.parameter-annotation-sep} [[Entry](`labdata.model.Entry`)]{.parameter-annotation}</code>
+
+:   Entry naming the repository.
+
+<code>[**blob_sha**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Blob sha of the content, used for an ordinary file.
+
+<code>[**lfs_oid**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[str](`str`)\]]{.parameter-annotation}</code>
+
+:   Git LFS object id, used instead when the file is held in LFS.
+
+<code>[**size**]{.parameter-name} [:]{.parameter-annotation-sep} [[int](`int`)]{.parameter-annotation}</code>
+
+:   Size of the real content, which the LFS batch endpoint asks for.
+
+<code>[**dest**]{.parameter-name} [:]{.parameter-annotation-sep} [[Path](`pathlib.Path`)]{.parameter-annotation}</code>
+
+:   File to write.
+
+<code>[**client**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Client](`labdata.github.Client`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   Client to read with. Defaults to a new one.
+
+## Raises {.doc-section .doc-section-raises}
+
+<code>[:]{.parameter-annotation-sep} [[GitHubError](`labdata.github.GitHubError`)]{.parameter-annotation}</code>
+
+:   If the content cannot be read.

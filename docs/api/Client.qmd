@@ -1,0 +1,319 @@
+# Client { #labdata.github.Client }
+
+```python
+labdata.github.Client(auth=None, api=API)
+```
+
+A thin, streaming client for the parts of the GitHub API labdata needs.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**auth**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[str](`str`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   Token to authenticate with. Defaults to [](`labdata.github.token`).
+
+<code>[**api**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [API]{.parameter-default}</code>
+
+:   Base address of the API, so a test can point this somewhere else.
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+client = Client()
+client.tree("munch-group", "tree-stats", "main")
+```
+
+## Methods
+
+| Name | Description |
+| --- | --- |
+| [commit](#labdata.github.Client.commit) | Read one commit. |
+| [commits](#labdata.github.Client.commits) | List the commits that touched a path, newest first. |
+| [default_branch](#labdata.github.Client.default_branch) | Find the branch a repository is read at by default. |
+| [download_blob](#labdata.github.Client.download_blob) | Stream a blob to a file. |
+| [get](#labdata.github.Client.get) | Fetch one JSON document. |
+| [lfs_download](#labdata.github.Client.lfs_download) | Stream a Git LFS object to a file. |
+| [paginate](#labdata.github.Client.paginate) | Fetch every page of a listing. |
+| [read_blob](#labdata.github.Client.read_blob) | Read a blob into memory. |
+| [repositories](#labdata.github.Client.repositories) | List the repositories an organisation or user owns. |
+| [tree](#labdata.github.Client.tree) | List everything in a repository at a revision, in one request. |
+
+### commit { #labdata.github.Client.commit }
+
+```python
+labdata.github.Client.commit(owner, repo, ref)
+```
+
+Read one commit.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+<code>[**owner**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository owner.
+
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository name.
+
+<code>[**ref**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Branch, tag or commit sha. A branch gives the commit it points at, which is what stamps everything the repository publishes.
+
+#### Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[dict](`dict`)\]]{.parameter-annotation}</code>
+
+:   The commit document, or `None` when there is no such revision.
+
+### commits { #labdata.github.Client.commits }
+
+```python
+labdata.github.Client.commits(owner, repo, path, limit=100)
+```
+
+List the commits that touched a path, newest first.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+<code>[**owner**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository owner.
+
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository name.
+
+<code>[**path**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository-relative path of a file or directory.
+
+<code>[**limit**]{.parameter-name} [:]{.parameter-annotation-sep} [[int](`int`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [100]{.parameter-default}</code>
+
+:   Most commits to return.
+
+#### Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[dict](`dict`)\]]{.parameter-annotation}</code>
+
+:   Raw commit documents, newest first.
+
+### default_branch { #labdata.github.Client.default_branch }
+
+```python
+labdata.github.Client.default_branch(owner, repo)
+```
+
+Find the branch a repository is read at by default.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+<code>[**owner**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository owner.
+
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository name.
+
+#### Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   The default branch name.
+
+### download_blob { #labdata.github.Client.download_blob }
+
+```python
+labdata.github.Client.download_blob(owner, repo, sha, dest)
+```
+
+Stream a blob to a file.
+
+The content is copied straight from the socket to the file, so peak
+memory does not grow with the size of the result.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+<code>[**owner**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository owner.
+
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository name.
+
+<code>[**sha**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Blob sha.
+
+<code>[**dest**]{.parameter-name} [:]{.parameter-annotation-sep} [[Path](`pathlib.Path`)]{.parameter-annotation}</code>
+
+:   File to write.
+
+### get { #labdata.github.Client.get }
+
+```python
+labdata.github.Client.get(endpoint, **params)
+```
+
+Fetch one JSON document.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+<code>[**endpoint**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   API path, such as ``repos/owner/name/git/trees/main``. Named so rather than ``path`` because ``path`` is itself a query parameter GitHub takes, on the commits endpoint among others.
+
+<code>[****params**]{.parameter-name} [:]{.parameter-annotation-sep} [[Any](`typing.Any`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [{}]{.parameter-default}</code>
+
+:   Query parameters.
+
+#### Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Any](`typing.Any`)]{.parameter-annotation}</code>
+
+:   The decoded document.
+
+### lfs_download { #labdata.github.Client.lfs_download }
+
+```python
+labdata.github.Client.lfs_download(owner, repo, oid, size, dest)
+```
+
+Stream a Git LFS object to a file.
+
+LFS content is not in the git tree — the tree holds a pointer — so it is
+asked for through the batch endpoint, which hands back a URL to fetch it
+from.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+<code>[**owner**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository owner.
+
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository name.
+
+<code>[**oid**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   The sha256 object id from the pointer file.
+
+<code>[**size**]{.parameter-name} [:]{.parameter-annotation-sep} [[int](`int`)]{.parameter-annotation}</code>
+
+:   Size of the real content, from the pointer file.
+
+<code>[**dest**]{.parameter-name} [:]{.parameter-annotation-sep} [[Path](`pathlib.Path`)]{.parameter-annotation}</code>
+
+:   File to write.
+
+#### Raises {.doc-section .doc-section-raises}
+
+<code>[:]{.parameter-annotation-sep} [[GitHubError](`labdata.github.GitHubError`)]{.parameter-annotation}</code>
+
+:   If the batch endpoint refuses, or names no download for the object.
+
+### paginate { #labdata.github.Client.paginate }
+
+```python
+labdata.github.Client.paginate(endpoint, **params)
+```
+
+Fetch every page of a listing.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+<code>[**endpoint**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   API path returning a JSON array.
+
+<code>[****params**]{.parameter-name} [:]{.parameter-annotation-sep} [[Any](`typing.Any`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [{}]{.parameter-default}</code>
+
+:   Query parameters. ``per_page`` defaults to the maximum of 100.
+
+#### Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Iterator](`typing.Iterator`)\[[dict](`dict`)\]]{.parameter-annotation}</code>
+
+:   An iterator over every item, across all pages. Pages are fetched as it is consumed, so stopping early stops requesting.
+
+### read_blob { #labdata.github.Client.read_blob }
+
+```python
+labdata.github.Client.read_blob(owner, repo, sha)
+```
+
+Read a blob into memory.
+
+Only for content known to be small, such as a manifest or a Git LFS
+pointer. Use [](`labdata.github.Client.download_blob`) for result files.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+<code>[**owner**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository owner.
+
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository name.
+
+<code>[**sha**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Blob sha.
+
+#### Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[bytes](`bytes`)]{.parameter-annotation}</code>
+
+:   The raw content.
+
+### repositories { #labdata.github.Client.repositories }
+
+```python
+labdata.github.Client.repositories(owner)
+```
+
+List the repositories an organisation or user owns.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+<code>[**owner**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Organisation or user name.
+
+#### Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[Tuple](`typing.Tuple`)\[[str](`str`), [str](`str`)\]\]]{.parameter-annotation}</code>
+
+:   Tuples of ``(name, default_branch)``, skipping empty repositories.
+
+### tree { #labdata.github.Client.tree }
+
+```python
+labdata.github.Client.tree(owner, repo, ref)
+```
+
+List everything in a repository at a revision, in one request.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+<code>[**owner**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository owner.
+
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository name.
+
+<code>[**ref**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Branch, tag or commit sha.
+
+#### Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[dict](`dict`)\]]{.parameter-annotation}</code>
+
+:   Entries with ``path``, ``type``, ``sha`` and, for blobs, ``size``. An empty list when the repository has no such revision.

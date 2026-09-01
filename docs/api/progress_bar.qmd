@@ -1,0 +1,31 @@
+# progress_bar { #labdata.core.progress_bar }
+
+```python
+labdata.core.progress_bar(items, description, enabled)
+```
+
+Wrap an iterable in a progress bar when one is wanted.
+
+Scanning is one step per repository, so that is what the bar counts.
+``tqdm.auto`` is used, which draws a widget in a notebook and a text bar in
+a terminal, so the same call suits both.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**items**]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation}</code>
+
+:   What is about to be iterated. Its length is the total.
+
+<code>[**description**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Label shown beside the bar.
+
+<code>[**enabled**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation}</code>
+
+:   Whether to draw one at all. The caller decides: a command line hides it when its output is not a terminal, a notebook always shows it.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation}</code>
+
+:   `items`, wrapped when a bar is wanted and unchanged otherwise. A missing `tqdm` also leaves it unchanged rather than failing.

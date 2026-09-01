@@ -1,0 +1,18 @@
+# token { #labdata.github.token }
+
+```python
+labdata.github.token()
+```
+
+Find a GitHub token to authenticate with.
+
+``GITHUB_TOKEN`` is used when set; otherwise the token the ``gh`` command
+line is logged in with, which is usually already there on a machine that
+uses GitHub at all. Without one only public repositories are readable, and
+the rate limit is sixty requests an hour rather than five thousand.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[str](`str`)\]]{.parameter-annotation}</code>
+
+:   The token, or `None` when there is none.

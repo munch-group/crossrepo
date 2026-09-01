@@ -1,0 +1,30 @@
+# main { #labdata.cli.main }
+
+```python
+labdata.cli.main(argv=None)
+```
+
+Run the command line interface.
+
+Expected failures are reported as a short message on standard error rather
+than a traceback, and the exit status is returned rather than raised, so the
+entry point can be called from a test. `OSError` is among them because a
+directory on the way can be unreadable or simply never answer.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**argv**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[List](`typing.List`)\[[str](`str`)\]\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   Arguments to parse. Defaults to `sys.argv`.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[int](`int`)]{.parameter-annotation}</code>
+
+:   Process exit status.
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+main(["list", "--pattern", "*.csv"])
+```

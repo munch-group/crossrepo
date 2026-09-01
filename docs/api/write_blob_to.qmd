@@ -1,0 +1,30 @@
+# write_blob_to { #labdata.gitutil.write_blob_to }
+
+```python
+labdata.gitutil.write_blob_to(repo, blob_sha, dest)
+```
+
+Stream the content of a blob to a file.
+
+Git writes straight into `dest`, so peak memory does not grow with the size
+of the file.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[Location](`labdata.location.Location`), [Path](`pathlib.Path`), [str](`str`)\]]{.parameter-annotation}</code>
+
+:   Working tree holding the blob, on this machine or another.
+
+<code>[**blob_sha**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Blob sha to read.
+
+<code>[**dest**]{.parameter-name} [:]{.parameter-annotation-sep} [[Path](`pathlib.Path`)]{.parameter-annotation}</code>
+
+:   File to write. It is removed again if git fails.
+
+## Raises {.doc-section .doc-section-raises}
+
+<code>[:]{.parameter-annotation-sep} [[GitError](`labdata.gitutil.GitError`)]{.parameter-annotation}</code>
+
+:   If git cannot read the blob.

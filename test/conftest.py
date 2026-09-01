@@ -23,8 +23,12 @@ def repos(tmp_path_factory):
 
 @pytest.fixture(scope="module")
 def cfg(repos):
-    """Settings covering the fixture repositories."""
-    return Config(roots=[str(repos)], depth=3)
+    """Settings covering the fixture repositories.
+
+    The fixtures group repositories by owner, so each owner directory is a root:
+    a root is either a repository or a directory holding them.
+    """
+    return Config(roots=[str(repos / "acme"), str(repos / "other")])
 
 
 @pytest.fixture(scope="module")

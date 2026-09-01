@@ -1,0 +1,109 @@
+# Entry { #labdata.Entry }
+
+```python
+labdata.Entry(
+    owner,
+    repo,
+    path,
+    root,
+    latest,
+    description='',
+    remote='',
+    source='local',
+)
+```
+
+A result file in a repository, at its most recent version.
+
+## Attributes {.doc-section .doc-section-attributes}
+
+<code>[**owner**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Owner of the repository, taken from the origin remote when there is one and from the parent directory name otherwise.
+
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository name.
+
+<code>[**path**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Path of the file within the repository, for example ``results/candidates.csv``.
+
+<code>[**root**]{.parameter-name} [:]{.parameter-annotation-sep} [[Location](`labdata.location.Location`)]{.parameter-annotation}</code>
+
+:   Working tree of the repository, on this machine or on a server reached over ssh. Empty for a repository read over the GitHub API, which was never checked out at all.
+
+<code>[**latest**]{.parameter-name} [:]{.parameter-annotation-sep} [[Version](`labdata.model.Version`)]{.parameter-annotation}</code>
+
+:   The most recent version of this file.
+
+<code>[**description**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   What the file holds, as given for it in the ``labdata.yml`` that publishes it. Empty when the manifest names the file but says nothing about it.
+
+<code>[**remote**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   ``owner/repo`` when the repository is on GitHub, whether it was read over the API or found as a local clone with a GitHub origin. Empty otherwise. This is what gives a version a URL.
+
+<code>[**source**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Where the entry was cataloged: ``local`` from a clone on this machine, ``ssh`` from a clone on another machine, ``github`` over the API. It decides where history is read from, which is not the same question as where content is read from — a clone can supply content it happens to hold for a version cataloged over the API.
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`labdata.model.Version`)
+[](`labdata.manifest.Manifest`)
+
+## Methods
+
+| Name | Description |
+| --- | --- |
+| [to_dict](#labdata.Entry.to_dict) | Represent the entry as JSON-serialisable data. |
+| [url](#labdata.Entry.url) | Address of one version of this file on GitHub. |
+
+### to_dict { #labdata.Entry.to_dict }
+
+```python
+labdata.Entry.to_dict()
+```
+
+Represent the entry as JSON-serialisable data.
+
+Used by the on-disk catalog cache and by ``labdata list --json``.
+
+#### Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Dict](`typing.Dict`)\[[str](`str`), [Any](`typing.Any`)\]]{.parameter-annotation}</code>
+
+:   A dictionary with the dataclass fields plus the derived `spec` and `name`, with `root` converted to a string.
+
+### url { #labdata.Entry.url }
+
+```python
+labdata.Entry.url(version=None)
+```
+
+Address of one version of this file on GitHub.
+
+The URL names the commit, not a branch, so it keeps pointing at the
+bytes that were cataloged. For a dataset held in a directory it is the
+page listing the directory, there being no single file to fetch.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+<code>[**version**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Version](`labdata.model.Version`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   Version to address. Defaults to `latest`.
+
+#### Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   The URL, or an empty string when the repository is not on GitHub.
+
+#### Examples {.doc-section .doc-section-examples}
+
+```python
+entry.url()
+# 'https://raw.githubusercontent.com/munch-group/tree-stats/7701707/results/dummy.csv'
+```

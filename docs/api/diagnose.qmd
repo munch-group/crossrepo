@@ -1,0 +1,32 @@
+# diagnose { #labdata.diagnose }
+
+```python
+labdata.diagnose(cfg=None)
+```
+
+    Explain why a scan found nothing.
+
+    An empty catalog has several ordinary causes, and they look identical from
+    the outside: a root that does not exist, repositories that have no results
+    directory, results directories with no manifest, or simply no GitHub owner
+    configured. This reports which it is, reading only local git and making no
+    request.
+
+##     Parameters {.doc-section .doc-section-----parameters}
+
+    cfg :
+        Settings to account for. Defaults to
+        [](`labdata.config.Config.load`).
+
+##     Returns {.doc-section .doc-section-----returns}
+
+    :
+        Lines describing what was looked at and what was missing.
+
+##     Examples {.doc-section .doc-section-----examples}
+
+
+    ```python
+    print("
+".join(diagnose()))
+    ```

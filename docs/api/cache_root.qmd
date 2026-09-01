@@ -1,0 +1,19 @@
+# cache_root { #labdata.config.cache_root }
+
+```python
+labdata.config.cache_root()
+```
+
+Location of the local cache.
+
+Honours ``LABDATA_CACHE`` first and ``XDG_CACHE_HOME`` second.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Path](`pathlib.Path`)]{.parameter-annotation}</code>
+
+:   Root directory of the cache, whether or not it exists.
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`labdata.cache.blob_path`)

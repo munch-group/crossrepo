@@ -1,0 +1,47 @@
+# Version { #labdata.Version }
+
+```python
+labdata.Version(sha, date, subject, blob, size, lfs_oid=None, parts=0, tags=())
+```
+
+One commit in which a result file changed.
+
+A version is defined by a commit, not by a repository tag. Analysis repos
+are rarely tagged, whereas every change to a result file is a commit, so
+commits give a version key that exists without extra discipline. Tags, when
+present, are carried in `tags` and can be used to address a version, but
+they never define one.
+
+## Attributes {.doc-section .doc-section-attributes}
+
+<code>[**sha**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Full sha of the commit the repository pointed at. This is the user-facing version key, written out in full so that it also means something to git and to GitHub without labdata in hand.
+
+<code>[**date**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Committer date in ISO-8601 format.
+
+<code>[**subject**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Subject line of the commit.
+
+<code>[**blob**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Git blob sha of the file at this commit, a hash of its content, used as the cache key. For a dataset held in a directory this is the git tree sha instead, which hashes the whole directory and so plays the same part.
+
+<code>[**size**]{.parameter-name} [:]{.parameter-annotation-sep} [[int](`int`)]{.parameter-annotation}</code>
+
+:   Size in bytes, resolved through Git LFS pointers so that it is the size of the real content rather than of the pointer. For a dataset it is the total over its files.
+
+<code>[**lfs_oid**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[str](`str`)\]]{.parameter-annotation}</code>
+
+:   The sha256 object id when the file is stored in Git LFS, else `None`.
+
+<code>[**parts**]{.parameter-name} [:]{.parameter-annotation-sep} [[int](`int`)]{.parameter-annotation}</code>
+
+:   Number of files the version is made of. Zero for an ordinary file; for a dataset published as a directory, the count of files beneath it.
+
+<code>[**tags**]{.parameter-name} [:]{.parameter-annotation-sep} [[Tuple](`typing.Tuple`)\[[str](`str`), ...\]]{.parameter-annotation}</code>
+
+:   Any tags pointing at this commit.

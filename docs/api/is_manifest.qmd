@@ -1,0 +1,19 @@
+# is_manifest { #labdata.manifest.is_manifest }
+
+```python
+labdata.manifest.is_manifest(path)
+```
+
+Test whether a repository path is a manifest.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**path**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository-relative path.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation}</code>
+
+:   `True` for a manifest, which is never itself a published result file.

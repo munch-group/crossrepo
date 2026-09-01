@@ -1,0 +1,29 @@
+# resolve_one { #labdata.core.resolve_one }
+
+```python
+labdata.core.resolve_one(entries, spec)
+```
+
+Find the single entry a spec refers to.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**entries**]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[Entry](`labdata.model.Entry`)\]]{.parameter-annotation}</code>
+
+:   Catalog to search.
+
+<code>[**spec**]{.parameter-name} [:]{.parameter-annotation-sep} [[Spec](`labdata.model.Spec`)]{.parameter-annotation}</code>
+
+:   Reference to resolve.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Entry](`labdata.model.Entry`)]{.parameter-annotation}</code>
+
+:   The matching entry.
+
+## Raises {.doc-section .doc-section-raises}
+
+<code>[:]{.parameter-annotation-sep} [[LookupError](`LookupError`)]{.parameter-annotation}</code>
+
+:   If nothing matches, or if several entries do. The message lists the candidates as full specs, so the ambiguity can be resolved by copying one of them.

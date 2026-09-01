@@ -2,54 +2,68 @@
 Command line interface.
 
 Every subcommand prints specs in the form the other subcommands accept, so a
-line of output can be pasted straight into the next command.
+line of output can be pasted straight into the next command. The commands are
+built with `click`; [](`labdata.cli.main`) wraps the group so that an expected
+failure becomes a one line message rather than a traceback, and so that the
+process exit status is returned rather than raised.
+
+``--config`` and ``--refresh`` are accepted both before and after the
+subcommand, so ``labdata --refresh list`` and ``labdata list --refresh`` mean
+the same thing.
 """
 
 from __future__ import annotations
 
-import argparse
 import fnmatch
 import json
 import sys
+import warnings
+from contextlib import contextmanager
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, Callable, Dict, Iterator, List, Optional, Tuple
 
-from . import cache
+import click
+
+from . import __version__, cache
 from . import core as cat
-from .config import Config, config_path
+from .config import Config, SourceWarning, cache_root, config_path
+from .core import human
+from .gitutil import GitError
 from .model import Entry, Spec
 
+CONTEXT_SETTINGS = {"help_option_names": ["-h", "--help"]}
+"""Show usage for both ``-h`` and ``--help``."""
 
-def human(n: int) -> str:
+
+def note(version) -> str:
     """
-    Format a byte count for a table column.
+    Summarise what is unusual about a version, for the table's NOTE column.
 
     Parameters
     ----------
-    n :
-        Number of bytes. A negative number means the size is unknown.
+    version :
+        Version to describe.
 
     Returns
     -------
     :
-        A short string such as ``948B`` or ``488.5M``, or ``?`` when unknown.
+        Its tags, whether it is held in Git LFS, and how many parts it has if it
+        is a dataset, comma separated; empty for an ordinary tagless file.
 
     Examples
     --------
 
     ```python
-    human(512189753)
-    # '488.5M'
+    note(entry.latest)
+    # 'v1.0,12 parts'
     ```
     """
-    if n < 0:
-        return "?"
-    size = float(n)
-    for unit in ("B", "K", "M", "G", "T"):
-        if size < 1024 or unit == "T":
-            return f"{size:.0f}{unit}" if unit == "B" else f"{size:.1f}{unit}"
-        size /= 1024
-    return f"{size:.1f}T"
+    bits = list(version.tags)
+    if version.lfs_oid:
+        bits.append("lfs")
+    if version.parts:
+        bits.append(f"{version.parts} parts")
+    return ",".join(bits)
 
 
 def table(rows: List[List[str]], headers: List[str]) -> str:
@@ -82,100 +96,312 @@ def table(rows: List[List[str]], headers: List[str]) -> str:
     return f"{head}\n{sep}\n{body}"
 
 
-def _config(args: argparse.Namespace) -> Config:
+def catalog_options(f: Callable) -> Callable:
     """
-    Load the settings named on the command line.
+    Add the options shared by every command that reads the catalog.
+
+    The same two options sit on the group, so they may be given on either side
+    of the subcommand.
 
     Parameters
     ----------
-    args :
-        Parsed arguments, whose `config` attribute may name a file.
+    f :
+        Command callback to decorate.
 
     Returns
     -------
     :
-        The settings.
+        The decorated callback, taking `config_file` and `refresh`.
     """
-    return Config.load(Path(args.config).expanduser() if args.config else None)
+    f = click.option(
+        "--refresh",
+        is_flag=True,
+        default=False,
+        help="rescan repos instead of using the cached catalog",
+    )(f)
+    f = click.option(
+        "--config",
+        "config_file",
+        metavar="PATH",
+        default=None,
+        type=click.Path(dir_okay=False),
+        help="path to config.toml",
+    )(f)
+    return f
 
 
-def _entries(args: argparse.Namespace) -> List[Entry]:
+def _shared(ctx: click.Context) -> Dict[str, Any]:
+    """
+    Read the options given before the subcommand.
+
+    Parameters
+    ----------
+    ctx :
+        Click context, whose `obj` the group fills in.
+
+    Returns
+    -------
+    :
+        A mapping with ``config`` and ``refresh`` keys.
+    """
+    return ctx.obj or {}
+
+
+def _settings(
+    ctx: click.Context, config_file: Optional[str] = None, refresh: bool = False
+) -> Tuple[Config, bool]:
+    """
+    Combine the group level and subcommand level options.
+
+    Parameters
+    ----------
+    ctx :
+        Click context.
+    config_file :
+        Configuration file named after the subcommand, if any.
+    refresh :
+        Whether a rescan was asked for after the subcommand.
+
+    Returns
+    -------
+    :
+        ``(settings, refresh)``, where either level may supply either value.
+    """
+    shared = _shared(ctx)
+    path = config_file or shared.get("config")
+    cfg = Config.load(Path(path).expanduser() if path else None)
+    return cfg, bool(refresh or shared.get("refresh"))
+
+
+def _require_sources(cfg: Config) -> None:
+    """
+    Stop with an actionable message when there is nothing to read.
+
+    Both settings are empty until configured, so the alternative is a command
+    that quietly reports nothing and gives no clue why.
+
+    Parameters
+    ----------
+    cfg :
+        Settings to check.
+
+    Raises
+    ------
+    click.ClickException
+        If neither local roots nor GitHub owners or repos are configured.
+    """
+    if cfg.roots or cfg.owners or cfg.repos:
+        return
+    raise click.ClickException(
+        "nothing is configured to read.\n"
+        f"Run `labdata config --init` to write {config_path()}, then set either\n"
+        "  owners = [\"munch-group\"]        # read GitHub directly, nothing cloned\n"
+        "  roots  = [\"~/projects\"]         # or scan clones already on this machine\n"
+        "  roots  = [\"me@server:~/projects\"] # or clones on a server, over ssh"
+    )
+
+
+@contextmanager
+def _collecting() -> Iterator[List[warnings.WarningMessage]]:
+    """
+    Gather what a scan says about itself, to be reported when it is over.
+
+    Warnings are how a scan says that a root, an organisation or a repository
+    could not be read, since one unreachable source must not cost the others.
+    Python would print each with the file and line it came from, which says
+    nothing to the person who wrote the settings, so they are collected here and
+    handed to [](`labdata.cli._report`) instead.
+
+    Yields
+    ------
+    :
+        The list the warnings are collected into, filled by the end of the
+        block.
+    """
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        yield caught
+
+
+def _report(caught: List[warnings.WarningMessage]) -> None:
+    """
+    Print what a scan could not read, as a list of sources and their reasons.
+
+    Parameters
+    ----------
+    caught :
+        Warnings raised during the scan. Anything that is not about a source is
+        printed on its own line; the sources are counted and listed together,
+        each once however many repositories it cost, and any further line of a
+        message is indented under it as the advice it is.
+    """
+    sources: Dict[str, None] = {}
+    for entry in caught:
+        said = str(entry.message)
+        if issubclass(entry.category, SourceWarning):
+            sources.setdefault(said, None)
+        else:
+            click.echo(f"warning: {said}", err=True)
+    if not sources:
+        return
+    count = len(sources)
+    click.echo(
+        f"{count} configured source{'' if count == 1 else 's'} could not be read:",
+        err=True,
+    )
+    for said in sources:
+        first, *rest = said.splitlines()
+        click.echo(f"  {first}", err=True)
+        for line in rest:                 # what to do about it, set apart
+            click.echo(f"    {line}", err=True)
+
+
+def _entries(
+    ctx: click.Context, config_file: Optional[str], refresh: bool
+) -> List[Entry]:
     """
     Get the catalog for a command invocation.
 
     Parameters
     ----------
-    args :
-        Parsed arguments, whose `refresh` attribute forces a rescan.
+    ctx :
+        Click context.
+    config_file :
+        Configuration file named after the subcommand, if any.
+    refresh :
+        Whether a rescan was asked for after the subcommand.
 
     Returns
     -------
     :
         The catalog entries.
     """
-    return cat.catalog(refresh=args.refresh, cfg=_config(args))
+    cfg, do_refresh = _settings(ctx, config_file, refresh)
+    _require_sources(cfg)
+    with _collecting() as caught:         # silent unless something was scanned
+        entries = cat.catalog(refresh=do_refresh, cfg=cfg)
+    _report(caught)
+    return entries
 
 
-def cmd_list(args: argparse.Namespace) -> int:
+@click.group(context_settings=CONTEXT_SETTINGS)
+@click.option(
+    "--config",
+    "config_file",
+    metavar="PATH",
+    type=click.Path(dir_okay=False),
+    help="path to config.toml",
+)
+@click.option(
+    "--refresh",
+    is_flag=True,
+    help="rescan repos instead of using the cached catalog",
+)
+@click.version_option(__version__, "-V", "--version", prog_name="labdata")
+@click.pass_context
+def cli(ctx: click.Context, config_file: Optional[str], refresh: bool) -> None:
+    """Catalog and fetch versioned result files across git repos."""
+    ctx.obj = {"config": config_file, "refresh": refresh}
+
+
+def _explain_empty(
+    ctx: click.Context, config_file: Optional[str], refresh: bool
+) -> None:
     """
-    Print the result files in the catalog.
+    Say why the catalog is empty, in terms of what was actually looked at.
 
     Parameters
     ----------
-    args :
-        Parsed arguments, using `repo` to filter by repository substring,
-        `pattern` to filter by file name glob and `json` to print machine
-        readable output.
-
-    Returns
-    -------
-    :
-        Process exit status; ``1`` when nothing matched.
+    ctx :
+        Click context.
+    config_file :
+        Configuration file named after the subcommand, if any.
+    refresh :
+        Whether a rescan was asked for.
     """
-    entries = _entries(args)
-    if args.repo:
-        needle = args.repo.lower()
+    cfg, _ = _settings(ctx, config_file, refresh)
+    click.echo("nothing is published by anything configured. What was looked at:", err=True)
+    for line in cat.diagnose(cfg):
+        click.echo(line, err=True)
+    click.echo(
+        "\nA repo publishes by committing a labdata.yml in the results directory\n"
+        "at its root, naming the files:\n"
+        "  files:\n"
+        "    hits.csv: what this file holds\n"
+        "To read repos on GitHub without cloning them, set in your config:\n"
+        '  owners = ["munch-group"]',
+        err=True,
+    )
+
+
+@cli.command("list")
+@click.argument("repo", required=False)
+@click.option("-p", "--pattern", metavar="GLOB", help="filter by filename glob, e.g. '*.csv'")
+@click.option("--json", "as_json", is_flag=True, help="print machine readable output")
+@click.option("--version", "--sha", "show_version", is_flag=True,
+              help="add the version, the full commit sha, as a last column")
+@click.option("-u", "--url", "show_url", is_flag=True,
+              help="add the URL of each file's version on GitHub")
+@catalog_options
+@click.pass_context
+def cmd_list(
+    ctx: click.Context,
+    repo: Optional[str],
+    pattern: Optional[str],
+    as_json: bool,
+    show_version: bool,
+    show_url: bool,
+    config_file: Optional[str],
+    refresh: bool,
+) -> int:
+    """
+    List result files, optionally limited to one repo.
+
+    The version is left out unless asked for: it is a full commit sha, which is
+    wide, and it is the same for every file a repository publishes.
+    """
+    entries = _entries(ctx, config_file, refresh)
+    if repo:
+        needle = repo.lower()
         entries = [e for e in entries if needle in e.repo_key.lower()]
-    if args.pattern:
-        entries = [e for e in entries if fnmatch.fnmatch(e.name, args.pattern)]
-    if args.json:
-        print(json.dumps([e.to_dict() for e in entries], indent=1))
+    if pattern:
+        entries = [e for e in entries if fnmatch.fnmatch(e.name, pattern)]
+    if as_json:
+        click.echo(json.dumps([e.to_dict() for e in entries], indent=1))
         return 0
     if not entries:
-        print(
-            "nothing found. `labdata refresh` to rescan, or check `labdata config`.",
-            file=sys.stderr,
-        )
+        _explain_empty(ctx, config_file, refresh)
         return 1
+    headers = ["REPO", "PATH", "DATE", "SIZE", "NOTE", "DESCRIPTION"]
     rows = [
         [
-            e.repo_key, e.path, e.latest.short, e.latest.date[:10],
+            e.repo_key, e.path, e.latest.date[:10],
             human(e.latest.size),
-            ",".join(e.latest.tags) or ("lfs" if e.latest.lfs_oid else ""),
+            note(e.latest),
+            e.description,
         ]
         for e in entries
     ]
-    print(table(rows, ["REPO", "PATH", "VERSION", "DATE", "SIZE", "NOTE"]))
-    print(f"\n{len(entries)} files in {len({e.repo_key for e in entries})} repos")
+    if show_version:
+        headers.append("VERSION")
+        for row, entry in zip(rows, entries):
+            row.append(entry.latest.sha)
+    if show_url:
+        headers.append("URL")
+        for row, entry in zip(rows, entries):
+            row.append(entry.url())
+    click.echo(table(rows, headers))
+    click.echo(f"\n{len(entries)} files in {len({e.repo_key for e in entries})} repos")
     return 0
 
 
-def cmd_repos(args: argparse.Namespace) -> int:
-    """
-    Print one line per repository holding result files.
-
-    Parameters
-    ----------
-    args :
-        Parsed arguments.
-
-    Returns
-    -------
-    :
-        Process exit status.
-    """
-    entries = _entries(args)
-    by = {}
+@cli.command("repos")
+@catalog_options
+@click.pass_context
+def cmd_repos(ctx: click.Context, config_file: Optional[str], refresh: bool) -> int:
+    """Print one line per repo holding result files."""
+    entries = _entries(ctx, config_file, refresh)
+    by: Dict[str, List[Entry]] = {}
     for e in entries:
         by.setdefault(e.repo_key, []).append(e)
     rows = [
@@ -186,183 +412,211 @@ def cmd_repos(args: argparse.Namespace) -> int:
         ]
         for k, v in sorted(by.items())
     ]
-    print(table(rows, ["REPO", "FILES", "SIZE", "LATEST"]))
+    click.echo(table(rows, ["REPO", "FILES", "SIZE", "LATEST"]))
     return 0
 
 
-def cmd_versions(args: argparse.Namespace) -> int:
-    """
-    Print the history of one result file.
-
-    Parameters
-    ----------
-    args :
-        Parsed arguments, whose `spec` names the file.
-
-    Returns
-    -------
-    :
-        Process exit status.
-    """
-    entries = _entries(args)
-    entry = cat.resolve_one(entries, Spec.parse(args.spec))
+@cli.command("versions")
+@click.argument("spec")
+@catalog_options
+@click.pass_context
+def cmd_versions(
+    ctx: click.Context, spec: str, config_file: Optional[str], refresh: bool
+) -> int:
+    """Print the history of one result file, given as [owner/]repo:path."""
+    entries = _entries(ctx, config_file, refresh)
+    entry = cat.resolve_one(entries, Spec.parse(spec))
     rows = [
-        [v.short, v.date[:10], human(v.size), ",".join(v.tags), v.subject[:60]]
+        [v.sha, v.date[:10], human(v.size), note(v), v.subject[:60]]
         for v in cat.versions(entry)
     ]
-    print(f"{entry.repo_key}:{entry.path}\n")
-    print(table(rows, ["VERSION", "DATE", "SIZE", "TAGS", "COMMIT"]))
+    click.echo(f"{entry.repo_key}:{entry.path}\n")
+    click.echo(table(rows, ["VERSION", "DATE", "SIZE", "NOTE", "COMMIT"]))
     return 0
 
 
-def cmd_get(args: argparse.Namespace) -> int:
+@cli.command("get")
+@click.argument("spec")
+@click.option("-o", "--out", metavar="PATH", help="also write a copy here")
+@click.option("-u", "--url", "show_url", is_flag=True,
+              help="print the URL of the version instead of downloading it")
+@catalog_options
+@click.pass_context
+def cmd_get(
+    ctx: click.Context,
+    spec: str,
+    out: Optional[str],
+    show_url: bool,
+    config_file: Optional[str],
+    refresh: bool,
+) -> int:
     """
-    Fetch one version of a result file and print its path.
+    Fetch [owner/]repo:path[@version] into the cache and print its path.
 
     The path is the only thing written to standard output, so the command
-    composes with others in a shell pipeline.
-
-    Parameters
-    ----------
-    args :
-        Parsed arguments, whose `spec` names the file and version and whose
-        `out` optionally names a copy to write.
-
-    Returns
-    -------
-    :
-        Process exit status.
+    composes in a shell pipeline. When no version is given, the one chosen is
+    named on standard error; when one is given and the file has changed since,
+    that is said there instead.
     """
-    entries = _entries(args)
-    spec = Spec.parse(args.spec)
-    entry = cat.resolve_one(entries, spec)
-    version = cat.find_version(entry, spec.version or "latest")
+    entries = _entries(ctx, config_file, refresh)
+    parsed = Spec.parse(spec)
+    entry = cat.resolve_one(entries, parsed)
+    version = cat.find_version(entry, parsed.version or "latest")
+    if show_url:
+        address = entry.url(version)
+        if not address:
+            raise click.ClickException(
+                f"{entry.repo_key} has no GitHub origin, so its files have no URL"
+            )
+        click.echo(address)
+        return 0
     path = cat.materialize(entry, version)
-    if args.out:
-        dest = Path(args.out).expanduser()
-        if dest.is_dir():
-            dest = dest / entry.name
-        with open(path, "rb") as src, open(dest, "wb") as fh:
-            while True:
-                chunk = src.read(1 << 20)
-                if not chunk:
-                    break
-                fh.write(chunk)
-        path = dest
-    print(path)
+    if parsed.version is None:
+        click.echo(
+            f"{entry.repo_key}:{entry.path}@{version.sha}  "
+            f"({version.date[:10]}, {human(version.size)})",
+            err=True,
+        )
+    else:
+        stale = cat.outdated(entry, version)
+        if stale:
+            click.echo(stale, err=True)
+    if out:
+        path = cat.copy_out(path, out, entry.name)
+    click.echo(str(path))
     return 0
 
 
-def cmd_refresh(args: argparse.Namespace) -> int:
+@cli.command("refresh")
+@catalog_options
+@click.pass_context
+def cmd_refresh(ctx: click.Context, config_file: Optional[str], refresh: bool) -> int:
     """
-    Rescan the repositories and store the catalog.
+    Rescan the repos and store the catalog.
 
-    Parameters
-    ----------
-    args :
-        Parsed arguments.
-
-    Returns
-    -------
-    :
-        Process exit status.
+    A progress bar is drawn, one step per repository, when standard error is a
+    terminal. Any root, organisation or repository that could not be read is
+    named on standard error afterwards; the catalog is still written from what
+    could be, and the status stays zero, since a scan that reached most of its
+    sources has done its job.
     """
-    entries = cat.build(_config(args))
-    cat.save(entries)
-    print(
+    cfg, _ = _settings(ctx, config_file, refresh)
+    _require_sources(cfg)
+    # A bar belongs on a terminal, not in a log or a pipe.
+    with _collecting() as caught:
+        entries = cat.build(cfg, progress=sys.stderr.isatty())
+    cat.save(entries, cfg)
+    click.echo(
         f"cataloged {len(entries)} files "
         f"in {len({e.repo_key for e in entries})} repos"
     )
+    _report(caught)                       # what was read, then what was not
+    if not entries:
+        _explain_empty(ctx, config_file, refresh)
+        return 1
     return 0
 
 
-def cmd_config(args: argparse.Namespace) -> int:
+@cli.command("config")
+@click.option("--init", "init", is_flag=True, help="write a config file")
+@click.option("--force", is_flag=True, help="overwrite an existing file")
+@click.pass_context
+def cmd_config(ctx: click.Context, init: bool, force: bool) -> int:
     """
-    Show the settings in force, or write a configuration file.
+    Show the settings in force, or write a config file.
 
-    Parameters
-    ----------
-    args :
-        Parsed arguments, whose `init` writes a file and whose `force` allows
-        overwriting one.
-
-    Returns
-    -------
-    :
-        Process exit status; ``1`` when a file exists and `force` was not given.
+    A ``--config PATH`` given before the subcommand names the file to show or
+    write, instead of the default location.
     """
-    path = config_path()
-    if args.init:
-        if path.exists() and not args.force:
-            print(f"{path} exists; --force to overwrite", file=sys.stderr)
+    named = _shared(ctx).get("config")
+    path = Path(named).expanduser() if named else config_path()
+    if init:
+        if path.exists() and not force:
+            click.echo(f"{path} exists; --force to overwrite", err=True)
             return 1
         Config().write_default(path)
-        print(f"wrote {path}")
+        click.echo(f"wrote {path}")
         return 0
-    cfg = Config.load()
+    cfg = Config.load(path)
     suffix = "" if path.exists() else "  (not present -- using defaults)"
-    print(f"config file: {path}{suffix}")
+    click.echo(f"config file: {path}{suffix}")
     for k, v in vars(cfg).items():
-        print(f"  {k} = {v!r}")
+        click.echo(f"  {k} = {v!r}")
     n, total = cache.usage()
-    print(f"cache: {n} objects, {human(total)}")
+    click.echo(f"cache: {n} objects, {human(total)}")
     return 0
 
 
-def build_parser() -> argparse.ArgumentParser:
+@cli.command("cache")
+@click.option(
+    "--verify", "do_verify", is_flag=True,
+    help="re-hash every cached object and report any that do not match its key",
+)
+@click.option(
+    "--repair", is_flag=True,
+    help="remove the objects that fail verification; implies --verify",
+)
+def cmd_cache(do_verify: bool, repair: bool) -> int:
     """
-    Construct the argument parser.
+    Show what the local cache holds, and check that it is sound.
 
-    Returns
-    -------
-    :
-        A parser whose subcommands each set a ``func`` default.
+    Verification re-hashes every object and compares the digest with the key it
+    is stored under, so it says whether the cache still holds what it claims.
+    ``--repair`` removes the objects that fail, together with the readable links
+    that stand for them; their content is fetched again the next time it is
+    asked for.
     """
-    p = argparse.ArgumentParser(
-        prog="labdata",
-        description="Catalog and fetch versioned result files across git repos.",
+    stored = cache.objects()
+    total = sum(p.stat().st_size for p in stored)
+    if not (do_verify or repair):
+        click.echo(f"cache: {cache_root()}")
+        click.echo(f"  {len(stored)} objects, {human(total)}")
+        return 0
+
+    bad = []
+    with click.progressbar(
+        stored, label=f"verifying {len(stored)} objects", file=sys.stderr
+    ) as items:
+        for path in items:
+            problem = cache.check_object(path)
+            if problem:
+                bad.append((path, problem))
+
+    if not bad:
+        click.echo(f"{len(stored)} objects, {human(total)}, all sound")
+        return 0
+
+    click.echo(
+        f"{len(bad)} of {len(stored)} objects do not hold what their key promises:",
+        err=True,
     )
-    p.add_argument("--config", help="path to config.toml")
-    p.add_argument(
-        "--refresh", action="store_true",
-        help="rescan repos instead of using the cached catalog",
+    for path, problem in bad:
+        click.echo(f"  {path.name[:16]}...  {problem}", err=True)
+    if not repair:
+        click.echo(
+            "run `labdata cache --repair` to remove them; "
+            "the content is fetched again the next time it is used",
+            err=True,
+        )
+        return 1
+    removed = []
+    for path, _ in bad:
+        removed.extend(cache.discard(path))
+    click.echo(
+        f"removed {len(bad)} objects and {len(removed) - len(bad)} readable links; "
+        "the content is fetched again the next time it is used"
     )
-    sub = p.add_subparsers(dest="cmd", required=True)
-
-    q = sub.add_parser("list", help="list result files")
-    q.add_argument("repo", nargs="?", help="filter by repo (substring)")
-    q.add_argument("-p", "--pattern", help="filter by filename glob, e.g. '*.csv'")
-    q.add_argument("--json", action="store_true", help="print machine readable output")
-    q.set_defaults(func=cmd_list)
-
-    q = sub.add_parser("repos", help="one line per repo")
-    q.set_defaults(func=cmd_repos)
-
-    q = sub.add_parser("versions", help="history of one file")
-    q.add_argument("spec", help="[owner/]repo:path")
-    q.set_defaults(func=cmd_versions)
-
-    q = sub.add_parser("get", help="fetch a file into the cache and print its path")
-    q.add_argument("spec", help="[owner/]repo:path[@version]")
-    q.add_argument("-o", "--out", help="also write a copy here")
-    q.set_defaults(func=cmd_get)
-
-    q = sub.add_parser("refresh", help="rebuild the catalog")
-    q.set_defaults(func=cmd_refresh)
-
-    q = sub.add_parser("config", help="show or create the config file")
-    q.add_argument("--init", action="store_true", help="write a config file")
-    q.add_argument("--force", action="store_true", help="overwrite an existing file")
-    q.set_defaults(func=cmd_config)
-    return p
+    return 0
 
 
 def main(argv: Optional[List[str]] = None) -> int:
     """
     Run the command line interface.
 
-    Expected failures are reported as a one line message on standard error
-    rather than a traceback.
+    Expected failures are reported as a short message on standard error rather
+    than a traceback, and the exit status is returned rather than raised, so the
+    entry point can be called from a test. `OSError` is among them because a
+    directory on the way can be unreadable or simply never answer.
 
     Parameters
     ----------
@@ -381,12 +635,18 @@ def main(argv: Optional[List[str]] = None) -> int:
     main(["list", "--pattern", "*.csv"])
     ```
     """
-    args = build_parser().parse_args(argv)
     try:
-        return args.func(args)
-    except (LookupError, ValueError, FileNotFoundError) as exc:
-        print(f"error: {exc}", file=sys.stderr)
+        rv = cli.main(args=argv, prog_name="labdata", standalone_mode=False)
+    except click.ClickException as exc:
+        exc.show()
+        return exc.exit_code
+    except click.exceptions.Abort:
+        click.echo("aborted", err=True)
+        return 130
+    except (LookupError, ValueError, OSError, GitError) as exc:
+        click.echo(f"error: {exc}", err=True)
         return 1
+    return rv if isinstance(rv, int) else 0
 
 
 if __name__ == "__main__":

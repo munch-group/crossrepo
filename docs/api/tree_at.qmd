@@ -1,0 +1,35 @@
+# tree_at { #labdata.gitutil.tree_at }
+
+```python
+labdata.gitutil.tree_at(repo, rev, path)
+```
+
+Find the tree sha of a directory as of a revision.
+
+A tree sha is a hash of the directory's whole content — every name, mode and
+blob beneath it — so it identifies a dataset split across many files exactly
+as a blob sha identifies a single file, and two identical datasets share one.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[Location](`labdata.location.Location`), [Path](`pathlib.Path`), [str](`str`)\]]{.parameter-annotation}</code>
+
+:   Working tree to inspect, on this machine or another.
+
+<code>[**rev**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Revision to read at, typically a commit sha.
+
+<code>[**path**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository-relative path of the directory.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[str](`str`)\]]{.parameter-annotation}</code>
+
+:   The tree sha, or `None` when `path` is not a directory at `rev`.
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`labdata.gitutil.tree_files`)

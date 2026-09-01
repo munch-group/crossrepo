@@ -1,0 +1,19 @@
+# manifest_path { #labdata.manifest.manifest_path }
+
+```python
+labdata.manifest.manifest_path(results_dir)
+```
+
+Where a results directory's manifest must sit to be read.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**results_dir**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository-relative results directory, as the repository spells it.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   The path of the one manifest governing it.

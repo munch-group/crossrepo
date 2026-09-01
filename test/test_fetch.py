@@ -4,10 +4,11 @@ import os
 import resource
 import subprocess
 import sys
+from concurrent.futures import ThreadPoolExecutor
 
 import pytest
 
-from labdata import core
+from labdata import cache, core
 from labdata.model import Spec
 
 from fixtures import ENV, commit
@@ -58,3 +59,60 @@ def test_large_blob_is_streamed_not_buffered(repos, cfg):
     # ru_maxrss is bytes on macOS and kilobytes on linux
     unit = 1 if sys.platform == "darwin" else 1024
     assert (after - before) * unit < 8 * 1024 * 1024
+
+
+def test_same_name_in_two_dirs_gets_its_own_bytes(by_spec):
+    """One version key, two files: the cache must not serve one for the other."""
+    top = by_spec["acme/sweep-scan:results/stable.csv"]
+    sub = by_spec["acme/sweep-scan:results/sub/stable.csv"]
+    assert top.latest.sha == sub.latest.sha      # both last changed in one commit
+    assert top.latest.blob != sub.latest.blob        # but they are different files
+
+    p_top = core.materialize(top, top.latest)
+    p_sub = core.materialize(sub, sub.latest)
+    assert p_top != p_sub
+    assert p_top.read_text() == "k,v\nx,1\n"
+    assert p_sub.read_text() == "k,v\ny,2\n"
+
+
+def test_a_readable_link_left_by_an_older_layout_is_replaced(by_spec):
+    """A link that does not stand for the wanted blob is rebuilt, not trusted."""
+    from labdata import cache
+
+    sub = by_spec["acme/sweep-scan:results/sub/stable.csv"]
+    dest = cache.readable_path(sub.repo_key, sub.latest.sha, sub.path)
+    core.materialize(sub, sub.latest)
+
+    dest.unlink()
+    dest.write_text("stale bytes from an older cache\n")   # same name, wrong content
+    assert core.materialize(sub, sub.latest).read_text() == "k,v\ny,2\n"
+
+
+def test_each_writer_gets_its_own_temporary_path():
+    """Two writers agree on the object but must not share a scratch file."""
+    a_tmp, a_final = cache.open_for_write("f" * 40)
+    b_tmp, b_final = cache.open_for_write("f" * 40)
+    assert a_final == b_final        # one object, keyed by content
+    assert a_tmp != b_tmp            # but one scratch file each
+
+
+def test_concurrent_fetches_do_not_publish_a_corrupt_object(repos, cfg):
+    """Fetches racing on one blob must not write over each other."""
+    repo = repos / "acme" / "sweep-scan"
+    racy = repo / "results" / "racy.csv"
+    racy.write_text("col\n" + "0123456789\n" * 500_000)      # about 5.5 MB
+    commit(repo, "racy")
+
+    entry = core.resolve_one(core.build(cfg), Spec.parse("sweep-scan:racy.csv"))
+    expected = racy.read_bytes()
+
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        futures = [pool.submit(core.materialize, entry, entry.latest) for _ in range(8)]
+        paths = [f.result() for f in futures]
+
+    assert len({str(p) for p in paths}) == 1        # all agree on the path
+    for p in paths:
+        assert p.read_bytes() == expected           # and it holds the whole file
+    blob = cache.blob_path(entry.latest.blob)
+    assert blob.read_bytes() == expected
+    assert not list(blob.parent.glob("*.tmp"))      # no scratch files left behind

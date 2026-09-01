@@ -1,0 +1,68 @@
+# Spec { #labdata.Spec }
+
+```python
+labdata.Spec(repo, path, owner=None, version=None)
+```
+
+A parsed reference to a result file.
+
+## Attributes {.doc-section .doc-section-attributes}
+
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository name.
+
+<code>[**path**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Path within the repository, or a bare file name when that is unambiguous within the repository.
+
+<code>[**owner**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[str](`str`)\]]{.parameter-annotation}</code>
+
+:   Repository owner, needed only to disambiguate repositories of the same name in different organisations.
+
+<code>[**version**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[str](`str`)\]]{.parameter-annotation}</code>
+
+:   Commit sha prefix or tag name. `None` means the latest version.
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`labdata.core.resolve_one`)
+
+## Methods
+
+| Name | Description |
+| --- | --- |
+| [parse](#labdata.Spec.parse) | Parse a spec string. |
+
+### parse { #labdata.Spec.parse }
+
+```python
+labdata.Spec.parse(text)
+```
+
+Parse a spec string.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+<code>[**text**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   A string of the form ``[owner/]repo:path[@version]``.
+
+#### Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [\'Spec\']{.parameter-annotation}</code>
+
+:   The parsed spec.
+
+#### Raises {.doc-section .doc-section-raises}
+
+<code>[:]{.parameter-annotation-sep} [[ValueError](`ValueError`)]{.parameter-annotation}</code>
+
+:   If `text` does not have the expected form.
+
+#### Examples {.doc-section .doc-section-examples}
+
+```python
+Spec.parse("munch-group/primate-ils:results/ils_data.h5@4e6472a")
+Spec.parse("humanXsweeps:tmrca_stats.hdf")
+```

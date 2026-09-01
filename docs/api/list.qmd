@@ -1,0 +1,90 @@
+# list { #labdata.list }
+
+```python
+labdata.list(
+    repo=None,
+    pattern=None,
+    *,
+    brief=False,
+    version=False,
+    spec=False,
+    url=False,
+    refresh=False,
+    progress=False,
+    cfg=None,
+)
+```
+
+Tabulate what the configured repositories publish.
+
+The python side of ``labdata list``, and like it the version is left out
+unless asked for: it is a full commit sha, and every file a repository
+publishes carries the same one.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   Keep only repositories whose ``owner/repo`` contains this, as ``labdata list <repo>`` does.
+
+<code>[**pattern**]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   Keep only files whose name matches this glob, such as ``"*.csv"``.
+
+<code>[**brief**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [False]{.parameter-default}</code>
+
+:   Show only what a file is: ``owner``, ``repo``, ``name``, ``size``, ``description`` and ``date``. ``size`` is the byte count written for reading, as ``512.2 MB``, in place of the ``bytes`` it is counted in.
+
+<code>[**version**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [False]{.parameter-default}</code>
+
+:   Include the ``version`` column, the full commit sha.
+
+<code>[**spec**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [False]{.parameter-default}</code>
+
+:   Include the ``spec`` column, the one string naming a file at a version, which [](`labdata.fetch`) and the command line take. It restates the repository, the path and the version, so it is the widest column there is and is left out unless wanted.
+
+<code>[**url**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [False]{.parameter-default}</code>
+
+:   Include the ``url`` column, addressing that version on GitHub.
+
+<code>[**refresh**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [False]{.parameter-default}</code>
+
+:   Rescan before listing, rather than using the stored catalog.
+
+<code>[**progress**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [False]{.parameter-default}</code>
+
+:   Show a progress bar while rescanning. Only meaningful with `refresh`, since a stored catalog is read at once.
+
+<code>[**cfg**]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   Settings. Defaults to [](`labdata.config.Config.load`).
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation}</code>
+
+:   A [](`pandas.DataFrame`) with one row per published file or dataset: ``owner``, ``repo``, ``name``, ``description``, ``date``, ``github``, ``path``, ``dir``, ``bytes``, ``tags`` and ``lfs``, or the six columns of `brief`, plus whichever of ``version``, ``spec`` and ``url`` were asked for. ``github`` is the repository as ``owner/repo``, and ``path`` the file as ``dir/name``. [](`labdata.frame`) has everything, including the number of files a dataset holds.
+
+## Raises {.doc-section .doc-section-raises}
+
+<code>[:]{.parameter-annotation-sep} [[ImportError](`ImportError`)]{.parameter-annotation}</code>
+
+:   If pandas is not installed. It is not a dependency of `labdata`.
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+import labdata
+
+labdata.list()                        # everything published
+labdata.list(brief=True)              # just what each file is, and how big
+labdata.list("x-gwas")                # one repository
+labdata.list(pattern="*.parquet")     # by file name
+labdata.list(version=True)            # with the sha that pins each file
+labdata.list(spec=True)               # with the string the shell takes
+```
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`labdata.get`)
+[](`labdata.repos`)

@@ -1,0 +1,36 @@
+# outdated { #labdata.outdated }
+
+```python
+labdata.outdated(entry, version)
+```
+
+Say whether a pinned version has been overtaken.
+
+Comparing content rather than commits is what makes this worth reading. A
+version names a state of the whole repository, so a pinned sha falls behind
+whenever anything in the repository changes; that is not news. The file
+having actually changed is.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**entry**]{.parameter-name} [:]{.parameter-annotation-sep} [[Entry](`labdata.model.Entry`)]{.parameter-annotation}</code>
+
+:   Entry holding the current version.
+
+<code>[**version**]{.parameter-name} [:]{.parameter-annotation-sep} [[Version](`labdata.model.Version`)]{.parameter-annotation}</code>
+
+:   Version that was asked for.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[str](`str`)\]]{.parameter-annotation}</code>
+
+:   A message naming the newer version, or `None` when the pin is still the current content. It is only as current as the catalog: a stored catalog that has not been refreshed cannot know about a change made since.
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+outdated(entry, pinned)
+# 'a newer version of x-gwas:results/hits.csv exists: 9f3c... (2026-04-11);
+#  you asked for e4f5... (2025-11-02)'
+```

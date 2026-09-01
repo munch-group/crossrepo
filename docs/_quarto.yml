@@ -94,16 +94,22 @@ quartodoc:
       desc: |
         Finding out what the repositories publish.
       contents:
+        - list
+        - repos
+        - versions
+        - refresh
+        - frame
         - catalog
         - build
-        - frame
+        - diagnose
     - title: Fetching
       package: labdata
       desc: |
         Getting a local path to one version of a result file.
       contents:
+        - get
         - fetch
-        - versions
+        - outdated
     - title: Resolving
       package: labdata.core
       desc: |
@@ -113,9 +119,12 @@ quartodoc:
         - resolve_one
         - match
         - find_version
+        - fingerprint
         - scan_repo
         - repo_identity
         - materialize
+        - progress_bar
+        - copy_out
     - title: Data types
       package: labdata
       desc: |
@@ -124,12 +133,50 @@ quartodoc:
         - Entry
         - Version
         - Spec
-    - title: Configuration
-      package: labdata
+
+    - title: GitHub
+      package: labdata.remote
       desc: |
-        Which directories are searched and which files are cataloged.
+        Cataloguing and fetching repositories over the GitHub API, without
+        cloning them.
+      contents:
+        - build
+        - scan_repo
+        - versions
+        - version_at
+        - dataset_files
+        - download
+
+    - title: GitHub API
+      package: labdata.github
+      desc: |
+        The client the GitHub backend reads with.
+      contents:
+        - Client
+        - token
+        - blob_url
+        - GitHubError
+
+    - title: Manifests
+      package: labdata.manifest
+      desc: |
+        The `labdata.yml` by which a repository states what it publishes, and
+        what each published file holds.
+      contents:
+        - Manifest
+        - parse
+        - is_manifest
+        - manifest_path
+        - ManifestError
+    - title: Configuration
+      package: labdata.config
+      desc: |
+        Which directories are searched, which files are cataloged, and where
+        settings and the cache live.
       contents:
         - Config
+        - config_path
+        - cache_root
     - title: Cache
       package: labdata.cache
       desc: |
@@ -141,6 +188,9 @@ quartodoc:
         - store_from_file
         - open_for_write
         - link
+        - objects
+        - check_object
+        - discard
         - usage
     - title: Git access
       package: labdata.gitutil
@@ -149,18 +199,23 @@ quartodoc:
       contents:
         - discover_repos
         - tracked_blobs
-        - last_commits
+        - head_commit
         - file_history
         - blob_at
+        - tree_at
+        - tree_files
         - tag_map
         - read_blob
         - write_blob_to
         - parse_lfs_pointer
         - lfs_object_path
+        - GitError
     - title: Command line
       package: labdata.cli
       desc: |
         Entry points behind the `labdata` command.
       contents:
         - main
-        - build_parser
+        - table
+        - human
+        - note

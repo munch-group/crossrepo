@@ -1,0 +1,131 @@
+# Manifest { #labdata.manifest.Manifest }
+
+```python
+labdata.manifest.Manifest(directory, files)
+```
+
+What one directory of a repository publishes.
+
+## Attributes {.doc-section .doc-section-attributes}
+
+<code>[**directory**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository-relative directory the manifest governs, ``""`` at the root of the repository.
+
+<code>[**files**]{.parameter-name} [:]{.parameter-annotation-sep} [[Dict](`typing.Dict`)\[[str](`str`), [str](`str`)\]]{.parameter-annotation}</code>
+
+:   Keys in the order they were written, each mapped to its description. A key is a path relative to `directory`, a bare file name, a glob pattern over either, or -- written with a leading ``/`` -- a path or pattern from the root of the repository, naming a file outside `directory`.
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`labdata.manifest.parse`)
+
+## Methods
+
+| Name | Description |
+| --- | --- |
+| [anchored_prefixes](#labdata.manifest.Manifest.anchored_prefixes) | Where to look for the files this manifest names from the repository root. |
+| [describe](#labdata.manifest.Manifest.describe) | Look up what a file is, and thereby whether it is published at all. |
+| [governs](#labdata.manifest.Manifest.governs) | Test whether a file lies in the part of the tree this manifest covers. |
+| [relative](#labdata.manifest.Manifest.relative) | Express a repository path relative to the manifest. |
+
+### anchored_prefixes { #labdata.manifest.Manifest.anchored_prefixes }
+
+```python
+labdata.manifest.Manifest.anchored_prefixes()
+```
+
+Where to look for the files this manifest names from the repository root.
+
+A key written from the root may name a file anywhere in the repository,
+so finding what it names means listing more than the results directory.
+Each such key contributes the literal part of its path, up to its first
+glob character, which is the least that has to be listed.
+
+#### Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[str](`str`)\]]{.parameter-annotation}</code>
+
+:   Repository-relative paths to list, without duplicates and without any that lies inside another. ``""`` stands for the whole repository. Empty when the manifest names nothing outside `directory`.
+
+#### See Also {.doc-section .doc-section-see-also}
+
+[](`labdata.manifest.Manifest.describe`)
+
+### describe { #labdata.manifest.Manifest.describe }
+
+```python
+labdata.manifest.Manifest.describe(path)
+```
+
+Look up what a file is, and thereby whether it is published at all.
+
+An exact key wins over a glob, and a full path wins over a bare file
+name, so a specific description can be given for one file among many
+covered by a pattern. A key written from the repository root is the most
+specific spelling of all and is tried first. Globs are tried in the
+order they were written.
+
+A key that does not start with ``/`` only ever reaches inside
+`directory`: a bare file name is matched against files this manifest
+governs, never against the same name elsewhere in the repository.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+<code>[**path**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository-relative path of the file.
+
+#### Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[str](`str`)\]]{.parameter-annotation}</code>
+
+:   The description, ``""`` when the file is published with none, or `None` when it is not published.
+
+#### Examples {.doc-section .doc-section-examples}
+
+```python
+m = parse('files:\n  "*.csv": a table\n  hits.csv: the good one\n', "results")
+m.describe("results/hits.csv")
+# 'the good one'
+```
+
+### governs { #labdata.manifest.Manifest.governs }
+
+```python
+labdata.manifest.Manifest.governs(path)
+```
+
+Test whether a file lies in the part of the tree this manifest covers.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+<code>[**path**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository-relative path of the file.
+
+#### Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation}</code>
+
+:   `True` if `path` is inside `directory`.
+
+### relative { #labdata.manifest.Manifest.relative }
+
+```python
+labdata.manifest.Manifest.relative(path)
+```
+
+Express a repository path relative to the manifest.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+<code>[**path**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository-relative path of a file this manifest governs.
+
+#### Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   The path as the manifest would write it.

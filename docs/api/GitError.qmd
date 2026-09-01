@@ -1,0 +1,7 @@
+# GitError { #labdata.gitutil.GitError }
+
+```python
+labdata.gitutil.GitError()
+```
+
+Raised when a git command fails.

@@ -1,0 +1,30 @@
+# lfs_object_path { #labdata.gitutil.lfs_object_path }
+
+```python
+labdata.gitutil.lfs_object_path(repo, oid)
+```
+
+Locate the real content of a Git LFS object in a repository.
+
+An LFS object is a file in the repository rather than a blob in it, so it is
+the one thing that is looked for rather than asked of git.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[Location](`labdata.location.Location`), [Path](`pathlib.Path`), [str](`str`)\]]{.parameter-annotation}</code>
+
+:   Working tree to look in, on this machine or another.
+
+<code>[**oid**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   The sha256 object id from the pointer file.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Location](`labdata.location.Location`)\]]{.parameter-annotation}</code>
+
+:   Location of the object in the repository's LFS store, or `None` when the object has not been fetched into that repository.
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`labdata.gitutil.write_file_to`)

@@ -1,0 +1,22 @@
+# tag_map { #labdata.gitutil.tag_map }
+
+```python
+labdata.gitutil.tag_map(repo)
+```
+
+Map commits to the tags pointing at them.
+
+Annotated tags are peeled to the commit they wrap. Tags decorate versions
+but never define them.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[Location](`labdata.location.Location`), [Path](`pathlib.Path`), [str](`str`)\]]{.parameter-annotation}</code>
+
+:   Working tree to inspect, on this machine or another.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Dict](`typing.Dict`)\[[str](`str`), [Tuple](`typing.Tuple`)\[[str](`str`), ...\]\]]{.parameter-annotation}</code>
+
+:   A mapping of commit sha to a tuple of tag names.

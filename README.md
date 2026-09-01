@@ -1,27 +1,126 @@
 # labdata
 
 Catalog and fetch versioned result files across many git repositories, without
-submodules and without a manifest in each repository.
+submodules.
+
+Repositories are read wherever they are: clones on this machine, clones on a
+server over ssh, and repositories on GitHub over the API without being cloned at
+all.
 
 A file is in the catalog if it is
 
 1. tracked by git,
-2. under a `results/` directory, and
-3. matches the include/exclude patterns.
+2. under the `results/` directory at the repository root, and
+3. named by the `labdata.yml` in that directory — as a file, or as a directory
+   holding one dataset split across many files.
 
-Nothing has to be added to the producing repository. Committing a file to
-`results/` *is* the act of publishing it.
+## Publishing
+
+A repository states what it publishes in a `labdata.yml` beside the files. A
+results directory without one publishes nothing, so working files, intermediates
+and scratch output stay out of everyone else's catalog without anyone having to
+tidy up. The manifest also carries the one thing a file name cannot: what the
+file is.
+
+```yaml
+# results/labdata.yml
+files:
+  candidates.csv: Sweep candidates, one row per gene
+  tmrca_stats.hdf: TMRCA per 100 kb window, autosomes only
+  "SRR*/QC_table.txt": Per-sample Hi-C quality summary
+```
+
+Keys are file names, paths relative to the manifest, or glob patterns, so a
+directory of three hundred per-sample tables does not need three hundred lines.
+An exact key beats a glob, so one file among many can be described on its own.
+Values are descriptions; the longer form is accepted too, and leaves the format
+somewhere to grow:
+
+```yaml
+files:
+  hits.csv:
+    description: Genome-wide association hits, p < 5e-8
+```
+
+### Files kept outside the results directory
+
+A key beginning with `/` is a path from the repository root rather than from the
+manifest, which publishes a result that lives with the data it came from:
+
+```yaml
+files:
+  hits.csv: In the results directory, as usual
+  /data/reference/samples.csv: Somewhere else in the repository
+  /data/raw/*.tsv: A pattern, matched against the path from the root
+```
+
+Any tracked file can be named this way, and a directory named this way is a
+dataset like any other. A key cannot climb out with `..`: there is one spelling
+for a path that leaves the results directory, so what a manifest reaches is
+plain to read from the key alone. A key *without* a leading `/` never reaches
+outside, so `hits.csv` publishes the one beside the manifest and not its
+namesake elsewhere in the repository.
+
+### Datasets split across files
+
+A table too large for one file — a `.parquet` directory partitioned to stay
+under GitHub's file size limit — is published by naming the *directory*, as
+though it were a file:
+
+```yaml
+files:
+  variants.parquet: All called variants, partitioned by chromosome
+```
+
+labdata works out that it is a directory and treats it as the single dataset it
+is: one line in the catalog, the total size, the version being the last commit
+to touch any part, and `get` returning the directory for `pd.read_parquet` to
+read. Nothing about `.parquet` is special; naming a directory is what makes it a
+dataset, so `.zarr` and anything else shaped that way work the same.
+
+The content key is the directory's **git tree sha**, which hashes the whole
+directory, so two identical datasets are stored once just as two identical files
+are. Parts are cached individually, so repartitioning one file of forty costs
+one file, not forty.
+
+One manifest governs a repository: the `labdata.yml` sitting directly in the
+`results/` directory at the repository root. It covers everything beneath, so a
+file in a subdirectory is published by naming `sub/table.csv` or a glob, and it
+reaches the rest of the repository by naming a path from the root. A
+`labdata.yml` deeper in the tree is not read, and a `results/` directory that is
+not at the repository root is not a results directory — there is exactly one
+place to look to see what a repository publishes.
+
+Manifests are read from git rather than from the working tree, so an uncommitted
+one publishes nothing, and the same rules hold for a repository read over the
+network.
 
 ## Versioning
 
-A file's version is **the commit in which that file last changed** — not a
-repository tag. This is deliberate: across 25 repositories with a `results/`
-directory in the munch-group and kaspermunch mirrors, exactly one carries any
-tags. Per-file commits give a version key that already exists as a side effect
-of working.
+A file's version is **the commit the repository points at** — not a repository
+tag, and not the commit in which that particular file last changed. One lookup
+stamps everything a repository publishes, which is what makes reading a
+repository over the network cost the same whether it publishes one file or three
+hundred.
 
-Tags, where present, decorate a version and can be used to address one
-(`repo:file@v1.0`), but they never define one.
+A version therefore names a state of the whole repository, so it changes when
+anything in the repository changes, even if the file did not. What it addresses
+is still exactly the bytes that were cataloged, because the content is read at
+that commit — so a pin stays reproducible, it is just not a claim that the file
+is unchanged.
+
+Repository tags are not used: across 25 repositories with a `results/` directory
+in the munch-group and kaspermunch mirrors, exactly one carries any. Where they
+exist they decorate a version and can address one (`repo:file@v1.0`), but they
+never define one.
+
+Version keys are written out as **full 40-character shas**, not abbreviated, so
+a spec identifies the version to git and to GitHub without labdata in hand — the
+sha in `repo:file@770170789d73428efb0193d4cf04a353587db9cd` goes straight into
+`git show` or a GitHub URL. A shorter prefix is still accepted as input.
+
+`labdata versions` still shows the commits in which a file itself changed, which
+is the useful set to pin. Those commits are addressable in the ordinary way.
 
 ## Install
 
@@ -29,7 +128,8 @@ Tags, where present, decorate a version and can be used to address one
 pixi run install-dev
 ```
 
-Requires python and git. The only runtime dependency is `tomli`, and only on
+Requires python. Git is needed only to read clones, here or on a server; reading
+GitHub needs no git at all. The runtime dependencies are `click`, `pyyaml`, and `tomli` on
 python older than 3.11. `pandas` is optional and needed just for
 `labdata.frame()`.
 
@@ -40,16 +140,56 @@ labdata config --init      # writes ~/.config/labdata/config.toml
 ```
 
 ```toml
-roots = ["~/github-backup/kaspermunch", "~/github-backup/munch-group"]
-depth = 2
-results_dirs = ["results"]
+roots = [
+  "~/github-backup/munch-group",       # clones on this machine
+  "kmt@genome.au.dk:~/projects",       # clones on a server, read over ssh
+]
+labdata_dirs = ["results"]
 include = ["*.csv", "*.tsv", "*.parquet", "*.h5", "*.hdf", "*.store"]
 exclude = ["*.png", "*.md", ".gitkeep"]
 max_bytes = 0     # 0 = no limit
 ```
 
-`results_dirs` is matched case-insensitively, so a repository that committed
-`Results/` is found too.
+`roots` is the one setting with no useful default, and starts empty: nothing is
+scanned until you name the directories your repositories are in. Each root is
+either a repository itself or a directory whose immediate subdirectories are
+repositories; nothing deeper is looked at. A root written `user@host:path` is on
+another machine and is read over ssh — see [Reading a
+server](#reading-a-server-over-ssh). Pointing it at a whole home directory
+is a bad idea, because the scan then reaches into synced folders such as
+OneDrive and into network mounts, which can block for a long time on a directory
+that is not there.
+
+`labdata_dirs` entries are paths relative to the repository root and may be at
+any depth, so `analysis/step3/results` works as well as `results`. Each is
+searched for a `labdata.yml`, which must sit directly in it — nothing deeper is
+read — and matching is case-insensitive, so a repository that committed
+`Results/` is found too. What that manifest publishes may live anywhere in the
+repository, by being named from the repository root.
+
+`include` and `exclude` are empty by default. What a repository publishes is now
+its own to state, in its `labdata.yml`; these narrow that on the reading side,
+for someone who wants to see only part of it.
+
+### When a source cannot be read
+
+A misspelled root, a server that is down, an organisation the token does not
+cover: each costs only itself. The scan carries on, the catalog is written from
+what could be reached, and what could not is named when it ends:
+
+```
+$ labdata refresh
+cataloged 128 files in 21 repos
+2 configured sources could not be read:
+  ~/projcts: no such directory
+  kmt@genome.au.dk:~/projects: ssh: connect to host genome.au.dk port 22: Connection timed out
+```
+
+The status stays zero — a scan that reached most of its sources has done its job
+— so this is a notice, not a failure. The same account is given by any command
+that scans, such as `labdata list --refresh`; reading the stored catalog says
+nothing, having looked at nothing. From python these are ordinary warnings, of
+class `labdata.config.SourceWarning`.
 
 ## Use
 
@@ -58,7 +198,7 @@ labdata repos                                  # one line per repo
 labdata list humanXsweeps                      # files in one repo
 labdata list -p '*.hdf'                        # by filename glob
 labdata versions humanXsweeps:tmrca_stats.hdf
-labdata get humanXsweeps:tmrca_stats.hdf@a1b2c3d
+labdata get humanXsweeps:tmrca_stats.hdf@a1b2c3d4e5f6...   # full sha, or a prefix
 labdata get x-gwas:hits.csv -o ./local_copy.csv
 ```
 
@@ -69,14 +209,88 @@ composes:
 duckdb -c "select * from '$(labdata get x-gwas:hits.csv)' limit 5"
 ```
 
-From python:
+`--config` and `--refresh` may be given on either side of the subcommand, so
+`labdata --refresh list` and `labdata list --refresh` are the same.
+
+## From python
+
+`get(repo, filename, hash)` is the notebook form. Give the hash to pin a result;
+leave it out to take the latest, and the hash is printed together with the call
+that pins it, ready to be copied back into the cell.
 
 ```python
 import pandas as pd
-from labdata import catalog, fetch, frame
+import labdata
 
-frame()                                   # the whole catalog as a DataFrame
-df = pd.read_csv(fetch("munch-group/x-gwas:hits.csv@e4f5a6b"))
+df = pd.read_csv(labdata.get("x-gwas", "hits.csv"))
+# munch-group/x-gwas:results/hits.csv@e4f5a6b  (2026-04-11, 1.2M)
+# pin this version:  labdata.get("x-gwas", "hits.csv", "e4f5a6b")
+```
+
+Paste that line back and the notebook reads the same bytes next year. A pinned
+call is silent — unless the file has changed since, in which case it says so and
+names the version to move to:
+
+```
+a newer version of munch-group/x-gwas:results/hits.csv exists:
+  9f3c1a2... (2026-04-11); you asked for e4f5a6b... (2025-11-02)
+```
+
+That compares content, not commits. A version names a state of the whole
+repository, so a pin falls behind whenever anything in the repository changes;
+that is not news. The file itself having changed is.
+
+```python
+df = pd.read_csv(labdata.get("x-gwas", "hits.csv", "e4f5a6b"))
+```
+
+`filename` may be a bare name, or as much of the path as it takes to be
+unambiguous. `repo` may be written `owner/repo` where two organisations use the
+same repository name. `out=` also writes a copy somewhere, `quiet=True` drops
+the printed line, and a tag works wherever a hash does.
+
+```python
+labdata.get("primate-ils", "ils_data.h5", out="./data/")   # keeps the file name
+labdata.get("hic-borders", "borders.tsv", "v1.0")          # a tag pins too
+```
+
+Every command has a python counterpart returning a DataFrame:
+
+```python
+labdata.list()                     # what is published
+labdata.list("x-gwas")             # one repository
+labdata.list(pattern="*.parquet")  # by file name
+labdata.list(brief=True)           # just what each file is, and how big
+labdata.list(version=True)         # with the sha that pins each file
+labdata.list(url=True)             # with the GitHub URL of each version
+
+labdata.repos()                    # one row per repository
+labdata.versions("x-gwas", "hits.csv")   # when the file itself changed
+labdata.refresh()                  # rescan, then list
+labdata.diagnose()                 # why is the catalog empty
+```
+
+The columns are `owner`, `repo`, `name`, `description`, `date`, `github`,
+`path`, `dir`, `bytes`, `tags`, `lfs`. The repository is carried whole as
+`github` (`owner/repo`) and in halves as `owner` and `repo`; the file likewise
+as `path` and as `dir` plus `name` — so grouping by account, by repository or by
+directory needs no string splitting. `labdata.frame()` adds `version`, `parts`,
+`spec` and `url`.
+
+`brief=True` cuts it to `owner`, `repo`, `name`, `size`, `description`, `date` —
+what each file is and how big, with `size` written for reading (`512.2 MB`)
+rather than counted in bytes.
+
+`refresh` draws a progress bar, one step per repository — a widget in a
+notebook, a text bar in a terminal. Reading a whole organisation takes about a
+minute for 150 repositories, so it is worth seeing. `labdata refresh` does the
+same when standard error is a terminal, and stays silent in a pipe or a log.
+Pass `progress=False` to turn it off.
+
+`fetch` takes a spec string instead, if that suits better:
+
+```python
+fetch("munch-group/x-gwas:hits.csv@e4f5a6b...")
 ```
 
 Specs are `[owner/]repo:path[@version]`. The path may be a bare file name when
@@ -95,8 +309,13 @@ content hash. Consequences:
   mirrors, `result_table.csv` appears in ten repositories and is one blob.
 - Cached content is immutable, so a pinned version never changes underfoot.
 
-`~/.cache/labdata/files/<repo>/<version>/<name>` gives readable hard links to
-the same bytes. `LABDATA_CACHE` overrides the location.
+`~/.cache/labdata/files/<repo>/<version>/<path>` gives readable hard links to
+the same bytes. The whole path is kept, not just the file name, because one
+repository may hold two files of the same name that last changed in the same
+commit. `LABDATA_CACHE` overrides the location.
+
+The stored catalog records the settings it was built with, so changing `roots`
+takes effect at once rather than when the stored catalog ages out.
 
 ## Git LFS
 
@@ -110,21 +329,198 @@ Large files are streamed rather than buffered. Fetching the 489 MB
 
 ## Limits worth knowing
 
-- Only committed files are visible. This is the design, but it means anything a
-  workflow produces on the cluster and never commits will not appear.
+- Only committed files are visible, and only those a committed manifest names.
+  This is the design, but it means anything a workflow produces on the cluster
+  and never commits will not appear.
 - Result files live in git history forever. Fine for the median file in these
   repositories (about 5 KB) and for the p90 (about 550 KB); not fine for a
   489 MB HDF5 file, which is why those are in LFS.
-- There is no description field. A `results/README.md` beside the files is the
-  low-tech answer; a manifest is the higher-tech one, if it is ever wanted.
+- A file is published only once it is named in a `labdata.yml`. That is the
+  point — it is what keeps a results directory from publishing its scratch
+  output — but it does mean a repository publishes nothing until someone writes
+  the manifest.
 
-## Adding a remote backend
+## Reading GitHub without cloning
 
-`labdata.core.build()` returns `Entry` objects assembled from a git working
-tree. A GitHub backend that never clones would produce the same `Entry` objects
-from `GET /repos/{owner}/{repo}/git/trees/{ref}?recursive=1` plus
-`GET /repos/{owner}/{repo}/commits?path=...`, and everything downstream —
-resolution, versions, cache, CLI — works unchanged.
+Nothing has to be checked out. Name the organisations, or single repositories,
+and labdata reads them over the API:
+
+```toml
+owners = ["munch-group", "kaspermunch"]
+repos  = ["someone-else/shared-results"]   # optional extras
+```
+
+```bash
+labdata list --url        # files, with the URL of each version
+labdata get x-gwas:hits.csv --url   # just the URL
+labdata get x-gwas:hits.csv         # download it, print the cached path
+```
+
+```python
+df = pd.read_csv(labdata.get("x-gwas", "hits.csv"))   # in a notebook
+```
+
+Authentication is `GITHUB_TOKEN`, or whatever `gh auth login` already stored.
+Without a token only public repositories are readable and the rate limit is 60
+requests an hour instead of 5000.
+
+URLs name the **commit**, not the branch, so a URL keeps pointing at the bytes
+that were cataloged:
+
+```
+https://raw.githubusercontent.com/munch-group/tree-stats/7701707…/results/dummy.csv
+```
+
+### What it costs
+
+Three or four requests per repository, and **flat in the number of files** — a
+repository publishing three hundred result files costs no more to catalog than
+one publishing a single file. Measured against `munch-group/tree-stats`:
+
+```
+git/trees/HEAD?recursive=1     does it publish anything, and what
+git/blobs/<manifest>           the labdata.yml
+git/blobs/<.gitattributes>     only if some published file is small enough to be an LFS pointer
+commits/HEAD                   the commit that stamps everything
+```
+
+A repository without a `labdata.yml` stops after the first, so scanning a whole
+organisation costs about one request per repository that publishes nothing. A
+repository named outright in `repos` that publishes nothing costs one more, to
+tell "publishes nothing" from "not there" — one for a handful of named
+repositories, never for the hundreds an organisation may hold.
+`HEAD` is a ref GitHub resolves itself, so finding the default branch costs
+nothing extra.
+
+### Alongside local clones
+
+Local `roots` and GitHub `owners` can both be set. Where both know a file,
+GitHub decides the version, because a clone is only as current as its last pull;
+the clone is kept as somewhere to read content from. Since the cache is keyed by
+git's own blob sha — the same sha over the API as on disk — content you already
+have is never downloaded again, whichever way it arrived.
+
+## Reading a server over ssh
+
+Results that live on a cluster or a group server, and are never pushed to
+GitHub, are read where they are. Write the root the way ssh and scp write one:
+
+```toml
+roots = ["~/projects", "kmt@genome.au.dk:~/projects"]
+```
+
+Nothing is cloned and nothing is mounted. Git runs on the far side and only its
+output crosses the network, so a server holding a hundred repositories costs no
+local disk, and the catalog, the history and the file content all come back the
+same way they do from a clone here:
+
+```bash
+labdata list                          # repos on the server are simply in the list
+labdata get sweep-scan:hits.csv       # content streamed into the local cache
+labdata versions sweep-scan:hits.csv  # history read over ssh
+```
+
+A root can be absolute, `~`-relative, or relative to where ssh puts you:
+`me@server:projects` and `me@server:~/projects` are the same directory.
+
+What it needs:
+
+- **ssh access, as you already have it.** labdata keeps no credentials and adds
+  no configuration of its own; it runs `ssh` and lets it do what it does.
+- **git on the `PATH` of an ssh *command*.** Nothing else — no labdata, no
+  python, no daemon — but this one is worth checking, because it is not the
+  same as git working when you log in:
+
+  ```bash
+  ssh me@server git --version      # must print a version
+  ```
+
+  A cluster where git comes from a module, or a `~/.bashrc` that returns early
+  when it is not interactive, will have git for a login shell and not for this.
+  Repositories are still *found* — that takes only a shell — but none of them
+  can be read, so labdata checks once per host and says so rather than
+  cataloging nothing.
+- The same rules as anywhere else — a `labdata.yml`, committed, and the files it
+  names committed too.
+
+### When the host asks for something
+
+A key with a passphrase, or a cluster login wanting a second factor, is answered
+the way it always is: ssh prompts at the terminal, you type it, and the answer
+goes to ssh rather than through labdata. The connection to each host is opened
+before the scan starts, so the prompt comes first and once, rather than in the
+middle of a progress bar:
+
+```
+$ labdata refresh
+(kmt@login.genome.au.dk) Verification code: ······
+cataloged 128 files in 21 repos
+```
+
+**In a notebook there is no terminal, but there is somewhere to ask**: the
+prompt opens at the top of the window, the way any `getpass` in a cell does, and
+what you type goes to ssh.
+
+```python
+labdata.catalog(refresh=True)
+# ┌────────────────────────────────────────────┐
+# │ Verification code:                         │  ← VS Code, JupyterLab, …
+# └────────────────────────────────────────────┘
+```
+
+That works by giving ssh an `SSH_ASKPASS` program of labdata's own, which asks
+the kernel that started ssh rather than a terminal it does not have. The answer
+goes from the prompt to ssh and is not kept, printed, or written anywhere.
+
+**In a scheduled job there is neither**, so ssh is told not to ask and the host
+is reported with what to do about it:
+
+```
+1 configured source could not be read:
+  kmt@login.genome.au.dk:~/projects: Permission denied (keyboard-interactive).
+    no terminal here to answer a key passphrase or a two-factor code: run
+    `ssh kmt@login.genome.au.dk true` where you can answer it, then try again
+    within 5 minutes
+```
+
+Five minutes is how long labdata keeps its own shared connection open. To be
+asked once a day rather than once a session, set the connection up in your own
+ssh config, which is used as it stands — labdata adds nothing where you have
+decided something:
+
+```
+Host gdk
+    HostName        login.genome.au.dk
+    User            kmt
+    ControlMaster   auto
+    ControlPath     ~/.ssh/cm-%r@%h:%p
+    ControlPersist  4h
+```
+
+Then one answered prompt covers the working day, and `roots = ["gdk:~/projects"]`
+reads through that same connection from a terminal and a notebook alike.
+
+`~` in the path is expanded on the server, since that is the machine that knows
+where home is. Cataloguing a repository takes a handful of git commands, so
+calls to one host share a single ssh connection, kept open for a minute after
+the last of them; a scan of a whole server is one connection, not one per
+command. A host that does not answer costs a warning and the other roots are
+still read.
+
+If a repository is checked out both here and on the server, the clone here is
+used: either can supply the file, and reading from a clone on this machine costs
+no round trip. `LABDATA_SSH` overrides the ssh command for a setup that ssh's
+own options cannot express, e.g. `LABDATA_SSH="ssh -F ~/.ssh/other_config"`.
+
+One caveat, shared with `rsync` and `scp`: what git prints on the server is
+parsed here, so a shell startup file that prints something for non-interactive
+commands — a banner or a `module load` message in `.bashrc` — ends up in the
+middle of that output. Guarding it with the usual interactive check keeps it out
+of the way:
+
+```bash
+case $- in *i*) ;; *) return;; esac    # near the top of ~/.bashrc
+```
 
 ## Tests
 
@@ -133,9 +529,11 @@ pixi run test
 ```
 
 The suite builds real git repositories — with tags, an LFS pointer, a
-capitalised `Results/`, untracked files, one file name in two subdirectories,
-and content duplicated across repositories — and runs against them. Git is not
-mocked.
+capitalised `Results/`, untracked files, one file name in two subdirectories, a
+non-ASCII file name, a manifest too deep in the tree to be read, a
+repository that commits results but publishes none of them, a `.parquet`
+directory published as one dataset across two versions, and content duplicated
+across repositories — and runs against them. Git is not mocked.
 
 ## Documentation
 

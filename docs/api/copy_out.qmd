@@ -1,0 +1,34 @@
+# copy_out { #labdata.core.copy_out }
+
+```python
+labdata.core.copy_out(src, out, name)
+```
+
+Write a copy of a cached file where the caller asked for it.
+
+The copy is streamed rather than buffered, so a large result file does not
+have to fit in memory.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**src**]{.parameter-name} [:]{.parameter-annotation-sep} [[Path](`pathlib.Path`)]{.parameter-annotation}</code>
+
+:   File to copy, typically a path returned by [](`labdata.core.materialize`).
+
+<code>[**out**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[str](`str`), [Path](`pathlib.Path`)\]]{.parameter-annotation}</code>
+
+:   Destination. An existing directory, or a path written with a trailing separator, keeps `name`; anything else is used as the file name itself. Missing parent directories are created.
+
+<code>[**name**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   File name to use when `out` names a directory.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Path](`pathlib.Path`)]{.parameter-annotation}</code>
+
+:   The path written.
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`labdata.core.get`)

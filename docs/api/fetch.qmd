@@ -1,0 +1,54 @@
+# fetch { #labdata.fetch }
+
+```python
+labdata.fetch(spec_text, refresh=False, cfg=None)
+```
+
+Get a local path to a result file, fetching it if it is not cached.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**spec_text**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   A spec of the form ``[owner/]repo:path[@version]``. Without a version, the latest is used.
+
+<code>[**refresh**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [False]{.parameter-default}</code>
+
+:   Rescan the repositories before resolving the spec.
+
+<code>[**cfg**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Config](`labdata.config.Config`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   Settings. Defaults to [](`labdata.config.Config.load`).
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Path](`pathlib.Path`)]{.parameter-annotation}</code>
+
+:   Path of the file in the local cache, ready to pass to a reader.
+
+## Raises {.doc-section .doc-section-raises}
+
+<code>[:]{.parameter-annotation-sep} [[ValueError](`ValueError`)]{.parameter-annotation}</code>
+
+:   If `spec_text` cannot be parsed.
+
+<code>[:]{.parameter-annotation-sep} [[LookupError](`LookupError`)]{.parameter-annotation}</code>
+
+:   If the spec matches no entry, several entries, or no version.
+
+<code>[:]{.parameter-annotation-sep} [[FileNotFoundError](`FileNotFoundError`)]{.parameter-annotation}</code>
+
+:   If the file is held in Git LFS and its content has not been fetched into the repository.
+
+## Examples {.doc-section .doc-section-examples}
+
+Read a result file from another project into a notebook:
+
+```python
+import pandas as pd
+df = pd.read_csv(fetch("munch-group/xwas:hits.csv@e4f5a6b"))
+```
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`labdata.core.catalog`)

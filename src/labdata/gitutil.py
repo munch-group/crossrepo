@@ -4,13 +4,22 @@ Thin wrappers over git plumbing commands.
 Everything here uses plumbing rather than porcelain, so the output does not
 depend on the user's git configuration, aliases or locale. Nothing in this
 module writes to a repository.
+
+Every call names a [](`labdata.location.Location`) rather than a path, so the
+same functions read a clone on this machine and a clone on a server reached over
+ssh. Only the command line differs; the output being parsed is git's own either
+way.
 """
 
 from __future__ import annotations
 
-import subprocess
+import shutil
+import warnings
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Tuple, Union
+from typing import Dict, Iterable, List, Optional, Sequence, Tuple, Union
+
+from .config import SourceWarning
+from .location import Location, execute, quote, run, warm
 
 SEP = "\x1f"
 """Field separator used in ``--format`` strings; cannot occur in a path."""
@@ -18,8 +27,57 @@ SEP = "\x1f"
 REC = "\x1e"
 """Record separator used to delimit commits in ``git log`` output."""
 
+REMOTE_LISTING = (
+    'if [ -e {root}/.git ]; then printf "%s\\n" {root}; '
+    'else for d in {root}/*/; do '
+    '[ -e "$d.git" ] && printf "%s\\n" "${{d%/}}"; '
+    'done; fi; exit 0'
+)
+"""
+Shell snippet listing the working trees at or directly inside one directory.
+
+Written as one command because the cost of looking at a directory on another
+machine is the round trip, not the looking. The trailing ``exit 0`` keeps a
+subdirectory that is not a working tree -- the last test failing -- from being
+reported as the whole command failing, which is reserved for a host that did not
+answer. Hidden directories are left out by the glob, as they are locally.
+"""
+
 LFS_PREFIX = b"version https://git-lfs"
 """First bytes of a Git LFS pointer file."""
+
+GIT_OPTS = ("-c", "core.quotePath=false")
+"""
+Options given to every git call.
+
+``core.quotePath`` makes git print a path holding non-ASCII bytes as an octal
+escape wrapped in quotes, so ``results/hojde.csv`` with a Danish o comes back
+from ``git log --name-only`` looking nothing like the same path from
+``git ls-files -z``, which is never quoted. Joining the two would then drop the
+file from the catalog without a word. Turning it off here rather than at each
+call site keeps that from coming back with the next command that prints a path.
+"""
+
+
+def _argv(repo: Union[Location, Path, str], *args: str) -> List[str]:
+    """
+    Build a git command line.
+
+    Parameters
+    ----------
+    repo :
+        Working tree to run in, on this machine or another.
+    *args :
+        Arguments passed to git, not including the command name itself.
+
+    Returns
+    -------
+    :
+        The full argument vector, carrying `GIT_OPTS`, wrapped in an ssh call
+        when the working tree is on another machine.
+    """
+    repo = Location.of(repo)
+    return repo.command(["git", "-C", repo.path, *GIT_OPTS, *args])
 
 
 class GitError(RuntimeError):
@@ -27,7 +85,8 @@ class GitError(RuntimeError):
 
 
 def git(
-    repo: Path, *args: str, binary: bool = False, check: bool = True
+    repo: Union[Location, Path, str], *args: str, binary: bool = False,
+    check: bool = True,
 ) -> Union[str, bytes]:
     """
     Run a git command in a repository and return its standard output.
@@ -35,7 +94,7 @@ def git(
     Parameters
     ----------
     repo :
-        Working tree to run the command in.
+        Working tree to run the command in, on this machine or another.
     *args :
         Arguments passed to git, not including the command name itself.
     binary :
@@ -55,11 +114,8 @@ def git(
     GitError
         If the command fails and `check` is `True`.
     """
-    proc = subprocess.run(
-        ["git", "-C", str(repo), *args],
-        capture_output=True,
-        check=False,
-    )
+    repo = Location.of(repo)
+    proc = execute(_argv(repo, *args), remote=repo.is_remote)
     if check and proc.returncode != 0:
         raise GitError(
             f"git {' '.join(args)} failed in {repo}: "
@@ -68,79 +124,199 @@ def git(
     return proc.stdout if binary else proc.stdout.decode("utf-8", "replace")
 
 
-def is_repo(path: Path) -> bool:
+def is_repo(path: Union[Location, Path, str]) -> bool:
     """
     Test whether a directory is a git working tree.
 
     Parameters
     ----------
     path :
-        Directory to test.
+        Directory to test, on this machine or another.
 
     Returns
     -------
     :
-        `True` if the directory contains a ``.git`` entry.
+        `True` if the directory contains a ``.git`` entry. A directory that
+        cannot be looked at is not one: a cloud folder whose provider does not
+        answer raises rather than returning, and a scan must not end because one
+        directory on the way was unreachable. A host that cannot be reached is
+        the same case.
     """
-    return (path / ".git").exists()
+    loc = Location.of(path)
+    if loc.is_remote:
+        proc = execute(loc.shell(f"test -e {quote(loc.path)}/.git"), remote=True)
+        return proc.returncode == 0
+    try:
+        return (Path(loc.path) / ".git").exists()
+    except OSError:
+        return False
 
 
-def discover_repos(roots: Iterable[Union[str, Path]], depth: int = 2) -> List[Path]:
+def _subdirectories(path: Path) -> List[Path]:
+    """
+    List the directories inside one directory, skipping what cannot be read.
+
+    Both the listing and the test of each entry can fail on their own, on a
+    directory that is not readable, a mount that has gone away, or a synced
+    folder that is not answering, so each is guarded separately.
+
+    Parameters
+    ----------
+    path :
+        Directory to list.
+
+    Returns
+    -------
+    :
+        Its subdirectories, ignoring hidden ones and anything unreadable.
+    """
+    try:
+        children = list(path.iterdir())
+    except OSError:
+        return []
+    out = []
+    for child in children:
+        if child.name.startswith("."):
+            continue
+        try:
+            if child.is_dir():
+                out.append(child)
+        except OSError:
+            continue
+    return out
+
+
+def discover_repos(roots: Iterable[Union[Location, str, Path]]) -> List[Location]:
     """
     Find git working trees under a set of root directories.
 
     A root that is itself a working tree is returned directly; otherwise its
-    subdirectories are searched. Descent stops at each working tree, so nested
-    repositories such as submodules are not reported separately.
+    immediate subdirectories are the working trees. Nothing deeper is looked at,
+    which keeps the scan quick and predictable: a repository is either the root
+    you named or something sitting directly in it.
+
+    A root written ``user@host:path`` is looked at on that machine instead, in
+    one round trip rather than one per directory. The connection to each host is
+    opened first, so that whatever ssh asks for is asked once, before the scan
+    starts printing.
 
     Parameters
     ----------
     roots :
-        Directories to search. ``~`` is expanded. Roots that do not exist are
-        skipped silently.
-    depth :
-        How many levels below each root to search.
+        Directories to search. ``~`` is expanded, here for a local root and on
+        the far side for a remote one. A root that does not exist, or that
+        cannot be read, and a host that does not answer, are skipped with a
+        [](`labdata.config.SourceWarning`), since there is nothing about an
+        empty result to say which source was the problem.
 
     Returns
     -------
     :
-        Absolute paths of the working trees found, without duplicates.
+        The working trees found, without duplicates, local ones as resolved
+        paths.
 
     Examples
     --------
 
     ```python
-    discover_repos(["~/github-backup/munch-group"], depth=1)
+    discover_repos(["~/github-backup/munch-group", "kmt@genome.au.dk:~/projects"])
     ```
     """
-    seen: Dict[Path, None] = {}
+    seen: Dict[str, Location] = {}
+    reached: Dict[str, Optional[str]] = {}
     for root in roots:
-        root = Path(root).expanduser()
-        if not root.is_dir():
-            continue
-        if is_repo(root):
-            seen[root.resolve()] = None
-            continue
-        stack = [(root, 0)]
-        while stack:
-            d, lvl = stack.pop()
-            if lvl > depth:
+        loc = Location.of(root)
+        if loc.is_remote:
+            # One connection per host, opened before the listing, so that a
+            # passphrase or a two-factor code is asked for once and only once.
+            if loc.host not in reached:
+                reached[loc.host] = warm(loc.host)
+            if reached[loc.host] is not None:
+                warnings.warn(
+                    f"{loc}: {reached[loc.host]}", SourceWarning, stacklevel=2
+                )
                 continue
-            try:
-                children = [
-                    c for c in d.iterdir() if c.is_dir() and not c.name.startswith(".")
-                ]
-            except PermissionError:
+            for found in _remote_repos(loc):
+                seen.setdefault(str(found), found)
+            continue
+        local = Path(loc.path).expanduser()
+        try:
+            if not local.is_dir():
+                warnings.warn(
+                    f"{loc}: no such directory", SourceWarning, stacklevel=2
+                )
                 continue
-            for c in children:
-                if is_repo(c):
-                    seen[c.resolve()] = None
-                else:
-                    stack.append((c, lvl + 1))
-    return list(seen)
+        except OSError as exc:
+            warnings.warn(
+                f"{loc}: {exc.strerror or exc}", SourceWarning, stacklevel=2
+            )
+            continue
+        if is_repo(local):
+            _remember(seen, local)
+            continue
+        for child in _subdirectories(local):
+            if is_repo(child):
+                _remember(seen, child)
+    return list(seen.values())
 
 
-def tracked_blobs(repo: Path, subdir: str) -> Dict[str, Tuple[str, int]]:
+def _remote_repos(root: Location) -> List[Location]:
+    """
+    List the working trees at or directly inside a directory on another machine.
+
+    One command answers the whole question, because a round trip per directory
+    is what makes a remote scan slow, not the work at either end.
+
+    Parameters
+    ----------
+    root :
+        Directory on the far side. Its ``~`` is expanded there.
+
+    Returns
+    -------
+    :
+        The working trees found, as absolute paths on that machine. Empty when
+        there are none, and empty with a warning when the host does not answer.
+    """
+    quoted = quote(root.path)
+    script = REMOTE_LISTING.format(root=quoted)
+    proc = execute(root.shell(script), remote=True)
+    if proc.returncode != 0:
+        said = proc.stderr.decode("utf-8", "replace").strip()
+        warnings.warn(
+            f"{root}: {said or 'unreachable'}", SourceWarning, stacklevel=3
+        )
+        return []
+    return [
+        Location(path=line, host=root.host)
+        for line in proc.stdout.decode("utf-8", "replace").splitlines()
+        if line.strip()
+    ]
+
+
+def _remember(seen: Dict[str, Location], path: Path) -> None:
+    """
+    Record a working tree under its real path.
+
+    Parameters
+    ----------
+    seen :
+        Mapping used as an ordered set of the working trees found.
+    path :
+        Working tree to record. It is resolved so that two routes to one
+        repository are recorded once; a path that cannot be resolved is recorded
+        as it stands.
+    """
+    try:
+        path = path.resolve()
+    except OSError:
+        pass
+    seen.setdefault(str(path), Location(path=str(path)))
+
+
+def tracked_blobs(
+    repo: Union[Location, Path, str], subdir: Union[str, Sequence[str]]
+) -> Dict[str, Tuple[str, int]]:
     """
     List files tracked at HEAD under a directory, with blob shas and sizes.
 
@@ -151,9 +327,10 @@ def tracked_blobs(repo: Path, subdir: str) -> Dict[str, Tuple[str, int]]:
     Parameters
     ----------
     repo :
-        Working tree to inspect.
+        Working tree to inspect, on this machine or another.
     subdir :
-        Pathspec limiting the listing, for example ``:(icase)results``.
+        Pathspec limiting the listing, for example ``:(icase)results``, or
+        several of them, in which case a file matching any is listed.
 
     Returns
     -------
@@ -164,9 +341,10 @@ def tracked_blobs(repo: Path, subdir: str) -> Dict[str, Tuple[str, int]]:
 
     See Also
     --------
-    [](`labdata.gitutil.last_commits`)
+    [](`labdata.gitutil.head_commit`)
     """
-    out = git(repo, "ls-files", "-s", "-z", "--", subdir, check=False)
+    specs = [subdir] if isinstance(subdir, str) else list(subdir)
+    out = git(repo, "ls-files", "-s", "-z", "--", *specs, check=False)
     entries: Dict[str, str] = {}
     for rec in out.split("\0"):
         if not rec:
@@ -182,14 +360,14 @@ def tracked_blobs(repo: Path, subdir: str) -> Dict[str, Tuple[str, int]]:
     return {p: (sha, sizes.get(sha, -1)) for p, sha in entries.items()}
 
 
-def _blob_sizes(repo: Path, shas: List[str]) -> Dict[str, int]:
+def _blob_sizes(repo: Union[Location, Path, str], shas: List[str]) -> Dict[str, int]:
     """
     Look up the size of many blobs in a single git call.
 
     Parameters
     ----------
     repo :
-        Working tree to inspect.
+        Working tree to inspect, on this machine or another.
     shas :
         Blob shas to size. Duplicates are collapsed.
 
@@ -199,12 +377,12 @@ def _blob_sizes(repo: Path, shas: List[str]) -> Dict[str, int]:
         A mapping of blob sha to size in bytes, omitting shas git did not
         recognise.
     """
+    repo = Location.of(repo)
     stdin = "\n".join(dict.fromkeys(shas)) + "\n"
-    proc = subprocess.run(
-        ["git", "-C", str(repo), "cat-file", "--batch-check"],
-        input=stdin.encode(),
-        capture_output=True,
-        check=False,
+    proc = execute(
+        _argv(repo, "cat-file", "--batch-check"),
+        remote=repo.is_remote,
+        stdin=stdin.encode(),
     )
     sizes: Dict[str, int] = {}
     for line in proc.stdout.decode("utf-8", "replace").splitlines():
@@ -214,91 +392,80 @@ def _blob_sizes(repo: Path, shas: List[str]) -> Dict[str, int]:
     return sizes
 
 
-def last_commits(repo: Path, subdir: str) -> Dict[str, Tuple[str, str, str, str]]:
+def head_commit(repo: Union[Location, Path, str]) -> Optional[Tuple[str, str, str]]:
     """
-    Find the commit in which each file under a directory last changed.
+    Read the commit a repository currently points at.
 
-    A single ``git log --name-only`` walk covers every file, which matters when
-    a results directory holds hundreds of them.
+    Every published file is stamped with this, so one call covers a whole
+    repository however many files it publishes.
 
     Parameters
     ----------
     repo :
-        Working tree to inspect.
-    subdir :
-        Pathspec limiting the walk, for example ``:(icase)results``.
+        Working tree to inspect, on this machine or another.
 
     Returns
     -------
     :
-        A mapping of repository-relative path to
-        ``(sha, short_sha, iso_date, subject)``.
-
-    See Also
-    --------
-    [](`labdata.gitutil.file_history`)
+        ``(sha, iso_date, subject)``, or `None` for a repository with no
+        commits. The sha is full: it is the version key, and a full sha is what
+        git and GitHub understand.
     """
-    fmt = f"{REC}%H{SEP}%h{SEP}%cI{SEP}%s"
-    out = git(
-        repo, "log", "--no-merges", f"--format={fmt}", "--name-only", "--", subdir,
-        check=False,
-    )
-    result: Dict[str, Tuple[str, str, str, str]] = {}
-    for chunk in out.split(REC):
-        if not chunk.strip():
-            continue
-        header, _, body = chunk.partition("\n")
-        try:
-            sha, short, date, subject = header.split(SEP, 3)
-        except ValueError:
-            continue
-        for path in body.splitlines():
-            path = path.strip()
-            if path and path not in result:  # first hit wins, so most recent
-                result[path] = (sha, short, date, subject)
-    return result
+    fmt = f"%H{SEP}%cI{SEP}%s"
+    out = git(repo, "log", "-1", f"--format={fmt}", check=False).strip()
+    if not out:
+        return None
+    parts = out.split(SEP, 2)
+    return tuple(parts) if len(parts) == 3 else None
 
 
-def file_history(repo: Path, path: str) -> List[Tuple[str, str, str, str]]:
+def file_history(
+    repo: Union[Location, Path, str], path: str, follow: bool = True
+) -> List[Tuple[str, str, str]]:
     """
     List every commit that changed one file, newest first.
 
-    Renames are followed, so history reaches back past a rename of the file.
-
     Parameters
     ----------
     repo :
-        Working tree to inspect.
+        Working tree to inspect, on this machine or another.
     path :
         Repository-relative path of the file.
+    follow :
+        Follow renames, so history reaches back past a rename. Only meaningful
+        for a single file; pass `False` for a directory, which ``--follow`` does
+        not describe.
 
     Returns
     -------
     :
-        Tuples of ``(sha, short_sha, iso_date, subject)``, newest first.
+        Tuples of ``(sha, iso_date, subject)``, newest first.
     """
-    fmt = f"%H{SEP}%h{SEP}%cI{SEP}%s"
-    out = git(repo, "log", "--follow", f"--format={fmt}", "--", path, check=False)
+    fmt = f"%H{SEP}%cI{SEP}%s"
+    args = ["log"] + (["--follow"] if follow else []) + [f"--format={fmt}", "--", path]
+    out = git(repo, *args, check=False)
     rows = []
     for line in out.splitlines():
         if not line.strip():
             continue
         try:
-            sha, short, date, subject = line.split(SEP, 3)
+            sha, date, subject = line.split(SEP, 2)
         except ValueError:
             continue
-        rows.append((sha, short, date, subject))
+        rows.append((sha, date, subject))
     return rows
 
 
-def blob_at(repo: Path, rev: str, path: str) -> Optional[Tuple[str, int]]:
+def blob_at(
+    repo: Union[Location, Path, str], rev: str, path: str
+) -> Optional[Tuple[str, int]]:
     """
     Find the blob sha and size of a file as of a revision.
 
     Parameters
     ----------
     repo :
-        Working tree to inspect.
+        Working tree to inspect, on this machine or another.
     rev :
         Revision to read the file at, typically a commit sha.
     path :
@@ -322,7 +489,87 @@ def blob_at(repo: Path, rev: str, path: str) -> Optional[Tuple[str, int]]:
         return parts[2], -1
 
 
-def tag_map(repo: Path) -> Dict[str, Tuple[str, ...]]:
+def tree_at(repo: Union[Location, Path, str], rev: str, path: str) -> Optional[str]:
+    """
+    Find the tree sha of a directory as of a revision.
+
+    A tree sha is a hash of the directory's whole content — every name, mode and
+    blob beneath it — so it identifies a dataset split across many files exactly
+    as a blob sha identifies a single file, and two identical datasets share one.
+
+    Parameters
+    ----------
+    repo :
+        Working tree to inspect, on this machine or another.
+    rev :
+        Revision to read at, typically a commit sha.
+    path :
+        Repository-relative path of the directory.
+
+    Returns
+    -------
+    :
+        The tree sha, or `None` when `path` is not a directory at `rev`.
+
+    See Also
+    --------
+    [](`labdata.gitutil.tree_files`)
+    """
+    out = git(repo, "ls-tree", "-z", rev, "--", path, check=False)
+    for rec in out.split("\0"):
+        if not rec:
+            continue
+        meta, _, _rest = rec.partition("\t")
+        parts = meta.split()
+        if len(parts) >= 3 and parts[1] == "tree":
+            return parts[2]
+    return None
+
+
+def tree_files(
+    repo: Union[Location, Path, str], rev: str, path: str
+) -> List[Tuple[str, str, int]]:
+    """
+    List every file beneath a directory as of a revision.
+
+    Parameters
+    ----------
+    repo :
+        Working tree to inspect, on this machine or another.
+    rev :
+        Revision to read at, typically a commit sha.
+    path :
+        Repository-relative path of the directory.
+
+    Returns
+    -------
+    :
+        Tuples of ``(path, blob_sha, size)``, sorted by path. Symbolic links are
+        skipped, as they are elsewhere. Sizes are those of the stored blob, so a
+        Git LFS pointer reports the size of the pointer.
+
+    See Also
+    --------
+    [](`labdata.gitutil.tree_at`)
+    """
+    out = git(repo, "ls-tree", "-r", "-l", "-z", rev, "--", path, check=False)
+    rows: List[Tuple[str, str, int]] = []
+    for rec in out.split("\0"):
+        if not rec:
+            continue
+        meta, _, name = rec.partition("\t")
+        parts = meta.split()
+        if len(parts) < 4 or parts[1] != "blob" or parts[0] == "120000":
+            continue
+        try:
+            size = int(parts[3])
+        except ValueError:
+            size = -1
+        rows.append((name, parts[2], size))
+    return sorted(rows)
+
+
+def tag_map(repo: Union[Location, Path, str]) -> Dict[str, Tuple[str, ...]]:
     """
     Map commits to the tags pointing at them.
 
@@ -332,7 +579,7 @@ def tag_map(repo: Path) -> Dict[str, Tuple[str, ...]]:
     Parameters
     ----------
     repo :
-        Working tree to inspect.
+        Working tree to inspect, on this machine or another.
 
     Returns
     -------
@@ -355,7 +602,7 @@ def tag_map(repo: Path) -> Dict[str, Tuple[str, ...]]:
     return {k: tuple(v) for k, v in m.items()}
 
 
-def read_blob(repo: Path, blob_sha: str) -> bytes:
+def read_blob(repo: Union[Location, Path, str], blob_sha: str) -> bytes:
     """
     Read the content of a blob into memory.
 
@@ -366,7 +613,7 @@ def read_blob(repo: Path, blob_sha: str) -> bytes:
     Parameters
     ----------
     repo :
-        Working tree holding the blob.
+        Working tree holding the blob, on this machine or another.
     blob_sha :
         Blob sha to read.
 
@@ -378,7 +625,7 @@ def read_blob(repo: Path, blob_sha: str) -> bytes:
     return git(repo, "cat-file", "blob", blob_sha, binary=True)
 
 
-def write_blob_to(repo: Path, blob_sha: str, dest: Path) -> None:
+def write_blob_to(repo: Union[Location, Path, str], blob_sha: str, dest: Path) -> None:
     """
     Stream the content of a blob to a file.
 
@@ -388,7 +635,7 @@ def write_blob_to(repo: Path, blob_sha: str, dest: Path) -> None:
     Parameters
     ----------
     repo :
-        Working tree holding the blob.
+        Working tree holding the blob, on this machine or another.
     blob_sha :
         Blob sha to read.
     dest :
@@ -399,10 +646,11 @@ def write_blob_to(repo: Path, blob_sha: str, dest: Path) -> None:
     GitError
         If git cannot read the blob.
     """
+    repo = Location.of(repo)
     with open(dest, "wb") as fh:
-        proc = subprocess.run(
-            ["git", "-C", str(repo), "cat-file", "blob", blob_sha],
-            stdout=fh, stderr=subprocess.PIPE, check=False,
+        proc = execute(
+            _argv(repo, "cat-file", "blob", blob_sha),
+            remote=repo.is_remote, stdout=fh,
         )
     if proc.returncode != 0:
         dest.unlink(missing_ok=True)
@@ -451,22 +699,68 @@ def parse_lfs_pointer(data: bytes) -> Optional[Tuple[str, int]]:
     return None
 
 
-def lfs_object_path(repo: Path, oid: str) -> Optional[Path]:
+def lfs_object_path(
+    repo: Union[Location, Path, str], oid: str
+) -> Optional[Location]:
     """
     Locate the real content of a Git LFS object in a repository.
+
+    An LFS object is a file in the repository rather than a blob in it, so it is
+    the one thing that is looked for rather than asked of git.
 
     Parameters
     ----------
     repo :
-        Working tree to look in.
+        Working tree to look in, on this machine or another.
     oid :
         The sha256 object id from the pointer file.
 
     Returns
     -------
     :
-        Path of the object in the repository's LFS store, or `None` when the
-        object has not been fetched.
+        Location of the object in the repository's LFS store, or `None` when the
+        object has not been fetched into that repository.
+
+    See Also
+    --------
+    [](`labdata.gitutil.write_file_to`)
     """
-    p = repo / ".git" / "lfs" / "objects" / oid[:2] / oid[2:4] / oid
-    return p if p.exists() else None
+    loc = Location.of(repo)
+    obj = loc / f".git/lfs/objects/{oid[:2]}/{oid[2:4]}/{oid}"
+    if loc.is_remote:
+        proc = execute(loc.shell(f"test -f {quote(obj.path)}"), remote=True)
+        return obj if proc.returncode == 0 else None
+    return obj if Path(obj.path).exists() else None
+
+
+def write_file_to(src: Location, dest: Path) -> None:
+    """
+    Copy a file that git does not hold, such as a Git LFS object.
+
+    Parameters
+    ----------
+    src :
+        File to read, on this machine or another.
+    dest :
+        File to write. It is removed again if the copy fails.
+
+    Raises
+    ------
+    GitError
+        If the file cannot be read.
+    """
+    if not src.is_remote:
+        try:
+            shutil.copyfile(src.path, dest)
+        except OSError as exc:
+            dest.unlink(missing_ok=True)
+            raise GitError(f"cannot read {src}: {exc}") from None
+        return
+    with open(dest, "wb") as fh:
+        proc = run(src, ["cat", src.path], stdout=fh)
+    if proc.returncode != 0:
+        dest.unlink(missing_ok=True)
+        raise GitError(
+            f"cannot read {src}: "
+            f"{proc.stderr.decode('utf-8', 'replace').strip()}"
+        )

@@ -1,0 +1,22 @@
+# head_commit { #labdata.gitutil.head_commit }
+
+```python
+labdata.gitutil.head_commit(repo)
+```
+
+Read the commit a repository currently points at.
+
+Every published file is stamped with this, so one call covers a whole
+repository however many files it publishes.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[Location](`labdata.location.Location`), [Path](`pathlib.Path`), [str](`str`)\]]{.parameter-annotation}</code>
+
+:   Working tree to inspect, on this machine or another.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Tuple](`typing.Tuple`)\[[str](`str`), [str](`str`), [str](`str`)\]\]]{.parameter-annotation}</code>
+
+:   ``(sha, iso_date, subject)``, or `None` for a repository with no commits. The sha is full: it is the version key, and a full sha is what git and GitHub understand.

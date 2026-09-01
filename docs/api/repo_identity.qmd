@@ -1,0 +1,24 @@
+# repo_identity { #labdata.core.repo_identity }
+
+```python
+labdata.core.repo_identity(root)
+```
+
+Determine the owner and name of a repository.
+
+The origin remote is authoritative, so a repository cloned into a directory
+of a different name, or mirrored under a directory named for a different
+organisation, is still identified correctly. Directory names are the
+fallback for a repository without a remote.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**root**]{.parameter-name} [:]{.parameter-annotation-sep} [[Location](`labdata.location.Location`)]{.parameter-annotation}</code>
+
+:   Working tree of the repository, on this machine or another.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation}</code>
+
+:   ``(owner, repo)``. The owner is an empty string when neither the remote nor the parent directory supplies one.

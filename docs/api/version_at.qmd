@@ -1,0 +1,31 @@
+# version_at { #labdata.remote.version_at }
+
+```python
+labdata.remote.version_at(entry, ref, client=None)
+```
+
+Read one named version of a file on GitHub without listing the others.
+
+Two requests, whatever the length of the history: the commit, and the file
+as of that commit. Listing every version to search it would cost a request
+per version.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**entry**]{.parameter-name} [:]{.parameter-annotation-sep} [[Entry](`labdata.model.Entry`)]{.parameter-annotation}</code>
+
+:   Entry whose content to read.
+
+<code>[**ref**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Commit sha, a unique prefix of one, a tag or a branch.
+
+<code>[**client**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Client](`labdata.github.Client`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   Client to read with. Defaults to a new one.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Version](`labdata.model.Version`)\]]{.parameter-annotation}</code>
+
+:   The version, or `None` when `ref` names nothing that holds this file.

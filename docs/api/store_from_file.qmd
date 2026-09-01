@@ -1,0 +1,31 @@
+# store_from_file { #labdata.cache.store_from_file }
+
+```python
+labdata.cache.store_from_file(sha, src, root=None)
+```
+
+Store an object that already exists on disk, such as a Git LFS object.
+
+A hard link is used when the cache and `src` are on one filesystem, so
+nothing is copied. Otherwise the file is streamed, and a large file does not
+have to fit in memory.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**sha**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Key to store the object under.
+
+<code>[**src**]{.parameter-name} [:]{.parameter-annotation-sep} [[Path](`pathlib.Path`)]{.parameter-annotation}</code>
+
+:   Existing file holding the content.
+
+<code>[**root**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Path](`pathlib.Path`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   Cache root. Defaults to [](`labdata.config.cache_root`).
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Path](`pathlib.Path`)]{.parameter-annotation}</code>
+
+:   Path of the cached object. An object already present is not rewritten.

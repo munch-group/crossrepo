@@ -12,10 +12,12 @@ bytes, so a cached file can be found in a file browser.
 
 from __future__ import annotations
 
+import hashlib
 import os
 import shutil
+import uuid
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import List, Optional, Tuple
 
 from .config import cache_root
 
@@ -40,11 +42,41 @@ def blob_path(sha: str, root: Optional[Path] = None) -> Path:
     return root / "blobs" / sha[:2] / sha
 
 
+def _temp_path(dest: Path) -> Path:
+    """
+    Name a temporary file for one writer of a cached object.
+
+    Objects are keyed by content, so two processes fetching the same file agree
+    on the destination and would, given one temporary name, write over each
+    other and publish the interleaving. Naming the temporary file for the writer
+    instead means each streams its own copy and the rename picks a winner; a
+    rename is atomic, so a reader sees one whole object or the other, never a
+    half written one.
+
+    Parameters
+    ----------
+    dest :
+        Final path of the object.
+
+    Returns
+    -------
+    :
+        A sibling path unique to this process and this call.
+    """
+    return dest.with_name(f"{dest.name}.{os.getpid()}.{uuid.uuid4().hex[:8]}.tmp")
+
+
 def readable_path(
-    repo_key: str, version: str, name: str, root: Optional[Path] = None
+    repo_key: str, version: str, path: str, root: Optional[Path] = None
 ) -> Path:
     """
     Location of the readable hard link for a cached object.
+
+    The whole repository-relative path is kept, not just the file name, because
+    a file name is not unique within a repository. Two directories may hold
+    files of the same name that last changed in the same commit, which gives
+    them one version key, and naming the links by file name alone would then
+    point both at whichever was fetched first.
 
     Parameters
     ----------
@@ -52,8 +84,9 @@ def readable_path(
         Repository identifier, as `labdata.model.Entry.repo_key`.
     version :
         Abbreviated commit sha of the version.
-    name :
-        File name to expose the content under.
+    path :
+        Repository-relative path to expose the content under, for example
+        ``results/sub/stable.csv``.
     root :
         Cache root. Defaults to [](`labdata.config.cache_root`).
 
@@ -63,7 +96,7 @@ def readable_path(
         Path of the link, whether or not it exists.
     """
     root = root or cache_root()
-    return root / "files" / repo_key.replace("/", "__") / version / name
+    return root / "files" / repo_key.replace("/", "__") / version / path
 
 
 def open_for_write(sha: str, root: Optional[Path] = None) -> Tuple[Path, Path]:
@@ -71,7 +104,8 @@ def open_for_write(sha: str, root: Optional[Path] = None) -> Tuple[Path, Path]:
     Prepare to stream an object into the cache.
 
     Content is written to the temporary path and then renamed, so an interrupted
-    write cannot leave a truncated object in the cache.
+    write cannot leave a truncated object in the cache. The temporary path is
+    unique to the caller, so neither can a concurrent one.
 
     Parameters
     ----------
@@ -83,7 +117,8 @@ def open_for_write(sha: str, root: Optional[Path] = None) -> Tuple[Path, Path]:
     Returns
     -------
     :
-        ``(temporary_path, final_path)``. Parent directories are created.
+        ``(temporary_path, final_path)``. Parent directories are created. The
+        temporary path differs on every call; the final path does not.
 
     See Also
     --------
@@ -91,7 +126,7 @@ def open_for_write(sha: str, root: Optional[Path] = None) -> Tuple[Path, Path]:
     """
     dest = blob_path(sha, root)
     dest.parent.mkdir(parents=True, exist_ok=True)
-    return dest.with_suffix(".tmp"), dest
+    return _temp_path(dest), dest
 
 
 def store(sha: str, data: bytes, root: Optional[Path] = None) -> Path:
@@ -116,9 +151,12 @@ def store(sha: str, data: bytes, root: Optional[Path] = None) -> Path:
     if dest.exists():
         return dest
     dest.parent.mkdir(parents=True, exist_ok=True)
-    tmp = dest.with_suffix(".tmp")
-    tmp.write_bytes(data)
-    tmp.replace(dest)
+    tmp = _temp_path(dest)
+    try:
+        tmp.write_bytes(data)
+        tmp.replace(dest)
+    finally:
+        tmp.unlink(missing_ok=True)
     return dest
 
 
@@ -150,11 +188,49 @@ def store_from_file(sha: str, src: Path, root: Optional[Path] = None) -> Path:
     dest.parent.mkdir(parents=True, exist_ok=True)
     try:
         os.link(src, dest)          # same filesystem: free
+    except FileExistsError:         # another writer got there first
+        pass
     except OSError:
-        tmp = dest.with_suffix(".tmp")
-        shutil.copyfile(src, tmp)   # across filesystems: streamed, not buffered
-        tmp.replace(dest)
+        tmp = _temp_path(dest)
+        try:
+            shutil.copyfile(src, tmp)   # across filesystems: streamed, not buffered
+            tmp.replace(dest)
+        finally:
+            tmp.unlink(missing_ok=True)
     return dest
+
+
+def _already_exposes(dest: Path, blob: Path) -> bool:
+    """
+    Test whether a readable path already stands for a given cached object.
+
+    Sharing an inode is proof, and covers both the hard link and the symbolic
+    link cases. A separate file is judged by its size instead, which is what the
+    copy fallback leaves behind and what a cache copied to another machine
+    becomes. Size is enough there because a readable path is fixed by
+    repository, version and repository-relative path, so it stands for exactly
+    one object and cannot be holding a different one of the same size.
+
+    Parameters
+    ----------
+    dest :
+        Readable path to test.
+    blob :
+        Cached object it should stand for.
+
+    Returns
+    -------
+    :
+        `True` when `dest` may be reused as it is.
+    """
+    try:
+        d = dest.stat()
+        b = blob.stat()
+    except OSError:                       # a dangling symlink, say
+        return False
+    if (d.st_ino, d.st_dev) == (b.st_ino, b.st_dev):
+        return True
+    return not dest.is_symlink() and d.st_size == b.st_size
 
 
 def link(blob: Path, dest: Path) -> Path:
@@ -169,8 +245,9 @@ def link(blob: Path, dest: Path) -> Path:
     blob :
         Cached object to expose.
     dest :
-        Path to create. An existing path is left alone, since cached content is
-        immutable.
+        Path to create. An existing path is reused when it already stands for
+        `blob`, cached content being immutable, and is replaced otherwise, so
+        that a link left by an earlier cache layout is never trusted.
 
     Returns
     -------
@@ -178,24 +255,57 @@ def link(blob: Path, dest: Path) -> Path:
         `dest`.
     """
     dest.parent.mkdir(parents=True, exist_ok=True)
-    if dest.exists() or dest.is_symlink():
+    if (dest.exists() or dest.is_symlink()) and _already_exposes(dest, blob):
         return dest
+    tmp = _temp_path(dest)
     try:
-        os.link(blob, dest)
-    except OSError:
         try:
-            dest.symlink_to(blob)
+            os.link(blob, tmp)
         except OSError:
-            shutil.copyfile(blob, dest)
+            try:
+                tmp.symlink_to(blob)
+            except OSError:
+                shutil.copyfile(blob, tmp)
+        os.replace(tmp, dest)       # atomic, so a reader never sees a gap
+    finally:
+        tmp.unlink(missing_ok=True)
     return dest
+
+
+HEX = frozenset("0123456789abcdef")
+"""Characters a content hash is written with."""
+
+
+def objects(root: Optional[Path] = None) -> List[Path]:
+    """
+    List every object the store holds.
+
+    Readable hard links are not listed, since they stand for objects listed
+    already, and neither are the temporary files of writes still in flight.
+
+    Parameters
+    ----------
+    root :
+        Cache root. Defaults to [](`labdata.config.cache_root`).
+
+    Returns
+    -------
+    :
+        Paths of the stored objects, in a stable order.
+
+    See Also
+    --------
+    [](`labdata.cache.check_object`)
+    """
+    base = (root or cache_root()) / "blobs"
+    if not base.is_dir():
+        return []
+    return sorted(p for p in base.rglob("*") if p.is_file() and p.suffix != ".tmp")
 
 
 def usage(root: Optional[Path] = None) -> Tuple[int, int]:
     """
     Measure how much the cache holds.
-
-    Readable hard links are not counted, since they point at objects already
-    counted.
 
     Parameters
     ----------
@@ -207,10 +317,128 @@ def usage(root: Optional[Path] = None) -> Tuple[int, int]:
     :
         ``(object_count, total_bytes)``.
     """
-    root = (root or cache_root()) / "blobs"
-    n = total = 0
-    for p in root.rglob("*"):
-        if p.is_file():
-            n += 1
-            total += p.stat().st_size
-    return n, total
+    files = objects(root)
+    return len(files), sum(p.stat().st_size for p in files)
+
+
+def _digest(path: Path, algorithm: str) -> str:
+    """
+    Hash the content of a file without holding it in memory.
+
+    Parameters
+    ----------
+    path :
+        File to hash.
+    algorithm :
+        ``sha1`` for a git blob id, which is taken over a header and the
+        content, or ``sha256`` for a Git LFS object id, which is taken over the
+        content alone.
+
+    Returns
+    -------
+    :
+        The digest in hex.
+    """
+    if algorithm == "sha1":
+        # an identifier here, matching git's own scheme, not a security claim
+        h = hashlib.sha1(usedforsecurity=False)
+        h.update(f"blob {path.stat().st_size}\0".encode("ascii"))
+    else:
+        h = hashlib.sha256()
+    with open(path, "rb") as fh:
+        for chunk in iter(lambda: fh.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def check_object(path: Path) -> Optional[str]:
+    """
+    Test whether a cached object holds the content its key promises.
+
+    The key is the file name, and says which hash to use: forty hex digits is a
+    git blob id and sixty-four is a Git LFS object id. Content is streamed, so
+    checking a large object costs no memory.
+
+    Parameters
+    ----------
+    path :
+        Object to check, as listed by [](`labdata.cache.objects`).
+
+    Returns
+    -------
+    :
+        `None` when the object is sound, else a short account of what is wrong
+        with it.
+
+    Examples
+    --------
+
+    ```python
+    check_object(blob_path("6f5d1ec6703f83e4b69c0b0d3cc3912697ba93c1"))
+    # None
+    ```
+
+    See Also
+    --------
+    [](`labdata.cache.discard`)
+    """
+    key = path.name
+    if not key or not HEX.issuperset(key):
+        return "not named for a content hash"
+    if len(key) == 40:
+        algorithm = "sha1"
+    elif len(key) == 64:
+        algorithm = "sha256"
+    else:
+        return "not named for a git blob id or a Git LFS object id"
+    try:
+        if _digest(path, algorithm) != key:
+            return "content does not hash to its key"
+    except OSError as exc:
+        return f"cannot be read: {exc.strerror}"
+    return None
+
+
+def discard(path: Path, root: Optional[Path] = None) -> List[Path]:
+    """
+    Remove a cached object, and the readable links that stand for it.
+
+    The links have to go too. A hard link keeps the content alive after the
+    object is unlinked, and a readable path whose size still matches would then
+    be reused in place of the content fetched to replace it. Links are found by
+    inode, which covers the hard link and symbolic link cases; on a filesystem
+    that supports neither, [](`labdata.cache.link`) leaves copies, and those are
+    not found.
+
+    Parameters
+    ----------
+    path :
+        Object to remove.
+    root :
+        Cache root. Defaults to [](`labdata.config.cache_root`).
+
+    Returns
+    -------
+    :
+        The paths removed. The content is fetched again the next time it is
+        asked for.
+    """
+    root = root or cache_root()
+    removed: List[Path] = []
+    try:
+        target = path.stat()
+    except OSError:
+        return removed
+    files = root / "files"
+    if files.is_dir():
+        for p in files.rglob("*"):
+            try:
+                st = p.stat()
+            except OSError:
+                continue                  # a link left dangling
+            if (st.st_ino, st.st_dev) == (target.st_ino, target.st_dev):
+                p.unlink()
+                removed.append(p)
+    path.unlink(missing_ok=True)
+    removed.append(path)
+    return removed

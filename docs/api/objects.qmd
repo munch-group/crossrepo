@@ -1,0 +1,26 @@
+# objects { #labdata.cache.objects }
+
+```python
+labdata.cache.objects(root=None)
+```
+
+List every object the store holds.
+
+Readable hard links are not listed, since they stand for objects listed
+already, and neither are the temporary files of writes still in flight.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**root**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Path](`pathlib.Path`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   Cache root. Defaults to [](`labdata.config.cache_root`).
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[Path](`pathlib.Path`)\]]{.parameter-annotation}</code>
+
+:   Paths of the stored objects, in a stable order.
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`labdata.cache.check_object`)

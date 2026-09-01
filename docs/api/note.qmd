@@ -1,0 +1,26 @@
+# note { #labdata.cli.note }
+
+```python
+labdata.cli.note(version)
+```
+
+Summarise what is unusual about a version, for the table's NOTE column.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**version**]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation}</code>
+
+:   Version to describe.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Its tags, whether it is held in Git LFS, and how many parts it has if it is a dataset, comma separated; empty for an ordinary tagless file.
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+note(entry.latest)
+# 'v1.0,12 parts'
+```

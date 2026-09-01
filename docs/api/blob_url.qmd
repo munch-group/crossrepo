@@ -1,0 +1,45 @@
+# blob_url { #labdata.github.blob_url }
+
+```python
+labdata.github.blob_url(owner, repo, commit, path, directory=False)
+```
+
+Build a stable URL for one version of a published file.
+
+The URL names the commit rather than a branch, so it keeps pointing at the
+bytes that were cataloged rather than at whatever the branch holds later.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**owner**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository owner.
+
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository name.
+
+<code>[**commit**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Commit sha of the version.
+
+<code>[**path**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository-relative path.
+
+<code>[**directory**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [False]{.parameter-default}</code>
+
+:   Whether `path` is a dataset held in a directory, which has a page rather than a download.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   A URL to the content, or to the directory listing for a dataset.
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+blob_url("munch-group", "tree-stats", "7701707", "results/dummy.csv")
+# 'https://raw.githubusercontent.com/munch-group/tree-stats/7701707/results/dummy.csv'
+```

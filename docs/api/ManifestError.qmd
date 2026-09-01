@@ -1,0 +1,7 @@
+# ManifestError { #labdata.manifest.ManifestError }
+
+```python
+labdata.manifest.ManifestError()
+```
+
+Raised when a manifest cannot be understood.

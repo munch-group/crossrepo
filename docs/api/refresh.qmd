@@ -1,0 +1,43 @@
+# refresh { #labdata.refresh }
+
+```python
+labdata.refresh(cfg=None, progress=True, **kwargs)
+```
+
+Rescan the repositories and store the catalog.
+
+The python side of ``labdata refresh``. The rebuilt catalog is returned, so
+a notebook cell shows what is there now.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**cfg**]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   Settings. Defaults to [](`labdata.config.Config.load`).
+
+<code>[**progress**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [True]{.parameter-default}</code>
+
+:   Show a progress bar, one step per repository. On by default: this is the one call that can take a while, and it is otherwise silent throughout.
+
+<code>[****kwargs**]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation} [ = ]{.parameter-default-sep} [{}]{.parameter-default}</code>
+
+:   Passed to [](`labdata.list`), so ``version=True`` and ``url=True`` work here too.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation}</code>
+
+:   A [](`pandas.DataFrame`), as [](`labdata.list`) returns.
+
+## Raises {.doc-section .doc-section-raises}
+
+<code>[:]{.parameter-annotation-sep} [[ImportError](`ImportError`)]{.parameter-annotation}</code>
+
+:   If pandas is not installed.
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+labdata.refresh()                  # with a progress bar
+labdata.refresh(progress=False)    # without
+```

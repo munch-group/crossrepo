@@ -1,0 +1,34 @@
+# check_object { #labdata.cache.check_object }
+
+```python
+labdata.cache.check_object(path)
+```
+
+Test whether a cached object holds the content its key promises.
+
+The key is the file name, and says which hash to use: forty hex digits is a
+git blob id and sixty-four is a Git LFS object id. Content is streamed, so
+checking a large object costs no memory.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**path**]{.parameter-name} [:]{.parameter-annotation-sep} [[Path](`pathlib.Path`)]{.parameter-annotation}</code>
+
+:   Object to check, as listed by [](`labdata.cache.objects`).
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[str](`str`)\]]{.parameter-annotation}</code>
+
+:   `None` when the object is sound, else a short account of what is wrong with it.
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+check_object(blob_path("6f5d1ec6703f83e4b69c0b0d3cc3912697ba93c1"))
+# None
+```
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`labdata.cache.discard`)

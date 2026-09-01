@@ -1,0 +1,31 @@
+# build { #labdata.remote.build }
+
+```python
+labdata.remote.build(cfg, client=None, progress=False)
+```
+
+Catalog every repository the settings name on GitHub.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**cfg**]{.parameter-name} [:]{.parameter-annotation-sep} [[Config](`labdata.config.Config`)]{.parameter-annotation}</code>
+
+:   Settings supplying `owners` and `repos`.
+
+<code>[**client**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Client](`labdata.github.Client`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   Client to read with. Defaults to a new one, authenticated as [](`labdata.github.token`) finds.
+
+<code>[**progress**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [False]{.parameter-default}</code>
+
+:   Show a progress bar, one step per repository. Reading a whole organisation is otherwise silent for as long as it takes.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[Entry](`labdata.model.Entry`)\]]{.parameter-annotation}</code>
+
+:   Entries from every repository that publishes something. A repository that cannot be read is skipped with a [](`labdata.config.SourceWarning`) rather than failing the scan, as is an owner GitHub will not list and a repository named in the settings that is not there.
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`labdata.remote.scan_repo`)

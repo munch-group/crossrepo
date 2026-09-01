@@ -1,0 +1,37 @@
+# repos { #labdata.repos }
+
+```python
+labdata.repos(refresh=False, cfg=None)
+```
+
+Tabulate one row per repository that publishes something.
+
+The python side of ``labdata repos``.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**refresh**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [False]{.parameter-default}</code>
+
+:   Rescan before listing, rather than using the stored catalog.
+
+<code>[**cfg**]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   Settings. Defaults to [](`labdata.config.Config.load`).
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation}</code>
+
+:   A [](`pandas.DataFrame`) with columns ``repo``, ``files``, ``bytes`` and ``latest``.
+
+## Raises {.doc-section .doc-section-raises}
+
+<code>[:]{.parameter-annotation-sep} [[ImportError](`ImportError`)]{.parameter-annotation}</code>
+
+:   If pandas is not installed.
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+labdata.repos().sort_values("bytes", ascending=False)
+```

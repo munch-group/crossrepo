@@ -1,0 +1,23 @@
+# table { #labdata.cli.table }
+
+```python
+labdata.cli.table(rows, headers)
+```
+
+Render rows as a plain text table with aligned columns.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**rows**]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[List](`typing.List`)\[[str](`str`)\]\]]{.parameter-annotation}</code>
+
+:   Rows of cells, each row the same length as `headers`.
+
+<code>[**headers**]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[str](`str`)\]]{.parameter-annotation}</code>
+
+:   Column headings.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   The rendered table, or an empty string when there are no rows.

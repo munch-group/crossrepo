@@ -1,0 +1,118 @@
+# Config { #labdata.config.Config }
+
+```python
+labdata.config.Config(
+    roots=list(),
+    owners=list(),
+    repos=list(),
+    labdata_dirs=(lambda: ['results'])(),
+    include=(lambda: list(DEFAULT_INCLUDE))(),
+    exclude=(lambda: list(DEFAULT_EXCLUDE))(),
+    min_bytes=0,
+    max_bytes=0,
+)
+```
+
+Settings controlling which files are cataloged.
+
+## Attributes {.doc-section .doc-section-attributes}
+
+<code>[**roots**]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[str](`str`)\]]{.parameter-annotation}</code>
+
+:   Directories searched for git working trees. Each is either a repository itself or a directory whose immediate subdirectories are repositories; nothing deeper is looked at. ``~`` is expanded. A directory on another machine is written ``user@host:path`` and read over ssh, without being cloned or mounted. Empty by default: nothing is scanned until this is set. Naming the directories your repositories are in keeps the scan away from synced folders such as OneDrive, which can block for a long time on a directory that is not there.
+
+<code>[**owners**]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[str](`str`)\]]{.parameter-annotation}</code>
+
+:   GitHub organisations or users whose repositories are cataloged over the API, without being cloned. Every repository they own is looked at, at the cost of one request each for those that publish nothing.
+
+<code>[**repos**]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[str](`str`)\]]{.parameter-annotation}</code>
+
+:   Further GitHub repositories to catalog, written ``owner/repo``, for ones outside `owners`.
+
+<code>[**labdata_dirs**]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[str](`str`)\]]{.parameter-annotation}</code>
+
+:   Directories within a repository holding a ``labdata.yml``, and with it the result files it publishes, given as paths relative to the repository root. They may be at any depth, so ``analysis/step3/results`` works as well as ``results``. Matching is case-insensitive, so a repository that committed ``Results/`` is found too. Each is searched, and each needs its own ``labdata.yml``. A manifest may publish files from anywhere else in its repository, by naming them from the repository root.
+
+<code>[**include**]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[str](`str`)\]]{.parameter-annotation}</code>
+
+:   File name patterns to catalog, on top of what the manifests publish. Empty means everything published.
+
+<code>[**exclude**]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[str](`str`)\]]{.parameter-annotation}</code>
+
+:   File name patterns to skip, applied before `include`.
+
+<code>[**min_bytes**]{.parameter-name} [:]{.parameter-annotation-sep} [[int](`int`)]{.parameter-annotation}</code>
+
+:   Skip files smaller than this. Zero disables the check.
+
+<code>[**max_bytes**]{.parameter-name} [:]{.parameter-annotation-sep} [[int](`int`)]{.parameter-annotation}</code>
+
+:   Skip files larger than this. Zero disables the check.
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+cfg = Config(roots=["~/github-backup/munch-group", "kmt@genome.au.dk:~/projects"])
+entries = build(cfg)
+```
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`labdata.core.build`)
+
+## Methods
+
+| Name | Description |
+| --- | --- |
+| [load](#labdata.config.Config.load) | Read settings from a TOML file. |
+| [write_default](#labdata.config.Config.write_default) | Write a commented configuration file holding these settings. |
+
+### load { #labdata.config.Config.load }
+
+```python
+labdata.config.Config.load(path=None)
+```
+
+Read settings from a TOML file.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+<code>[**path**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Path](`pathlib.Path`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   File to read. Defaults to [](`labdata.config.config_path`). A missing file is not an error and yields the defaults.
+
+#### Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [\'Config\']{.parameter-annotation}</code>
+
+:   The settings.
+
+#### Raises {.doc-section .doc-section-raises}
+
+<code>[:]{.parameter-annotation-sep} [[ValueError](`ValueError`)]{.parameter-annotation}</code>
+
+:   If the file contains keys that are not settings. A key that used to be one is not refused, so that a file written by an earlier version still loads: one listed in `RETIRED` is ignored with a warning, and one listed in `RENAMED` is read under its new name, also with a warning.
+
+<code>[:]{.parameter-annotation-sep} [[RuntimeError](`RuntimeError`)]{.parameter-annotation}</code>
+
+:   On Python older than 3.11 when `tomli` is not installed.
+
+### write_default { #labdata.config.Config.write_default }
+
+```python
+labdata.config.Config.write_default(path=None)
+```
+
+Write a commented configuration file holding these settings.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+<code>[**path**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Path](`pathlib.Path`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   File to write. Defaults to [](`labdata.config.config_path`). Parent directories are created. An existing file is overwritten.
+
+#### Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Path](`pathlib.Path`)]{.parameter-annotation}</code>
+
+:   The path written.

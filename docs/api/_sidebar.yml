@@ -3,10 +3,94 @@ website:
   - contents:
     - api/index.qmd
     - contents:
-      - api/functionname.qmd
-      section: Some section
+      - api/list.qmd
+      - api/repos.qmd
+      - api/versions.qmd
+      - api/refresh.qmd
+      - api/frame.qmd
+      - api/catalog.qmd
+      - api/build.qmd
+      - api/diagnose.qmd
+      section: Catalog
     - contents:
-      - api/scriptname.qmd
-      section: Some other section
+      - api/get.qmd
+      - api/fetch.qmd
+      - api/outdated.qmd
+      section: Fetching
+    - contents:
+      - api/resolve_one.qmd
+      - api/match.qmd
+      - api/find_version.qmd
+      - api/fingerprint.qmd
+      - api/scan_repo.qmd
+      - api/repo_identity.qmd
+      - api/materialize.qmd
+      - api/progress_bar.qmd
+      - api/copy_out.qmd
+      section: Resolving
+    - contents:
+      - api/Entry.qmd
+      - api/Version.qmd
+      - api/Spec.qmd
+      section: Data types
+    - contents:
+      - api/build.qmd
+      - api/scan_repo.qmd
+      - api/versions.qmd
+      - api/version_at.qmd
+      - api/dataset_files.qmd
+      - api/download.qmd
+      section: GitHub
+    - contents:
+      - api/Client.qmd
+      - api/token.qmd
+      - api/blob_url.qmd
+      - api/GitHubError.qmd
+      section: GitHub API
+    - contents:
+      - api/Manifest.qmd
+      - api/parse.qmd
+      - api/is_manifest.qmd
+      - api/manifest_path.qmd
+      - api/ManifestError.qmd
+      section: Manifests
+    - contents:
+      - api/Config.qmd
+      - api/config_path.qmd
+      - api/cache_root.qmd
+      section: Configuration
+    - contents:
+      - api/blob_path.qmd
+      - api/readable_path.qmd
+      - api/store.qmd
+      - api/store_from_file.qmd
+      - api/open_for_write.qmd
+      - api/link.qmd
+      - api/objects.qmd
+      - api/check_object.qmd
+      - api/discard.qmd
+      - api/usage.qmd
+      section: Cache
+    - contents:
+      - api/discover_repos.qmd
+      - api/tracked_blobs.qmd
+      - api/head_commit.qmd
+      - api/file_history.qmd
+      - api/blob_at.qmd
+      - api/tree_at.qmd
+      - api/tree_files.qmd
+      - api/tag_map.qmd
+      - api/read_blob.qmd
+      - api/write_blob_to.qmd
+      - api/parse_lfs_pointer.qmd
+      - api/lfs_object_path.qmd
+      - api/GitError.qmd
+      section: Git access
+    - contents:
+      - api/main.qmd
+      - api/table.qmd
+      - api/human.qmd
+      - api/note.qmd
+      section: Command line
     id: api
   - id: dummy-sidebar

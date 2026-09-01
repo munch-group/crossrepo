@@ -1,0 +1,26 @@
+# human { #labdata.cli.human }
+
+```python
+labdata.cli.human(n)
+```
+
+Format a byte count for display.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**n**]{.parameter-name} [:]{.parameter-annotation-sep} [[int](`int`)]{.parameter-annotation}</code>
+
+:   Number of bytes. A negative number means the size is unknown.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   A short string such as ``948B`` or ``488.5M``, or ``?`` when unknown.
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+human(512189753)
+# '488.5M'
+```

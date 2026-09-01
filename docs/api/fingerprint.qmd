@@ -1,0 +1,28 @@
+# fingerprint { #labdata.core.fingerprint }
+
+```python
+labdata.core.fingerprint(cfg)
+```
+
+Summarise the settings that decide what a catalog contains.
+
+A stored catalog is only reusable for the settings that produced it, and
+nothing about a catalog file says which those were. This gives the stored
+catalog a key, so that pointing `roots` somewhere else takes effect at once
+instead of after the stored catalog has aged out.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**cfg**]{.parameter-name} [:]{.parameter-annotation-sep} [[Config](`labdata.config.Config`)]{.parameter-annotation}</code>
+
+:   Settings to summarise. Only the fields that change which files are cataloged are used, and ``~`` in `roots` is expanded first so that two spellings of one directory agree.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   A short hex digest.
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`labdata.core.catalog`)

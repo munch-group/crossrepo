@@ -1,0 +1,31 @@
+# dataset_files { #labdata.remote.dataset_files }
+
+```python
+labdata.remote.dataset_files(entry, commit, client=None)
+```
+
+List the parts of a dataset at one commit.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**entry**]{.parameter-name} [:]{.parameter-annotation-sep} [[Entry](`labdata.model.Entry`)]{.parameter-annotation}</code>
+
+:   Entry naming the dataset.
+
+<code>[**commit**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Commit sha to read at.
+
+<code>[**client**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Client](`labdata.github.Client`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   Client to read with. Defaults to a new one.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[Tuple](`typing.Tuple`)\[[str](`str`), [str](`str`), [int](`int`)\]\]]{.parameter-annotation}</code>
+
+:   Tuples of ``(path, blob_sha, size)``, sorted by path.
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`labdata.gitutil.tree_files`)

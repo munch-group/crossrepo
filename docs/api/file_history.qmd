@@ -1,0 +1,27 @@
+# file_history { #labdata.gitutil.file_history }
+
+```python
+labdata.gitutil.file_history(repo, path, follow=True)
+```
+
+List every commit that changed one file, newest first.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[Location](`labdata.location.Location`), [Path](`pathlib.Path`), [str](`str`)\]]{.parameter-annotation}</code>
+
+:   Working tree to inspect, on this machine or another.
+
+<code>[**path**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository-relative path of the file.
+
+<code>[**follow**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [True]{.parameter-default}</code>
+
+:   Follow renames, so history reaches back past a rename. Only meaningful for a single file; pass `False` for a directory, which ``--follow`` does not describe.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[Tuple](`typing.Tuple`)\[[str](`str`), [str](`str`), [str](`str`)\]\]]{.parameter-annotation}</code>
+
+:   Tuples of ``(sha, iso_date, subject)``, newest first.

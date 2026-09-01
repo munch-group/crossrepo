@@ -1,0 +1,7 @@
+# GitHubError { #labdata.github.GitHubError }
+
+```python
+labdata.github.GitHubError()
+```
+
+Raised when GitHub cannot be read.

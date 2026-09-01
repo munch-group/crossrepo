@@ -1,27 +1,86 @@
 """
 Configuration and standard locations.
 
-The defaults work with no configuration file present. A file is only needed to
-point [](`labdata.core.build`) at the directories where repositories live.
+Everything has a default except the one thing only you can know: which
+directories your repositories live in. `roots` starts empty rather than at your
+home directory, because scanning a whole home directory reaches into synced
+folders and network mounts that can take a very long time to answer, or never
+answer at all.
 """
 
 from __future__ import annotations
 
 import os
+import warnings
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import List, Optional
+from typing import Dict, List, Optional, Set
 
-DEFAULT_INCLUDE = [
-    "*.csv", "*.tsv", "*.txt", "*.parquet", "*.pq",
-    "*.h5", "*.hdf", "*.hdf5", "*.store",
-    "*.json", "*.jsonl", "*.xlsx", "*.bed", "*.gff", "*.vcf", "*.vcf.gz",
-    "*.pkl", "*.pickle", "*.npy", "*.npz", "*.feather", "*.zarr",
-]
-"""File name patterns cataloged unless excluded."""
+DEFAULT_INCLUDE: List[str] = []
+"""
+File name patterns to catalog, empty by default.
 
-DEFAULT_EXCLUDE = ["*.png", "*.pdf", "*.svg", "*.html", "*.md", ".gitkeep", "*.log"]
-"""File name patterns never cataloged, applied before `DEFAULT_INCLUDE`."""
+Guessing at extensions was how the catalog was decided before there was a
+manifest. What a repository publishes is now its own to state, so this is empty
+and everything published is cataloged. It remains as a filter for a reader who
+wants only part of what is published, such as ``["*.csv"]``.
+"""
+
+DEFAULT_EXCLUDE: List[str] = []
+"""File name patterns to skip, applied before `DEFAULT_INCLUDE`. Empty by default."""
+
+RETIRED: Set[str] = {"depth"}
+"""
+Settings that no longer exist, ignored with a warning rather than refused.
+
+A configuration file written by an earlier version must still load, or the tool
+stops working on the day it is updated. ``depth`` decided how far below each
+root to look for repositories; a root is now either a repository itself or a
+directory holding them.
+"""
+
+RENAMED: Dict[str, str] = {"results_dirs": "labdata_dirs"}
+"""
+Settings that changed name, read under the old one with a warning.
+
+The old name still says what was meant, so it is honoured rather than refused,
+for the same reason as `RETIRED`.
+"""
+
+
+class SourceWarning(UserWarning):
+    """
+    Raised when something the settings name cannot be read.
+
+    A root that is not there, a server that does not answer, an organisation or
+    repository GitHub will not show: each costs part of the catalog rather than
+    all of it, so a scan carries on and says at the end what it could not reach.
+    Silence would be worse than either: a catalog missing half a group's results
+    looks exactly like a group that published half as much.
+    """
+
+
+def _toml_list(name: str, values: List[str]) -> str:
+    """
+    Render a list setting as TOML.
+
+    Parameters
+    ----------
+    name :
+        Setting name.
+    values :
+        Its values. An empty list is written on one line, since a blank block
+        reads as though something were missing.
+
+    Returns
+    -------
+    :
+        The setting, ending in a newline.
+    """
+    if not values:
+        return f"{name} = []\n"
+    body = "\n".join(f'  "{v}",' for v in values)
+    return f"{name} = [\n{body}\n]\n"
 
 
 def config_path() -> Path:
@@ -68,15 +127,33 @@ class Config:
     Attributes
     ----------
     roots :
-        Directories searched for git working trees. ``~`` is expanded.
-    depth :
-        How many levels below each root to search.
-    results_dirs :
-        Directories within a repository holding published result files.
-        Matching is case-insensitive, so a repository that committed
-        ``Results/`` is found as well.
+        Directories searched for git working trees. Each is either a repository
+        itself or a directory whose immediate subdirectories are repositories;
+        nothing deeper is looked at. ``~`` is expanded. A directory on another
+        machine is written ``user@host:path`` and read over ssh, without being
+        cloned or mounted. Empty by default: nothing is scanned until this is
+        set. Naming the directories your repositories are in keeps the scan away
+        from synced folders such as OneDrive, which can block for a long time on
+        a directory that is not there.
+    owners :
+        GitHub organisations or users whose repositories are cataloged over the
+        API, without being cloned. Every repository they own is looked at, at
+        the cost of one request each for those that publish nothing.
+    repos :
+        Further GitHub repositories to catalog, written ``owner/repo``, for ones
+        outside `owners`.
+    labdata_dirs :
+        Directories within a repository holding a ``labdata.yml``, and with it
+        the result files it publishes, given as paths relative to the repository
+        root. They may be at any depth, so
+        ``analysis/step3/results`` works as well as ``results``. Matching is
+        case-insensitive, so a repository that committed ``Results/`` is found
+        too. Each is searched, and each needs its own ``labdata.yml``. A
+        manifest may publish files from anywhere else in its repository, by
+        naming them from the repository root.
     include :
-        File name patterns to catalog.
+        File name patterns to catalog, on top of what the manifests publish.
+        Empty means everything published.
     exclude :
         File name patterns to skip, applied before `include`.
     min_bytes :
@@ -88,7 +165,7 @@ class Config:
     --------
 
     ```python
-    cfg = Config(roots=["~/github-backup/munch-group"], depth=1)
+    cfg = Config(roots=["~/github-backup/munch-group", "kmt@genome.au.dk:~/projects"])
     entries = build(cfg)
     ```
 
@@ -97,9 +174,10 @@ class Config:
     [](`labdata.core.build`)
     """
 
-    roots: List[str] = field(default_factory=lambda: ["~"])
-    depth: int = 2
-    results_dirs: List[str] = field(default_factory=lambda: ["results"])
+    roots: List[str] = field(default_factory=list)
+    owners: List[str] = field(default_factory=list)
+    repos: List[str] = field(default_factory=list)
+    labdata_dirs: List[str] = field(default_factory=lambda: ["results"])
     include: List[str] = field(default_factory=lambda: list(DEFAULT_INCLUDE))
     exclude: List[str] = field(default_factory=lambda: list(DEFAULT_EXCLUDE))
     min_bytes: int = 0
@@ -124,7 +202,11 @@ class Config:
         Raises
         ------
         ValueError
-            If the file contains keys that are not settings.
+            If the file contains keys that are not settings. A key that used to
+            be one is not refused, so that a file written by an earlier version
+            still loads: one listed in `RETIRED` is ignored with a warning, and
+            one listed in `RENAMED` is read under its new name, also with a
+            warning.
         RuntimeError
             On Python older than 3.11 when `tomli` is not installed.
         """
@@ -143,6 +225,26 @@ class Config:
         with open(path, "rb") as fh:
             data = tomllib.load(fh)
         known = set(cls.__dataclass_fields__)
+        renamed = sorted(set(data) & set(RENAMED))
+        for key in renamed:
+            value = data.pop(key)
+            data.setdefault(RENAMED[key], value)     # the new name wins
+        if renamed:
+            warnings.warn(
+                f"{path}: "
+                + "; ".join(f"`{k}` is now `{RENAMED[k]}`" for k in renamed),
+                stacklevel=2,
+            )
+        retired = sorted(set(data) & RETIRED)
+        for key in retired:
+            del data[key]
+        if retired:
+            warnings.warn(
+                f"{path}: `{'`, `'.join(retired)}` no longer does anything and can "
+                f"be deleted; a root is now either a repository or a directory "
+                f"holding them",
+                stacklevel=2,
+            )
         unknown = set(data) - known
         if unknown:
             raise ValueError(f"unknown keys in {path}: {', '.join(sorted(unknown))}")
@@ -165,20 +267,45 @@ class Config:
         """
         path = path or config_path()
         path.parent.mkdir(parents=True, exist_ok=True)
-        roots = "\n".join(f'  "{r}",' for r in self.roots)
-        inc = "\n".join(f'  "{p}",' for p in self.include)
-        exc = "\n".join(f'  "{p}",' for p in self.exclude)
+        if self.roots:
+            roots = (
+                "roots = [\n"
+                + "\n".join(f'  "{r}",' for r in self.roots)
+                + "\n]\n"
+            )
+        else:
+            roots = (
+                "# Nothing is scanned until this is filled in. Naming the\n"
+                "# directories your repos are in keeps the scan out of synced\n"
+                "# folders and network mounts, which can be very slow.\n"
+                "roots = []\n"
+            )
+        inc = _toml_list("include", self.include)
+        exc = _toml_list("exclude", self.exclude)
         path.write_text(
-            "# Where to look for repos. Each root is searched `depth` levels deep\n"
-            "# for working trees; a directory containing .git is a repo.\n"
-            f"roots = [\n{roots}\n]\n"
-            f"depth = {self.depth}\n\n"
-            "# Directory inside each repo that holds published result files.\n"
-            "# Matched case-insensitively, so Results/ is found too.\n"
-            f"results_dirs = {self.results_dirs!r}\n\n"
-            "# Only tracked files matching `include` and not `exclude` are cataloged.\n"
-            f"include = [\n{inc}\n]\n"
-            f"exclude = [\n{exc}\n]\n\n"
+            "# Where to look for repos. Each root is either a repo itself or a\n"
+            "# directory holding repos; a directory containing .git is a repo.\n"
+            "# A root on another machine is written user@host:path and read\n"
+            "# over ssh, with whatever access ssh already grants. E.g.\n"
+            '#   roots = ["~/projects", "kmt@genome.au.dk:~/projects"]\n'
+
+            f"{roots}\n"
+            "# GitHub organisations or users to catalog over the API. Nothing is\n"
+            "# cloned; repositories need not be checked out at all. E.g.\n"
+            '#   owners = ["munch-group"]\n'
+            f"{_toml_list('owners', self.owners)}"
+            f"{_toml_list('repos', self.repos)}\n"
+            "# Directories inside each repo holding a labdata.yml, and with it\n"
+            "# the result files it publishes. Paths from the repo root, at any\n"
+            "# depth, matched case-insensitively, so Results/ is found too. A\n"
+            "# labdata.yml may publish files elsewhere in the repo as well, by\n"
+            "# naming them from the repo root, as /data/samples.csv.\n"
+            f"labdata_dirs = {self.labdata_dirs!r}\n\n"
+            "# What a repo publishes is decided by its labdata.yml. These\n"
+            "# narrow that on the reading side; empty means everything\n"
+            "# published, e.g. include = [\"*.csv\"].\n"
+            f"{inc}"
+            f"{exc}\n"
             "# Size filters in bytes; 0 disables the limit.\n"
             f"min_bytes = {self.min_bytes}\n"
             f"max_bytes = {self.max_bytes}\n",

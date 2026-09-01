@@ -1,0 +1,97 @@
+# get { #labdata.get }
+
+```python
+labdata.get(
+    repo,
+    filename,
+    version=None,
+    *,
+    owner=None,
+    out=None,
+    refresh=False,
+    quiet=False,
+    cfg=None,
+)
+```
+
+Download one result file, addressed by repository and file name.
+
+This is the form meant for a notebook. Passing `version` pins the result, and
+the call is then silent and reproducible. Leaving it out takes the latest
+version and prints its hash together with the call that pins it, so the
+pinned form can be copied straight back into the cell.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository name, optionally written ``owner/repo`` when the name alone is used by two organisations.
+
+<code>[**filename**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   File name, or as much of the path as is needed to be unambiguous within the repository.
+
+<code>[**version**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[str](`str`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   Hash of the commit holding the wanted version, a unique prefix of one, or a tag name. `None` takes the latest version and prints its hash.
+
+<code>[**owner**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[str](`str`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   Repository owner, an alternative to writing ``owner/repo`` in `repo`.
+
+<code>[**out**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Union](`typing.Union`)\[[str](`str`), [Path](`pathlib.Path`)\]\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   Also write a copy here. A directory, or a path written with a trailing separator, keeps the original file name, and missing parent directories are created.
+
+<code>[**refresh**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [False]{.parameter-default}</code>
+
+:   Rescan the repositories before resolving, instead of using the stored catalog.
+
+<code>[**quiet**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [False]{.parameter-default}</code>
+
+:   Do not print the hash even when `version` was not given. The warning that a pinned version has been overtaken is still printed, on standard error: it says something happened rather than merely reporting.
+
+<code>[**cfg**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Config](`labdata.config.Config`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   Settings. Defaults to [](`labdata.config.Config.load`).
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Path](`pathlib.Path`)]{.parameter-annotation}</code>
+
+:   Path of the file in the local cache, ready to hand to a reader.
+
+## Raises {.doc-section .doc-section-raises}
+
+<code>[:]{.parameter-annotation-sep} [[LookupError](`LookupError`)]{.parameter-annotation}</code>
+
+:   If nothing matches, if several files match, or if there is no such version. The message lists the candidates as full specs.
+
+<code>[:]{.parameter-annotation-sep} [[FileNotFoundError](`FileNotFoundError`)]{.parameter-annotation}</code>
+
+:   If the file is held in Git LFS and its content has not been fetched into the repository.
+
+## Examples {.doc-section .doc-section-examples}
+
+Read the latest version, and be told the hash that pins it:
+
+```python
+import labdata
+import pandas as pd
+
+df = pd.read_csv(labdata.get("x-gwas", "hits.csv"))
+# munch-group/x-gwas:results/hits.csv@e4f5a6b  (2026-04-11, 1.2M)
+# pin this version:  labdata.get("x-gwas", "hits.csv", "e4f5a6b")
+```
+
+Pin it, so the notebook reads the same bytes next year:
+
+```python
+df = pd.read_csv(labdata.get("x-gwas", "hits.csv", "e4f5a6b"))
+```
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`labdata.core.fetch`)
+[](`labdata.versions`)
+[](`labdata.core.outdated`)

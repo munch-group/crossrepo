@@ -1,0 +1,39 @@
+# scan_repo { #labdata.remote.scan_repo }
+
+```python
+labdata.remote.scan_repo(client, owner, repo, cfg, ref=None)
+```
+
+Catalog the result files one GitHub repository publishes.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**client**]{.parameter-name} [:]{.parameter-annotation-sep} [[Client](`labdata.github.Client`)]{.parameter-annotation}</code>
+
+:   Client to read with.
+
+<code>[**owner**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository owner.
+
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository name.
+
+<code>[**cfg**]{.parameter-name} [:]{.parameter-annotation-sep} [[Config](`labdata.config.Config`)]{.parameter-annotation}</code>
+
+:   Settings supplying the results directories and the reading side filters.
+
+<code>[**ref**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[str](`str`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   Branch, tag or commit to read. Defaults to the repository's default branch.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[Entry](`labdata.model.Entry`)\]]{.parameter-annotation}</code>
+
+:   One entry per published result file or dataset, each stamped with the commit the repository points at. Empty, at the cost of a single request, when the repository publishes nothing.
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`labdata.core.scan_repo`)

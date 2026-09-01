@@ -1,0 +1,27 @@
+# match { #labdata.core.match }
+
+```python
+labdata.core.match(entries, spec)
+```
+
+Find the entries a spec refers to, ignoring its version.
+
+The path matches on the full repository-relative path, on the bare file
+name, or on a trailing portion of the path, so a file can be named as
+briefly as is unambiguous.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**entries**]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[Entry](`labdata.model.Entry`)\]]{.parameter-annotation}</code>
+
+:   Catalog to search.
+
+<code>[**spec**]{.parameter-name} [:]{.parameter-annotation-sep} [[Spec](`labdata.model.Spec`)]{.parameter-annotation}</code>
+
+:   Reference to match.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[Entry](`labdata.model.Entry`)\]]{.parameter-annotation}</code>
+
+:   Matching entries, possibly none or several.

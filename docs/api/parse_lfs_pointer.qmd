@@ -1,0 +1,26 @@
+# parse_lfs_pointer { #labdata.gitutil.parse_lfs_pointer }
+
+```python
+labdata.gitutil.parse_lfs_pointer(data)
+```
+
+Read a Git LFS pointer file.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**data**]{.parameter-name} [:]{.parameter-annotation-sep} [[bytes](`bytes`)]{.parameter-annotation}</code>
+
+:   Raw content of a blob, which may or may not be a pointer.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Tuple](`typing.Tuple`)\[[str](`str`), [int](`int`)\]\]]{.parameter-annotation}</code>
+
+:   ``(sha256_oid, real_size)`` if `data` is a pointer, else `None`.
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+parse_lfs_pointer(read_blob(repo, blob_sha))
+# ('9f2c...', 512189753)
+```

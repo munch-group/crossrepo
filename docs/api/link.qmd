@@ -1,0 +1,26 @@
+# link { #labdata.cache.link }
+
+```python
+labdata.cache.link(blob, dest)
+```
+
+Expose a cached object under a readable name.
+
+A hard link is preferred, a symbolic link is the first fallback and a copy
+the last, so the function works on filesystems that support neither.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**blob**]{.parameter-name} [:]{.parameter-annotation-sep} [[Path](`pathlib.Path`)]{.parameter-annotation}</code>
+
+:   Cached object to expose.
+
+<code>[**dest**]{.parameter-name} [:]{.parameter-annotation-sep} [[Path](`pathlib.Path`)]{.parameter-annotation}</code>
+
+:   Path to create. An existing path is reused when it already stands for `blob`, cached content being immutable, and is replaced otherwise, so that a link left by an earlier cache layout is never trusted.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Path](`pathlib.Path`)]{.parameter-annotation}</code>
+
+:   `dest`.

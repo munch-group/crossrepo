@@ -17,6 +17,9 @@ classifiers = [
     "Programming Language :: Python :: 3",
 ]
 dependencies = [
+    "click>=8.0",
+    "pyyaml>=6.0",
+    "tqdm>=4.60",
     "tomli; python_version < '3.11'",
 ]
 
@@ -48,6 +51,9 @@ platforms = ["osx-arm64",  "linux-64"]
 
 [tool.pixi.dependencies]
 python = ">=3.9,<3.14"
+click = ">=8.0"
+pyyaml = ">=6.0"
+tqdm = ">=4.60"
 pytest = "*"
 jupyter = "*"
 quarto = "*"
@@ -62,8 +68,10 @@ gh = "*"
 ipython = "*"
 seaborn = "*"
 nbdime = ">=4.0.2,<5"
-vscodenb = "*"
+vscodenb = ">=1.0.7,<2"
 r-rsvg = "*"
+pyarrow = "*"
+pytables = "*"
 
 # [tool.pixi.pypi-dependencies]
 # labdata = { path = ".", editable = true }
