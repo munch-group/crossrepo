@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "labdata"
-version = "0.1.16"
+version = "0.1.17"
 description = "Catalog and fetch versioned result files across git repos, without submodules"
 authors = [
     {name = "Your Name", email = "your@email.com"}
