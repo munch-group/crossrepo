@@ -8,10 +8,13 @@ blob identity -- is what is being tested.
 
 from __future__ import annotations
 
+import hashlib
 import os
 import shutil
 import subprocess
+import re
 from pathlib import Path
+from typing import Optional
 
 ENV = {
     **os.environ,
@@ -258,6 +261,187 @@ def make(base: Path) -> Path:
 
     _mkdir(base / "other" / "not-a-repo" / "results")
     (base / "other" / "not-a-repo" / "results" / "x.csv").write_text("a\n")
+    return base
+
+
+LINK_V1 = "gene,score\n" + "".join(f"g{i},{i}\n" for i in range(50))
+"""First content of the file the fixture repositories publish as a link."""
+
+LINK_V2 = LINK_V1 + "g50,50\n"
+"""Second content of it, standing for a pipeline having run again."""
+
+LINK_OTHER = "gene,score\nz,9\n"
+"""Content of a link with the same target path in a different repository."""
+
+LINK_ABSENT = LINK_V1 + "never written anywhere\n"
+"""Content stamped for a link whose target is missing.
+
+Distinct from every other fixture's, so that no other repository can put it in
+the cache and let a test that means to read a missing file succeed.
+"""
+
+LINK_UNSTAMPED = LINK_V1 + "stamped, then written over\n"
+"""Content stamped for a link whose target was regenerated without stamping.
+
+Distinct for the same reason: the cache is keyed by content, so a stamp naming
+content some other repository publishes would be satisfied from the cache.
+"""
+
+
+def digest(text: str) -> str:
+    """
+    Hash content the way a manifest stamp records it.
+
+    Computed here rather than with `labdata.cache.content_hash`, so that the
+    tests check the library against an independent answer.
+
+    Parameters
+    ----------
+    text :
+        Content to hash.
+
+    Returns
+    -------
+    :
+        The sha256 digest in lower case hexadecimal.
+    """
+    return hashlib.sha256(text.encode()).hexdigest()
+
+
+def write_link_repo(
+    path: Path, content: Optional[str], description: str = "Merged table",
+    stamped: bool = True, key: str = "big.csv", stamp_for: Optional[str] = None,
+) -> Path:
+    """
+    Build a repository publishing one file as a symbolic link.
+
+    The target is deliberately untracked, which is the point of publishing this
+    way: the file is too large to commit, so git holds the link and the manifest
+    holds the stamp saying which content the link stands for.
+
+    Parameters
+    ----------
+    path :
+        Directory to create the repository in.
+    content :
+        Content to write at the link's target, or `None` to leave the target
+        missing, as a clone without the pipeline's output would.
+    description :
+        What the manifest says the file holds.
+    stamped :
+        Whether to write a stamp. Without one the file is published as a link
+        that nothing identifies, which the scan warns about.
+    key :
+        Manifest key to publish the link under, so that a pattern can be used
+        instead of the file name.
+    stamp_for :
+        Content to stamp, when that is not the content written. Defaults to
+        `content`, which is the honest case; giving something else is how a
+        repository whose file was regenerated without stamping is built.
+
+    Returns
+    -------
+    :
+        `path`.
+    """
+    repo = init(_mkdir(path))
+    (repo / ".gitignore").write_text("steps/\n")
+    (repo / "steps").mkdir()
+    (repo / "results").mkdir()
+    if content is not None:
+        (repo / "steps" / "big.csv").write_text(content)
+    (repo / "results" / "big.csv").symlink_to("../steps/big.csv")
+    (repo / "results" / "plain.csv").write_text("k,v\nx,1\n")
+    stamp = ""
+    if stamped:
+        # A missing target still gets a stamp: what a link stands for is what the
+        # manifest says, not what happens to be on this machine.
+        said = stamp_for if stamp_for is not None else content
+        assert said is not None, "a stamp needs content to describe"
+        stamp = f'    sha256: "{digest(said)}"\n    size: {len(said)}\n'
+    (repo / "results" / "labdata.yml").write_text(
+        "files:\n"
+        "  plain.csv: An ordinary committed table\n"
+        f"  {key}:\n    description: {description}\n{stamp}"
+    )
+    commit(repo, "first results")
+    return repo
+
+
+def restamp(repo: Path, content: str, message: str) -> None:
+    """
+    Regenerate a link's target and stamp it again, as a pipeline rerun does.
+
+    The new content is written beside the old file and renamed over it, which is
+    what a workflow manager does and what keeps a cached hard link to the old
+    content pointing at the old content. Truncating the file in place instead
+    would change the cached object too.
+
+    Parameters
+    ----------
+    repo :
+        Working tree to change.
+    content :
+        New content for the target.
+    message :
+        Commit message for the new stamp.
+    """
+    target = repo / "steps" / "big.csv"
+    fresh = target.with_suffix(".new")
+    fresh.write_text(content)
+    fresh.replace(target)
+    text = (repo / "results" / "labdata.yml").read_text()
+    text = re.sub(r'sha256: "[0-9a-f]{64}"', f'sha256: "{digest(content)}"', text)
+    text = re.sub(r"size: \d+", f"size: {len(content)}", text)
+    (repo / "results" / "labdata.yml").write_text(text)
+    commit(repo, message)
+
+
+def make_links(base: Path) -> Path:
+    """
+    Build the repositories that publish result files as symbolic links.
+
+    Kept apart from [](`fixtures.make`) so that the catalog the rest of the
+    suite reads does not change. Five repositories cover what a link can be:
+    one stamped and regenerated, so it has two versions of content git never
+    held; one whose link is written with the same target path but stands for
+    different content, which a cache keyed by the link rather than by the
+    content would confuse; one with no stamp; one whose target is missing; and
+    one whose target holds something other than what was stamped.
+
+    Parameters
+    ----------
+    base :
+        Directory to build in. It is removed first if it exists.
+
+    Returns
+    -------
+    :
+        `base`.
+    """
+    if base.exists():
+        shutil.rmtree(base)
+    base.mkdir(parents=True)
+
+    proj = write_link_repo(base / "links" / "proj", LINK_V1)
+    run(proj, "remote", "add", "origin", "git@github.com:links/proj.git")
+    restamp(proj, LINK_V2, "regenerate the big table")
+    # A commit that touches the manifest without changing this stamp, which is
+    # therefore not a version of this file.
+    text = (proj / "results" / "labdata.yml").read_text()
+    (proj / "results" / "labdata.yml").write_text(
+        text.replace("Merged table", "Merged per-sample table")
+    )
+    commit(proj, "describe the table better")
+
+    # The same link text, so a cache keyed by it would serve one for the other.
+    write_link_repo(base / "links" / "twin", LINK_OTHER)
+
+    write_link_repo(base / "links" / "bare", LINK_V1, stamped=False)
+    write_link_repo(base / "links" / "gone", None, stamp_for=LINK_ABSENT)
+    write_link_repo(
+        base / "links" / "stale", LINK_V2, stamp_for=LINK_UNSTAMPED
+    )
     return base
 
 

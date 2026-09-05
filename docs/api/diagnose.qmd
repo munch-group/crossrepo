@@ -16,7 +16,7 @@ labdata.diagnose(cfg=None)
 
     cfg :
         Settings to account for. Defaults to
-        [](`labdata.config.Config.load`).
+        [](`labdata.config.active_config`).
 
 ##     Returns {.doc-section .doc-section-----returns}
 

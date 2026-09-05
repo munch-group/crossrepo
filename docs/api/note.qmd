@@ -16,7 +16,7 @@ Summarise what is unusual about a version, for the table's NOTE column.
 
 <code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
 
-:   Its tags, whether it is held in Git LFS, and how many parts it has if it is a dataset, comma separated; empty for an ordinary tagless file.
+:   Its tags, whether it is held in Git LFS or published as a symbolic link, and how many parts it has if it is a dataset, comma separated; empty for an ordinary tagless file.
 
 ## Examples {.doc-section .doc-section-examples}
 

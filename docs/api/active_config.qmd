@@ -1,0 +1,24 @@
+# active_config { #labdata.config.active_config }
+
+```python
+labdata.config.active_config()
+```
+
+The settings in effect for calls that are not given any.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Config](`labdata.config.Config`)]{.parameter-annotation}</code>
+
+:   The settings registered with [](`labdata.config.use_config`), or, while none is registered, the ones read from [](`labdata.config.config_path`). Every function taking a ``cfg`` argument falls back to this when it is left out, so this says what such a call is about to use.
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+labdata.active_config().owners
+```
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`labdata.config.use_config`)
+[](`labdata.config.Config.load`)

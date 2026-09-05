@@ -1,7 +1,17 @@
 # Version { #labdata.Version }
 
 ```python
-labdata.Version(sha, date, subject, blob, size, lfs_oid=None, parts=0, tags=())
+labdata.Version(
+    sha,
+    date,
+    subject,
+    blob,
+    size,
+    lfs_oid=None,
+    parts=0,
+    tags=(),
+    link=None,
+)
 ```
 
 One commit in which a result file changed.
@@ -28,7 +38,7 @@ they never define one.
 
 <code>[**blob**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
 
-:   Git blob sha of the file at this commit, a hash of its content, used as the cache key. For a dataset held in a directory this is the git tree sha instead, which hashes the whole directory and so plays the same part.
+:   Content key of the file at this commit, and the key it is cached under. Ordinarily the git blob sha, which is a hash of the content. For a dataset held in a directory it is the git tree sha, which hashes the whole directory and so plays the same part; for a file published as a link it is the ``sha256`` its manifest stamp records, git holding only the link and not the bytes behind it.
 
 <code>[**size**]{.parameter-name} [:]{.parameter-annotation-sep} [[int](`int`)]{.parameter-annotation}</code>
 
@@ -45,3 +55,7 @@ they never define one.
 <code>[**tags**]{.parameter-name} [:]{.parameter-annotation-sep} [[Tuple](`typing.Tuple`)\[[str](`str`), ...\]]{.parameter-annotation}</code>
 
 :   Any tags pointing at this commit.
+
+<code>[**link**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[str](`str`)\]]{.parameter-annotation}</code>
+
+:   Target of the symbolic link the file is published as, as committed, or `None` for a file git holds the content of. A link's content is read from the target rather than from git, and `blob` is then the stamp that says which content it should be.

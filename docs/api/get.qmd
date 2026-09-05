@@ -53,7 +53,7 @@ pinned form can be copied straight back into the cell.
 
 <code>[**cfg**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Config](`labdata.config.Config`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
 
-:   Settings. Defaults to [](`labdata.config.Config.load`).
+:   Settings. Defaults to [](`labdata.config.active_config`): what [](`labdata.config.use_config`) registered, or the configuration file.
 
 ## Returns {.doc-section .doc-section-returns}
 
@@ -69,7 +69,11 @@ pinned form can be copied straight back into the cell.
 
 <code>[:]{.parameter-annotation-sep} [[FileNotFoundError](`FileNotFoundError`)]{.parameter-annotation}</code>
 
-:   If the file is held in Git LFS and its content has not been fetched into the repository.
+:   If the file is held in Git LFS and its content has not been fetched into the repository, or is published as a link and the link resolves to nothing on the machine holding the repository.
+
+<code>[:]{.parameter-annotation-sep} [[ValueError](`ValueError`)]{.parameter-annotation}</code>
+
+:   If the file is published as a link and the content it points at is not what its stamp records, which means it was regenerated without being stamped again.
 
 ## Examples {.doc-section .doc-section-examples}
 

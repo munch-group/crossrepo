@@ -37,6 +37,7 @@ version.
 | --- | --- |
 | [resolve_one](resolve_one.qmd#labdata.core.resolve_one) | Find the single entry a spec refers to. |
 | [match](match.qmd#labdata.core.match) | Find the entries a spec refers to, ignoring its version. |
+| [selects](selects.qmd#labdata.core.selects) | Test whether a narrowed scan should look at a repository. |
 | [find_version](find_version.qmd#labdata.core.find_version) | Resolve a version reference against a file's history. |
 | [fingerprint](fingerprint.qmd#labdata.core.fingerprint) | Summarise the settings that decide what a catalog contains. |
 | [scan_repo](scan_repo.qmd#labdata.core.scan_repo) | Catalog the result files of one repository. |
@@ -85,14 +86,17 @@ The client the GitHub backend reads with.
 
 ## Manifests
 
-The `labdata.yml` by which a repository states what it publishes, and
-what each published file holds.
+The `labdata.yml` by which a repository states what it publishes, what
+each published file holds, and, for a file published as a symbolic link,
+which content that link stands for.
 
 
 | | |
 | --- | --- |
 | [Manifest](Manifest.qmd#labdata.manifest.Manifest) | What one directory of a repository publishes. |
+| [Stamp](Stamp.qmd#labdata.manifest.Stamp) | The content a published link stands for. |
 | [parse](parse.qmd#labdata.manifest.parse) | Read a manifest. |
+| [write_stamp](write_stamp.qmd#labdata.manifest.write_stamp) | Write one entry's stamp into a manifest, leaving the rest of the file alone. |
 | [is_manifest](is_manifest.qmd#labdata.manifest.is_manifest) | Test whether a repository path is a manifest. |
 | [manifest_path](manifest_path.qmd#labdata.manifest.manifest_path) | Where a results directory's manifest must sit to be read. |
 | [ManifestError](ManifestError.qmd#labdata.manifest.ManifestError) | Raised when a manifest cannot be understood. |
@@ -106,12 +110,16 @@ settings and the cache live.
 | | |
 | --- | --- |
 | [Config](Config.qmd#labdata.config.Config) | Settings controlling which files are cataloged. |
+| [use_config](use_config.qmd#labdata.config.use_config) | Register settings for the rest of the session, or for a block. |
+| [active_config](active_config.qmd#labdata.config.active_config) | The settings in effect for calls that are not given any. |
+| [Registration](Registration.qmd#labdata.config.Registration) | The undo for one call to [](`labdata.config.use_config`). |
 | [config_path](config_path.qmd#labdata.config.config_path) | Location of the configuration file. |
 | [cache_root](cache_root.qmd#labdata.config.cache_root) | Location of the local cache. |
 
 ## Cache
 
-The content-addressed store keyed by git blob sha.
+The content-addressed store, keyed by git blob sha, by Git LFS object
+id, or by the stamp of a file published as a symbolic link.
 
 
 | | |
@@ -123,6 +131,7 @@ The content-addressed store keyed by git blob sha.
 | [open_for_write](open_for_write.qmd#labdata.cache.open_for_write) | Prepare to stream an object into the cache. |
 | [link](link.qmd#labdata.cache.link) | Expose a cached object under a readable name. |
 | [objects](objects.qmd#labdata.cache.objects) | List every object the store holds. |
+| [content_hash](content_hash.qmd#labdata.cache.content_hash) | Hash a file the way a manifest stamp records it. |
 | [check_object](check_object.qmd#labdata.cache.check_object) | Test whether a cached object holds the content its key promises. |
 | [discard](discard.qmd#labdata.cache.discard) | Remove a cached object, and the readable links that stand for it. |
 | [usage](usage.qmd#labdata.cache.usage) | Measure how much the cache holds. |
@@ -136,16 +145,21 @@ Plumbing wrappers used to read repositories.
 | --- | --- |
 | [discover_repos](discover_repos.qmd#labdata.gitutil.discover_repos) | Find git working trees under a set of root directories. |
 | [tracked_blobs](tracked_blobs.qmd#labdata.gitutil.tracked_blobs) | List files tracked at HEAD under a directory, with blob shas and sizes. |
+| [tracked_entries](tracked_entries.qmd#labdata.gitutil.tracked_entries) | List everything tracked at HEAD under a directory, symbolic links included. |
 | [head_commit](head_commit.qmd#labdata.gitutil.head_commit) | Read the commit a repository currently points at. |
 | [file_history](file_history.qmd#labdata.gitutil.file_history) | List every commit that changed one file, newest first. |
 | [blob_at](blob_at.qmd#labdata.gitutil.blob_at) | Find the blob sha and size of a file as of a revision. |
+| [entry_at](entry_at.qmd#labdata.gitutil.entry_at) | Find the blob sha, size and mode of a file as of a revision. |
 | [tree_at](tree_at.qmd#labdata.gitutil.tree_at) | Find the tree sha of a directory as of a revision. |
 | [tree_files](tree_files.qmd#labdata.gitutil.tree_files) | List every file beneath a directory as of a revision. |
 | [tag_map](tag_map.qmd#labdata.gitutil.tag_map) | Map commits to the tags pointing at them. |
 | [read_blob](read_blob.qmd#labdata.gitutil.read_blob) | Read the content of a blob into memory. |
 | [write_blob_to](write_blob_to.qmd#labdata.gitutil.write_blob_to) | Stream the content of a blob to a file. |
+| [write_file_to](write_file_to.qmd#labdata.gitutil.write_file_to) | Copy a file that git does not hold, such as a Git LFS object. |
 | [parse_lfs_pointer](parse_lfs_pointer.qmd#labdata.gitutil.parse_lfs_pointer) | Read a Git LFS pointer file. |
 | [lfs_object_path](lfs_object_path.qmd#labdata.gitutil.lfs_object_path) | Locate the real content of a Git LFS object in a repository. |
+| [link_target](link_target.qmd#labdata.gitutil.link_target) | Read where a committed symbolic link points. |
+| [resolve_link](resolve_link.qmd#labdata.gitutil.resolve_link) | Locate the file a committed symbolic link points at. |
 | [GitError](GitError.qmd#labdata.gitutil.GitError) | Raised when a git command fails. |
 
 ## Command line

@@ -1,0 +1,31 @@
+# link_target { #labdata.gitutil.link_target }
+
+```python
+labdata.gitutil.link_target(repo, blob_sha)
+```
+
+Read where a committed symbolic link points.
+
+A symbolic link is stored as a blob whose content is the target path, so
+this is the committed target rather than whatever the working tree happens
+to hold, which is the same rule manifests are read by.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[Location](`labdata.location.Location`), [Path](`pathlib.Path`), [str](`str`)\]]{.parameter-annotation}</code>
+
+:   Working tree holding the blob, on this machine or another.
+
+<code>[**blob_sha**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Blob sha of the link, as `tracked_entries` reports it for a path whose mode is `LINK_MODE`.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   The target as written, which may be relative to the directory the link sits in.
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`labdata.gitutil.resolve_link`)

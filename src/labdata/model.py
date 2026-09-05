@@ -38,9 +38,12 @@ class Version:
     subject :
         Subject line of the commit.
     blob :
-        Git blob sha of the file at this commit, a hash of its content, used as
-        the cache key. For a dataset held in a directory this is the git tree
-        sha instead, which hashes the whole directory and so plays the same part.
+        Content key of the file at this commit, and the key it is cached under.
+        Ordinarily the git blob sha, which is a hash of the content. For a
+        dataset held in a directory it is the git tree sha, which hashes the
+        whole directory and so plays the same part; for a file published as a
+        link it is the ``sha256`` its manifest stamp records, git holding only
+        the link and not the bytes behind it.
     size :
         Size in bytes, resolved through Git LFS pointers so that it is the size
         of the real content rather than of the pointer. For a dataset it is the
@@ -52,6 +55,11 @@ class Version:
         dataset published as a directory, the count of files beneath it.
     tags :
         Any tags pointing at this commit.
+    link :
+        Target of the symbolic link the file is published as, as committed, or
+        `None` for a file git holds the content of. A link's content is read
+        from the target rather than from git, and `blob` is then the stamp that
+        says which content it should be.
     """
 
     sha: str
@@ -62,6 +70,7 @@ class Version:
     lfs_oid: Optional[str] = None
     parts: int = 0
     tags: Tuple[str, ...] = ()
+    link: Optional[str] = None
 
 
 @dataclass(frozen=True)
@@ -99,6 +108,11 @@ class Entry:
         decides where history is read from, which is not the same question as
         where content is read from — a clone can supply content it happens to
         hold for a version cataloged over the API.
+    manifest :
+        Repository-relative path of the ``labdata.yml`` that publishes this
+        file. Carried because it is where a link's versions are read from: git
+        holds no history of the bytes behind a link, so the history of the stamp
+        in this file is the history of the content.
 
     See Also
     --------
@@ -114,6 +128,7 @@ class Entry:
     description: str = ""
     remote: str = ""
     source: str = "local"
+    manifest: str = ""
 
     def url(self, version: Optional[Version] = None) -> str:
         """

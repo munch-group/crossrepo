@@ -15213,12 +15213,21 @@ xml.dom.minidom.Node.writexml py:method 1 library/xml.dom.minidom.html#$ -
 xml.dom.minidom.parse py:function 1 library/xml.dom.minidom.html#$ -
 xml.dom.minidom.parseString py:function 1 library/xml.dom.minidom.html#$ -
 xml.dom.pulldom py:module 0 library/xml.dom.pulldom.html#module-$ -
+xml.dom.pulldom.CHARACTERS py:data 1 library/xml.dom.pulldom.html#$ -
+xml.dom.pulldom.COMMENT py:data 1 library/xml.dom.pulldom.html#$ -
 xml.dom.pulldom.DOMEventStream py:class 1 library/xml.dom.pulldom.html#$ -
+xml.dom.pulldom.DOMEventStream.clear py:method 1 library/xml.dom.pulldom.html#$ -
 xml.dom.pulldom.DOMEventStream.expandNode py:method 1 library/xml.dom.pulldom.html#$ -
 xml.dom.pulldom.DOMEventStream.getEvent py:method 1 library/xml.dom.pulldom.html#$ -
 xml.dom.pulldom.DOMEventStream.reset py:method 1 library/xml.dom.pulldom.html#$ -
+xml.dom.pulldom.END_DOCUMENT py:data 1 library/xml.dom.pulldom.html#$ -
+xml.dom.pulldom.END_ELEMENT py:data 1 library/xml.dom.pulldom.html#$ -
+xml.dom.pulldom.IGNORABLE_WHITESPACE py:data 1 library/xml.dom.pulldom.html#$ -
+xml.dom.pulldom.PROCESSING_INSTRUCTION py:data 1 library/xml.dom.pulldom.html#$ -
 xml.dom.pulldom.PullDOM py:class 1 library/xml.dom.pulldom.html#$ -
 xml.dom.pulldom.SAX2DOM py:class 1 library/xml.dom.pulldom.html#$ -
+xml.dom.pulldom.START_DOCUMENT py:data 1 library/xml.dom.pulldom.html#$ -
+xml.dom.pulldom.START_ELEMENT py:data 1 library/xml.dom.pulldom.html#$ -
 xml.dom.pulldom.default_bufsize py:data 1 library/xml.dom.pulldom.html#$ -
 xml.dom.pulldom.parse py:function 1 library/xml.dom.pulldom.html#$ -
 xml.dom.pulldom.parseString py:function 1 library/xml.dom.pulldom.html#$ -
@@ -15299,6 +15308,7 @@ xml.etree.ElementTree.register_namespace py:function 1 library/xml.etree.element
 xml.etree.ElementTree.tostring py:function 1 library/xml.etree.elementtree.html#$ -
 xml.etree.ElementTree.tostringlist py:function 1 library/xml.etree.elementtree.html#$ -
 xml.parsers.expat py:module 0 library/pyexpat.html#module-$ -
+xml.parsers.expat.EXPAT_VERSION py:data 1 library/pyexpat.html#$ -
 xml.parsers.expat.ErrorString py:function 1 library/pyexpat.html#$ -
 xml.parsers.expat.ExpatError py:exception 1 library/pyexpat.html#$ -
 xml.parsers.expat.ExpatError.code py:attribute 1 library/pyexpat.html#$ -
@@ -15354,7 +15364,19 @@ xml.parsers.expat.errors.XML_ERROR_UNKNOWN_ENCODING py:data 1 library/pyexpat.ht
 xml.parsers.expat.errors.XML_ERROR_XML_DECL py:data 1 library/pyexpat.html#$ -
 xml.parsers.expat.errors.codes py:data 1 library/pyexpat.html#$ -
 xml.parsers.expat.errors.messages py:data 1 library/pyexpat.html#$ -
+xml.parsers.expat.features py:data 1 library/pyexpat.html#$ -
 xml.parsers.expat.model py:module 0 library/pyexpat.html#module-$ -
+xml.parsers.expat.model.XML_CQUANT_NONE py:data 1 library/pyexpat.html#$ -
+xml.parsers.expat.model.XML_CQUANT_OPT py:data 1 library/pyexpat.html#$ -
+xml.parsers.expat.model.XML_CQUANT_PLUS py:data 1 library/pyexpat.html#$ -
+xml.parsers.expat.model.XML_CQUANT_REP py:data 1 library/pyexpat.html#$ -
+xml.parsers.expat.model.XML_CTYPE_ANY py:data 1 library/pyexpat.html#$ -
+xml.parsers.expat.model.XML_CTYPE_CHOICE py:data 1 library/pyexpat.html#$ -
+xml.parsers.expat.model.XML_CTYPE_EMPTY py:data 1 library/pyexpat.html#$ -
+xml.parsers.expat.model.XML_CTYPE_MIXED py:data 1 library/pyexpat.html#$ -
+xml.parsers.expat.model.XML_CTYPE_NAME py:data 1 library/pyexpat.html#$ -
+xml.parsers.expat.model.XML_CTYPE_SEQ py:data 1 library/pyexpat.html#$ -
+xml.parsers.expat.version_info py:data 1 library/pyexpat.html#$ -
 xml.parsers.expat.xmlparser.AttlistDeclHandler py:method 1 library/pyexpat.html#$ -
 xml.parsers.expat.xmlparser.CharacterDataHandler py:method 1 library/pyexpat.html#$ -
 xml.parsers.expat.xmlparser.CommentHandler py:method 1 library/pyexpat.html#$ -
@@ -15390,6 +15412,7 @@ xml.parsers.expat.xmlparser.SetBillionLaughsAttackProtectionActivationThreshold 
 xml.parsers.expat.xmlparser.SetBillionLaughsAttackProtectionMaximumAmplification py:method 1 library/pyexpat.html#$ -
 xml.parsers.expat.xmlparser.SetParamEntityParsing py:method 1 library/pyexpat.html#$ -
 xml.parsers.expat.xmlparser.SetReparseDeferralEnabled py:method 1 library/pyexpat.html#$ -
+xml.parsers.expat.xmlparser.SkippedEntityHandler py:method 1 library/pyexpat.html#$ -
 xml.parsers.expat.xmlparser.StartCdataSectionHandler py:method 1 library/pyexpat.html#$ -
 xml.parsers.expat.xmlparser.StartDoctypeDeclHandler py:method 1 library/pyexpat.html#$ -
 xml.parsers.expat.xmlparser.StartElementHandler py:method 1 library/pyexpat.html#$ -
@@ -15400,6 +15423,8 @@ xml.parsers.expat.xmlparser.XmlDeclHandler py:method 1 library/pyexpat.html#$ -
 xml.parsers.expat.xmlparser.buffer_size py:attribute 1 library/pyexpat.html#$ -
 xml.parsers.expat.xmlparser.buffer_text py:attribute 1 library/pyexpat.html#$ -
 xml.parsers.expat.xmlparser.buffer_used py:attribute 1 library/pyexpat.html#$ -
+xml.parsers.expat.xmlparser.intern py:attribute 1 library/pyexpat.html#$ -
+xml.parsers.expat.xmlparser.namespace_prefixes py:attribute 1 library/pyexpat.html#$ -
 xml.parsers.expat.xmlparser.ordered_attributes py:attribute 1 library/pyexpat.html#$ -
 xml.parsers.expat.xmlparser.specified_attributes py:attribute 1 library/pyexpat.html#$ -
 xml.sax py:module 0 library/xml.sax.html#module-$ -
@@ -15409,6 +15434,8 @@ xml.sax.SAXException.getMessage py:method 1 library/xml.sax.html#$ -
 xml.sax.SAXNotRecognizedException py:exception 1 library/xml.sax.html#$ -
 xml.sax.SAXNotSupportedException py:exception 1 library/xml.sax.html#$ -
 xml.sax.SAXParseException py:exception 1 library/xml.sax.html#$ -
+xml.sax.SAXReaderNotAvailable py:exception 1 library/xml.sax.html#$ -
+xml.sax.default_parser_list py:data 1 library/xml.sax.html#$ -
 xml.sax.handler py:module 0 library/xml.sax.handler.html#module-$ -
 xml.sax.handler.ContentHandler py:class 1 library/xml.sax.handler.html#$ -
 xml.sax.handler.ContentHandler.characters py:method 1 library/xml.sax.handler.html#$ -
@@ -15449,6 +15476,8 @@ xml.sax.handler.feature_string_interning py:data 1 library/xml.sax.handler.html#
 xml.sax.handler.feature_validation py:data 1 library/xml.sax.handler.html#$ -
 xml.sax.handler.property_declaration_handler py:data 1 library/xml.sax.handler.html#$ -
 xml.sax.handler.property_dom_node py:data 1 library/xml.sax.handler.html#$ -
+xml.sax.handler.property_encoding py:data 1 library/xml.sax.handler.html#$ -
+xml.sax.handler.property_interning_dict py:data 1 library/xml.sax.handler.html#$ -
 xml.sax.handler.property_lexical_handler py:data 1 library/xml.sax.handler.html#$ -
 xml.sax.handler.property_xml_string py:data 1 library/xml.sax.handler.html#$ -
 xml.sax.make_parser py:function 1 library/xml.sax.html#$ -
@@ -15456,6 +15485,8 @@ xml.sax.parse py:function 1 library/xml.sax.html#$ -
 xml.sax.parseString py:function 1 library/xml.sax.html#$ -
 xml.sax.saxutils py:module 0 library/xml.sax.utils.html#module-$ -
 xml.sax.saxutils.XMLFilterBase py:class 1 library/xml.sax.utils.html#$ -
+xml.sax.saxutils.XMLFilterBase.getParent py:method 1 library/xml.sax.utils.html#$ -
+xml.sax.saxutils.XMLFilterBase.setParent py:method 1 library/xml.sax.utils.html#$ -
 xml.sax.saxutils.XMLGenerator py:class 1 library/xml.sax.utils.html#$ -
 xml.sax.saxutils.escape py:function 1 library/xml.sax.utils.html#$ -
 xml.sax.saxutils.prepare_input_source py:function 1 library/xml.sax.utils.html#$ -
@@ -15475,6 +15506,7 @@ xml.sax.xmlreader.AttributesNSImpl py:class 1 library/xml.sax.reader.html#$ -
 xml.sax.xmlreader.IncrementalParser py:class 1 library/xml.sax.reader.html#$ -
 xml.sax.xmlreader.IncrementalParser.close py:method 1 library/xml.sax.reader.html#$ -
 xml.sax.xmlreader.IncrementalParser.feed py:method 1 library/xml.sax.reader.html#$ -
+xml.sax.xmlreader.IncrementalParser.prepareParser py:method 1 library/xml.sax.reader.html#$ -
 xml.sax.xmlreader.IncrementalParser.reset py:method 1 library/xml.sax.reader.html#$ -
 xml.sax.xmlreader.InputSource py:class 1 library/xml.sax.reader.html#$ -
 xml.sax.xmlreader.InputSource.getByteStream py:method 1 library/xml.sax.reader.html#$ -
@@ -17104,6 +17136,8 @@ high-level-embedding std:label -1 extending/embedding.html#$ Very High Level Emb
 history-and-license std:label -1 license.html#$ History and License
 hkey-constants std:label -1 library/winreg.html#$ HKEY_* Constants
 host_port std:label -1 library/socket.html#host-port -
+how-are-dictionaries-implemented std:label -1 faq/design.html#$ How are dictionaries implemented in CPython?
+how-are-lists-implemented std:label -1 faq/design.html#$ How are lists implemented in CPython?
 how-tos std:label -1 howto/index.html#$ Python HOWTOs
 howto-minimal-example std:label -1 howto/logging.html#$ A simple example
 howto/a-conceptual-overview-of-asyncio std:doc -1 howto/a-conceptual-overview-of-asyncio.html A Conceptual Overview of asyncio
@@ -17589,6 +17623,7 @@ library/textwrap std:doc -1 library/textwrap.html textwrap — Text wrapping and
 library/threading std:doc -1 library/threading.html threading — Thread-based parallelism
 library/threadsafety std:doc -1 library/threadsafety.html Thread Safety Guarantees
 library/time std:doc -1 library/time.html time — Time access and conversions
+library/time-complexity std:doc -1 library/time-complexity.html Time complexity of operations on built-in types
 library/timeit std:doc -1 library/timeit.html timeit — Measure execution time of small code snippets
 library/tk std:doc -1 library/tk.html Graphical user interfaces with Tk
 library/tkinter std:doc -1 library/tkinter.html tkinter — Python interface to Tcl/Tk
@@ -18685,6 +18720,7 @@ threadsafety-level-incompatible std:label -1 library/threadsafety.html#$ Incompa
 threadsafety-level-shared std:label -1 library/threadsafety.html#$ Safe on shared objects
 threadsafety-levels std:label -1 library/threadsafety.html#$ Thread safety levels
 time-clock-id-constants std:label -1 library/time.html#$ Clock ID Constants
+time-complexity std:label -1 library/time-complexity.html#$ Time complexity of operations on built-in types
 time-functions std:label -1 library/time.html#$ Functions
 time-timezone-constants std:label -1 library/time.html#$ Timezone Constants
 timed-rotating-file-handler std:label -1 library/logging.handlers.html#$ TimedRotatingFileHandler
@@ -18939,6 +18975,7 @@ typesseq-immutable std:label -1 library/stdtypes.html#$ Immutable Sequence Types
 typesseq-list std:label -1 library/stdtypes.html#$ Lists
 typesseq-mutable std:label -1 library/stdtypes.html#$ Mutable Sequence Types
 typesseq-range std:label -1 library/stdtypes.html#$ Ranges
+typesseq-repeated-concatenation std:label -1 library/stdtypes.html#$ -
 typesseq-tuple std:label -1 library/stdtypes.html#$ Tuples
 typevar std:label -1 library/typing.html#$ -
 typevartuple std:label -1 library/typing.html#$ -

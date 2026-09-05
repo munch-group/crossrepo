@@ -1,0 +1,27 @@
+# content_hash { #labdata.cache.content_hash }
+
+```python
+labdata.cache.content_hash(path)
+```
+
+Hash a file the way a manifest stamp records it.
+
+This is the digest Git LFS keys an object by, taken over the content alone,
+so content published as a link and the same content committed to Git LFS
+share one cached object.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**path**]{.parameter-name} [:]{.parameter-annotation-sep} [[Path](`pathlib.Path`)]{.parameter-annotation}</code>
+
+:   File to hash. Content is streamed, so a large file costs no memory.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   The sha256 digest in lower case hexadecimal.
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`labdata.manifest.Stamp`)

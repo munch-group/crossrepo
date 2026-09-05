@@ -118,6 +118,7 @@ quartodoc:
       contents:
         - resolve_one
         - match
+        - selects
         - find_version
         - fingerprint
         - scan_repo
@@ -160,11 +161,14 @@ quartodoc:
     - title: Manifests
       package: labdata.manifest
       desc: |
-        The `labdata.yml` by which a repository states what it publishes, and
-        what each published file holds.
+        The `labdata.yml` by which a repository states what it publishes, what
+        each published file holds, and, for a file published as a symbolic link,
+        which content that link stands for.
       contents:
         - Manifest
+        - Stamp
         - parse
+        - write_stamp
         - is_manifest
         - manifest_path
         - ManifestError
@@ -175,12 +179,16 @@ quartodoc:
         settings and the cache live.
       contents:
         - Config
+        - use_config
+        - active_config
+        - Registration
         - config_path
         - cache_root
     - title: Cache
       package: labdata.cache
       desc: |
-        The content-addressed store keyed by git blob sha.
+        The content-addressed store, keyed by git blob sha, by Git LFS object
+        id, or by the stamp of a file published as a symbolic link.
       contents:
         - blob_path
         - readable_path
@@ -189,6 +197,7 @@ quartodoc:
         - open_for_write
         - link
         - objects
+        - content_hash
         - check_object
         - discard
         - usage
@@ -199,16 +208,21 @@ quartodoc:
       contents:
         - discover_repos
         - tracked_blobs
+        - tracked_entries
         - head_commit
         - file_history
         - blob_at
+        - entry_at
         - tree_at
         - tree_files
         - tag_map
         - read_blob
         - write_blob_to
+        - write_file_to
         - parse_lfs_pointer
         - lfs_object_path
+        - link_target
+        - resolve_link
         - GitError
     - title: Command line
       package: labdata.cli

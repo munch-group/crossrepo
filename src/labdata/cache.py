@@ -351,6 +351,31 @@ def _digest(path: Path, algorithm: str) -> str:
     return h.hexdigest()
 
 
+def content_hash(path: Path) -> str:
+    """
+    Hash a file the way a manifest stamp records it.
+
+    This is the digest Git LFS keys an object by, taken over the content alone,
+    so content published as a link and the same content committed to Git LFS
+    share one cached object.
+
+    Parameters
+    ----------
+    path :
+        File to hash. Content is streamed, so a large file costs no memory.
+
+    Returns
+    -------
+    :
+        The sha256 digest in lower case hexadecimal.
+
+    See Also
+    --------
+    [](`labdata.manifest.Stamp`)
+    """
+    return _digest(path, "sha256")
+
+
 def check_object(path: Path) -> Optional[str]:
     """
     Test whether a cached object holds the content its key promises.

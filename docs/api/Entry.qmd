@@ -10,6 +10,7 @@ labdata.Entry(
     description='',
     remote='',
     source='local',
+    manifest='',
 )
 ```
 
@@ -48,6 +49,10 @@ A result file in a repository, at its most recent version.
 <code>[**source**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
 
 :   Where the entry was cataloged: ``local`` from a clone on this machine, ``ssh`` from a clone on another machine, ``github`` over the API. It decides where history is read from, which is not the same question as where content is read from — a clone can supply content it happens to hold for a version cataloged over the API.
+
+<code>[**manifest**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository-relative path of the ``labdata.yml`` that publishes this file. Carried because it is where a link's versions are read from: git holds no history of the bytes behind a link, so the history of the stamp in this file is the history of the content.
 
 ## See Also {.doc-section .doc-section-see-also}
 

@@ -24,7 +24,7 @@ from typing import Any, Callable, Dict, Iterator, List, Optional, Tuple
 
 import click
 
-from . import __version__, cache
+from . import __version__, cache, gitutil, manifest
 from . import core as cat
 from .config import Config, SourceWarning, cache_root, config_path
 from .core import human
@@ -47,8 +47,9 @@ def note(version) -> str:
     Returns
     -------
     :
-        Its tags, whether it is held in Git LFS, and how many parts it has if it
-        is a dataset, comma separated; empty for an ordinary tagless file.
+        Its tags, whether it is held in Git LFS or published as a symbolic link,
+        and how many parts it has if it is a dataset, comma separated; empty for
+        an ordinary tagless file.
 
     Examples
     --------
@@ -61,6 +62,10 @@ def note(version) -> str:
     bits = list(version.tags)
     if version.lfs_oid:
         bits.append("lfs")
+    if version.link is not None:
+        # Worth saying: it means the content is not in the repository, so a
+        # clone without the pipeline's output cannot read it.
+        bits.append("link")
     if version.parts:
         bits.append(f"{version.parts} parts")
     return ",".join(bits)
@@ -545,6 +550,244 @@ def cmd_config(ctx: click.Context, init: bool, force: bool) -> int:
     n, total = cache.usage()
     click.echo(f"cache: {n} objects, {human(total)}")
     return 0
+
+
+def _manifest_file(root: Path, wanted: str) -> Optional[Path]:
+    """
+    Find the manifest of one results directory in a working tree.
+
+    The directory is matched without regard to case, as the scan matches it, so
+    a repository spelling it ``Results`` is stamped like any other.
+
+    Parameters
+    ----------
+    root :
+        Top of the working tree.
+    wanted :
+        Results directory as the settings spell it, relative to `root`.
+
+    Returns
+    -------
+    :
+        Path of the ``labdata.yml``, or `None` when the directory or the
+        manifest is not there.
+    """
+    here = root
+    for part in wanted.strip("/").split("/"):
+        if not part:
+            return None
+        if (here / part).is_dir():
+            here = here / part
+            continue
+        got = [c for c in sorted(here.iterdir()) if c.is_dir() and c.name.lower() == part.lower()]
+        if not got:
+            return None
+        here = got[0]
+    for name in manifest.MANIFEST_NAMES:
+        if (here / name).is_file():
+            return here / name
+    return None
+
+
+def _key_path(governing: manifest.Manifest, key: str) -> str:
+    """
+    The file one literal manifest key names, as a repository path.
+
+    Parameters
+    ----------
+    governing :
+        Manifest the key was written in.
+    key :
+        Key as written, either relative to the manifest or, with a leading
+        ``/``, from the root of the repository.
+
+    Returns
+    -------
+    :
+        The repository-relative path.
+    """
+    if key.startswith("/"):
+        return key.strip("/")
+    return f"{governing.directory}/{key}" if governing.directory else key
+
+
+def _stamp_one(root: Path, path: str) -> Tuple[Optional[manifest.Stamp], str]:
+    """
+    Hash what a published symbolic link points at.
+
+    Parameters
+    ----------
+    root :
+        Top of the working tree.
+    path :
+        Repository-relative path of the link.
+
+    Returns
+    -------
+    :
+        ``(stamp, "")`` for a link that resolves, or ``(None, reason)`` when it
+        does not. Reading the target is the expensive part of stamping, and it
+        is the only way to know what the link stands for.
+    """
+    here = root / path
+    target = here.readlink()
+    resolved = target if target.is_absolute() else here.parent / target
+    if not resolved.is_file():
+        return None, f"points at {target}, which is not a file here"
+    return manifest.Stamp(
+        sha256=cache.content_hash(resolved), size=resolved.stat().st_size
+    ), ""
+
+
+def _links_under(directory: Path) -> Iterator[Path]:
+    """
+    Every symbolic link in a directory tree.
+
+    Parameters
+    ----------
+    directory :
+        Directory to walk.
+
+    Yields
+    ------
+    :
+        Each symbolic link found, at any depth. A link to a directory is not
+        descended into, there being no telling where it leads.
+    """
+    for here in sorted(directory.iterdir()):
+        if here.is_symlink():
+            yield here
+        elif here.is_dir():
+            yield from _links_under(here)
+
+
+@cli.command("stamp")
+@click.argument(
+    "path", required=False, type=click.Path(exists=True, file_okay=False)
+)
+@click.option(
+    "--check", is_flag=True,
+    help="say what is out of date and write nothing; for a hook or for CI",
+)
+@click.pass_context
+def cmd_stamp(ctx: click.Context, path: Optional[str], check: bool) -> int:
+    """
+    Record what the published symbolic links in a repository point at.
+
+    A result file too large to commit is published as a symbolic link to
+    wherever the pipeline wrote it, together with a stamp in the ``labdata.yml``
+    saying which content the link stands for. Git versions the link and not the
+    bytes, so it is the stamp that makes the version: this command writes it,
+    and committing the manifest publishes the new version.
+
+    Only the two stamp lines of each entry are rewritten, so comments and
+    formatting survive and a stamping run reads as itself in a diff. A file must
+    already be named in the manifest to be stamped, naming it being how it is
+    published in the first place.
+    """
+    cfg, _ = _settings(ctx)
+    start = Path(path).expanduser() if path else Path.cwd()
+    try:
+        top = str(gitutil.git(start, "rev-parse", "--show-toplevel")).strip()
+    except GitError:
+        raise click.ClickException(f"{start} is not in a git repository") from None
+    root = Path(top)
+
+    done: List[str] = []
+    problems: List[str] = []
+    current = 0
+    for wanted in cfg.labdata_dirs:
+        where = _manifest_file(root, wanted)
+        if where is None:
+            continue
+        rel = where.parent.relative_to(root).as_posix()
+        directory = "" if rel == "." else rel
+        text = where.read_text(encoding="utf-8")
+        try:
+            governing = manifest.parse(text, directory)
+        except manifest.ManifestError as exc:
+            problems.append(str(exc))
+            continue
+        wanted_stamps: Dict[str, manifest.Stamp] = {}
+        handled: set = set()
+        for key in governing.files:
+            if any(c in key for c in "*?["):
+                continue                  # a pattern names many files, so none
+            path_in_repo = _key_path(governing, key)
+            handled.add(path_in_repo)
+            here = root / path_in_repo
+            if not here.is_symlink():
+                if governing.stamp(path_in_repo) is not None:
+                    problems.append(
+                        f"{path_in_repo} carries a stamp but is not a symbolic "
+                        f"link; git holds its content, so the stamp does nothing"
+                    )
+                continue
+            got, why = _stamp_one(root, path_in_repo)
+            if got is None:
+                problems.append(f"{path_in_repo} {why}")
+                continue
+            if governing.stamp(path_in_repo) == got:
+                current += 1
+                continue
+            was = "updated" if governing.stamp(path_in_repo) is not None else "stamped"
+            done.append(f"  {was}  {path_in_repo}  ({human(got.size)})")
+            wanted_stamps[key] = got
+            text = manifest.write_stamp(text, key, got)
+        # A pattern cannot carry a stamp, so a link published only by one would
+        # be passed over in silence by both this and the scan.
+        for link in sorted(_links_under(where.parent)):
+            path_in_repo = link.relative_to(root).as_posix()
+            if path_in_repo in handled:
+                continue
+            if governing.describe(path_in_repo) is None:
+                continue
+            problems.append(
+                f"{path_in_repo} is published by a pattern, which cannot carry "
+                f"a stamp; name the file in full in {where.name} to publish it"
+            )
+        if not wanted_stamps or check:
+            continue
+        # A surgical edit is checked by reading the file back: the stamps must be
+        # there, and everything else must still parse.
+        try:
+            after = manifest.parse(text, directory)
+        except manifest.ManifestError as exc:
+            raise click.ClickException(
+                f"stamping {where} would leave it unreadable ({exc}); nothing "
+                f"was written"
+            ) from None
+        if any(after.stamps.get(k) != v for k, v in wanted_stamps.items()):
+            raise click.ClickException(
+                f"stamping {where} did not take effect as written; nothing was "
+                f"written"
+            )
+        where.write_text(text, encoding="utf-8")
+
+    for line in done:
+        click.echo(line)
+    for line in problems:
+        click.echo(f"  {line}", err=True)
+    if not done and not problems:
+        click.echo(
+            f"{current} published link{'' if current == 1 else 's'} up to date"
+            if current else "nothing is published as a link here"
+        )
+        return 0
+    if check:
+        if done:
+            click.echo(
+                f"{len(done)} stamp{'' if len(done) == 1 else 's'} out of date; "
+                f"run `labdata stamp`",
+                err=True,
+            )
+        return 1
+    if done:
+        click.echo(
+            f"stamped {len(done)} file{'' if len(done) == 1 else 's'}; "
+            f"commit the labdata.yml to publish this version"
+        )
+    return 1 if problems else 0
 
 
 @cli.command("cache")

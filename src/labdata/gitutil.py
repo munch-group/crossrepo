@@ -13,6 +13,7 @@ way.
 
 from __future__ import annotations
 
+import posixpath
 import shutil
 import warnings
 from pathlib import Path
@@ -20,6 +21,9 @@ from typing import Dict, Iterable, List, Optional, Sequence, Tuple, Union
 
 from .config import SourceWarning
 from .location import Location, execute, quote, run, warm
+
+LINK_MODE = "120000"
+"""The mode git gives a symbolic link, as it writes it in a tree or the index."""
 
 SEP = "\x1f"
 """Field separator used in ``--format`` strings; cannot occur in a path."""
@@ -314,6 +318,55 @@ def _remember(seen: Dict[str, Location], path: Path) -> None:
     seen.setdefault(str(path), Location(path=str(path)))
 
 
+def tracked_entries(
+    repo: Union[Location, Path, str], subdir: Union[str, Sequence[str]]
+) -> Dict[str, Tuple[str, int, str]]:
+    """
+    List everything tracked at HEAD under a directory, symbolic links included.
+
+    Only tracked files are reported, so untracked scratch output sitting in a
+    results directory is invisible to the catalog: committing a file is the act
+    of publishing it.
+
+    Parameters
+    ----------
+    repo :
+        Working tree to inspect, on this machine or another.
+    subdir :
+        Pathspec limiting the listing, for example ``:(icase)results``, or
+        several of them, in which case a file matching any is listed.
+
+    Returns
+    -------
+    :
+        A mapping of repository-relative path to ``(blob_sha, size, mode)``.
+        A mode of `LINK_MODE` marks a symbolic link, whose blob holds the target
+        path rather than any content and whose size is the length of that path.
+
+    See Also
+    --------
+    [](`labdata.gitutil.tracked_blobs`)
+    [](`labdata.gitutil.link_target`)
+    """
+    specs = [subdir] if isinstance(subdir, str) else list(subdir)
+    out = git(repo, "ls-files", "-s", "-z", "--", *specs, check=False)
+    entries: Dict[str, Tuple[str, str]] = {}
+    for rec in out.split("\0"):
+        if not rec:
+            continue
+        meta, _, path = rec.partition("\t")
+        parts = meta.split()
+        if len(parts) < 3:
+            continue
+        entries[path] = (parts[1], parts[0])
+    if not entries:
+        return {}
+    sizes = _blob_sizes(repo, [sha for sha, _mode in entries.values()])
+    return {
+        p: (sha, sizes.get(sha, -1), mode) for p, (sha, mode) in entries.items()
+    }
+
+
 def tracked_blobs(
     repo: Union[Location, Path, str], subdir: Union[str, Sequence[str]]
 ) -> Dict[str, Tuple[str, int]]:
@@ -322,7 +375,8 @@ def tracked_blobs(
 
     Only tracked files are reported, so untracked scratch output sitting in a
     results directory is invisible to the catalog: committing a file is the act
-    of publishing it. Symbolic links are skipped.
+    of publishing it. Symbolic links are skipped, having no content of their own;
+    [](`labdata.gitutil.tracked_entries`) reports them.
 
     Parameters
     ----------
@@ -343,21 +397,11 @@ def tracked_blobs(
     --------
     [](`labdata.gitutil.head_commit`)
     """
-    specs = [subdir] if isinstance(subdir, str) else list(subdir)
-    out = git(repo, "ls-files", "-s", "-z", "--", *specs, check=False)
-    entries: Dict[str, str] = {}
-    for rec in out.split("\0"):
-        if not rec:
-            continue
-        meta, _, path = rec.partition("\t")
-        parts = meta.split()
-        if len(parts) < 3 or parts[0] == "120000":  # skip symlinks
-            continue
-        entries[path] = parts[1]
-    if not entries:
-        return {}
-    sizes = _blob_sizes(repo, list(entries.values()))
-    return {p: (sha, sizes.get(sha, -1)) for p, sha in entries.items()}
+    return {
+        path: (sha, size)
+        for path, (sha, size, mode) in tracked_entries(repo, subdir).items()
+        if mode != LINK_MODE
+    }
 
 
 def _blob_sizes(repo: Union[Location, Path, str], shas: List[str]) -> Dict[str, int]:
@@ -456,6 +500,44 @@ def file_history(
     return rows
 
 
+def entry_at(
+    repo: Union[Location, Path, str], rev: str, path: str
+) -> Optional[Tuple[str, int, str]]:
+    """
+    Find the blob sha, size and mode of a file as of a revision.
+
+    Parameters
+    ----------
+    repo :
+        Working tree to inspect, on this machine or another.
+    rev :
+        Revision to read the file at, typically a commit sha.
+    path :
+        Repository-relative path of the file.
+
+    Returns
+    -------
+    :
+        ``(blob_sha, size, mode)``, or `None` if the file does not exist at
+        `rev`. A mode of `LINK_MODE` marks a symbolic link.
+
+    See Also
+    --------
+    [](`labdata.gitutil.blob_at`)
+    """
+    out = git(repo, "ls-tree", "-l", rev, "--", path, check=False).strip()
+    if not out:
+        return None
+    meta, _, _ = out.partition("\t")
+    parts = meta.split()
+    if len(parts) < 4:
+        return None
+    try:
+        return parts[2], int(parts[3]), parts[0]
+    except ValueError:
+        return parts[2], -1, parts[0]
+
+
 def blob_at(
     repo: Union[Location, Path, str], rev: str, path: str
 ) -> Optional[Tuple[str, int]]:
@@ -475,18 +557,13 @@ def blob_at(
     -------
     :
         ``(blob_sha, size)``, or `None` if the file does not exist at `rev`.
+
+    See Also
+    --------
+    [](`labdata.gitutil.entry_at`)
     """
-    out = git(repo, "ls-tree", "-l", rev, "--", path, check=False).strip()
-    if not out:
-        return None
-    meta, _, _ = out.partition("\t")
-    parts = meta.split()
-    if len(parts) < 4:
-        return None
-    try:
-        return parts[2], int(parts[3])
-    except ValueError:
-        return parts[2], -1
+    got = entry_at(repo, rev, path)
+    return None if got is None else (got[0], got[1])
 
 
 def tree_at(repo: Union[Location, Path, str], rev: str, path: str) -> Optional[str]:
@@ -731,6 +808,83 @@ def lfs_object_path(
         proc = execute(loc.shell(f"test -f {quote(obj.path)}"), remote=True)
         return obj if proc.returncode == 0 else None
     return obj if Path(obj.path).exists() else None
+
+
+def link_target(repo: Union[Location, Path, str], blob_sha: str) -> str:
+    """
+    Read where a committed symbolic link points.
+
+    A symbolic link is stored as a blob whose content is the target path, so
+    this is the committed target rather than whatever the working tree happens
+    to hold, which is the same rule manifests are read by.
+
+    Parameters
+    ----------
+    repo :
+        Working tree holding the blob, on this machine or another.
+    blob_sha :
+        Blob sha of the link, as `tracked_entries` reports it for a path whose
+        mode is `LINK_MODE`.
+
+    Returns
+    -------
+    :
+        The target as written, which may be relative to the directory the link
+        sits in.
+
+    See Also
+    --------
+    [](`labdata.gitutil.resolve_link`)
+    """
+    return read_blob(repo, blob_sha).decode("utf-8", "replace").strip()
+
+
+def resolve_link(
+    repo: Union[Location, Path, str], path: str, target: str
+) -> Optional[Location]:
+    """
+    Locate the file a committed symbolic link points at.
+
+    A relative target is resolved against the directory the link sits in, which
+    is how the filesystem reads it. A target may leave the repository, by
+    climbing out with ``..`` or by being absolute: publishing is opt-in through
+    the manifest, so what a link reaches is something the repository said out
+    loud, and a result written to scratch space outside the working tree is a
+    normal thing to publish.
+
+    Parameters
+    ----------
+    repo :
+        Working tree holding the link, on this machine or another.
+    path :
+        Repository-relative path of the link itself.
+    target :
+        Target as committed, from [](`labdata.gitutil.link_target`).
+
+    Returns
+    -------
+    :
+        Location of the file, or `None` when nothing is there. A link resolves
+        on the machine its repository is on, so a target read over ssh is looked
+        for on the far side.
+
+    See Also
+    --------
+    [](`labdata.gitutil.write_file_to`)
+    """
+    root = Location.of(repo)
+    if not target:
+        return None
+    if posixpath.isabs(target):
+        full = posixpath.normpath(target)
+    else:
+        rel = posixpath.join(posixpath.dirname(path), target)
+        full = posixpath.normpath(posixpath.join(root.path, rel))
+    loc = Location(path=full, host=root.host)
+    if loc.is_remote:
+        proc = execute(loc.shell(f"test -f {quote(full)}"), remote=True)
+        return loc if proc.returncode == 0 else None
+    return loc if Path(full).expanduser().is_file() else None
 
 
 def write_file_to(src: Location, dest: Path) -> None:

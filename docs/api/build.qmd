@@ -1,7 +1,7 @@
 # build { #labdata.remote.build }
 
 ```python
-labdata.remote.build(cfg, client=None, progress=False)
+labdata.remote.build(cfg, client=None, progress=False, select=None)
 ```
 
 Catalog every repository the settings name on GitHub.
@@ -20,6 +20,10 @@ Catalog every repository the settings name on GitHub.
 
 :   Show a progress bar, one step per repository. Reading a whole organisation is otherwise silent for as long as it takes.
 
+<code>[**select**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[str](`str`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   Read only the repositories this names, by [](`labdata.core.selects`). An owner that cannot hold a match is not even listed, and one that can is listed but only read into where a repository matches, so narrowing a scan to one repository of an organisation costs one request for the listing instead of one for every repository it holds.
+
 ## Returns {.doc-section .doc-section-returns}
 
 <code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[Entry](`labdata.model.Entry`)\]]{.parameter-annotation}</code>
@@ -29,3 +33,4 @@ Catalog every repository the settings name on GitHub.
 ## See Also {.doc-section .doc-section-see-also}
 
 [](`labdata.remote.scan_repo`)
+[](`labdata.core.selects`)

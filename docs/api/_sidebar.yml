@@ -20,6 +20,7 @@ website:
     - contents:
       - api/resolve_one.qmd
       - api/match.qmd
+      - api/selects.qmd
       - api/find_version.qmd
       - api/fingerprint.qmd
       - api/scan_repo.qmd
@@ -49,13 +50,18 @@ website:
       section: GitHub API
     - contents:
       - api/Manifest.qmd
+      - api/Stamp.qmd
       - api/parse.qmd
+      - api/write_stamp.qmd
       - api/is_manifest.qmd
       - api/manifest_path.qmd
       - api/ManifestError.qmd
       section: Manifests
     - contents:
       - api/Config.qmd
+      - api/use_config.qmd
+      - api/active_config.qmd
+      - api/Registration.qmd
       - api/config_path.qmd
       - api/cache_root.qmd
       section: Configuration
@@ -67,6 +73,7 @@ website:
       - api/open_for_write.qmd
       - api/link.qmd
       - api/objects.qmd
+      - api/content_hash.qmd
       - api/check_object.qmd
       - api/discard.qmd
       - api/usage.qmd
@@ -74,16 +81,21 @@ website:
     - contents:
       - api/discover_repos.qmd
       - api/tracked_blobs.qmd
+      - api/tracked_entries.qmd
       - api/head_commit.qmd
       - api/file_history.qmd
       - api/blob_at.qmd
+      - api/entry_at.qmd
       - api/tree_at.qmd
       - api/tree_files.qmd
       - api/tag_map.qmd
       - api/read_blob.qmd
       - api/write_blob_to.qmd
+      - api/write_file_to.qmd
       - api/parse_lfs_pointer.qmd
       - api/lfs_object_path.qmd
+      - api/link_target.qmd
+      - api/resolve_link.qmd
       - api/GitError.qmd
       section: Git access
     - contents:

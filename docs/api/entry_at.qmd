@@ -1,10 +1,10 @@
-# blob_at { #labdata.gitutil.blob_at }
+# entry_at { #labdata.gitutil.entry_at }
 
 ```python
-labdata.gitutil.blob_at(repo, rev, path)
+labdata.gitutil.entry_at(repo, rev, path)
 ```
 
-Find the blob sha and size of a file as of a revision.
+Find the blob sha, size and mode of a file as of a revision.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
@@ -22,10 +22,10 @@ Find the blob sha and size of a file as of a revision.
 
 ## Returns {.doc-section .doc-section-returns}
 
-<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Tuple](`typing.Tuple`)\[[str](`str`), [int](`int`)\]\]]{.parameter-annotation}</code>
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Tuple](`typing.Tuple`)\[[str](`str`), [int](`int`), [str](`str`)\]\]]{.parameter-annotation}</code>
 
-:   ``(blob_sha, size)``, or `None` if the file does not exist at `rev`.
+:   ``(blob_sha, size, mode)``, or `None` if the file does not exist at `rev`. A mode of `LINK_MODE` marks a symbolic link.
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`labdata.gitutil.entry_at`)
+[](`labdata.gitutil.blob_at`)

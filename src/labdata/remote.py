@@ -22,7 +22,7 @@ import warnings
 from pathlib import Path
 from typing import Dict, List, Optional, Sequence, Set, Tuple
 
-from . import manifest
+from . import gitutil, manifest
 from .config import Config, SourceWarning
 from .github import Client, GitHubError
 from .location import Location
@@ -213,15 +213,23 @@ def scan_repo(
         lowered = path.lower()
         return any(lowered.startswith(d + "/") for d in wanted_dirs)
 
+    # A symbolic link is a blob whose content is the target path, so taking it
+    # for a result file would publish the path as though it were the data. Its
+    # content is not in the repository at all, and the API cannot reach the
+    # machine that has it, so a link is left to the clones that can: reading one
+    # is [](`labdata.core.scan_repo`)'s to do.
     blobs = {
         item["path"]: (item["sha"], item.get("size", -1))
         for item in tree
-        if item.get("type") == "blob" and under_results(item.get("path", ""))
+        if item.get("type") == "blob"
+        and item.get("mode") != gitutil.LINK_MODE
+        and under_results(item.get("path", ""))
     }
     if not blobs:
         return []
 
     governing = None
+    where = ""
     for path, (sha, _size) in sorted(blobs.items()):
         head, _, name = path.rpartition("/")
         if head.lower() not in wanted_dirs or name not in manifest.MANIFEST_NAMES:
@@ -229,6 +237,7 @@ def scan_repo(
         try:
             text = client.read_blob(owner, repo, sha).decode("utf-8", "replace")
             governing = manifest.parse(text, head)
+            where = path
         except (manifest.ManifestError, GitHubError) as exc:
             warnings.warn(f"{owner}/{repo}: {exc}", stacklevel=2)
         break
@@ -288,7 +297,7 @@ def scan_repo(
             Entry(
                 owner=owner, repo=repo, path=path, root=Location(""),
                 remote=slug, source="github",
-                description=description,
+                description=description, manifest=where,
                 latest=Version(
                     sha=sha, date=date, subject=subject,
                     blob=blobs[path][0], size=real_size, lfs_oid=lfs_oid,
@@ -308,7 +317,7 @@ def scan_repo(
             Entry(
                 owner=owner, repo=repo, path=directory, root=Location(""),
                 remote=slug, source="github",
-                description=description,
+                description=description, manifest=where,
                 latest=Version(
                     sha=sha, date=date, subject=subject,
                     blob=_tree_sha(tree, directory), size=total, lfs_oid=None,
@@ -341,8 +350,38 @@ def _tree_sha(tree: Sequence[dict], directory: str) -> str:
     return ""
 
 
+def _may_hold(select: Optional[str], owner: str) -> bool:
+    """
+    Test whether an owner can hold a repository a narrowed scan wants.
+
+    Listing an organisation is one request; reading its repositories is one or
+    more each. Skipping the listing of an owner that cannot match saves the
+    first of those, and is safe: a `select` naming an owner is written with a
+    slash, and both it and ``owner/repo`` hold exactly one, so a match must line
+    the two slashes up, which puts everything before the slash in `select`
+    inside the owner.
+
+    Parameters
+    ----------
+    select :
+        Text a repository is selected by, as [](`labdata.core.selects`) matches
+        it. `None` selects everything.
+    owner :
+        The organisation or user about to be listed.
+
+    Returns
+    -------
+    :
+        Whether any of that owner's repositories could match.
+    """
+    if select is None or "/" not in select:
+        return True
+    return select.split("/", 1)[0].lower() in owner.lower()
+
+
 def build(
-    cfg: Config, client: Optional[Client] = None, progress: bool = False
+    cfg: Config, client: Optional[Client] = None, progress: bool = False,
+    select: Optional[str] = None,
 ) -> List[Entry]:
     """
     Catalog every repository the settings name on GitHub.
@@ -357,6 +396,12 @@ def build(
     progress :
         Show a progress bar, one step per repository. Reading a whole
         organisation is otherwise silent for as long as it takes.
+    select :
+        Read only the repositories this names, by [](`labdata.core.selects`).
+        An owner that cannot hold a match is not even listed, and one that can
+        is listed but only read into where a repository matches, so narrowing a
+        scan to one repository of an organisation costs one request for the
+        listing instead of one for every repository it holds.
 
     Returns
     -------
@@ -369,15 +414,21 @@ def build(
     See Also
     --------
     [](`labdata.remote.scan_repo`)
+    [](`labdata.core.selects`)
     """
     if not cfg.owners and not cfg.repos:
         return []
+    from .core import selects
+
     client = client or Client()
     targets: List[Tuple[str, str, Optional[str]]] = []
     for owner in cfg.owners:
+        if not _may_hold(select, owner):
+            continue
         try:
             for name, branch in client.repositories(owner):
-                targets.append((owner, name, branch))
+                if selects(select, f"{owner}/{name}"):
+                    targets.append((owner, name, branch))
         except GitHubError as exc:
             warnings.warn(f"{owner}: {exc}", SourceWarning, stacklevel=2)
     named: List[Tuple[str, str]] = []
@@ -388,6 +439,8 @@ def build(
             )
             continue
         owner, _, name = slug.partition("/")
+        if not selects(select, f"{owner}/{name}"):
+            continue
         named.append((owner, name))
         targets.append((owner, name, None))
 

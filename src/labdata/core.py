@@ -36,7 +36,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Union
 
 from . import cache, gitutil, manifest, remote
-from .config import Config, SourceWarning, cache_root
+from .config import Config, SourceWarning, active_config, cache_root
 from .location import Location
 from .model import Entry, Spec, Version
 
@@ -137,6 +137,56 @@ def repo_identity(root: Location):
             return m.group(1), m.group(2)
     parent = root.parent.name
     return (parent if parent not in ("", "/") else ""), root.name
+
+
+def selects(select: Optional[str], repo_key: str) -> bool:
+    """
+    Test whether a narrowed scan should look at a repository.
+
+    The rule is the one [](`labdata.list`) filters with, so that narrowing a
+    rescan and narrowing a listing pick the same repositories: the text is
+    matched anywhere in ``owner/repo``, ignoring case. An owner alone is written
+    ``owner/``, which cannot match a repository name.
+
+    Parameters
+    ----------
+    select :
+        Text to look for. `None` selects everything, which is what an ordinary
+        scan does.
+    repo_key :
+        The repository, as ``owner/repo``, or as its name alone where no owner
+        is known.
+
+    Returns
+    -------
+    :
+        Whether the repository is one to scan.
+
+    See Also
+    --------
+    [](`labdata.core.build`)
+    """
+    return select is None or select.lower() in repo_key.lower()
+
+
+def _repo_key(owner: str, repo: str) -> str:
+    """
+    Name a repository the way an entry does, before there is an entry.
+
+    Parameters
+    ----------
+    owner :
+        Owner, empty when the clone has no remote to say who owns it.
+    repo :
+        Repository name.
+
+    Returns
+    -------
+    :
+        ``owner/repo``, or the name alone when there is no owner, as
+        [](`labdata.model.Entry.repo_key`) gives it.
+    """
+    return f"{owner}/{repo}" if owner else repo
 
 
 def origin_slug(root: Location) -> str:
@@ -279,9 +329,11 @@ def _read_manifest(root: Location, blobs, results_dir: str):
     Returns
     -------
     :
-        The manifest, or `None` when there is none or it cannot be parsed. A
-        manifest that will not parse costs its repository, with a warning,
-        rather than the whole scan.
+        ``(manifest, path)``, the manifest and the repository-relative path it
+        was read from, which is carried on every entry it publishes because it
+        is where a link's versions are read from. ``(None, "")`` when there is
+        no manifest or it cannot be parsed; a manifest that will not parse costs
+        its repository, with a warning, rather than the whole scan.
     """
     wanted = results_dir.strip("/").lower()
     for path, (blob_sha, _size) in sorted(blobs.items()):
@@ -290,11 +342,11 @@ def _read_manifest(root: Location, blobs, results_dir: str):
             continue
         try:
             text = gitutil.read_blob(root, blob_sha).decode("utf-8", "replace")
-            return manifest.parse(text, head)
+            return manifest.parse(text, head), path
         except (manifest.ManifestError, gitutil.GitError) as exc:
             warnings.warn(f"{root}: {exc}", stacklevel=2)
-            return None
-    return None
+            return None, ""
+    return None, ""
 
 
 def _dataset_roots(blobs, governing) -> dict:
@@ -364,9 +416,9 @@ def _covering_dataset(path: str, roots) -> Optional[str]:
     return None
 
 
-def _anchored_blobs(root: Location, governing) -> dict:
+def _anchored_entries(root: Location, governing) -> dict:
     """
-    List the tracked files a manifest names from the repository root.
+    List everything a manifest names from the repository root.
 
     A manifest publishes what sits in its own directory, and, with a key written
     from the root, anything else the repository tracks. Only the directories
@@ -384,7 +436,7 @@ def _anchored_blobs(root: Location, governing) -> dict:
     -------
     :
         The files under those paths, as
-        [](`labdata.gitutil.tracked_blobs`) returns them, empty when the
+        [](`labdata.gitutil.tracked_entries`) returns them, empty when the
         manifest names nothing outside its directory.
     """
     prefixes = governing.anchored_prefixes()
@@ -393,7 +445,51 @@ def _anchored_blobs(root: Location, governing) -> dict:
     # `:/` is the whole repository; `:(literal)` keeps a path with glob
     # characters in it from being read as a pattern by git.
     pathspecs = [f":(literal){p}" if p else ":/" for p in prefixes]
-    return gitutil.tracked_blobs(root, pathspecs)
+    return gitutil.tracked_entries(root, pathspecs)
+
+
+def _regular(tracked: dict) -> dict:
+    """
+    Keep the tracked paths git holds content for.
+
+    Parameters
+    ----------
+    tracked :
+        Paths as [](`labdata.gitutil.tracked_entries`) returns them.
+
+    Returns
+    -------
+    :
+        The same mapping without the symbolic links, and without the modes, so
+        that it is what the rest of the scan expects to read.
+    """
+    return {
+        path: (sha, size)
+        for path, (sha, size, mode) in tracked.items()
+        if mode != gitutil.LINK_MODE
+    }
+
+
+def _links(tracked: dict) -> dict:
+    """
+    Keep the tracked paths that are symbolic links.
+
+    Parameters
+    ----------
+    tracked :
+        Paths as [](`labdata.gitutil.tracked_entries`) returns them.
+
+    Returns
+    -------
+    :
+        A mapping of repository-relative path to the blob sha of the link, whose
+        content is the target path.
+    """
+    return {
+        path: sha
+        for path, (sha, _size, mode) in tracked.items()
+        if mode == gitutil.LINK_MODE
+    }
 
 
 def scan_repo(root: Location, cfg: Config) -> List[Entry]:
@@ -405,6 +501,13 @@ def scan_repo(root: Location, cfg: Config) -> List[Entry]:
     manifest does not mention. A manifest may name any tracked file in the
     repository, not only the ones beneath it, by writing the path from the
     repository root.
+
+    A symbolic link is cataloged when its manifest entry carries a stamp, which
+    is what says which content the link stands for; git holds only the link. A
+    link with no stamp is passed over with a warning, since nothing would be
+    checking what it resolved to. Links inside a dataset directory are not
+    published: a stamp names one file, so a directory of them has nothing to
+    say what it holds.
 
     Parameters
     ----------
@@ -438,13 +541,15 @@ def scan_repo(root: Location, cfg: Config) -> List[Entry]:
         if not wanted:
             continue
         pathspec = f":(icase){wanted}"
-        blobs = gitutil.tracked_blobs(root, pathspec)
+        tracked = gitutil.tracked_entries(root, pathspec)
+        blobs = _regular(tracked)
         if not blobs:
-            continue
-        governing = _read_manifest(root, blobs, wanted)
+            continue                          # nor, then, is there a manifest
+        governing, where = _read_manifest(root, blobs, wanted)
         if governing is None:
             continue
-        blobs.update(_anchored_blobs(root, governing))
+        tracked.update(_anchored_entries(root, governing))
+        blobs = _regular(tracked)
         datasets = _dataset_roots(blobs, governing)
 
         for directory, description in sorted(datasets.items()):
@@ -452,7 +557,7 @@ def scan_repo(root: Location, cfg: Config) -> List[Entry]:
                 continue
             entry = _dataset_entry(
                 root, owner, repo, directory, description, blobs, head, tags,
-                cfg, slug, source,
+                cfg, slug, source, where,
             )
             if entry is not None:
                 seen.add(directory)
@@ -466,6 +571,14 @@ def scan_repo(root: Location, cfg: Config) -> List[Entry]:
             description = governing.describe(path)
             if description is None:
                 continue                      # committed, but not published
+            if governing.stamp(path) is not None:
+                warnings.warn(
+                    f"{root}: {where} stamps {path}, which git holds the "
+                    f"content of; the stamp is ignored, git's own version of "
+                    f"the file being the better answer. A stamp belongs on a "
+                    f"symbolic link.",
+                    stacklevel=2,
+                )
             name = path.split("/")[-1]
             real_size, lfs_oid = _resolve_size(root, blob_sha, size)
             if not _wanted(name, real_size, cfg):
@@ -481,10 +594,58 @@ def scan_repo(root: Location, cfg: Config) -> List[Entry]:
                     description=description,
                     remote=slug,
                     source=source,
+                    manifest=where,
                     latest=Version(
                         sha=sha, date=date, subject=subject,
                         blob=blob_sha, size=real_size, lfs_oid=lfs_oid,
                         tags=tags.get(sha, ()),
+                    ),
+                )
+            )
+
+        for path, blob_sha in sorted(_links(tracked).items()):
+            if path in seen:
+                continue
+            if _covering_dataset(path, datasets) is not None:
+                continue                      # inside a dataset, not published
+            description = governing.describe(path)
+            if description is None:
+                continue                      # committed, but not published
+            stamp = governing.stamp(path)
+            if stamp is None:
+                warnings.warn(
+                    f"{root}: {path} is published as a symbolic link but {where} "
+                    f"gives it no stamp, so nothing says which content it "
+                    f"stands for. Run `labdata stamp` in the repository and "
+                    f"commit the result.",
+                    stacklevel=2,
+                )
+                continue
+            name = path.split("/")[-1]
+            if not _wanted(name, stamp.size, cfg):
+                continue
+            sha, date, subject = head
+            seen.add(path)
+            # One read per link, after the filters, so a link that is not
+            # published costs nothing. Reading them together would be one round
+            # trip rather than several, which would matter if a repository
+            # published many; a link is for a file too large to commit, and
+            # there are only ever a few of those.
+            entries.append(
+                Entry(
+                    owner=owner,
+                    repo=repo,
+                    path=path,
+                    root=root,
+                    description=description,
+                    remote=slug,
+                    source=source,
+                    manifest=where,
+                    latest=Version(
+                        sha=sha, date=date, subject=subject,
+                        blob=stamp.sha256, size=stamp.size, lfs_oid=None,
+                        tags=tags.get(sha, ()),
+                        link=gitutil.link_target(root, blob_sha),
                     ),
                 )
             )
@@ -494,6 +655,7 @@ def scan_repo(root: Location, cfg: Config) -> List[Entry]:
 def _dataset_entry(
     root: Location, owner: str, repo: str, directory: str, description: str,
     blobs, head, tags, cfg: Config, slug: str = "", source: str = "local",
+    where: str = "",
 ) -> Optional[Entry]:
     """
     Build the single catalog entry standing for a directory of files.
@@ -527,6 +689,8 @@ def _dataset_entry(
         ``owner/repo`` when the repository is on GitHub, else empty.
     source :
         Where the entry is being cataloged from, ``local`` or ``ssh``.
+    where :
+        Repository-relative path of the manifest publishing the dataset.
 
     Returns
     -------
@@ -560,6 +724,7 @@ def _dataset_entry(
         description=description,
         remote=slug,
         source=source,
+        manifest=where,
         latest=Version(
             sha=sha, date=date, subject=subject,
             blob=tree, size=total, lfs_oid=None, parts=parts,
@@ -568,7 +733,10 @@ def _dataset_entry(
     )
 
 
-def build(cfg: Optional[Config] = None, progress: bool = False) -> List[Entry]:
+def build(
+    cfg: Optional[Config] = None, progress: bool = False,
+    select: Optional[str] = None,
+) -> List[Entry]:
     """
     Catalog every repository under the configured roots.
 
@@ -578,10 +746,18 @@ def build(cfg: Optional[Config] = None, progress: bool = False) -> List[Entry]:
     Parameters
     ----------
     cfg :
-        Settings. Defaults to [](`labdata.config.Config.load`).
+        Settings. Defaults to [](`labdata.config.active_config`): what
+        [](`labdata.config.use_config`) registered, or the configuration file.
     progress :
         Show a progress bar, one step per repository. Scanning an organisation
         is otherwise silent for as long as it takes.
+    select :
+        Scan only the repositories this names, by [](`labdata.core.selects`).
+        A clone is identified before it is read and an organisation is listed
+        but not read into, so what is skipped costs nothing beyond finding out
+        that it is there. The result is then part of a catalog rather than a
+        whole one, which is [](`labdata.core.catalog`)'s business to put back
+        together.
 
     Returns
     -------
@@ -599,16 +775,20 @@ def build(cfg: Optional[Config] = None, progress: bool = False) -> List[Entry]:
     See Also
     --------
     [](`labdata.core.catalog`)
+    [](`labdata.core.selects`)
     """
-    cfg = cfg or Config.load()
+    cfg = active_config() if cfg is None else cfg
     clones: List[Entry] = []
     roots = gitutil.discover_repos(cfg.roots)
+    if select is not None:
+        roots = [r for r in roots if selects(select, _repo_key(*repo_identity(r)))]
     for root in progress_bar(roots, "scanning clones", progress):
         try:
             clones.extend(scan_repo(root, cfg))
         except gitutil.GitError as exc:
             warnings.warn(f"{root}: {exc}", SourceWarning, stacklevel=2)
-    entries = _merge(_nearest(clones), remote.build(cfg, progress=progress))
+    fetched = remote.build(cfg, progress=progress, select=select)
+    entries = _merge(_nearest(clones), fetched)
     entries.sort(key=lambda e: (e.repo_key.lower(), e.path))
     return entries
 
@@ -690,7 +870,7 @@ def diagnose(cfg: Optional[Config] = None) -> List[str]:
     ----------
     cfg :
         Settings to account for. Defaults to
-        [](`labdata.config.Config.load`).
+        [](`labdata.config.active_config`).
 
     Returns
     -------
@@ -704,7 +884,7 @@ def diagnose(cfg: Optional[Config] = None) -> List[str]:
     print("\n".join(diagnose()))
     ```
     """
-    cfg = cfg or Config.load()
+    cfg = active_config() if cfg is None else cfg
     lines: List[str] = []
     if cfg.roots:
         for spelled in cfg.roots:
@@ -844,14 +1024,14 @@ def save(entries: List[Entry], cfg: Optional[Config] = None) -> Path:
     cfg :
         Settings the entries were built with, recorded so that
         [](`labdata.core.load_cached`) can tell whether they still apply.
-        Defaults to [](`labdata.config.Config.load`).
+        Defaults to [](`labdata.config.active_config`).
 
     Returns
     -------
     :
         The path written.
     """
-    cfg = cfg or Config.load()
+    cfg = active_config() if cfg is None else cfg
     p = _cache_file()
     p.parent.mkdir(parents=True, exist_ok=True)
     tmp = p.with_name(f"{p.name}.{os.getpid()}.tmp")
@@ -912,11 +1092,13 @@ def load_cached(
                     root=Location.parse(d["root"]),
                     description=d.get("description", ""),
                     remote=d.get("remote", ""), source=d.get("source", "local"),
+                    manifest=d.get("manifest", ""),
                     latest=Version(
                         sha=v["sha"], date=v["date"],
                         subject=v["subject"], blob=v["blob"], size=v["size"],
                         lfs_oid=v.get("lfs_oid"), parts=v.get("parts", 0),
                         tags=tuple(v.get("tags", ())),
+                        link=v.get("link"),
                     ),
                 )
             )
@@ -927,7 +1109,7 @@ def load_cached(
 
 def catalog(
     refresh: bool = False, max_age: float = 3600.0, cfg: Optional[Config] = None,
-    progress: bool = False,
+    progress: bool = False, select: Optional[str] = None,
 ) -> List[Entry]:
     """
     Get the catalog, rescanning only when needed.
@@ -939,16 +1121,28 @@ def catalog(
     max_age :
         Age in seconds beyond which the stored catalog is rescanned.
     cfg :
-        Settings. Defaults to [](`labdata.config.Config.load`). A stored catalog
+        Settings. Defaults to [](`labdata.config.active_config`): what
+        [](`labdata.config.use_config`) registered, or the configuration file. A stored catalog
         built with different settings is rescanned rather than reused.
     progress :
         Show a progress bar while rescanning. Nothing is drawn when the stored
         catalog is used, since there is nothing to wait for.
+    select :
+        Rescan only the repositories this names, by
+        [](`labdata.core.selects`), and keep the stored catalog for the rest.
+        The whole catalog is returned and stored, with the named repositories
+        as they are now: rescanning one repository must not lose the others,
+        which are not being looked at rather than known to be gone. Ignored
+        unless `refresh` is set, since a stored catalog is read whole.
 
     Returns
     -------
     :
-        Entries sorted by repository and path.
+        Entries sorted by repository and path. Where `select` is given and
+        there is no stored catalog to update, what was scanned is returned with
+        a [](`labdata.config.SourceWarning`) and nothing is stored: storing it
+        would leave a catalog holding one repository and claiming to hold them
+        all.
 
     Examples
     --------
@@ -956,16 +1150,59 @@ def catalog(
     ```python
     for entry in catalog():
         print(entry.spec, entry.latest.size)
+
+    catalog(refresh=True, select="munch-group/x-gwas")   # just that one
     ```
+
+    See Also
+    --------
+    [](`labdata.core.selects`)
     """
-    cfg = cfg or Config.load()
+    cfg = active_config() if cfg is None else cfg
     if not refresh:
         cached = load_cached(max_age, cfg)
         if cached is not None:
             return cached
+    if refresh and select is not None:
+        return _refresh_some(cfg, select, progress)
     entries = build(cfg, progress=progress)
     save(entries, cfg)
     return entries
+
+
+def _refresh_some(cfg: Config, select: str, progress: bool = False) -> List[Entry]:
+    """
+    Rescan some repositories, leaving the stored catalog for the rest alone.
+
+    Parameters
+    ----------
+    cfg :
+        Settings. The whole of them: what is stored stays keyed to the settings
+        that describe the whole catalog, so that a later listing still finds it.
+    select :
+        Which repositories to rescan, by [](`labdata.core.selects`).
+    progress :
+        Show a progress bar while rescanning.
+
+    Returns
+    -------
+    :
+        The whole catalog, with those repositories as they are now.
+    """
+    stored = load_cached(None, cfg)
+    entries = build(cfg, progress=progress, select=select)
+    if stored is None:
+        warnings.warn(
+            f"nothing was stored: there is no catalog to update {select!r} in. "
+            "Refresh without naming an owner or a repo to catalog everything.",
+            SourceWarning, stacklevel=2,
+        )
+        return entries
+    kept = [e for e in stored if not selects(select, e.repo_key)]
+    merged = kept + entries
+    merged.sort(key=lambda e: (e.repo_key.lower(), e.path))
+    save(merged, cfg)
+    return merged
 
 
 def match(entries: List[Entry], spec: Spec) -> List[Entry]:
@@ -1033,6 +1270,88 @@ def resolve_one(entries: List[Entry], spec: Spec) -> Entry:
     return hits[0]
 
 
+def _stamp_at(entry: Entry, rev: str):
+    """
+    Read the stamp a manifest gave one link at some commit.
+
+    Parameters
+    ----------
+    entry :
+        Entry for the link, carrying the manifest that publishes it.
+    rev :
+        Commit to read at.
+
+    Returns
+    -------
+    :
+        ``(stamp, target)``, or `None` when the manifest is not there at `rev`,
+        will not parse, does not stamp this file, or the file is not a symbolic
+        link at that commit. A manifest that will not parse is treated as
+        saying nothing, so one bad commit costs its own version rather than the
+        whole history.
+    """
+    if not entry.manifest:
+        return None
+    got = gitutil.entry_at(entry.root, rev, entry.manifest)
+    if got is None:
+        return None
+    try:
+        text = gitutil.read_blob(entry.root, got[0]).decode("utf-8", "replace")
+        governing = manifest.parse(text, posixpath.dirname(entry.manifest))
+    except (manifest.ManifestError, gitutil.GitError):
+        return None
+    stamp = governing.stamp(entry.path)
+    if stamp is None:
+        return None
+    link = gitutil.entry_at(entry.root, rev, entry.path)
+    if link is None or link[2] != gitutil.LINK_MODE:
+        return None
+    return stamp, gitutil.link_target(entry.root, link[0])
+
+
+def _link_versions(entry: Entry, tags) -> List[Version]:
+    """
+    List the versions of a file published as a link, newest first.
+
+    Parameters
+    ----------
+    entry :
+        Entry for the link.
+    tags :
+        Tags by commit sha, as [](`labdata.gitutil.tag_map`) reads them.
+
+    Returns
+    -------
+    :
+        One version per commit in which the stamp changed. A commit that touched
+        the manifest without changing this file's stamp is not a version of this
+        file, and the commit kept for a run of equal stamps is the oldest, being
+        the one that introduced the content.
+    """
+    if not entry.manifest:
+        return []
+    # The manifest is read at every commit that touched it. That is more work
+    # than reading one blob per version, but it is the only record of the bytes,
+    # and a manifest is small and rarely written.
+    rows = []
+    for sha, date, subject in gitutil.file_history(
+        entry.root, entry.manifest, follow=False
+    ):
+        got = _stamp_at(entry, sha)
+        if got is not None:
+            rows.append((sha, date, subject, got[0], got[1]))
+    out: List[Version] = []
+    for i, (sha, date, subject, stamp, target) in enumerate(rows):
+        older = rows[i + 1] if i + 1 < len(rows) else None
+        if older is not None and older[3].sha256 == stamp.sha256:
+            continue                        # this commit left the content alone
+        out.append(
+            Version(sha=sha, date=date, subject=subject, blob=stamp.sha256,
+                    size=stamp.size, link=target, tags=tags.get(sha, ()))
+        )
+    return out
+
+
 def versions(entry: Entry) -> List[Version]:
     """
     List every version of one result file, newest first.
@@ -1055,6 +1374,11 @@ def versions(entry: Entry) -> List[Version]:
     set to pin. The catalog stamps a file with the repository's current commit
     instead, so the newest entry here need not be the one the catalog shows.
 
+    For a file published as a link, git has no history of the content, only of
+    the link. The versions are therefore the commits in which the manifest's
+    stamp for it changed, which is the same question asked of the one record
+    that does track the bytes.
+
     Examples
     --------
 
@@ -1066,6 +1390,8 @@ def versions(entry: Entry) -> List[Version]:
     if entry.source == "github":
         return remote.versions(entry)
     tags = gitutil.tag_map(entry.root)
+    if entry.latest.link is not None:
+        return _link_versions(entry, tags)
     dataset = entry.latest.parts > 0
     out: List[Version] = []
     history = gitutil.file_history(entry.root, entry.path, follow=not dataset)
@@ -1170,6 +1496,14 @@ def _version_at(entry: Entry, ref: str) -> Optional[Version]:
     info = tuple(one.split(gitutil.SEP, 2))
     if len(info) != 3:
         return None
+    if entry.latest.link is not None:
+        got = _stamp_at(entry, sha)
+        if got is None:
+            return None
+        stamp, target = got
+        return Version(sha=info[0], date=info[1], subject=info[2],
+                       blob=stamp.sha256, size=stamp.size, link=target,
+                       tags=gitutil.tag_map(entry.root).get(info[0], ()))
     if dataset:
         tree = gitutil.tree_at(entry.root, sha, entry.path)
         if tree is None:
@@ -1251,7 +1585,8 @@ def fetch(
     refresh :
         Rescan the repositories before resolving the spec.
     cfg :
-        Settings. Defaults to [](`labdata.config.Config.load`).
+        Settings. Defaults to [](`labdata.config.active_config`): what
+        [](`labdata.config.use_config`) registered, or the configuration file.
 
     Returns
     -------
@@ -1337,7 +1672,8 @@ def get(
         that a pinned version has been overtaken is still printed, on standard
         error: it says something happened rather than merely reporting.
     cfg :
-        Settings. Defaults to [](`labdata.config.Config.load`).
+        Settings. Defaults to [](`labdata.config.active_config`): what
+        [](`labdata.config.use_config`) registered, or the configuration file.
 
     Returns
     -------
@@ -1351,7 +1687,12 @@ def get(
         version. The message lists the candidates as full specs.
     FileNotFoundError
         If the file is held in Git LFS and its content has not been fetched
-        into the repository.
+        into the repository, or is published as a link and the link resolves to
+        nothing on the machine holding the repository.
+    ValueError
+        If the file is published as a link and the content it points at is not
+        what its stamp records, which means it was regenerated without being
+        stamped again.
 
     Examples
     --------
@@ -1445,7 +1786,8 @@ def materialize(entry: Entry, version: Version) -> Path:
 
     Content already cached is not fetched again, which is why an unchanged file
     costs nothing across versions and repositories. Git LFS content is taken
-    from the repository's own object store.
+    from the repository's own object store, and content published as a link from
+    wherever the link points.
 
     Parameters
     ----------
@@ -1464,12 +1806,19 @@ def materialize(entry: Entry, version: Version) -> Path:
     Raises
     ------
     FileNotFoundError
-        If the content is held in Git LFS and has not been fetched. The message
-        names the ``git lfs fetch`` command to run.
+        If the content is held in Git LFS and has not been fetched, or is
+        published as a link and the link resolves to nothing. The message names
+        the ``git lfs fetch`` command to run, or the file that is missing.
+    ValueError
+        If the content is published as a link and does not hash to the stamp
+        that was asked for, which means it was regenerated without being
+        stamped again.
     """
     dest = cache.readable_path(entry.repo_key, version.sha, entry.path)
     if version.parts:
         return _materialize_dataset(entry, version, dest)
+    if version.link is not None:
+        return cache.link(_cache_link(entry, version), dest)
     blob = _cache_blob(
         entry, version.sha, entry.path, version.blob, version.lfs_oid, version.size
     )
@@ -1493,6 +1842,138 @@ def _lfs_fetch(root: Location) -> str:
     """
     fetch = f"git -C {root.path} lfs fetch --all"
     return f"ssh {root.host} {fetch}" if root.is_remote else fetch
+
+
+def _on(root: Location) -> str:
+    """
+    Name the machine a repository's content would have to be on.
+
+    Parameters
+    ----------
+    root :
+        Working tree the content was looked for in.
+
+    Returns
+    -------
+    :
+        A phrase for a message, naming the host when the repository is on
+        another machine.
+    """
+    return f"on {root.host}" if root.is_remote else "on this machine"
+
+
+def _cache_link(entry: Entry, version: Version) -> Path:
+    """
+    Put the content a link points at in the cache and return the object.
+
+    The content is hard linked rather than copied when it and the cache are on
+    one filesystem, which is the point of publishing a large file this way: the
+    bytes are written once, by the pipeline, and the cache borrows them. A copy
+    is the fallback across filesystems, and a stream the fallback over ssh.
+
+    The stamp is checked before the object is published under it, so the cache
+    cannot come to hold content that does not hash to its key. Size is checked
+    first, which settles the common case -- a file regenerated since it was
+    stamped -- without reading it.
+
+    Parameters
+    ----------
+    entry :
+        Entry the link belongs to.
+    version :
+        Version to fetch, whose `labdata.model.Version.blob` is the stamped
+        sha256 and whose `labdata.model.Version.link` is the target.
+
+    Returns
+    -------
+    :
+        Path of the cached object. Content already cached is not read again, so
+        a second call costs nothing, and content equal to something already
+        cached -- another version of the same file, or a Git LFS object -- is
+        stored once.
+
+    Raises
+    ------
+    FileNotFoundError
+        If the link resolves to nothing, which is what a clone without the
+        pipeline's output looks like.
+    ValueError
+        If the content does not match the stamp.
+
+    Notes
+    -----
+    A hard link shares an inode with the file the pipeline wrote. Rewriting that
+    file in place therefore changes the cached object too, which
+    ``labdata cache --verify`` is what catches; a pipeline that writes a new
+    file and renames it over the old one, as most do, leaves the cache alone.
+    """
+    key = version.blob
+    blob = cache.blob_path(key)
+    if blob.exists():
+        return blob
+    root = entry.root
+    src = None
+    if str(root) and str(root) != ".":
+        src = gitutil.resolve_link(root, entry.path, version.link or "")
+    if src is None:
+        raise FileNotFoundError(
+            f"{entry.repo_key}:{entry.path}@{version.sha[:7]} is published as a "
+            f"symbolic link to {version.link}, and there is no such file "
+            f"{_on(root)}. Git holds the link and not the content, so the "
+            f"content can only be read from a clone that the pipeline wrote "
+            f"its output beside."
+        )
+    tmp, final = cache.open_for_write(key)
+    try:
+        here = src.local_path()
+        if here is not None:
+            try:
+                os.link(here, tmp)              # same filesystem: free
+            except OSError:
+                shutil.copyfile(here, tmp)      # across filesystems: streamed
+        else:
+            gitutil.write_file_to(src, tmp)     # streamed over ssh
+        size = tmp.stat().st_size
+        if size != version.size:
+            raise ValueError(
+                _stale(entry, version, f"is {human(size)}, not {human(version.size)}")
+            )
+        digest = cache.content_hash(tmp)
+        if digest != key:
+            raise ValueError(
+                _stale(entry, version, f"hashes to {digest[:12]}, not {key[:12]}")
+            )
+        tmp.replace(final)
+    finally:
+        tmp.unlink(missing_ok=True)
+    return blob
+
+
+def _stale(entry: Entry, version: Version, what: str) -> str:
+    """
+    Say that a link resolved to content its stamp does not describe.
+
+    Parameters
+    ----------
+    entry :
+        Entry the link belongs to.
+    version :
+        Version that was asked for.
+    what :
+        How the content differs, as a phrase completing the sentence.
+
+    Returns
+    -------
+    :
+        The message to raise.
+    """
+    return (
+        f"{entry.repo_key}:{entry.path}@{version.sha[:7]} does not hold the "
+        f"content it was stamped with: {version.link} {what}. The file has been "
+        f"regenerated since it was stamped, so this version no longer exists "
+        f"{_on(entry.root)}. Run `labdata stamp` in the repository and commit "
+        f"the result to publish what is there now."
+    )
 
 
 def _cache_blob(

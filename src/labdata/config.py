@@ -11,8 +11,9 @@ answer at all.
 from __future__ import annotations
 
 import os
+import pprint
 import warnings
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields, replace
 from pathlib import Path
 from typing import Dict, List, Optional, Set
 
@@ -45,6 +46,15 @@ Settings that changed name, read under the old one with a warning.
 
 The old name still says what was meant, so it is honoured rather than refused,
 for the same reason as `RETIRED`.
+"""
+
+
+_WIDTH = 80
+"""
+Column to wrap a [](`labdata.config.Config`) at when showing it.
+
+The width `pprint.pprint` uses, since that is what its output is meant to look
+like.
 """
 
 
@@ -183,6 +193,51 @@ class Config:
     min_bytes: int = 0
     max_bytes: int = 0
 
+    def __repr__(self) -> str:
+        """
+        Show the settings one to a line, as [](`pprint.pprint`) would.
+
+        The settings are a page of lists, and the single line a dataclass gives
+        by default runs off the side of a notebook cell with the include
+        patterns halfway along it. This is what `pprint.pprint` makes of the
+        same object: one setting to a line, long lists broken and aligned. A
+        short enough object still comes back on one line, as it does there.
+
+        Returns
+        -------
+        :
+            The settings as they would be written to construct them, wrapped to
+            eighty columns.
+
+        Examples
+        --------
+
+        ```python
+        labdata.active_config()
+        # Config(roots=[],
+        #        owners=['munch-group'],
+        #        repos=[],
+        #        labdata_dirs=['results'],
+        #        include=[],
+        #        exclude=[],
+        #        min_bytes=0,
+        #        max_bytes=0)
+        ```
+        """
+        name = type(self).__name__
+        shown = [(f.name, getattr(self, f.name)) for f in fields(self) if f.repr]
+        flat = f"{name}({', '.join(f'{k}={v!r}' for k, v in shown)})"
+        if len(flat) <= _WIDTH:
+            return flat
+        indent = len(name) + 1
+        lines = []
+        for i, (key, value) in enumerate(shown):
+            offset = indent + len(key) + 1
+            allowance = 0 if i == len(shown) - 1 else 1
+            text = pprint.pformat(value, width=_WIDTH - offset - allowance)
+            lines.append(f"{key}={text}".replace("\n", "\n" + " " * offset))
+        return f"{name}(" + (",\n" + " " * indent).join(lines) + ")"
+
     @classmethod
     def load(cls, path: Optional[Path] = None) -> "Config":
         """
@@ -312,3 +367,187 @@ class Config:
             encoding="utf-8",
         )
         return path
+
+
+_registered: Optional[Config] = None
+"""
+Settings registered with `use_config`, or `None` while the file is read.
+
+Process-wide rather than per-thread: a config registered in a notebook cell
+applies to every call that follows, including ones made from a worker thread,
+which is what a reader who has just registered one expects.
+"""
+
+
+class Registration:
+    """
+    The undo for one call to [](`labdata.config.use_config`).
+
+    Returned rather than used directly. Ignoring it leaves the registration in
+    place for the rest of the session; entering it with ``with`` puts the
+    previous settings back on the way out. It shows itself as the settings now
+    in effect, so that a registration made as the last line of a notebook cell
+    prints something worth reading.
+
+    See Also
+    --------
+    [](`labdata.config.use_config`)
+    [](`labdata.config.active_config`)
+    """
+
+    def __init__(self, previous: Optional[Config]) -> None:
+        self._previous = previous
+        self._undone = False
+
+    def __repr__(self) -> str:
+        """
+        Show the settings now in effect, as [](`labdata.config.Config`) does.
+
+        The handle itself is nothing to look at, and a notebook shows the last
+        expression in a cell, which for a registration made as a statement is
+        this. What the call put in effect is worth seeing there; where the
+        handle lives in memory is not.
+
+        Returns
+        -------
+        :
+            What [](`labdata.config.active_config`) returns, shown as it shows
+            itself. Asked after the registration has been undone, it says what
+            is in effect then rather than what this call once registered: it
+            reports the settings, not the history.
+        """
+        return repr(active_config())
+
+    def __enter__(self) -> Config:
+        return active_config()
+
+    def __exit__(self, *exc) -> bool:
+        self.undo()
+        return False
+
+    def undo(self) -> None:
+        """
+        Put back the settings that were registered before this call.
+
+        Doing it twice is not an error: the second time does nothing, so a
+        registration undone by hand inside a ``with`` block is not undone again
+        on the way out.
+        """
+        global _registered
+        if not self._undone:
+            self._undone = True
+            _registered = self._previous
+
+
+def active_config() -> Config:
+    """
+    The settings in effect for calls that are not given any.
+
+    Returns
+    -------
+    :
+        The settings registered with [](`labdata.config.use_config`), or, while
+        none is registered, the ones read from
+        [](`labdata.config.config_path`). Every function taking a ``cfg``
+        argument falls back to this when it is left out, so this says what such
+        a call is about to use.
+
+    Examples
+    --------
+
+    ```python
+    labdata.active_config().owners
+    ```
+
+    See Also
+    --------
+    [](`labdata.config.use_config`)
+    [](`labdata.config.Config.load`)
+    """
+    return _registered if _registered is not None else Config.load()
+
+
+def use_config(cfg: Optional[Config] = None, **overrides) -> Registration:
+    """
+    Register settings for the rest of the session, or for a block.
+
+    Saves passing ``cfg=cfg`` to every call: what is registered here is what
+    [](`labdata.config.active_config`) returns, and with it what every function
+    taking a ``cfg`` argument uses when it is not given one. An explicit ``cfg``
+    still wins, so a single call can always step outside what is registered.
+
+    Parameters
+    ----------
+    cfg :
+        Settings to register, replacing whatever is in effect. `None` with no
+        `overrides` unregisters, so the configuration file is read again.
+    **overrides :
+        Individual settings to change, named as the fields of
+        [](`labdata.config.Config`). They are applied on top of `cfg`, or, when
+        that is left out, on top of the configuration file, so one setting can
+        be changed without restating the rest.
+
+    Returns
+    -------
+    :
+        A [](`labdata.config.Registration`), which is the undo. Ignore it to
+        register for the rest of the session, or use it as a context manager to
+        register for a block and put back the previous settings afterwards.
+
+    Raises
+    ------
+    TypeError
+        If `cfg` is not a [](`labdata.config.Config`), or if an override does
+        not name one of its fields. The message lists the fields there are.
+
+    Examples
+    --------
+
+    Register once, then call everything without `cfg`:
+
+    ```python
+    import labdata
+
+    labdata.use_config(labdata.Config(repos=["munch-group/x-gwas"]))
+    df = labdata.refresh()
+    ```
+
+    Change one setting and keep the rest of the configuration file:
+
+    ```python
+    labdata.use_config(repos=["munch-group/x-gwas"])
+    ```
+
+    Register for a block only:
+
+    ```python
+    with labdata.use_config(owners=["munch-group"]):
+        df = labdata.list()
+    ```
+
+    Go back to the configuration file:
+
+    ```python
+    labdata.use_config(None)
+    ```
+
+    See Also
+    --------
+    [](`labdata.config.active_config`)
+    [](`labdata.config.Config`)
+    """
+    global _registered
+    if cfg is not None and not isinstance(cfg, Config):
+        raise TypeError(f"cfg should be a Config, not {type(cfg).__name__}")
+    fields = set(Config.__dataclass_fields__)
+    unknown = sorted(set(overrides) - fields)
+    if unknown:
+        raise TypeError(
+            f"{', '.join(unknown)} is not a setting; there is "
+            f"{', '.join(sorted(fields))}"
+        )
+    previous = _registered
+    if overrides:
+        cfg = replace(cfg if cfg is not None else Config.load(), **overrides)
+    _registered = cfg
+    return Registration(previous)

@@ -1,0 +1,38 @@
+# resolve_link { #labdata.gitutil.resolve_link }
+
+```python
+labdata.gitutil.resolve_link(repo, path, target)
+```
+
+Locate the file a committed symbolic link points at.
+
+A relative target is resolved against the directory the link sits in, which
+is how the filesystem reads it. A target may leave the repository, by
+climbing out with ``..`` or by being absolute: publishing is opt-in through
+the manifest, so what a link reaches is something the repository said out
+loud, and a result written to scratch space outside the working tree is a
+normal thing to publish.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[Location](`labdata.location.Location`), [Path](`pathlib.Path`), [str](`str`)\]]{.parameter-annotation}</code>
+
+:   Working tree holding the link, on this machine or another.
+
+<code>[**path**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository-relative path of the link itself.
+
+<code>[**target**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Target as committed, from [](`labdata.gitutil.link_target`).
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Location](`labdata.location.Location`)\]]{.parameter-annotation}</code>
+
+:   Location of the file, or `None` when nothing is there. A link resolves on the machine its repository is on, so a target read over ssh is looked for on the far side.
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`labdata.gitutil.write_file_to`)

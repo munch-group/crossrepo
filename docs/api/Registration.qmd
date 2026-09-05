@@ -1,0 +1,36 @@
+# Registration { #labdata.config.Registration }
+
+```python
+labdata.config.Registration(previous)
+```
+
+The undo for one call to [](`labdata.config.use_config`).
+
+Returned rather than used directly. Ignoring it leaves the registration in
+place for the rest of the session; entering it with ``with`` puts the
+previous settings back on the way out. It shows itself as the settings now
+in effect, so that a registration made as the last line of a notebook cell
+prints something worth reading.
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`labdata.config.use_config`)
+[](`labdata.config.active_config`)
+
+## Methods
+
+| Name | Description |
+| --- | --- |
+| [undo](#labdata.config.Registration.undo) | Put back the settings that were registered before this call. |
+
+### undo { #labdata.config.Registration.undo }
+
+```python
+labdata.config.Registration.undo()
+```
+
+Put back the settings that were registered before this call.
+
+Doing it twice is not an error: the second time does nothing, so a
+registration undone by hand inside a ``with`` block is not undone again
+on the way out.

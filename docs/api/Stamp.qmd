@@ -1,0 +1,28 @@
+# Stamp { #labdata.manifest.Stamp }
+
+```python
+labdata.manifest.Stamp(sha256, size)
+```
+
+The content a published link stands for.
+
+A link is a symbolic link committed in place of a file too large to commit,
+and git versions the link rather than the bytes behind it. The stamp is what
+supplies the missing identity: it is written in the manifest, so it is
+committed, and a commit that changes it is a new version of the file. It is
+also the cache key, which is why it is a hash of the content and not of
+anything cheaper.
+
+## Attributes {.doc-section .doc-section-attributes}
+
+<code>[**sha256**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Hash of the content, in lower case hexadecimal. The same digest Git LFS keys an object by, so linked and LFS content of equal bytes share one cached object.
+
+<code>[**size**]{.parameter-name} [:]{.parameter-annotation-sep} [[int](`int`)]{.parameter-annotation}</code>
+
+:   Size of the content in bytes, which is checked before the hash so that a stamp left behind by a regenerated file is caught without reading it.
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`labdata.manifest.Manifest.stamp`)

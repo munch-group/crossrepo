@@ -1,0 +1,23 @@
+# write_file_to { #labdata.gitutil.write_file_to }
+
+```python
+labdata.gitutil.write_file_to(src, dest)
+```
+
+Copy a file that git does not hold, such as a Git LFS object.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**src**]{.parameter-name} [:]{.parameter-annotation-sep} [[Location](`labdata.location.Location`)]{.parameter-annotation}</code>
+
+:   File to read, on this machine or another.
+
+<code>[**dest**]{.parameter-name} [:]{.parameter-annotation-sep} [[Path](`pathlib.Path`)]{.parameter-annotation}</code>
+
+:   File to write. It is removed again if the copy fails.
+
+## Raises {.doc-section .doc-section-raises}
+
+<code>[:]{.parameter-annotation-sep} [[GitError](`labdata.gitutil.GitError`)]{.parameter-annotation}</code>
+
+:   If the file cannot be read.

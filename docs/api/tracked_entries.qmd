@@ -1,15 +1,14 @@
-# tracked_blobs { #labdata.gitutil.tracked_blobs }
+# tracked_entries { #labdata.gitutil.tracked_entries }
 
 ```python
-labdata.gitutil.tracked_blobs(repo, subdir)
+labdata.gitutil.tracked_entries(repo, subdir)
 ```
 
-List files tracked at HEAD under a directory, with blob shas and sizes.
+List everything tracked at HEAD under a directory, symbolic links included.
 
 Only tracked files are reported, so untracked scratch output sitting in a
 results directory is invisible to the catalog: committing a file is the act
-of publishing it. Symbolic links are skipped, having no content of their own;
-[](`labdata.gitutil.tracked_entries`) reports them.
+of publishing it.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
@@ -23,10 +22,11 @@ of publishing it. Symbolic links are skipped, having no content of their own;
 
 ## Returns {.doc-section .doc-section-returns}
 
-<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Dict](`typing.Dict`)\[[str](`str`), [Tuple](`typing.Tuple`)\[[str](`str`), [int](`int`)\]\]]{.parameter-annotation}</code>
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Dict](`typing.Dict`)\[[str](`str`), [Tuple](`typing.Tuple`)\[[str](`str`), [int](`int`), [str](`str`)\]\]]{.parameter-annotation}</code>
 
-:   A mapping of repository-relative path to ``(blob_sha, size)``. Sizes are those of the stored blob, so a Git LFS pointer reports the size of the pointer; use [](`labdata.gitutil.parse_lfs_pointer`) to resolve it.
+:   A mapping of repository-relative path to ``(blob_sha, size, mode)``. A mode of `LINK_MODE` marks a symbolic link, whose blob holds the target path rather than any content and whose size is the length of that path.
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`labdata.gitutil.head_commit`)
+[](`labdata.gitutil.tracked_blobs`)
+[](`labdata.gitutil.link_target`)

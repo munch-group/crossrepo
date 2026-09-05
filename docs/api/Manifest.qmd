@@ -1,7 +1,7 @@
 # Manifest { #labdata.manifest.Manifest }
 
 ```python
-labdata.manifest.Manifest(directory, files)
+labdata.manifest.Manifest(directory, files, stamps=dict())
 ```
 
 What one directory of a repository publishes.
@@ -16,9 +16,14 @@ What one directory of a repository publishes.
 
 :   Keys in the order they were written, each mapped to its description. A key is a path relative to `directory`, a bare file name, a glob pattern over either, or -- written with a leading ``/`` -- a path or pattern from the root of the repository, naming a file outside `directory`.
 
+<code>[**stamps**]{.parameter-name} [:]{.parameter-annotation-sep} [[Dict](`typing.Dict`)\[[str](`str`), [Stamp](`labdata.manifest.Stamp`)\]]{.parameter-annotation}</code>
+
+:   The content stamps, under the same keys as `files` and only for the keys that carry one. A key with a stamp names a link: a symbolic link whose target holds the real content. Empty for a manifest that publishes no links.
+
 ## See Also {.doc-section .doc-section-see-also}
 
 [](`labdata.manifest.parse`)
+[](`labdata.manifest.Stamp`)
 
 ## Methods
 
@@ -28,6 +33,7 @@ What one directory of a repository publishes.
 | [describe](#labdata.manifest.Manifest.describe) | Look up what a file is, and thereby whether it is published at all. |
 | [governs](#labdata.manifest.Manifest.governs) | Test whether a file lies in the part of the tree this manifest covers. |
 | [relative](#labdata.manifest.Manifest.relative) | Express a repository path relative to the manifest. |
+| [stamp](#labdata.manifest.Manifest.stamp) | Look up the content a file's link stands for. |
 
 ### anchored_prefixes { #labdata.manifest.Manifest.anchored_prefixes }
 
@@ -129,3 +135,36 @@ Express a repository path relative to the manifest.
 <code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
 
 :   The path as the manifest would write it.
+
+### stamp { #labdata.manifest.Manifest.stamp }
+
+```python
+labdata.manifest.Manifest.stamp(path)
+```
+
+Look up the content a file's link stands for.
+
+Keys are matched as [](`labdata.manifest.Manifest.describe`) matches
+them, except that no glob is tried: a stamp identifies one file's
+content, so [](`labdata.manifest.parse`) refuses to put one on a
+pattern.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+<code>[**path**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository-relative path of the file.
+
+#### Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Stamp](`labdata.manifest.Stamp`)\]]{.parameter-annotation}</code>
+
+:   The stamp, or `None` when the file is not published as a link. A file with no stamp is an ordinary committed file, versioned by git itself.
+
+#### Examples {.doc-section .doc-section-examples}
+
+```python
+m = parse('files:\n  big.csv:\n    size: 12\n    sha256: "%s"\n' % ("a" * 64), "results")
+m.stamp("results/big.csv")
+# Stamp(sha256='aaaa...', size=12)
+```

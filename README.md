@@ -61,6 +61,66 @@ plain to read from the key alone. A key *without* a leading `/` never reaches
 outside, so `hits.csv` publishes the one beside the manifest and not its
 namesake elsewhere in the repository.
 
+### Files too large to commit
+
+A file the pipeline writes but nobody wants in git history is published as a
+**link**: a symbolic link committed in the results directory, pointing at
+wherever the pipeline put it, and a *stamp* in the manifest saying which content
+that link stands for.
+
+```console
+$ ln -s ../steps/very_large_file.csv results/very_large_file.csv
+$ labdata stamp
+  stamped  results/very_large_file.csv  (41M)
+stamped 1 file; commit the labdata.yml to publish this version
+```
+
+```yaml
+files:
+  very_large_file.csv:
+    description: Merged per-sample table
+    sha256: "3f9a...c1"        # written by `labdata stamp`
+    size: 41231234
+```
+
+Git versions the link, not the bytes behind it, so a link on its own would let
+the content change without the version changing. The stamp is what closes that
+gap, and it is why this works at all: it is committed, so **the commit that
+changes a stamp is the new version**, and `versions` lists the commits in which
+the stamp moved rather than every commit that touched the manifest. It is also
+the cache key, so two links whose target paths read alike cannot be confused for
+each other, and `labdata cache --verify` can check a linked file like any other.
+
+Regenerating the file means stamping it again and committing that.
+`labdata stamp --check` writes nothing and exits non-zero when a stamp is out of
+date, which is what to put in a pre-commit hook or in CI.
+
+The point of publishing this way is that **nothing is copied**. When the file
+and the cache are on one filesystem the cache holds a *hard link* to the file
+the pipeline wrote:
+
+```python
+>>> os.stat(labdata.get("proj", "very_large_file.csv")).st_ino
+>>> os.stat("steps/very_large_file.csv").st_ino          # the same inode
+```
+
+A copy is the fallback across filesystems, and a stream the fallback over ssh.
+Content is checked against its stamp before it is cached, size first, so a file
+regenerated since it was stamped is caught without reading it.
+
+What this costs is that the bytes exist only where the pipeline wrote them.
+Someone who clones the repository from GitHub gets the link and no content, and
+`get` says so, naming the file and the machine; reading it means configuring a
+root that has it, including one on a server over ssh. And because a cached
+object is a hard link, a pipeline that *truncates and rewrites* its output in
+place changes the cached object with it — one that writes a new file and renames
+it over the old, as workflow managers do, leaves the cache alone. `labdata cache
+--verify` is what catches the difference.
+
+A stamp cannot go on a glob pattern, one digest describing one file, so a link
+is named in full. Links inside a dataset directory are not published for the
+same reason.
+
 ### Datasets split across files
 
 A table too large for one file — a `.parquet` directory partitioned to stay
@@ -301,12 +361,15 @@ candidates as full specs, so one can be copied straight back into the command.
 
 ## Cache
 
-Files are cached under `~/.cache/labdata/` keyed by **git blob sha**, which is a
-content hash. Consequences:
+Files are cached under `~/.cache/labdata/` keyed by a **content hash**: the git
+blob sha, the Git LFS object id, or the manifest stamp of a file published as a
+link. Consequences:
 
 - A result file that did not change between two commits is stored once.
 - Byte-identical files in two repositories are stored once. In the munch-group
-  mirrors, `result_table.csv` appears in ten repositories and is one blob.
+  mirrors, `result_table.csv` appears in ten repositories and is one blob. This
+  holds across kinds too: a linked file and an LFS object of the same bytes are
+  one object.
 - Cached content is immutable, so a pinned version never changes underfoot.
 
 `~/.cache/labdata/files/<repo>/<version>/<path>` gives readable hard links to
@@ -331,10 +394,11 @@ Large files are streamed rather than buffered. Fetching the 489 MB
 
 - Only committed files are visible, and only those a committed manifest names.
   This is the design, but it means anything a workflow produces on the cluster
-  and never commits will not appear.
+  and never commits will not appear — unless it is published as a link, which
+  is what links are for.
 - Result files live in git history forever. Fine for the median file in these
   repositories (about 5 KB) and for the p90 (about 550 KB); not fine for a
-  489 MB HDF5 file, which is why those are in LFS.
+  489 MB HDF5 file, which is why those are in LFS or published as links.
 - A file is published only once it is named in a `labdata.yml`. That is the
   point — it is what keeps a results directory from publishing its scratch
   output — but it does mean a repository publishes nothing until someone writes

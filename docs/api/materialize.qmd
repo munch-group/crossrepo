@@ -8,7 +8,8 @@ Place one version of a result file in the cache and return its path.
 
 Content already cached is not fetched again, which is why an unchanged file
 costs nothing across versions and repositories. Git LFS content is taken
-from the repository's own object store.
+from the repository's own object store, and content published as a link from
+wherever the link points.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
@@ -30,4 +31,8 @@ from the repository's own object store.
 
 <code>[:]{.parameter-annotation-sep} [[FileNotFoundError](`FileNotFoundError`)]{.parameter-annotation}</code>
 
-:   If the content is held in Git LFS and has not been fetched. The message names the ``git lfs fetch`` command to run.
+:   If the content is held in Git LFS and has not been fetched, or is published as a link and the link resolves to nothing. The message names the ``git lfs fetch`` command to run, or the file that is missing.
+
+<code>[:]{.parameter-annotation-sep} [[ValueError](`ValueError`)]{.parameter-annotation}</code>
+
+:   If the content is published as a link and does not hash to the stamp that was asked for, which means it was regenerated without being stamped again.

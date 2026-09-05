@@ -33,14 +33,25 @@ df = pd.read_csv(get("x-gwas", "hits.csv"))
 df = pd.read_csv(get("x-gwas", "hits.csv", "e4f5a6b"))   # pinned, and silent
 ```
 
+Settings are read from the configuration file. To use different ones, register
+them once rather than passing them to every call:
+
+```python
+import labdata
+
+labdata.use_config(labdata.Config(repos=["munch-group/x-gwas"]))
+df = labdata.refresh()
+```
+
 See Also
 --------
 [](`labdata.core.get`)
 [](`labdata.core.fetch`)
 [](`labdata.core.catalog`)
+[](`labdata.config.use_config`)
 """
 
-from .config import Config
+from .config import Config, active_config, use_config
 from .core import (
     build, catalog, diagnose, fetch, get, match, outdated, resolve_one,
 )
@@ -49,6 +60,7 @@ from .model import Entry, Spec, Version
 __version__ = "0.1.16"
 
 __all__ = [
+    "active_config",
     "build",
     "catalog",
     "diagnose",
@@ -61,6 +73,7 @@ __all__ = [
     "refresh",
     "repos",
     "resolve_one",
+    "use_config",
     "versions",
     "Config",
     "Entry",
@@ -251,7 +264,8 @@ def list(
         Show a progress bar while rescanning. Only meaningful with `refresh`,
         since a stored catalog is read at once.
     cfg :
-        Settings. Defaults to [](`labdata.config.Config.load`).
+        Settings. Defaults to [](`labdata.config.active_config`): what
+        [](`labdata.config.use_config`) registered, or the configuration file.
 
     Returns
     -------
@@ -288,9 +302,46 @@ def list(
     [](`labdata.get`)
     [](`labdata.repos`)
     """
+    entries = catalog(refresh=refresh, cfg=cfg, progress=progress)
+    return _tabulate(entries, repo, pattern, brief=brief, version=version,
+                     spec=spec, url=url)
+
+
+def _tabulate(
+    entries, repo=None, pattern=None, *, brief: bool = False,
+    version: bool = False, spec: bool = False, url: bool = False,
+):
+    """
+    Filter and tabulate entries, as [](`labdata.list`) shows them.
+
+    The half of [](`labdata.list`) that is not about getting the catalog, so
+    that [](`labdata.refresh`) can rescan in its own way and still show what it
+    found in the same table.
+
+    Parameters
+    ----------
+    entries :
+        Entries to show.
+    repo :
+        Keep only repositories whose ``owner/repo`` contains this.
+    pattern :
+        Keep only files whose name matches this glob.
+    brief :
+        Show only what a file is, with `size` written for reading.
+    version :
+        Include the ``version`` column.
+    spec :
+        Include the ``spec`` column.
+    url :
+        Include the ``url`` column.
+
+    Returns
+    -------
+    :
+        A [](`pandas.DataFrame`), as [](`labdata.list`) returns.
+    """
     import fnmatch
 
-    entries = catalog(refresh=refresh, cfg=cfg, progress=progress)
     if repo:
         needle = repo.lower()
         entries = [e for e in entries if needle in e.repo_key.lower()]
@@ -316,7 +367,8 @@ def repos(*, refresh: bool = False, cfg=None):
     refresh :
         Rescan before listing, rather than using the stored catalog.
     cfg :
-        Settings. Defaults to [](`labdata.config.Config.load`).
+        Settings. Defaults to [](`labdata.config.active_config`): what
+        [](`labdata.config.use_config`) registered, or the configuration file.
 
     Returns
     -------
@@ -375,7 +427,8 @@ def versions(entry_or_repo, filename=None, *, refresh: bool = False, cfg=None):
     refresh :
         Rescan before resolving, rather than using the stored catalog.
     cfg :
-        Settings. Defaults to [](`labdata.config.Config.load`).
+        Settings. Defaults to [](`labdata.config.active_config`): what
+        [](`labdata.config.use_config`) registered, or the configuration file.
 
     Returns
     -------
@@ -432,20 +485,60 @@ def versions(entry_or_repo, filename=None, *, refresh: bool = False, cfg=None):
     )
 
 
-def refresh(*, cfg=None, progress: bool = True, **kwargs):
+def _select(owner=None, repo=None):
+    """
+    Turn an owner and a repository into the one text both halves match on.
+
+    Parameters
+    ----------
+    owner :
+        Owner, or `None` for any.
+    repo :
+        Repository, written ``repo`` or ``owner/repo``, or `None` for any.
+
+    Returns
+    -------
+    :
+        Text to match against ``owner/repo``, as [](`labdata.core.selects`) and
+        [](`labdata.list`) both match it, or `None` when neither was given. An
+        owner alone becomes ``owner/``, which no repository name can match.
+    """
+    if owner and repo:
+        return f"{owner}/{repo}"
+    if owner:
+        return f"{owner}/"
+    return repo or None
+
+
+def refresh(*, cfg=None, progress: bool = True, owner=None, repo=None, **kwargs):
     """
     Rescan the repositories and store the catalog.
 
     The python side of ``labdata refresh``. The rebuilt catalog is returned, so
     a notebook cell shows what is there now.
 
+    Naming an `owner` or a `repo` rescans that much and no more, which is the
+    difference between a request or two and a request for every repository an
+    organisation holds. The rest of the catalog is neither rescanned nor
+    forgotten: what is stored is still the whole of it, with the named
+    repositories as they are now.
+
     Parameters
     ----------
     cfg :
-        Settings. Defaults to [](`labdata.config.Config.load`).
+        Settings. Defaults to [](`labdata.config.active_config`): what
+        [](`labdata.config.use_config`) registered, or the configuration file.
     progress :
         Show a progress bar, one step per repository. On by default: this is the
         one call that can take a while, and it is otherwise silent throughout.
+    owner :
+        Rescan only repositories of this owner. Repositories of any other owner
+        the settings name are left as the stored catalog has them, and an
+        organisation that cannot hold a match is not even listed.
+    repo :
+        Rescan only repositories matching this, as [](`labdata.list`) filters on
+        it: the text is matched anywhere in ``owner/repo``, ignoring case, so a
+        name, a fragment of one, or a whole ``owner/repo`` all work.
     **kwargs :
         Passed to [](`labdata.list`), so ``version=True`` and ``url=True`` work
         here too.
@@ -453,7 +546,11 @@ def refresh(*, cfg=None, progress: bool = True, **kwargs):
     Returns
     -------
     :
-        A [](`pandas.DataFrame`), as [](`labdata.list`) returns.
+        A [](`pandas.DataFrame`), as [](`labdata.list`) returns, holding what
+        was rescanned when `owner` or `repo` was given and the whole catalog
+        otherwise. Where nothing configured matches, the table is empty and a
+        [](`labdata.config.SourceWarning`) says so, a rescan that looked at
+        nothing being otherwise an empty table and no explanation.
 
     Raises
     ------
@@ -464,8 +561,31 @@ def refresh(*, cfg=None, progress: bool = True, **kwargs):
     --------
 
     ```python
-    labdata.refresh()                  # with a progress bar
-    labdata.refresh(progress=False)    # without
+    labdata.refresh()                       # everything, with a progress bar
+    labdata.refresh(progress=False)         # without the bar
+
+    labdata.refresh(repo="x-gwas")          # one repository
+    labdata.refresh(owner="munch-group")    # one organisation
+    labdata.refresh(owner="munch-group", repo="x-gwas")
     ```
+
+    See Also
+    --------
+    [](`labdata.list`)
+    [](`labdata.core.catalog`)
     """
-    return list(refresh=True, cfg=cfg, progress=progress, **kwargs)
+    import warnings
+
+    from .config import SourceWarning
+
+    select = _select(owner, repo)
+    entries = catalog(refresh=True, cfg=cfg, progress=progress, select=select)
+    if select is not None and not any(
+        select.lower() in e.repo_key.lower() for e in entries
+    ):
+        warnings.warn(
+            f"nothing matching {select!r} publishes anything; "
+            "the rest of the catalog was left as it was",
+            SourceWarning, stacklevel=2,
+        )
+    return _tabulate(entries, select, **kwargs)

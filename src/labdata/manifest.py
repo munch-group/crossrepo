@@ -35,6 +35,29 @@ A key cannot climb out with ``..``. There is one spelling for a path that leaves
 the results directory, so that what a manifest reaches is plain to read from the
 key alone.
 
+A result file too large to commit can be published as a *link*: a symbolic
+link in the results directory, made with ``ln -s``, pointing at the real file
+wherever the pipeline wrote it.
+
+```yaml
+files:
+  very_large_file.csv:
+    description: Merged per-sample table
+    sha256: "3f9a...c1"
+    size: 41231234
+```
+
+Git versions the link, not the bytes behind it, so a link on its own would let
+the content change without the version changing. The ``sha256`` and ``size``
+close that gap: they are the *stamp*, they say which content the link stands
+for, and because they are committed it is the commit that changes a stamp which
+makes a new version. ``labdata stamp`` writes them, so regenerating the file
+means stamping it again and committing that.
+
+A stamp needs both keys, and cannot go on a glob pattern, one hash describing
+one file. Content reached through a link is never copied into the cache when it
+is on the same filesystem: the cache holds a hard link to it.
+
 One manifest governs a whole results directory: the ``labdata.yml`` sitting
 directly in it, covering everything beneath. A ``labdata.yml`` deeper in the
 tree is not read, so there is exactly one place to look to see what a repository
@@ -46,11 +69,15 @@ over the network.
 from __future__ import annotations
 
 import fnmatch
-from dataclasses import dataclass
+import re
+from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple
 
 MANIFEST_NAMES: Tuple[str, ...] = ("labdata.yml", "labdata.yaml")
 """File names recognised as a manifest."""
+
+_HEX = frozenset("0123456789abcdef")
+"""Characters a stamp's digest is written with; a digest is lower case."""
 
 
 class ManifestError(ValueError):
@@ -75,6 +102,37 @@ def is_manifest(path: str) -> bool:
 
 
 @dataclass(frozen=True)
+class Stamp:
+    """
+    The content a published link stands for.
+
+    A link is a symbolic link committed in place of a file too large to commit,
+    and git versions the link rather than the bytes behind it. The stamp is what
+    supplies the missing identity: it is written in the manifest, so it is
+    committed, and a commit that changes it is a new version of the file. It is
+    also the cache key, which is why it is a hash of the content and not of
+    anything cheaper.
+
+    Attributes
+    ----------
+    sha256 :
+        Hash of the content, in lower case hexadecimal. The same digest Git LFS
+        keys an object by, so linked and LFS content of equal bytes share one
+        cached object.
+    size :
+        Size of the content in bytes, which is checked before the hash so that a
+        stamp left behind by a regenerated file is caught without reading it.
+
+    See Also
+    --------
+    [](`labdata.manifest.Manifest.stamp`)
+    """
+
+    sha256: str
+    size: int
+
+
+@dataclass(frozen=True)
 class Manifest:
     """
     What one directory of a repository publishes.
@@ -89,14 +147,21 @@ class Manifest:
         key is a path relative to `directory`, a bare file name, a glob pattern
         over either, or -- written with a leading ``/`` -- a path or pattern
         from the root of the repository, naming a file outside `directory`.
+    stamps :
+        The content stamps, under the same keys as `files` and only for the keys
+        that carry one. A key with a stamp names a link: a symbolic link whose
+        target holds the real content. Empty for a manifest that publishes no
+        links.
 
     See Also
     --------
     [](`labdata.manifest.parse`)
+    [](`labdata.manifest.Stamp`)
     """
 
     directory: str
     files: Dict[str, str]
+    stamps: Dict[str, Stamp] = field(default_factory=dict)
 
     def governs(self, path: str) -> bool:
         """
@@ -189,6 +254,67 @@ class Manifest:
                 fnmatch.fnmatch(rel, key) or fnmatch.fnmatch(name, key)
             ):
                 return description
+        return None
+
+    def stamp(self, path: str) -> Optional[Stamp]:
+        """
+        Look up the content a file's link stands for.
+
+        Keys are matched as [](`labdata.manifest.Manifest.describe`) matches
+        them, except that no glob is tried: a stamp identifies one file's
+        content, so [](`labdata.manifest.parse`) refuses to put one on a
+        pattern.
+
+        Parameters
+        ----------
+        path :
+            Repository-relative path of the file.
+
+        Returns
+        -------
+        :
+            The stamp, or `None` when the file is not published as a link. A
+            file with no stamp is an ordinary committed file, versioned by git
+            itself.
+
+        Examples
+        --------
+
+        ```python
+        m = parse('files:\\n  big.csv:\\n    size: 12\\n    sha256: "%s"\\n' % ("a" * 64), "results")
+        m.stamp("results/big.csv")
+        # Stamp(sha256='aaaa...', size=12)
+        ```
+        """
+        key = self._stamp_key(path)
+        return self.stamps[key] if key is not None else None
+
+    def _stamp_key(self, path: str) -> Optional[str]:
+        """
+        Which stamped key a file is published under.
+
+        Parameters
+        ----------
+        path :
+            Repository-relative path of the file.
+
+        Returns
+        -------
+        :
+            The key as the manifest wrote it, or `None` when no stamped key
+            names this file.
+        """
+        if not self.stamps:
+            return None
+        for key in self.stamps:
+            if key.startswith("/") and key.strip("/") == path:
+                return key
+        if not self.governs(path):
+            return None
+        rel = self.relative(path)
+        for key in (rel, rel.rsplit("/", 1)[-1]):
+            if key in self.stamps:
+                return key
         return None
 
     def anchored_prefixes(self) -> List[str]:
@@ -320,6 +446,7 @@ def parse(text: str, directory: str) -> Manifest:
             f"{where}: `files` should map each file name to its description"
         )
     files: Dict[str, str] = {}
+    stamps: Dict[str, Stamp] = {}
     for key, value in listed.items():
         if not isinstance(key, str):
             raise ManifestError(f"{where}: {key!r} is not a file name")
@@ -339,12 +466,194 @@ def parse(text: str, directory: str) -> Manifest:
             value.get("description", ""), str
         ):
             files[key] = value.get("description", "")
+            got = _read_stamp(where, key, value)
+            if got is not None:
+                stamps[key] = got
         else:
             raise ManifestError(
                 f"{where}: `{key}` should be a description, or a mapping with a "
                 f"`description` key"
             )
-    return Manifest(directory=directory, files=files)
+    return Manifest(directory=directory, files=files, stamps=stamps)
+
+
+def _read_stamp(where: str, key: str, value: Dict[str, object]) -> Optional[Stamp]:
+    """
+    Read one entry's content stamp, if it has one.
+
+    Parameters
+    ----------
+    where :
+        Manifest path, for messages.
+    key :
+        Key the stamp was written under.
+    value :
+        The entry's mapping, which may hold ``sha256`` and ``size``.
+
+    Returns
+    -------
+    :
+        The stamp, or `None` when the entry carries neither key and so names an
+        ordinary committed file.
+
+    Raises
+    ------
+    ManifestError
+        If only one of the two keys is given, if the key is a glob, or if either
+        value is not what it should be. Half a stamp is refused rather than
+        ignored: it is a file whose content nothing is checking.
+    """
+    sha = value.get("sha256")
+    size = value.get("size")
+    if sha is None and size is None:
+        return None
+    if _is_glob(key):
+        raise ManifestError(
+            f"{where}: `{key}` is a pattern and cannot carry a stamp; one "
+            f"digest names one file's content, so a link is named in full"
+        )
+    if sha is None or size is None:
+        missing = "sha256" if sha is None else "size"
+        raise ManifestError(
+            f"{where}: `{key}` has a stamp with no `{missing}`; a stamp needs "
+            f"both, and `labdata stamp` writes them together"
+        )
+    if not isinstance(sha, str) or len(sha) != 64 or not _HEX.issuperset(sha):
+        raise ManifestError(
+            f"{where}: `{key}` has `sha256: {sha}`, which is not a digest; it "
+            f"should be 64 lower case hexadecimal digits, as `labdata stamp` "
+            f"writes it"
+        )
+    if isinstance(size, bool) or not isinstance(size, int) or size < 0:
+        raise ManifestError(
+            f"{where}: `{key}` has `size: {size}`, which is not a number of bytes"
+        )
+    return Stamp(sha256=sha, size=size)
+
+
+def _find_key(lines: List[str], key: str):
+    """
+    Locate the line a manifest entry is written on.
+
+    Parameters
+    ----------
+    lines :
+        The manifest, split into lines.
+    key :
+        Key to find, as the manifest writes it, quoted or not.
+
+    Returns
+    -------
+    :
+        ``(index, indent, rest)``: the line's position, the whitespace it starts
+        with, and whatever followed the colon. ``(None, "", "")`` when the key
+        is not there. Only indented keys are considered, an entry always sitting
+        under ``files``.
+    """
+    esc = re.escape(key)
+    pattern = re.compile(rf"""^(\s+)(?:{esc}|"{esc}"|'{esc}')\s*:(.*)$""")
+    for i, line in enumerate(lines):
+        m = pattern.match(line)
+        if m:
+            return i, m.group(1), m.group(2)
+    return None, "", ""
+
+
+def write_stamp(text: str, key: str, stamp: Stamp) -> str:
+    """
+    Write one entry's stamp into a manifest, leaving the rest of the file alone.
+
+    Only the entry's own ``sha256`` and ``size`` lines are touched, so comments,
+    key order, quoting and formatting survive: the manifest is a file people
+    write by hand and read in diffs, and a stamping run should show up in one as
+    two changed lines and nothing else. An entry written as a bare description
+    grows into a mapping holding that description, which is the one case where a
+    line has to be rewritten rather than added.
+
+    Parameters
+    ----------
+    text :
+        Content of the manifest.
+    key :
+        Key to stamp, which must already be in the file: naming a file is how it
+        is published, and stamping does not publish anything.
+    stamp :
+        The stamp to write.
+
+    Returns
+    -------
+    :
+        The manifest with the stamp written. Unchanged, apart from those lines.
+
+    Raises
+    ------
+    ManifestError
+        If the key is not in the file.
+
+    Examples
+    --------
+
+    ```python
+    write_stamp("files:\\n  big.csv: a table\\n", "big.csv", Stamp("a" * 64, 12))
+    # 'files:\\n  big.csv:\\n    description: a table\\n    sha256: "aaa..."\\n    size: 12\\n'
+    ```
+    """
+    newline = "\r\n" if "\r\n" in text else "\n"
+    ends = text.endswith(("\n", "\r"))
+    lines = text.splitlines()
+    i, indent, rest = _find_key(lines, key)
+    if i is None:
+        raise ManifestError(
+            f"`{key}` is not in the manifest, so there is nothing to stamp; a "
+            f"file is published by naming it there first"
+        )
+
+    # Whatever the entry's own keys are indented by, so an inserted line lines
+    # up with the ones already written.
+    child = None
+    for line in lines[i + 1:]:
+        if not line.strip():
+            continue
+        lead = line[: len(line) - len(line.lstrip())]
+        if len(lead) > len(indent):
+            child = lead
+        break
+    if child is None:
+        child = indent + "  "
+    written = [f'{child}sha256: "{stamp.sha256}"', f"{child}size: {stamp.size}"]
+
+    body = rest.strip()
+    if body and not body.startswith("#"):
+        head = lines[i][: len(lines[i]) - len(rest)]
+        lines[i:i + 1] = [head, f"{child}description: {body}", *written]
+        return newline.join(lines) + (newline if ends else "")
+
+    end = i + 1
+    while end < len(lines):
+        line = lines[end]
+        if line.strip():
+            lead = line[: len(line) - len(line.lstrip())]
+            if len(lead) <= len(indent):
+                break
+        end += 1
+    block = lines[i + 1:end]
+    seen = set()
+    for j, line in enumerate(block):
+        if re.match(r"^\s*sha256\s*:", line):
+            block[j], seen = written[0], seen | {"sha256"}
+        elif re.match(r"^\s*size\s*:", line):
+            block[j], seen = written[1], seen | {"size"}
+    # A blank line after the entry separates it from the next one; an inserted
+    # line belongs before it, not after.
+    tail = []
+    while block and not block[-1].strip():
+        tail.insert(0, block.pop())
+    if "sha256" not in seen:
+        block.append(written[0])
+    if "size" not in seen:
+        block.append(written[1])
+    lines[i + 1:end] = block + tail
+    return newline.join(lines) + (newline if ends else "")
 
 
 def manifest_path(results_dir: str) -> str:
