@@ -2,8 +2,8 @@
 
 import pytest
 
-from labdata import core
-from labdata.model import Spec
+from crossrepo import core
+from crossrepo.model import Spec
 
 DATASET = "acme/sweep-scan:results/table.parquet"
 
@@ -30,7 +30,7 @@ def test_the_size_is_the_total_over_the_parts(by_spec, repos):
 
 
 def test_the_content_key_is_the_git_tree_sha(by_spec, repos):
-    from labdata import gitutil
+    from crossrepo import gitutil
 
     entry = by_spec[DATASET]
     assert entry.latest.blob == gitutil.tree_at(
@@ -102,7 +102,7 @@ def test_the_version_is_the_repo_head_not_a_part_commit(tmp_path):
     import os
     import subprocess
 
-    from labdata.config import Config
+    from crossrepo.config import Config
 
     repo = tmp_path / "same-second"
     repo.mkdir()
@@ -121,7 +121,7 @@ def test_the_version_is_the_repo_head_not_a_part_commit(tmp_path):
     subprocess.run(["git", "init", "-q", str(repo)], check=True, env=env,
                    capture_output=True)
     (repo / "results").mkdir()
-    (repo / "results" / "labdata.yml").write_text("files:\n  t.parquet: a dataset\n")
+    (repo / "results" / "crossrepo.yml").write_text("files:\n  t.parquet: a dataset\n")
     (repo / "results" / "t.parquet").mkdir()
     for i in range(3):
         (repo / "results" / "t.parquet" / f"part-{i}.parquet").write_text(f"first {i}\n")

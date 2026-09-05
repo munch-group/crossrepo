@@ -1,7 +1,7 @@
-# write_blob_to { #labdata.gitutil.write_blob_to }
+# write_blob_to { #crossrepo.gitutil.write_blob_to }
 
 ```python
-labdata.gitutil.write_blob_to(repo, blob_sha, dest)
+crossrepo.gitutil.write_blob_to(repo, blob_sha, dest)
 ```
 
 Stream the content of a blob to a file.
@@ -11,7 +11,7 @@ of the file.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
-<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[Location](`labdata.location.Location`), [Path](`pathlib.Path`), [str](`str`)\]]{.parameter-annotation}</code>
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[Location](`crossrepo.location.Location`), [Path](`pathlib.Path`), [str](`str`)\]]{.parameter-annotation}</code>
 
 :   Working tree holding the blob, on this machine or another.
 
@@ -25,6 +25,6 @@ of the file.
 
 ## Raises {.doc-section .doc-section-raises}
 
-<code>[:]{.parameter-annotation-sep} [[GitError](`labdata.gitutil.GitError`)]{.parameter-annotation}</code>
+<code>[:]{.parameter-annotation-sep} [[GitError](`crossrepo.gitutil.GitError`)]{.parameter-annotation}</code>
 
 :   If git cannot read the blob.

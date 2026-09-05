@@ -12,7 +12,7 @@ Nothing is cloned or mounted for the second form. Git runs on the far side and
 only its output crosses the network, so a server holding a hundred repositories
 costs no local disk and no waiting for a checkout.
 
-Access is whatever ssh already grants, and labdata keeps no credentials of its
+Access is whatever ssh already grants, and crossrepo keeps no credentials of its
 own. Where a host asks for something -- a key passphrase, or the second factor a
 cluster login usually wants -- ssh asks for it at the terminal, and the answer
 goes to ssh, never through here.
@@ -61,7 +61,7 @@ a local directory whose name really does contain a colon can be written
 ``./odd:name`` to say so.
 """
 
-SSH_ENV = "LABDATA_SSH"
+SSH_ENV = "CROSSREPO_SSH"
 """
 Environment variable naming the ssh program, for a setup ssh options cannot
 express. Split like a shell command line, so ``ssh -F ~/.ssh/other_config``
@@ -106,7 +106,7 @@ def _control_options(host: str) -> List[str]:
     forty characters do not fit under `SOCKET_LIMIT` beneath the long temporary
     directory macOS gives each user. Nothing is added when the user's own ssh
     configuration already shares connections for this host, which
-    [](`labdata.location.ssh_options`) checks first.
+    [](`crossrepo.location.ssh_options`) checks first.
 
     Parameters
     ----------
@@ -151,7 +151,7 @@ def _private_base(room: int = 0) -> Optional[Path]:
     uid = getattr(os, "getuid", lambda: 0)()
     tried: List[Path] = []
     for base in (Path(tempfile.gettempdir()), Path("/tmp")):
-        directory = base / f"labdata-ssh-{uid}"
+        directory = base / f"crossrepo-ssh-{uid}"
         if directory in tried:
             continue
         tried.append(directory)
@@ -229,7 +229,7 @@ def _configured(host: str) -> Dict[str, str]:
     ``ssh -G`` answers this without connecting to anything, which is worth one
     local process per host: options given on the command line beat the
     configuration file, so anything set there has to be left alone rather than
-    quietly replaced with what labdata would have chosen.
+    quietly replaced with what crossrepo would have chosen.
 
     Parameters
     ----------
@@ -362,7 +362,7 @@ def warm(host: str) -> Optional[str]:
     if proc.returncode == 127 or "not found" in said.lower():
         return (
             f"git is not on the PATH of an ssh command there ({said})\n"
-            f"labdata runs git on the server, so `ssh {host} git --version` has "
+            f"crossrepo runs git on the server, so `ssh {host} git --version` has "
             f"to print a version -- a login shell that has git is not enough, "
             f"since ~/.bashrc usually stops before setting the PATH when it is "
             f"not interactive"
@@ -436,7 +436,7 @@ class Location:
 
     See Also
     --------
-    [](`labdata.gitutil.discover_repos`)
+    [](`crossrepo.gitutil.discover_repos`)
     """
 
     path: str
@@ -582,7 +582,7 @@ class Location:
         ----------
         script :
             Shell script to run. Any path in it must already be quoted with
-            [](`labdata.location.quote`).
+            [](`crossrepo.location.quote`).
 
         Returns
         -------
@@ -594,15 +594,15 @@ class Location:
         return [*ssh_argv(self.host), script]
 
 
-ASKPASS_SOCKET = "LABDATA_ASKPASS"
+ASKPASS_SOCKET = "CROSSREPO_ASKPASS"
 """Environment variable telling the helper where to ask."""
 
 HELPER = '''#!{python}
-"""Ask labdata for what ssh wants, and hand the answer back to ssh.
+"""Ask crossrepo for what ssh wants, and hand the answer back to ssh.
 
 ssh runs this with the prompt as its one argument and reads the answer from its
 output. It cannot ask the person itself -- it has no terminal either -- so it
-asks the labdata that started ssh, which is running in the notebook where the
+asks the crossrepo that started ssh, which is running in the notebook where the
 question can be put.
 """
 import os

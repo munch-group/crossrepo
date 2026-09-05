@@ -1,7 +1,7 @@
-# Entry { #labdata.Entry }
+# Entry { #crossrepo.Entry }
 
 ```python
-labdata.Entry(
+crossrepo.Entry(
     owner,
     repo,
     path,
@@ -30,17 +30,17 @@ A result file in a repository, at its most recent version.
 
 :   Path of the file within the repository, for example ``results/candidates.csv``.
 
-<code>[**root**]{.parameter-name} [:]{.parameter-annotation-sep} [[Location](`labdata.location.Location`)]{.parameter-annotation}</code>
+<code>[**root**]{.parameter-name} [:]{.parameter-annotation-sep} [[Location](`crossrepo.location.Location`)]{.parameter-annotation}</code>
 
 :   Working tree of the repository, on this machine or on a server reached over ssh. Empty for a repository read over the GitHub API, which was never checked out at all.
 
-<code>[**latest**]{.parameter-name} [:]{.parameter-annotation-sep} [[Version](`labdata.model.Version`)]{.parameter-annotation}</code>
+<code>[**latest**]{.parameter-name} [:]{.parameter-annotation-sep} [[Version](`crossrepo.model.Version`)]{.parameter-annotation}</code>
 
 :   The most recent version of this file.
 
 <code>[**description**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
 
-:   What the file holds, as given for it in the ``labdata.yml`` that publishes it. Empty when the manifest names the file but says nothing about it.
+:   What the file holds, as given for it in the ``crossrepo.yml`` that publishes it. Empty when the manifest names the file but says nothing about it.
 
 <code>[**remote**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
 
@@ -52,29 +52,29 @@ A result file in a repository, at its most recent version.
 
 <code>[**manifest**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
 
-:   Repository-relative path of the ``labdata.yml`` that publishes this file. Carried because it is where a link's versions are read from: git holds no history of the bytes behind a link, so the history of the stamp in this file is the history of the content.
+:   Repository-relative path of the ``crossrepo.yml`` that publishes this file. Carried because it is where a link's versions are read from: git holds no history of the bytes behind a link, so the history of the stamp in this file is the history of the content.
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`labdata.model.Version`)
-[](`labdata.manifest.Manifest`)
+[](`crossrepo.model.Version`)
+[](`crossrepo.manifest.Manifest`)
 
 ## Methods
 
 | Name | Description |
 | --- | --- |
-| [to_dict](#labdata.Entry.to_dict) | Represent the entry as JSON-serialisable data. |
-| [url](#labdata.Entry.url) | Address of one version of this file on GitHub. |
+| [to_dict](#crossrepo.Entry.to_dict) | Represent the entry as JSON-serialisable data. |
+| [url](#crossrepo.Entry.url) | Address of one version of this file on GitHub. |
 
-### to_dict { #labdata.Entry.to_dict }
+### to_dict { #crossrepo.Entry.to_dict }
 
 ```python
-labdata.Entry.to_dict()
+crossrepo.Entry.to_dict()
 ```
 
 Represent the entry as JSON-serialisable data.
 
-Used by the on-disk catalog cache and by ``labdata list --json``.
+Used by the on-disk catalog cache and by ``crossrepo list --json``.
 
 #### Returns {.doc-section .doc-section-returns}
 
@@ -82,10 +82,10 @@ Used by the on-disk catalog cache and by ``labdata list --json``.
 
 :   A dictionary with the dataclass fields plus the derived `spec` and `name`, with `root` converted to a string.
 
-### url { #labdata.Entry.url }
+### url { #crossrepo.Entry.url }
 
 ```python
-labdata.Entry.url(version=None)
+crossrepo.Entry.url(version=None)
 ```
 
 Address of one version of this file on GitHub.
@@ -96,7 +96,7 @@ page listing the directory, there being no single file to fetch.
 
 #### Parameters {.doc-section .doc-section-parameters}
 
-<code>[**version**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Version](`labdata.model.Version`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+<code>[**version**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Version](`crossrepo.model.Version`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
 
 :   Version to address. Defaults to `latest`.
 

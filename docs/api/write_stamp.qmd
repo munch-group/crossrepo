@@ -1,7 +1,7 @@
-# write_stamp { #labdata.manifest.write_stamp }
+# write_stamp { #crossrepo.manifest.write_stamp }
 
 ```python
-labdata.manifest.write_stamp(text, key, stamp)
+crossrepo.manifest.write_stamp(text, key, stamp)
 ```
 
 Write one entry's stamp into a manifest, leaving the rest of the file alone.
@@ -23,7 +23,7 @@ line has to be rewritten rather than added.
 
 :   Key to stamp, which must already be in the file: naming a file is how it is published, and stamping does not publish anything.
 
-<code>[**stamp**]{.parameter-name} [:]{.parameter-annotation-sep} [[Stamp](`labdata.manifest.Stamp`)]{.parameter-annotation}</code>
+<code>[**stamp**]{.parameter-name} [:]{.parameter-annotation-sep} [[Stamp](`crossrepo.manifest.Stamp`)]{.parameter-annotation}</code>
 
 :   The stamp to write.
 
@@ -35,7 +35,7 @@ line has to be rewritten rather than added.
 
 ## Raises {.doc-section .doc-section-raises}
 
-<code>[:]{.parameter-annotation-sep} [[ManifestError](`labdata.manifest.ManifestError`)]{.parameter-annotation}</code>
+<code>[:]{.parameter-annotation-sep} [[ManifestError](`crossrepo.manifest.ManifestError`)]{.parameter-annotation}</code>
 
 :   If the key is not in the file.
 

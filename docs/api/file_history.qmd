@@ -1,14 +1,14 @@
-# file_history { #labdata.gitutil.file_history }
+# file_history { #crossrepo.gitutil.file_history }
 
 ```python
-labdata.gitutil.file_history(repo, path, follow=True)
+crossrepo.gitutil.file_history(repo, path, follow=True)
 ```
 
 List every commit that changed one file, newest first.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
-<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[Location](`labdata.location.Location`), [Path](`pathlib.Path`), [str](`str`)\]]{.parameter-annotation}</code>
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[Location](`crossrepo.location.Location`), [Path](`pathlib.Path`), [str](`str`)\]]{.parameter-annotation}</code>
 
 :   Working tree to inspect, on this machine or another.
 

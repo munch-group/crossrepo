@@ -1,9 +1,9 @@
-"""Tests for the labdata.yml that decides what a repository publishes."""
+"""Tests for the crossrepo.yml that decides what a repository publishes."""
 
 import pytest
 
-from labdata import core, manifest
-from labdata.config import Config
+from crossrepo import core, manifest
+from crossrepo.config import Config
 
 from fixtures import commit, init
 
@@ -23,12 +23,12 @@ def test_a_committed_but_unlisted_file_is_not_published(entries):
 
 def test_the_manifest_itself_is_never_a_result_file(entries):
     assert not any(manifest.is_manifest(e.path) for e in entries)
-    assert "labdata.yml" not in {e.name for e in entries}
+    assert "crossrepo.yml" not in {e.name for e in entries}
 
 
 def test_an_uncommitted_manifest_publishes_nothing(repos, cfg):
     """Publishing is a commit, so an unstaged manifest must not count."""
-    stray = repos / "other" / "no-manifest" / "results" / "labdata.yml"
+    stray = repos / "other" / "no-manifest" / "results" / "crossrepo.yml"
     stray.write_text("files:\n  data.csv: not committed, so not published\n")
     try:
         assert not any(e.repo == "no-manifest" for e in core.build(cfg))
@@ -65,7 +65,7 @@ def test_the_description_survives_the_stored_catalog(cfg):
 # ------------------------------------------ only the one manifest is read
 
 def test_a_manifest_deeper_in_the_tree_is_not_read(by_spec):
-    """Only results/labdata.yml governs, so its "*.csv" covers both files."""
+    """Only results/crossrepo.yml governs, so its "*.csv" covers both files."""
     one = by_spec["acme/sweep-scan:results/nested/one.csv"]
     two = by_spec["acme/sweep-scan:results/nested/two.csv"]
     assert one.description == "Some other table this project publishes"
@@ -75,7 +75,7 @@ def test_a_manifest_deeper_in_the_tree_is_not_read(by_spec):
 def test_a_manifest_only_deeper_in_the_tree_publishes_nothing(tmp_path):
     repo = init(tmp_path / "deep-only")
     (repo / "results" / "sub").mkdir(parents=True)
-    (repo / "results" / "sub" / "labdata.yml").write_text("files:\n  x.csv: too deep\n")
+    (repo / "results" / "sub" / "crossrepo.yml").write_text("files:\n  x.csv: too deep\n")
     (repo / "results" / "sub" / "x.csv").write_text("a\n")
     commit(repo, "a manifest nobody reads")
     assert core.build(Config(roots=[str(tmp_path)])) == []
@@ -85,7 +85,7 @@ def test_only_configured_directories_are_searched(tmp_path):
     """A results directory somewhere else is found only once it is configured."""
     repo = init(tmp_path / "buried")
     (repo / "analysis" / "results").mkdir(parents=True)
-    (repo / "analysis" / "results" / "labdata.yml").write_text(
+    (repo / "analysis" / "results" / "crossrepo.yml").write_text(
         "files:\n  x.csv: buried\n"
     )
     (repo / "analysis" / "results" / "x.csv").write_text("a\n")
@@ -95,23 +95,23 @@ def test_only_configured_directories_are_searched(tmp_path):
     assert core.build(default) == []
 
     configured = Config(roots=[str(tmp_path)],
-                        labdata_dirs=["analysis/results"])
+                        crossrepo_dirs=["analysis/results"])
     assert [e.path for e in core.build(configured)] == ["analysis/results/x.csv"]
 
 
-def test_labdata_dirs_are_paths_at_any_depth(tmp_path):
+def test_crossrepo_dirs_are_paths_at_any_depth(tmp_path):
     repo = init(tmp_path / "deep")
     nested = repo / "some_dir" / "some_sub_dir" / "some_sub_sub_dir"
     nested.mkdir(parents=True)
-    (nested / "labdata.yml").write_text("files:\n  deep.csv: buried but published\n")
+    (nested / "crossrepo.yml").write_text("files:\n  deep.csv: buried but published\n")
     (nested / "deep.csv").write_text("a\n")
     (repo / "results").mkdir()
-    (repo / "results" / "labdata.yml").write_text("files:\n  near.csv: the usual place\n")
+    (repo / "results" / "crossrepo.yml").write_text("files:\n  near.csv: the usual place\n")
     (repo / "results" / "near.csv").write_text("b\n")
     commit(repo, "two results directories")
 
     cfg = Config(roots=[str(tmp_path)],
-                 labdata_dirs=["results", "some_dir/some_sub_dir/some_sub_sub_dir"])
+                 crossrepo_dirs=["results", "some_dir/some_sub_dir/some_sub_sub_dir"])
     assert sorted(e.path for e in core.build(cfg)) == [
         "results/near.csv",
         "some_dir/some_sub_dir/some_sub_sub_dir/deep.csv",
@@ -122,11 +122,11 @@ def test_a_nested_results_dir_tolerates_slashes_and_casing(tmp_path):
     repo = init(tmp_path / "casing")
     nested = repo / "Analysis" / "Results"
     nested.mkdir(parents=True)
-    (nested / "labdata.yml").write_text("files:\n  x.csv: published\n")
+    (nested / "crossrepo.yml").write_text("files:\n  x.csv: published\n")
     (nested / "x.csv").write_text("a\n")
     commit(repo, "capitalised and nested")
 
-    cfg = Config(roots=[str(tmp_path)], labdata_dirs=["/analysis/results/"])
+    cfg = Config(roots=[str(tmp_path)], crossrepo_dirs=["/analysis/results/"])
     assert [e.path for e in core.build(cfg)] == ["Analysis/Results/x.csv"]
 
 
@@ -134,15 +134,52 @@ def test_a_manifest_below_a_nested_results_dir_is_still_ignored(tmp_path):
     repo = init(tmp_path / "deeper")
     nested = repo / "a" / "b"
     (nested / "sub").mkdir(parents=True)
-    (nested / "labdata.yml").write_text('files:\n  "*.csv": from the right place\n')
-    (nested / "sub" / "labdata.yml").write_text("files:\n  y.csv: too deep\n")
+    (nested / "crossrepo.yml").write_text('files:\n  "*.csv": from the right place\n')
+    (nested / "sub" / "crossrepo.yml").write_text("files:\n  y.csv: too deep\n")
     (nested / "sub" / "y.csv").write_text("a\n")
     commit(repo, "one manifest below another")
 
-    cfg = Config(roots=[str(tmp_path)], labdata_dirs=["a/b"])
+    cfg = Config(roots=[str(tmp_path)], crossrepo_dirs=["a/b"])
     entries = core.build(cfg)
     assert [e.path for e in entries] == ["a/b/sub/y.csv"]
     assert entries[0].description == "from the right place"
+
+
+# ------------------------------------------------- the name it used to have
+
+def test_a_manifest_under_the_old_name_is_still_read(tmp_path):
+    """The tool was once called labdata; manifests written then still publish."""
+    repo = init(tmp_path / "old-name")
+    (repo / "results").mkdir()
+    (repo / "results" / "labdata.yml").write_text("files:\n  x.csv: written long ago\n")
+    (repo / "results" / "x.csv").write_text("a\n")
+    commit(repo, "a manifest under the old name")
+
+    entries = core.build(Config(roots=[str(tmp_path)]))
+    assert [e.path for e in entries] == ["results/x.csv"]
+    assert entries[0].description == "written long ago"
+
+
+def test_the_old_manifest_name_is_never_a_result_file(tmp_path):
+    repo = init(tmp_path / "old-name-hidden")
+    (repo / "results").mkdir()
+    (repo / "results" / "labdata.yml").write_text('files:\n  "*": everything\n')
+    (repo / "results" / "x.csv").write_text("a\n")
+    commit(repo, "a glob that would otherwise match the manifest")
+
+    assert [e.name for e in core.build(Config(roots=[str(tmp_path)]))] == ["x.csv"]
+
+
+def test_the_new_name_wins_when_a_repo_carries_both(tmp_path):
+    repo = init(tmp_path / "both-names")
+    (repo / "results").mkdir()
+    (repo / "results" / "crossrepo.yml").write_text("files:\n  x.csv: the new one\n")
+    (repo / "results" / "labdata.yml").write_text("files:\n  x.csv: the old one\n")
+    (repo / "results" / "x.csv").write_text("a\n")
+    commit(repo, "mid-migration, both present")
+
+    entries = core.build(Config(roots=[str(tmp_path)]))
+    assert [e.description for e in entries] == ["the new one"]
 
 
 # ------------------------------------------------------------ bad input
@@ -150,7 +187,7 @@ def test_a_manifest_below_a_nested_results_dir_is_still_ignored(tmp_path):
 def test_a_broken_manifest_warns_and_publishes_nothing(tmp_path):
     repo = init(tmp_path / "broken")
     (repo / "results").mkdir()
-    (repo / "results" / "labdata.yml").write_text("files: [this, is, a, list]\n")
+    (repo / "results" / "crossrepo.yml").write_text("files: [this, is, a, list]\n")
     (repo / "results" / "hits.csv").write_text("a\n")
     commit(repo, "a manifest that is not a mapping")
 
@@ -162,10 +199,10 @@ def test_a_broken_manifest_warns_and_publishes_nothing(tmp_path):
 def test_a_broken_manifest_deeper_down_is_simply_not_read(tmp_path):
     repo = init(tmp_path / "mixed")
     (repo / "results").mkdir()
-    (repo / "results" / "labdata.yml").write_text("files:\n  good.csv: fine\n")
+    (repo / "results" / "crossrepo.yml").write_text("files:\n  good.csv: fine\n")
     (repo / "results" / "good.csv").write_text("a\n")
     (repo / "results" / "sub").mkdir()
-    (repo / "results" / "sub" / "labdata.yml").write_text("files: 3\n")
+    (repo / "results" / "sub" / "crossrepo.yml").write_text("files: 3\n")
     (repo / "results" / "sub" / "other.csv").write_text("b\n")
     commit(repo, "one good manifest and one broken below it")
 
@@ -213,7 +250,7 @@ def test_a_key_from_the_root_publishes_a_file_outside_the_results_dir(tmp_path):
     """A result that lives with the data it came from is published where it is."""
     repo = init(tmp_path / "anchored")
     (repo / "results").mkdir()
-    (repo / "results" / "labdata.yml").write_text(
+    (repo / "results" / "crossrepo.yml").write_text(
         "files:\n"
         "  near.csv: In the results directory\n"
         "  /data/reference/samples.csv: Kept beside the raw data\n"
@@ -234,7 +271,7 @@ def test_a_key_from_the_root_publishes_a_file_outside_the_results_dir(tmp_path):
 def test_a_pattern_from_the_root_publishes_every_file_it_matches(tmp_path):
     repo = init(tmp_path / "anchored-glob")
     (repo / "results").mkdir()
-    (repo / "results" / "labdata.yml").write_text(
+    (repo / "results" / "crossrepo.yml").write_text(
         'files:\n  "/data/raw/*.tsv": Raw tables, one per sample\n'
     )
     (repo / "data" / "raw").mkdir(parents=True)
@@ -252,7 +289,7 @@ def test_a_pattern_from_the_root_publishes_every_file_it_matches(tmp_path):
 def test_a_directory_from_the_root_is_published_as_one_dataset(tmp_path):
     repo = init(tmp_path / "anchored-dataset")
     (repo / "results").mkdir()
-    (repo / "results" / "labdata.yml").write_text(
+    (repo / "results" / "crossrepo.yml").write_text(
         "files:\n  /steps/03/by_chrom.parquet: One table split over files\n"
     )
     parts = repo / "steps" / "03" / "by_chrom.parquet"
@@ -270,7 +307,7 @@ def test_a_bare_key_does_not_reach_outside_the_results_dir(tmp_path):
     """`hits.csv` publishes the one in the results directory, not its namesake."""
     repo = init(tmp_path / "scoped")
     (repo / "results").mkdir()
-    (repo / "results" / "labdata.yml").write_text(
+    (repo / "results" / "crossrepo.yml").write_text(
         'files:\n  hits.csv: The published one\n  "*.tsv": Any table\n'
     )
     (repo / "results" / "hits.csv").write_text("a\n")
@@ -287,7 +324,7 @@ def test_a_bare_key_does_not_reach_outside_the_results_dir(tmp_path):
 def test_the_reading_side_filters_apply_outside_the_results_dir_too(tmp_path):
     repo = init(tmp_path / "anchored-filtered")
     (repo / "results").mkdir()
-    (repo / "results" / "labdata.yml").write_text(
+    (repo / "results" / "crossrepo.yml").write_text(
         'files:\n  "/data/*": Everything the data directory holds\n'
     )
     (repo / "data").mkdir()
@@ -303,7 +340,7 @@ def test_a_key_that_climbs_out_with_dots_is_refused(tmp_path):
     """There is one spelling for a path that leaves the directory."""
     repo = init(tmp_path / "climbing")
     (repo / "results").mkdir()
-    (repo / "results" / "labdata.yml").write_text(
+    (repo / "results" / "crossrepo.yml").write_text(
         "files:\n  ../data/samples.csv: written the wrong way\n"
     )
     (repo / "data").mkdir()

@@ -1,6 +1,6 @@
 """Tests for checking that the cache still holds what it claims."""
 
-from labdata import cache, cli, core
+from crossrepo import cache, cli, core
 
 
 def test_a_sound_cache_verifies_clean(by_spec):

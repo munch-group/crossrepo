@@ -1,7 +1,7 @@
-# catalog { #labdata.catalog }
+# catalog { #crossrepo.catalog }
 
 ```python
-labdata.catalog(
+crossrepo.catalog(
     refresh=False,
     max_age=3600.0,
     cfg=None,
@@ -22,9 +22,9 @@ Get the catalog, rescanning only when needed.
 
 :   Age in seconds beyond which the stored catalog is rescanned.
 
-<code>[**cfg**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Config](`labdata.config.Config`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+<code>[**cfg**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Config](`crossrepo.config.Config`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
 
-:   Settings. Defaults to [](`labdata.config.active_config`): what [](`labdata.config.use_config`) registered, or the configuration file. A stored catalog built with different settings is rescanned rather than reused.
+:   Settings. Defaults to [](`crossrepo.config.active_config`): what [](`crossrepo.config.use_config`) registered, or the configuration file. A stored catalog built with different settings is rescanned rather than reused.
 
 <code>[**progress**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [False]{.parameter-default}</code>
 
@@ -32,13 +32,13 @@ Get the catalog, rescanning only when needed.
 
 <code>[**select**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[str](`str`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
 
-:   Rescan only the repositories this names, by [](`labdata.core.selects`), and keep the stored catalog for the rest. The whole catalog is returned and stored, with the named repositories as they are now: rescanning one repository must not lose the others, which are not being looked at rather than known to be gone. Ignored unless `refresh` is set, since a stored catalog is read whole.
+:   Rescan only the repositories this names, by [](`crossrepo.core.selects`), and keep the stored catalog for the rest. The whole catalog is returned and stored, with the named repositories as they are now: rescanning one repository must not lose the others, which are not being looked at rather than known to be gone. Ignored unless `refresh` is set, since a stored catalog is read whole.
 
 ## Returns {.doc-section .doc-section-returns}
 
-<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[Entry](`labdata.model.Entry`)\]]{.parameter-annotation}</code>
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[Entry](`crossrepo.model.Entry`)\]]{.parameter-annotation}</code>
 
-:   Entries sorted by repository and path. Where `select` is given and there is no stored catalog to update, what was scanned is returned with a [](`labdata.config.SourceWarning`) and nothing is stored: storing it would leave a catalog holding one repository and claiming to hold them all.
+:   Entries sorted by repository and path. Where `select` is given and there is no stored catalog to update, what was scanned is returned with a [](`crossrepo.config.SourceWarning`) and nothing is stored: storing it would leave a catalog holding one repository and claiming to hold them all.
 
 ## Examples {.doc-section .doc-section-examples}
 
@@ -51,4 +51,4 @@ catalog(refresh=True, select="munch-group/x-gwas")   # just that one
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`labdata.core.selects`)
+[](`crossrepo.core.selects`)

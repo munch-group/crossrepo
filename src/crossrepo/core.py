@@ -2,7 +2,7 @@
 Building the catalog, resolving specs and fetching content.
 
 A file is in the catalog if it is tracked by git, sits under the results
-directory at the repository root, and is named by the ``labdata.yml`` there.
+directory at the repository root, and is named by the ``crossrepo.yml`` there.
 Publishing is therefore deliberate: a results directory with no manifest
 publishes nothing. The include and exclude patterns then filter that on the
 reading side, for someone who wants to see only part of what is published.
@@ -16,7 +16,7 @@ cataloged, because the content is read at that commit.
 
 See Also
 --------
-[](`labdata.manifest.Manifest`)
+[](`crossrepo.manifest.Manifest`)
 """
 
 from __future__ import annotations
@@ -143,7 +143,7 @@ def selects(select: Optional[str], repo_key: str) -> bool:
     """
     Test whether a narrowed scan should look at a repository.
 
-    The rule is the one [](`labdata.list`) filters with, so that narrowing a
+    The rule is the one [](`crossrepo.list`) filters with, so that narrowing a
     rescan and narrowing a listing pick the same repositories: the text is
     matched anywhere in ``owner/repo``, ignoring case. An owner alone is written
     ``owner/``, which cannot match a repository name.
@@ -164,7 +164,7 @@ def selects(select: Optional[str], repo_key: str) -> bool:
 
     See Also
     --------
-    [](`labdata.core.build`)
+    [](`crossrepo.core.build`)
     """
     return select is None or select.lower() in repo_key.lower()
 
@@ -184,7 +184,7 @@ def _repo_key(owner: str, repo: str) -> str:
     -------
     :
         ``owner/repo``, or the name alone when there is no owner, as
-        [](`labdata.model.Entry.repo_key`) gives it.
+        [](`crossrepo.model.Entry.repo_key`) gives it.
     """
     return f"{owner}/{repo}" if owner else repo
 
@@ -306,7 +306,7 @@ def _read_manifest(root: Location, blobs, results_dir: str):
     """
     Read the one manifest governing a results directory.
 
-    Only a ``labdata.yml`` sitting directly in the results directory is read, so
+    Only a ``crossrepo.yml`` sitting directly in the results directory is read, so
     there is one place to look to see what a repository publishes. A results
     directory is any path a repository is configured to publish from, however
     deep — ``results`` or ``analysis/step3/results`` alike — and the manifest
@@ -320,7 +320,7 @@ def _read_manifest(root: Location, blobs, results_dir: str):
         Working tree of the repository.
     blobs :
         Tracked files under the results directory, as
-        [](`labdata.gitutil.tracked_blobs`) returns them.
+        [](`crossrepo.gitutil.tracked_blobs`) returns them.
     results_dir :
         Results directory being scanned, as configured, relative to the
         repository root. The repository may spell it with different
@@ -334,12 +334,18 @@ def _read_manifest(root: Location, blobs, results_dir: str):
         is where a link's versions are read from. ``(None, "")`` when there is
         no manifest or it cannot be parsed; a manifest that will not parse costs
         its repository, with a warning, rather than the whole scan.
+
+        A directory holding more than one accepted name is read in
+        `crossrepo.manifest.MANIFEST_NAMES` order, so the current name wins over
+        the one the tool used to have.
     """
     wanted = results_dir.strip("/").lower()
-    for path, (blob_sha, _size) in sorted(blobs.items()):
+    here = []
+    for path, (blob_sha, _size) in blobs.items():
         head, _, name = path.rpartition("/")
-        if head.lower() != wanted or name not in manifest.MANIFEST_NAMES:
-            continue
+        if head.lower() == wanted and name in manifest.MANIFEST_NAMES:
+            here.append((manifest.MANIFEST_NAMES.index(name), path, head, blob_sha))
+    for _rank, path, head, blob_sha in sorted(here):
         try:
             text = gitutil.read_blob(root, blob_sha).decode("utf-8", "replace")
             return manifest.parse(text, head), path
@@ -363,7 +369,7 @@ def _dataset_roots(blobs, governing) -> dict:
     ----------
     blobs :
         Tracked files under the results directory, as
-        [](`labdata.gitutil.tracked_blobs`) returns them.
+        [](`crossrepo.gitutil.tracked_blobs`) returns them.
     governing :
         The manifest for the results directory.
 
@@ -402,7 +408,7 @@ def _covering_dataset(path: str, roots) -> Optional[str]:
     path :
         Repository-relative path of the file.
     roots :
-        Dataset directories, as [](`labdata.core._dataset_roots`) returns them.
+        Dataset directories, as [](`crossrepo.core._dataset_roots`) returns them.
 
     Returns
     -------
@@ -436,7 +442,7 @@ def _anchored_entries(root: Location, governing) -> dict:
     -------
     :
         The files under those paths, as
-        [](`labdata.gitutil.tracked_entries`) returns them, empty when the
+        [](`crossrepo.gitutil.tracked_entries`) returns them, empty when the
         manifest names nothing outside its directory.
     """
     prefixes = governing.anchored_prefixes()
@@ -455,7 +461,7 @@ def _regular(tracked: dict) -> dict:
     Parameters
     ----------
     tracked :
-        Paths as [](`labdata.gitutil.tracked_entries`) returns them.
+        Paths as [](`crossrepo.gitutil.tracked_entries`) returns them.
 
     Returns
     -------
@@ -477,7 +483,7 @@ def _links(tracked: dict) -> dict:
     Parameters
     ----------
     tracked :
-        Paths as [](`labdata.gitutil.tracked_entries`) returns them.
+        Paths as [](`crossrepo.gitutil.tracked_entries`) returns them.
 
     Returns
     -------
@@ -496,7 +502,7 @@ def scan_repo(root: Location, cfg: Config) -> List[Entry]:
     """
     Catalog the result files of one repository.
 
-    Only files named by a committed ``labdata.yml`` are cataloged. A results
+    Only files named by a committed ``crossrepo.yml`` are cataloged. A results
     directory without one contributes nothing, and neither does a file the
     manifest does not mention. A manifest may name any tracked file in the
     repository, not only the ones beneath it, by writing the path from the
@@ -523,8 +529,8 @@ def scan_repo(root: Location, cfg: Config) -> List[Entry]:
 
     See Also
     --------
-    [](`labdata.core.build`)
-    [](`labdata.manifest.Manifest`)
+    [](`crossrepo.core.build`)
+    [](`crossrepo.manifest.Manifest`)
     """
     owner, repo = repo_identity(root)
     slug = origin_slug(root)
@@ -536,7 +542,7 @@ def scan_repo(root: Location, cfg: Config) -> List[Entry]:
     entries: List[Entry] = []
     seen = set()
 
-    for results_dir in cfg.labdata_dirs:
+    for results_dir in cfg.crossrepo_dirs:
         wanted = results_dir.strip("/")
         if not wanted:
             continue
@@ -616,7 +622,7 @@ def scan_repo(root: Location, cfg: Config) -> List[Entry]:
                 warnings.warn(
                     f"{root}: {path} is published as a symbolic link but {where} "
                     f"gives it no stamp, so nothing says which content it "
-                    f"stands for. Run `labdata stamp` in the repository and "
+                    f"stands for. Run `crossrepo stamp` in the repository and "
                     f"commit the result.",
                     stacklevel=2,
                 )
@@ -680,7 +686,7 @@ def _dataset_entry(
         Tracked files under the results directory.
     head :
         The repository's current commit, as
-        [](`labdata.gitutil.head_commit`) reads it.
+        [](`crossrepo.gitutil.head_commit`) reads it.
     tags :
         Tags by commit sha.
     cfg :
@@ -746,17 +752,17 @@ def build(
     Parameters
     ----------
     cfg :
-        Settings. Defaults to [](`labdata.config.active_config`): what
-        [](`labdata.config.use_config`) registered, or the configuration file.
+        Settings. Defaults to [](`crossrepo.config.active_config`): what
+        [](`crossrepo.config.use_config`) registered, or the configuration file.
     progress :
         Show a progress bar, one step per repository. Scanning an organisation
         is otherwise silent for as long as it takes.
     select :
-        Scan only the repositories this names, by [](`labdata.core.selects`).
+        Scan only the repositories this names, by [](`crossrepo.core.selects`).
         A clone is identified before it is read and an organisation is listed
         but not read into, so what is skipped costs nothing beyond finding out
         that it is there. The result is then part of a catalog rather than a
-        whole one, which is [](`labdata.core.catalog`)'s business to put back
+        whole one, which is [](`crossrepo.core.catalog`)'s business to put back
         together.
 
     Returns
@@ -774,8 +780,8 @@ def build(
 
     See Also
     --------
-    [](`labdata.core.catalog`)
-    [](`labdata.core.selects`)
+    [](`crossrepo.core.catalog`)
+    [](`crossrepo.core.selects`)
     """
     cfg = active_config() if cfg is None else cfg
     clones: List[Entry] = []
@@ -870,7 +876,7 @@ def diagnose(cfg: Optional[Config] = None) -> List[str]:
     ----------
     cfg :
         Settings to account for. Defaults to
-        [](`labdata.config.active_config`).
+        [](`crossrepo.config.active_config`).
 
     Returns
     -------
@@ -913,7 +919,7 @@ def diagnose(cfg: Optional[Config] = None) -> List[str]:
                     with_manifest += 1
             lines.append(
                 f"  {spelled}: {len(found)} repos, {with_results} with a results "
-                f"directory, {with_manifest} with results/labdata.yml"
+                f"directory, {with_manifest} with results/crossrepo.yml"
             )
     else:
         lines.append("  roots: none configured, so nothing local is scanned")
@@ -931,7 +937,7 @@ def _results_listing(root: Location, cfg: Config) -> List[str]:
     """
     List the tracked paths under a repository's results directories.
 
-    Cheaper than [](`labdata.gitutil.tracked_blobs`), which also sizes every
+    Cheaper than [](`crossrepo.gitutil.tracked_blobs`), which also sizes every
     blob, and enough to say whether a repository has anything to publish.
 
     Parameters
@@ -947,7 +953,7 @@ def _results_listing(root: Location, cfg: Config) -> List[str]:
         Repository-relative paths, empty when there is no results directory.
     """
     out: List[str] = []
-    for results_dir in cfg.labdata_dirs:
+    for results_dir in cfg.crossrepo_dirs:
         listed = gitutil.git(
             root, "ls-files", "-z", "--", f':(icase){results_dir.strip("/")}',
             check=False,
@@ -991,14 +997,14 @@ def fingerprint(cfg: Config) -> str:
 
     See Also
     --------
-    [](`labdata.core.catalog`)
+    [](`crossrepo.core.catalog`)
     """
     payload = json.dumps(
         {
             "roots": sorted(str(Location.parse(r).resolved()) for r in cfg.roots),
             "owners": sorted(cfg.owners),
             "repos": sorted(cfg.repos),
-            "labdata_dirs": list(cfg.labdata_dirs),
+            "crossrepo_dirs": list(cfg.crossrepo_dirs),
             "include": list(cfg.include),
             "exclude": list(cfg.exclude),
             "min_bytes": cfg.min_bytes,
@@ -1023,8 +1029,8 @@ def save(entries: List[Entry], cfg: Optional[Config] = None) -> Path:
         Entries to store.
     cfg :
         Settings the entries were built with, recorded so that
-        [](`labdata.core.load_cached`) can tell whether they still apply.
-        Defaults to [](`labdata.config.active_config`).
+        [](`crossrepo.core.load_cached`) can tell whether they still apply.
+        Defaults to [](`crossrepo.config.active_config`).
 
     Returns
     -------
@@ -1054,7 +1060,7 @@ def load_cached(
     max_age: Optional[float] = None, cfg: Optional[Config] = None
 ) -> Optional[List[Entry]]:
     """
-    Read the catalog written by [](`labdata.core.save`).
+    Read the catalog written by [](`crossrepo.core.save`).
 
     A catalog that cannot be read is treated as absent rather than as an error,
     so an interrupted write or a change of format costs a rescan instead of
@@ -1121,15 +1127,15 @@ def catalog(
     max_age :
         Age in seconds beyond which the stored catalog is rescanned.
     cfg :
-        Settings. Defaults to [](`labdata.config.active_config`): what
-        [](`labdata.config.use_config`) registered, or the configuration file. A stored catalog
+        Settings. Defaults to [](`crossrepo.config.active_config`): what
+        [](`crossrepo.config.use_config`) registered, or the configuration file. A stored catalog
         built with different settings is rescanned rather than reused.
     progress :
         Show a progress bar while rescanning. Nothing is drawn when the stored
         catalog is used, since there is nothing to wait for.
     select :
         Rescan only the repositories this names, by
-        [](`labdata.core.selects`), and keep the stored catalog for the rest.
+        [](`crossrepo.core.selects`), and keep the stored catalog for the rest.
         The whole catalog is returned and stored, with the named repositories
         as they are now: rescanning one repository must not lose the others,
         which are not being looked at rather than known to be gone. Ignored
@@ -1140,7 +1146,7 @@ def catalog(
     :
         Entries sorted by repository and path. Where `select` is given and
         there is no stored catalog to update, what was scanned is returned with
-        a [](`labdata.config.SourceWarning`) and nothing is stored: storing it
+        a [](`crossrepo.config.SourceWarning`) and nothing is stored: storing it
         would leave a catalog holding one repository and claiming to hold them
         all.
 
@@ -1156,7 +1162,7 @@ def catalog(
 
     See Also
     --------
-    [](`labdata.core.selects`)
+    [](`crossrepo.core.selects`)
     """
     cfg = active_config() if cfg is None else cfg
     if not refresh:
@@ -1180,7 +1186,7 @@ def _refresh_some(cfg: Config, select: str, progress: bool = False) -> List[Entr
         Settings. The whole of them: what is stored stays keyed to the settings
         that describe the whole catalog, so that a later listing still finds it.
     select :
-        Which repositories to rescan, by [](`labdata.core.selects`).
+        Which repositories to rescan, by [](`crossrepo.core.selects`).
     progress :
         Show a progress bar while rescanning.
 
@@ -1318,7 +1324,7 @@ def _link_versions(entry: Entry, tags) -> List[Version]:
     entry :
         Entry for the link.
     tags :
-        Tags by commit sha, as [](`labdata.gitutil.tag_map`) reads them.
+        Tags by commit sha, as [](`crossrepo.gitutil.tag_map`) reads them.
 
     Returns
     -------
@@ -1585,8 +1591,8 @@ def fetch(
     refresh :
         Rescan the repositories before resolving the spec.
     cfg :
-        Settings. Defaults to [](`labdata.config.active_config`): what
-        [](`labdata.config.use_config`) registered, or the configuration file.
+        Settings. Defaults to [](`crossrepo.config.active_config`): what
+        [](`crossrepo.config.use_config`) registered, or the configuration file.
 
     Returns
     -------
@@ -1615,7 +1621,7 @@ def fetch(
 
     See Also
     --------
-    [](`labdata.core.catalog`)
+    [](`crossrepo.core.catalog`)
     """
     spec = Spec.parse(spec_text)
     entries = catalog(refresh=refresh, cfg=cfg)
@@ -1672,8 +1678,8 @@ def get(
         that a pinned version has been overtaken is still printed, on standard
         error: it says something happened rather than merely reporting.
     cfg :
-        Settings. Defaults to [](`labdata.config.active_config`): what
-        [](`labdata.config.use_config`) registered, or the configuration file.
+        Settings. Defaults to [](`crossrepo.config.active_config`): what
+        [](`crossrepo.config.use_config`) registered, or the configuration file.
 
     Returns
     -------
@@ -1700,25 +1706,25 @@ def get(
     Read the latest version, and be told the hash that pins it:
 
     ```python
-    import labdata
+    import crossrepo
     import pandas as pd
 
-    df = pd.read_csv(labdata.get("x-gwas", "hits.csv"))
+    df = pd.read_csv(crossrepo.get("x-gwas", "hits.csv"))
     # munch-group/x-gwas:results/hits.csv@e4f5a6b  (2026-04-11, 1.2M)
-    # pin this version:  labdata.get("x-gwas", "hits.csv", "e4f5a6b")
+    # pin this version:  crossrepo.get("x-gwas", "hits.csv", "e4f5a6b")
     ```
 
     Pin it, so the notebook reads the same bytes next year:
 
     ```python
-    df = pd.read_csv(labdata.get("x-gwas", "hits.csv", "e4f5a6b"))
+    df = pd.read_csv(crossrepo.get("x-gwas", "hits.csv", "e4f5a6b"))
     ```
 
     See Also
     --------
-    [](`labdata.core.fetch`)
-    [](`labdata.versions`)
-    [](`labdata.core.outdated`)
+    [](`crossrepo.core.fetch`)
+    [](`crossrepo.versions`)
+    [](`crossrepo.core.outdated`)
     """
     given = repo
     if owner is None and "/" in repo:
@@ -1737,7 +1743,7 @@ def get(
         # print(
         #     f"{entry.repo_key}:{entry.path}@{found.sha}  "
         #     f"({found.date[:10]}, {human(found.size)}){note}\n"
-        #     f'pin this version:  labdata.get("{given}", "{filename}", "{found.sha}")'
+        #     f'pin this version:  crossrepo.get("{given}", "{filename}", "{found.sha}")'
         # )
     if out is not None:
         path = copy_out(path, out, entry.name)
@@ -1755,7 +1761,7 @@ def copy_out(src: Path, out: Union[str, Path], name: str) -> Path:
     ----------
     src :
         File to copy, typically a path returned by
-        [](`labdata.core.materialize`).
+        [](`crossrepo.core.materialize`).
     out :
         Destination. An existing directory, or a path written with a trailing
         separator, keeps `name`; anything else is used as the file name itself.
@@ -1770,7 +1776,7 @@ def copy_out(src: Path, out: Union[str, Path], name: str) -> Path:
 
     See Also
     --------
-    [](`labdata.core.get`)
+    [](`crossrepo.core.get`)
     """
     dest = Path(out).expanduser()
     if dest.is_dir() or str(out).endswith(("/", "\\")):
@@ -1881,8 +1887,8 @@ def _cache_link(entry: Entry, version: Version) -> Path:
     entry :
         Entry the link belongs to.
     version :
-        Version to fetch, whose `labdata.model.Version.blob` is the stamped
-        sha256 and whose `labdata.model.Version.link` is the target.
+        Version to fetch, whose `crossrepo.model.Version.blob` is the stamped
+        sha256 and whose `crossrepo.model.Version.link` is the target.
 
     Returns
     -------
@@ -1904,7 +1910,7 @@ def _cache_link(entry: Entry, version: Version) -> Path:
     -----
     A hard link shares an inode with the file the pipeline wrote. Rewriting that
     file in place therefore changes the cached object too, which
-    ``labdata cache --verify`` is what catches; a pipeline that writes a new
+    ``crossrepo cache --verify`` is what catches; a pipeline that writes a new
     file and renames it over the old one, as most do, leaves the cache alone.
     """
     key = version.blob
@@ -1971,7 +1977,7 @@ def _stale(entry: Entry, version: Version, what: str) -> str:
         f"{entry.repo_key}:{entry.path}@{version.sha[:7]} does not hold the "
         f"content it was stamped with: {version.link} {what}. The file has been "
         f"regenerated since it was stamped, so this version no longer exists "
-        f"{_on(entry.root)}. Run `labdata stamp` in the repository and commit "
+        f"{_on(entry.root)}. Run `crossrepo stamp` in the repository and commit "
         f"the result to publish what is there now."
     )
 

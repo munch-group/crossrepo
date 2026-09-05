@@ -4,7 +4,7 @@ Core data types describing result files and their versions.
 A result file is identified by a *spec* of the form ``[owner/]repo:path[@version]``,
 where ``version`` is the abbreviated sha of the commit in which the file last
 changed. Specs are what the command line prints and what
-[](`labdata.core.fetch`) accepts.
+[](`crossrepo.core.fetch`) accepts.
 """
 
 from __future__ import annotations
@@ -32,7 +32,7 @@ class Version:
     sha :
         Full sha of the commit the repository pointed at. This is the
         user-facing version key, written out in full so that it also means
-        something to git and to GitHub without labdata in hand.
+        something to git and to GitHub without crossrepo in hand.
     date :
         Committer date in ISO-8601 format.
     subject :
@@ -95,7 +95,7 @@ class Entry:
     latest :
         The most recent version of this file.
     description :
-        What the file holds, as given for it in the ``labdata.yml`` that
+        What the file holds, as given for it in the ``crossrepo.yml`` that
         publishes it. Empty when the manifest names the file but says nothing
         about it.
     remote :
@@ -109,15 +109,15 @@ class Entry:
         where content is read from — a clone can supply content it happens to
         hold for a version cataloged over the API.
     manifest :
-        Repository-relative path of the ``labdata.yml`` that publishes this
+        Repository-relative path of the ``crossrepo.yml`` that publishes this
         file. Carried because it is where a link's versions are read from: git
         holds no history of the bytes behind a link, so the history of the stamp
         in this file is the history of the content.
 
     See Also
     --------
-    [](`labdata.model.Version`)
-    [](`labdata.manifest.Manifest`)
+    [](`crossrepo.model.Version`)
+    [](`crossrepo.manifest.Manifest`)
     """
 
     owner: str
@@ -212,7 +212,7 @@ class Entry:
         """
         Represent the entry as JSON-serialisable data.
 
-        Used by the on-disk catalog cache and by ``labdata list --json``.
+        Used by the on-disk catalog cache and by ``crossrepo list --json``.
 
         Returns
         -------
@@ -259,7 +259,7 @@ class Spec:
 
     See Also
     --------
-    [](`labdata.core.resolve_one`)
+    [](`crossrepo.core.resolve_one`)
     """
 
     repo: str

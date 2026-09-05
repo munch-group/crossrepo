@@ -1,7 +1,7 @@
-# human { #labdata.cli.human }
+# human { #crossrepo.cli.human }
 
 ```python
-labdata.cli.human(n)
+crossrepo.cli.human(n)
 ```
 
 Format a byte count for display.

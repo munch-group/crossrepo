@@ -15,9 +15,9 @@ from pathlib import Path
 
 import pytest
 
-from labdata import cache, cli, core, gitutil, manifest
-from labdata.config import Config
-from labdata.manifest import Stamp
+from crossrepo import cache, cli, core, gitutil, manifest
+from crossrepo.config import Config
+from crossrepo.manifest import Stamp
 
 from fixtures import (
     LINK_OTHER, LINK_V1, LINK_V2, commit, digest, fake_ssh, init, make_links,
@@ -29,7 +29,7 @@ from fixtures import (
 def links(tmp_path_factory):
     """The repositories that publish a file as a link."""
     base = make_links(tmp_path_factory.mktemp("links") / "fx")
-    os.environ["LABDATA_CACHE"] = str(tmp_path_factory.mktemp("linkcache"))
+    os.environ["CROSSREPO_CACHE"] = str(tmp_path_factory.mktemp("linkcache"))
     return base
 
 
@@ -63,7 +63,7 @@ def test_a_stamped_link_is_published(linked):
     entry = linked["proj:results/big.csv"]
     assert entry.description == "Merged per-sample table"
     assert entry.latest.link == "../steps/big.csv"
-    assert entry.manifest == "results/labdata.yml"
+    assert entry.manifest == "results/crossrepo.yml"
 
 
 def test_the_size_is_the_content_not_the_link(linked):
@@ -88,7 +88,7 @@ def test_a_link_with_no_stamp_is_not_published(link_cfg):
     said = [str(w.message) for w in caught]
     assert not [e for e in entries if e.repo == "bare" and e.name == "big.csv"]
     assert any("bare" in s and "no stamp" in s for s in said)
-    assert any("labdata stamp" in s for s in said)
+    assert any("crossrepo stamp" in s for s in said)
 
 
 def test_a_missing_target_is_still_published(linked):
@@ -175,7 +175,7 @@ def test_a_pin_uncached_and_overwritten_is_gone(linked):
 def test_a_pin_read_before_the_file_moved_on_survives_in_the_cache(
     tmp_path, monkeypatch
 ):
-    monkeypatch.setenv("LABDATA_CACHE", str(tmp_path / "own-cache"))
+    monkeypatch.setenv("CROSSREPO_CACHE", str(tmp_path / "own-cache"))
     repo = write_link_repo(tmp_path / "kept", LINK_V1)
     cfg = Config(roots=[str(tmp_path)])
     entry = [e for e in core.build(cfg) if e.name == "big.csv"][0]
@@ -194,7 +194,7 @@ def test_a_pin_read_before_the_file_moved_on_survives_in_the_cache(
 def test_rewriting_a_target_in_place_is_caught_by_verification(
     tmp_path, monkeypatch
 ):
-    monkeypatch.setenv("LABDATA_CACHE", str(tmp_path / "own-cache"))
+    monkeypatch.setenv("CROSSREPO_CACHE", str(tmp_path / "own-cache"))
     repo = write_link_repo(tmp_path / "inplace", LINK_V1)
     cfg = Config(roots=[str(tmp_path)])
     entry = [e for e in core.build(cfg) if e.name == "big.csv"][0]
@@ -232,7 +232,7 @@ def test_content_that_does_not_match_its_stamp_is_refused(linked):
     with pytest.raises(ValueError) as raised:
         core.materialize(entry, entry.latest)
     said = str(raised.value)
-    assert "regenerated" in said and "labdata stamp" in said
+    assert "regenerated" in said and "crossrepo stamp" in said
 
 
 def test_nothing_is_cached_when_the_stamp_does_not_match(linked):
@@ -247,7 +247,7 @@ def test_a_stamp_on_a_committed_file_is_ignored_with_a_warning(tmp_path):
     repo = init(tmp_path / "odd")
     (repo / "results").mkdir()
     (repo / "results" / "plain.csv").write_text("k,v\nx,1\n")
-    (repo / "results" / "labdata.yml").write_text(
+    (repo / "results" / "crossrepo.yml").write_text(
         "files:\n  plain.csv:\n    description: committed all along\n"
         f'    sha256: "{digest("k,v\\nx,1\\n")}"\n    size: 8\n'
     )
@@ -268,7 +268,7 @@ def test_a_link_named_from_the_repository_root_is_published(tmp_path):
     (repo / "results").mkdir()
     (repo / "steps" / "big.csv").write_text(LINK_V1)
     (repo / "data" / "big.csv").symlink_to("../steps/big.csv")
-    (repo / "results" / "labdata.yml").write_text(
+    (repo / "results" / "crossrepo.yml").write_text(
         "files:\n  /data/big.csv:\n    description: Kept beside the raw data\n"
         f'    sha256: "{digest(LINK_V1)}"\n    size: {len(LINK_V1)}\n'
     )
@@ -389,14 +389,14 @@ def test_a_stamp_needs_a_key_to_go_under():
         manifest.write_stamp("files:\n  a.csv: x\n", "nope.csv", S)
 
 
-# --------------------------------------------------------------- labdata stamp
+# --------------------------------------------------------------- crossrepo stamp
 
 @pytest.fixture()
 def stampable(tmp_path):
     """A repository with an unstamped link, and a config file naming nothing."""
     repo = write_link_repo(tmp_path / "fresh", LINK_V1, stamped=False)
     conf = tmp_path / "config.toml"
-    conf.write_text('roots = []\nlabdata_dirs = ["results"]\n')
+    conf.write_text('roots = []\ncrossrepo_dirs = ["results"]\n')
     return repo, str(conf)
 
 
@@ -414,7 +414,7 @@ def test_stamp_writes_what_the_link_points_at(stampable, capsys):
     repo, conf = stampable
     assert run_in(repo, conf, "stamp") == 0
     capsys.readouterr()
-    text = (repo / "results" / "labdata.yml").read_text()
+    text = (repo / "results" / "crossrepo.yml").read_text()
     got = manifest.parse(text, "results")
     assert got.stamp("results/big.csv") == Stamp(digest(LINK_V1), len(LINK_V1))
 
@@ -430,18 +430,18 @@ def test_stamp_says_what_it_did(stampable, capsys):
 def test_stamp_is_idempotent(stampable, capsys):
     repo, conf = stampable
     run_in(repo, conf, "stamp")
-    before = (repo / "results" / "labdata.yml").read_text()
+    before = (repo / "results" / "crossrepo.yml").read_text()
     capsys.readouterr()
     assert run_in(repo, conf, "stamp") == 0
-    assert (repo / "results" / "labdata.yml").read_text() == before
+    assert (repo / "results" / "crossrepo.yml").read_text() == before
     assert "up to date" in capsys.readouterr().out
 
 
 def test_check_reports_without_writing(stampable, capsys):
     repo, conf = stampable
-    before = (repo / "results" / "labdata.yml").read_text()
+    before = (repo / "results" / "crossrepo.yml").read_text()
     assert run_in(repo, conf, "stamp", "--check") == 1
-    assert (repo / "results" / "labdata.yml").read_text() == before
+    assert (repo / "results" / "crossrepo.yml").read_text() == before
     assert "out of date" in capsys.readouterr().err
 
 
@@ -455,7 +455,7 @@ def test_check_passes_once_stamped(stampable, capsys):
 def test_stamp_reports_a_link_that_leads_nowhere(tmp_path, capsys):
     repo = write_link_repo(tmp_path / "dangling", None, stamped=False)
     conf = tmp_path / "config.toml"
-    conf.write_text('roots = []\nlabdata_dirs = ["results"]\n')
+    conf.write_text('roots = []\ncrossrepo_dirs = ["results"]\n')
     assert run_in(repo, str(conf), "stamp") == 1
     assert "not a file here" in capsys.readouterr().err
 
@@ -465,7 +465,7 @@ def test_stamp_reports_a_link_published_only_by_a_pattern(tmp_path, capsys):
         tmp_path / "globbed", LINK_V1, stamped=False, key='"*.csv"'
     )
     conf = tmp_path / "config.toml"
-    conf.write_text('roots = []\nlabdata_dirs = ["results"]\n')
+    conf.write_text('roots = []\ncrossrepo_dirs = ["results"]\n')
     assert run_in(repo, str(conf), "stamp") == 1
     said = capsys.readouterr().err
     assert "pattern" in said and "name the file in full" in said
@@ -479,15 +479,15 @@ def test_a_link_named_from_the_root_can_be_stamped(tmp_path, capsys):
     (repo / "results").mkdir()
     (repo / "steps" / "big.csv").write_text(LINK_V1)
     (repo / "data" / "big.csv").symlink_to("../steps/big.csv")
-    (repo / "results" / "labdata.yml").write_text(
+    (repo / "results" / "crossrepo.yml").write_text(
         "files:\n  /data/big.csv: Kept beside the raw data\n"
     )
     commit(repo, "publish it unstamped")
     conf = tmp_path / "config.toml"
-    conf.write_text('roots = []\nlabdata_dirs = ["results"]\n')
+    conf.write_text('roots = []\ncrossrepo_dirs = ["results"]\n')
     assert run_in(repo, str(conf), "stamp") == 0
     capsys.readouterr()
-    got = manifest.parse((repo / "results" / "labdata.yml").read_text(), "results")
+    got = manifest.parse((repo / "results" / "crossrepo.yml").read_text(), "results")
     assert got.stamp("data/big.csv") == Stamp(digest(LINK_V1), len(LINK_V1))
 
 
@@ -503,7 +503,7 @@ def test_stamp_needs_a_repository(tmp_path, capsys):
 def test_stamping_then_committing_publishes_the_version(tmp_path):
     repo = write_link_repo(tmp_path / "flow", LINK_V1, stamped=False)
     conf = tmp_path / "config.toml"
-    conf.write_text('roots = []\nlabdata_dirs = ["results"]\n')
+    conf.write_text('roots = []\ncrossrepo_dirs = ["results"]\n')
     run_in(repo, str(conf), "stamp")
     commit(repo, "stamp the big table")
     cfg = Config(roots=[str(tmp_path)])
@@ -548,7 +548,7 @@ def test_a_link_survives_the_stored_catalog(links, link_cfg):
     back = core.load_cached(cfg=link_cfg)
     assert back == entries
     assert back[0].latest.link == "../steps/big.csv"
-    assert back[0].manifest == "results/labdata.yml"
+    assert back[0].manifest == "results/crossrepo.yml"
 
 
 def test_the_json_listing_carries_the_link(links, link_cfg):
@@ -557,7 +557,7 @@ def test_the_json_listing_carries_the_link(links, link_cfg):
     ][0]
     got = entry.to_dict()
     assert got["latest"]["link"] == "../steps/big.csv"
-    assert got["manifest"] == "results/labdata.yml"
+    assert got["manifest"] == "results/crossrepo.yml"
 
 
 # ----------------------------------------------------------- over the network
@@ -567,8 +567,8 @@ def server(tmp_path, monkeypatch):
     """A repository publishing a link, reachable only as ``tester@fakehost``."""
     home = tmp_path / "home"
     (home / "projects").mkdir(parents=True)
-    monkeypatch.setenv("LABDATA_SSH", fake_ssh(tmp_path, home))
-    monkeypatch.setenv("LABDATA_CACHE", str(tmp_path / "cache"))
+    monkeypatch.setenv("CROSSREPO_SSH", fake_ssh(tmp_path, home))
+    monkeypatch.setenv("CROSSREPO_CACHE", str(tmp_path / "cache"))
     write_link_repo(home / "projects" / "far", LINK_V1)
     return home
 

@@ -1,7 +1,7 @@
-# progress_bar { #labdata.core.progress_bar }
+# progress_bar { #crossrepo.core.progress_bar }
 
 ```python
-labdata.core.progress_bar(items, description, enabled)
+crossrepo.core.progress_bar(items, description, enabled)
 ```
 
 Wrap an iterable in a progress bar when one is wanted.

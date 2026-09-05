@@ -1,7 +1,7 @@
-# repo_identity { #labdata.core.repo_identity }
+# repo_identity { #crossrepo.core.repo_identity }
 
 ```python
-labdata.core.repo_identity(root)
+crossrepo.core.repo_identity(root)
 ```
 
 Determine the owner and name of a repository.
@@ -13,7 +13,7 @@ fallback for a repository without a remote.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
-<code>[**root**]{.parameter-name} [:]{.parameter-annotation-sep} [[Location](`labdata.location.Location`)]{.parameter-annotation}</code>
+<code>[**root**]{.parameter-name} [:]{.parameter-annotation-sep} [[Location](`crossrepo.location.Location`)]{.parameter-annotation}</code>
 
 :   Working tree of the repository, on this machine or another.
 

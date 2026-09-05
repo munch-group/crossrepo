@@ -1,7 +1,7 @@
-# frame { #labdata.frame }
+# frame { #crossrepo.frame }
 
 ```python
-labdata.frame(entries=None)
+crossrepo.frame(entries=None)
 ```
 
 Represent the catalog as a data frame.
@@ -22,14 +22,14 @@ Represent the catalog as a data frame.
 
 <code>[:]{.parameter-annotation-sep} [[ImportError](`ImportError`)]{.parameter-annotation}</code>
 
-:   If pandas is not installed. It is not a dependency of `labdata`.
+:   If pandas is not installed. It is not a dependency of `crossrepo`.
 
 ## Examples {.doc-section .doc-section-examples}
 
 Find the largest result file in each repository:
 
 ```python
-from labdata import frame
+from crossrepo import frame
 
 df = frame()
 df.sort_values("bytes").groupby("github").last()
@@ -37,4 +37,4 @@ df.sort_values("bytes").groupby("github").last()
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`labdata.core.catalog`)
+[](`crossrepo.core.catalog`)

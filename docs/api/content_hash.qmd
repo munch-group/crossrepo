@@ -1,7 +1,7 @@
-# content_hash { #labdata.cache.content_hash }
+# content_hash { #crossrepo.cache.content_hash }
 
 ```python
-labdata.cache.content_hash(path)
+crossrepo.cache.content_hash(path)
 ```
 
 Hash a file the way a manifest stamp records it.
@@ -24,4 +24,4 @@ share one cached object.
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`labdata.manifest.Stamp`)
+[](`crossrepo.manifest.Stamp`)

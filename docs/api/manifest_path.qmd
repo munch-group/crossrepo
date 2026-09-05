@@ -1,7 +1,7 @@
-# manifest_path { #labdata.manifest.manifest_path }
+# manifest_path { #crossrepo.manifest.manifest_path }
 
 ```python
-labdata.manifest.manifest_path(results_dir)
+crossrepo.manifest.manifest_path(results_dir)
 ```
 
 Where a results directory's manifest must sit to be read.

@@ -1,7 +1,7 @@
-# GitError { #labdata.gitutil.GitError }
+# GitError { #crossrepo.gitutil.GitError }
 
 ```python
-labdata.gitutil.GitError()
+crossrepo.gitutil.GitError()
 ```
 
 Raised when a git command fails.

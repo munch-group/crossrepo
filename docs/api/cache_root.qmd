@@ -1,12 +1,12 @@
-# cache_root { #labdata.config.cache_root }
+# cache_root { #crossrepo.config.cache_root }
 
 ```python
-labdata.config.cache_root()
+crossrepo.config.cache_root()
 ```
 
 Location of the local cache.
 
-Honours ``LABDATA_CACHE`` first and ``XDG_CACHE_HOME`` second.
+Honours ``CROSSREPO_CACHE`` first and ``XDG_CACHE_HOME`` second.
 
 ## Returns {.doc-section .doc-section-returns}
 
@@ -16,4 +16,4 @@ Honours ``LABDATA_CACHE`` first and ``XDG_CACHE_HOME`` second.
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`labdata.cache.blob_path`)
+[](`crossrepo.cache.blob_path`)

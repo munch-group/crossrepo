@@ -1,7 +1,7 @@
-# match { #labdata.core.match }
+# match { #crossrepo.core.match }
 
 ```python
-labdata.core.match(entries, spec)
+crossrepo.core.match(entries, spec)
 ```
 
 Find the entries a spec refers to, ignoring its version.
@@ -12,16 +12,16 @@ briefly as is unambiguous.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
-<code>[**entries**]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[Entry](`labdata.model.Entry`)\]]{.parameter-annotation}</code>
+<code>[**entries**]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[Entry](`crossrepo.model.Entry`)\]]{.parameter-annotation}</code>
 
 :   Catalog to search.
 
-<code>[**spec**]{.parameter-name} [:]{.parameter-annotation-sep} [[Spec](`labdata.model.Spec`)]{.parameter-annotation}</code>
+<code>[**spec**]{.parameter-name} [:]{.parameter-annotation-sep} [[Spec](`crossrepo.model.Spec`)]{.parameter-annotation}</code>
 
 :   Reference to match.
 
 ## Returns {.doc-section .doc-section-returns}
 
-<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[Entry](`labdata.model.Entry`)\]]{.parameter-annotation}</code>
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[Entry](`crossrepo.model.Entry`)\]]{.parameter-annotation}</code>
 
 :   Matching entries, possibly none or several.

@@ -1,7 +1,7 @@
-# materialize { #labdata.core.materialize }
+# materialize { #crossrepo.core.materialize }
 
 ```python
-labdata.core.materialize(entry, version)
+crossrepo.core.materialize(entry, version)
 ```
 
 Place one version of a result file in the cache and return its path.
@@ -13,11 +13,11 @@ wherever the link points.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
-<code>[**entry**]{.parameter-name} [:]{.parameter-annotation-sep} [[Entry](`labdata.model.Entry`)]{.parameter-annotation}</code>
+<code>[**entry**]{.parameter-name} [:]{.parameter-annotation-sep} [[Entry](`crossrepo.model.Entry`)]{.parameter-annotation}</code>
 
 :   Entry the version belongs to.
 
-<code>[**version**]{.parameter-name} [:]{.parameter-annotation-sep} [[Version](`labdata.model.Version`)]{.parameter-annotation}</code>
+<code>[**version**]{.parameter-name} [:]{.parameter-annotation-sep} [[Version](`crossrepo.model.Version`)]{.parameter-annotation}</code>
 
 :   Version to materialize.
 

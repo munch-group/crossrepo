@@ -1,7 +1,7 @@
-# discover_repos { #labdata.gitutil.discover_repos }
+# discover_repos { #crossrepo.gitutil.discover_repos }
 
 ```python
-labdata.gitutil.discover_repos(roots)
+crossrepo.gitutil.discover_repos(roots)
 ```
 
 Find git working trees under a set of root directories.
@@ -18,13 +18,13 @@ starts printing.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
-<code>[**roots**]{.parameter-name} [:]{.parameter-annotation-sep} [[Iterable](`typing.Iterable`)\[[Union](`typing.Union`)\[[Location](`labdata.location.Location`), [str](`str`), [Path](`pathlib.Path`)\]\]]{.parameter-annotation}</code>
+<code>[**roots**]{.parameter-name} [:]{.parameter-annotation-sep} [[Iterable](`typing.Iterable`)\[[Union](`typing.Union`)\[[Location](`crossrepo.location.Location`), [str](`str`), [Path](`pathlib.Path`)\]\]]{.parameter-annotation}</code>
 
-:   Directories to search. ``~`` is expanded, here for a local root and on the far side for a remote one. A root that does not exist, or that cannot be read, and a host that does not answer, are skipped with a [](`labdata.config.SourceWarning`), since there is nothing about an empty result to say which source was the problem.
+:   Directories to search. ``~`` is expanded, here for a local root and on the far side for a remote one. A root that does not exist, or that cannot be read, and a host that does not answer, are skipped with a [](`crossrepo.config.SourceWarning`), since there is nothing about an empty result to say which source was the problem.
 
 ## Returns {.doc-section .doc-section-returns}
 
-<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[Location](`labdata.location.Location`)\]]{.parameter-annotation}</code>
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[Location](`crossrepo.location.Location`)\]]{.parameter-annotation}</code>
 
 :   The working trees found, without duplicates, local ones as resolved paths.
 

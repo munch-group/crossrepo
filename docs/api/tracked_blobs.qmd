@@ -1,7 +1,7 @@
-# tracked_blobs { #labdata.gitutil.tracked_blobs }
+# tracked_blobs { #crossrepo.gitutil.tracked_blobs }
 
 ```python
-labdata.gitutil.tracked_blobs(repo, subdir)
+crossrepo.gitutil.tracked_blobs(repo, subdir)
 ```
 
 List files tracked at HEAD under a directory, with blob shas and sizes.
@@ -9,11 +9,11 @@ List files tracked at HEAD under a directory, with blob shas and sizes.
 Only tracked files are reported, so untracked scratch output sitting in a
 results directory is invisible to the catalog: committing a file is the act
 of publishing it. Symbolic links are skipped, having no content of their own;
-[](`labdata.gitutil.tracked_entries`) reports them.
+[](`crossrepo.gitutil.tracked_entries`) reports them.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
-<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[Location](`labdata.location.Location`), [Path](`pathlib.Path`), [str](`str`)\]]{.parameter-annotation}</code>
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[Location](`crossrepo.location.Location`), [Path](`pathlib.Path`), [str](`str`)\]]{.parameter-annotation}</code>
 
 :   Working tree to inspect, on this machine or another.
 
@@ -25,8 +25,8 @@ of publishing it. Symbolic links are skipped, having no content of their own;
 
 <code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Dict](`typing.Dict`)\[[str](`str`), [Tuple](`typing.Tuple`)\[[str](`str`), [int](`int`)\]\]]{.parameter-annotation}</code>
 
-:   A mapping of repository-relative path to ``(blob_sha, size)``. Sizes are those of the stored blob, so a Git LFS pointer reports the size of the pointer; use [](`labdata.gitutil.parse_lfs_pointer`) to resolve it.
+:   A mapping of repository-relative path to ``(blob_sha, size)``. Sizes are those of the stored blob, so a Git LFS pointer reports the size of the pointer; use [](`crossrepo.gitutil.parse_lfs_pointer`) to resolve it.
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`labdata.gitutil.head_commit`)
+[](`crossrepo.gitutil.head_commit`)

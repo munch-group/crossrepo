@@ -1,7 +1,7 @@
-# parse_lfs_pointer { #labdata.gitutil.parse_lfs_pointer }
+# parse_lfs_pointer { #crossrepo.gitutil.parse_lfs_pointer }
 
 ```python
-labdata.gitutil.parse_lfs_pointer(data)
+crossrepo.gitutil.parse_lfs_pointer(data)
 ```
 
 Read a Git LFS pointer file.

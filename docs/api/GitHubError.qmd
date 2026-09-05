@@ -1,7 +1,7 @@
-# GitHubError { #labdata.github.GitHubError }
+# GitHubError { #crossrepo.github.GitHubError }
 
 ```python
-labdata.github.GitHubError()
+crossrepo.github.GitHubError()
 ```
 
 Raised when GitHub cannot be read.

@@ -1,7 +1,7 @@
-# Version { #labdata.Version }
+# Version { #crossrepo.Version }
 
 ```python
-labdata.Version(
+crossrepo.Version(
     sha,
     date,
     subject,
@@ -26,7 +26,7 @@ they never define one.
 
 <code>[**sha**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
 
-:   Full sha of the commit the repository pointed at. This is the user-facing version key, written out in full so that it also means something to git and to GitHub without labdata in hand.
+:   Full sha of the commit the repository pointed at. This is the user-facing version key, written out in full so that it also means something to git and to GitHub without crossrepo in hand.
 
 <code>[**date**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
 

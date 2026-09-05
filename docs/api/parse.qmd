@@ -1,7 +1,7 @@
-# parse { #labdata.manifest.parse }
+# parse { #crossrepo.manifest.parse }
 
 ```python
-labdata.manifest.parse(text, directory)
+crossrepo.manifest.parse(text, directory)
 ```
 
 Read a manifest.
@@ -10,7 +10,7 @@ Read a manifest.
 
 <code>[**text**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
 
-:   Content of the ``labdata.yml`` file.
+:   Content of the ``crossrepo.yml`` file.
 
 <code>[**directory**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
 
@@ -18,13 +18,13 @@ Read a manifest.
 
 ## Returns {.doc-section .doc-section-returns}
 
-<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Manifest](`labdata.manifest.Manifest`)]{.parameter-annotation}</code>
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Manifest](`crossrepo.manifest.Manifest`)]{.parameter-annotation}</code>
 
 :   The parsed manifest. An empty ``files`` mapping is allowed and publishes nothing.
 
 ## Raises {.doc-section .doc-section-raises}
 
-<code>[:]{.parameter-annotation-sep} [[ManifestError](`labdata.manifest.ManifestError`)]{.parameter-annotation}</code>
+<code>[:]{.parameter-annotation-sep} [[ManifestError](`crossrepo.manifest.ManifestError`)]{.parameter-annotation}</code>
 
 :   If the file is not valid YAML, has no ``files`` mapping, gives an entry a value that is neither a description nor a mapping holding one, or names a file with a key that climbs out of the directory with ``..``.
 

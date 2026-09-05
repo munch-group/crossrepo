@@ -1,20 +1,20 @@
-# build { #labdata.remote.build }
+# build { #crossrepo.remote.build }
 
 ```python
-labdata.remote.build(cfg, client=None, progress=False, select=None)
+crossrepo.remote.build(cfg, client=None, progress=False, select=None)
 ```
 
 Catalog every repository the settings name on GitHub.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
-<code>[**cfg**]{.parameter-name} [:]{.parameter-annotation-sep} [[Config](`labdata.config.Config`)]{.parameter-annotation}</code>
+<code>[**cfg**]{.parameter-name} [:]{.parameter-annotation-sep} [[Config](`crossrepo.config.Config`)]{.parameter-annotation}</code>
 
 :   Settings supplying `owners` and `repos`.
 
-<code>[**client**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Client](`labdata.github.Client`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+<code>[**client**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Client](`crossrepo.github.Client`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
 
-:   Client to read with. Defaults to a new one, authenticated as [](`labdata.github.token`) finds.
+:   Client to read with. Defaults to a new one, authenticated as [](`crossrepo.github.token`) finds.
 
 <code>[**progress**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [False]{.parameter-default}</code>
 
@@ -22,15 +22,15 @@ Catalog every repository the settings name on GitHub.
 
 <code>[**select**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[str](`str`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
 
-:   Read only the repositories this names, by [](`labdata.core.selects`). An owner that cannot hold a match is not even listed, and one that can is listed but only read into where a repository matches, so narrowing a scan to one repository of an organisation costs one request for the listing instead of one for every repository it holds.
+:   Read only the repositories this names, by [](`crossrepo.core.selects`). An owner that cannot hold a match is not even listed, and one that can is listed but only read into where a repository matches, so narrowing a scan to one repository of an organisation costs one request for the listing instead of one for every repository it holds.
 
 ## Returns {.doc-section .doc-section-returns}
 
-<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[Entry](`labdata.model.Entry`)\]]{.parameter-annotation}</code>
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[Entry](`crossrepo.model.Entry`)\]]{.parameter-annotation}</code>
 
-:   Entries from every repository that publishes something. A repository that cannot be read is skipped with a [](`labdata.config.SourceWarning`) rather than failing the scan, as is an owner GitHub will not list and a repository named in the settings that is not there.
+:   Entries from every repository that publishes something. A repository that cannot be read is skipped with a [](`crossrepo.config.SourceWarning`) rather than failing the scan, as is an owner GitHub will not list and a repository named in the settings that is not there.
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`labdata.remote.scan_repo`)
-[](`labdata.core.selects`)
+[](`crossrepo.remote.scan_repo`)
+[](`crossrepo.core.selects`)

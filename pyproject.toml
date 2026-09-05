@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "labdata"
+name = "crossrepo"
 version = "0.1.18"
 description = "Catalog and fetch versioned result files across git repos, without submodules"
 authors = [
@@ -24,12 +24,12 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/munch-group/labdata"
-Repository = "https://github.com/munch-group/labdata"
-Documentation = "https://munch-group.org/labdata"
+Homepage = "https://github.com/munch-group/crossrepo"
+Repository = "https://github.com/munch-group/crossrepo"
+Documentation = "https://munch-group.org/crossrepo"
 
 [project.scripts]
-labdata = "labdata.cli:main"
+crossrepo = "crossrepo.cli:main"
 
 [tool.pytest.ini_options]
 testpaths = ["test"]
@@ -43,7 +43,7 @@ where = ["src"]
 exclude = ["test*"]
 
 [tool.setuptools.package-data]
-labdata = ["data/*.txt", "data/*.csv", "data/*.pickle", "data/*.h5"]
+crossrepo = ["data/*.txt", "data/*.csv", "data/*.pickle", "data/*.h5"]
 
 [tool.pixi.workspace]
 channels = ["conda-forge", "munch-group"]
@@ -74,7 +74,7 @@ pyarrow = "*"
 pytables = "*"
 
 # [tool.pixi.pypi-dependencies]
-# labdata = { path = ".", editable = true }
+# crossrepo = { path = ".", editable = true }
 
 [tool.pixi.environments]
 default = {solve-group = "default"}

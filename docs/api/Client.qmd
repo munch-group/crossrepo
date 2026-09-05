@@ -1,16 +1,16 @@
-# Client { #labdata.github.Client }
+# Client { #crossrepo.github.Client }
 
 ```python
-labdata.github.Client(auth=None, api=API)
+crossrepo.github.Client(auth=None, api=API)
 ```
 
-A thin, streaming client for the parts of the GitHub API labdata needs.
+A thin, streaming client for the parts of the GitHub API crossrepo needs.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
 <code>[**auth**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[str](`str`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
 
-:   Token to authenticate with. Defaults to [](`labdata.github.token`).
+:   Token to authenticate with. Defaults to [](`crossrepo.github.token`).
 
 <code>[**api**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [API]{.parameter-default}</code>
 
@@ -27,21 +27,21 @@ client.tree("munch-group", "tree-stats", "main")
 
 | Name | Description |
 | --- | --- |
-| [commit](#labdata.github.Client.commit) | Read one commit. |
-| [commits](#labdata.github.Client.commits) | List the commits that touched a path, newest first. |
-| [default_branch](#labdata.github.Client.default_branch) | Find the branch a repository is read at by default. |
-| [download_blob](#labdata.github.Client.download_blob) | Stream a blob to a file. |
-| [get](#labdata.github.Client.get) | Fetch one JSON document. |
-| [lfs_download](#labdata.github.Client.lfs_download) | Stream a Git LFS object to a file. |
-| [paginate](#labdata.github.Client.paginate) | Fetch every page of a listing. |
-| [read_blob](#labdata.github.Client.read_blob) | Read a blob into memory. |
-| [repositories](#labdata.github.Client.repositories) | List the repositories an organisation or user owns. |
-| [tree](#labdata.github.Client.tree) | List everything in a repository at a revision, in one request. |
+| [commit](#crossrepo.github.Client.commit) | Read one commit. |
+| [commits](#crossrepo.github.Client.commits) | List the commits that touched a path, newest first. |
+| [default_branch](#crossrepo.github.Client.default_branch) | Find the branch a repository is read at by default. |
+| [download_blob](#crossrepo.github.Client.download_blob) | Stream a blob to a file. |
+| [get](#crossrepo.github.Client.get) | Fetch one JSON document. |
+| [lfs_download](#crossrepo.github.Client.lfs_download) | Stream a Git LFS object to a file. |
+| [paginate](#crossrepo.github.Client.paginate) | Fetch every page of a listing. |
+| [read_blob](#crossrepo.github.Client.read_blob) | Read a blob into memory. |
+| [repositories](#crossrepo.github.Client.repositories) | List the repositories an organisation or user owns. |
+| [tree](#crossrepo.github.Client.tree) | List everything in a repository at a revision, in one request. |
 
-### commit { #labdata.github.Client.commit }
+### commit { #crossrepo.github.Client.commit }
 
 ```python
-labdata.github.Client.commit(owner, repo, ref)
+crossrepo.github.Client.commit(owner, repo, ref)
 ```
 
 Read one commit.
@@ -66,10 +66,10 @@ Read one commit.
 
 :   The commit document, or `None` when there is no such revision.
 
-### commits { #labdata.github.Client.commits }
+### commits { #crossrepo.github.Client.commits }
 
 ```python
-labdata.github.Client.commits(owner, repo, path, limit=100)
+crossrepo.github.Client.commits(owner, repo, path, limit=100)
 ```
 
 List the commits that touched a path, newest first.
@@ -98,10 +98,10 @@ List the commits that touched a path, newest first.
 
 :   Raw commit documents, newest first.
 
-### default_branch { #labdata.github.Client.default_branch }
+### default_branch { #crossrepo.github.Client.default_branch }
 
 ```python
-labdata.github.Client.default_branch(owner, repo)
+crossrepo.github.Client.default_branch(owner, repo)
 ```
 
 Find the branch a repository is read at by default.
@@ -122,10 +122,10 @@ Find the branch a repository is read at by default.
 
 :   The default branch name.
 
-### download_blob { #labdata.github.Client.download_blob }
+### download_blob { #crossrepo.github.Client.download_blob }
 
 ```python
-labdata.github.Client.download_blob(owner, repo, sha, dest)
+crossrepo.github.Client.download_blob(owner, repo, sha, dest)
 ```
 
 Stream a blob to a file.
@@ -151,10 +151,10 @@ memory does not grow with the size of the result.
 
 :   File to write.
 
-### get { #labdata.github.Client.get }
+### get { #crossrepo.github.Client.get }
 
 ```python
-labdata.github.Client.get(endpoint, **params)
+crossrepo.github.Client.get(endpoint, **params)
 ```
 
 Fetch one JSON document.
@@ -175,10 +175,10 @@ Fetch one JSON document.
 
 :   The decoded document.
 
-### lfs_download { #labdata.github.Client.lfs_download }
+### lfs_download { #crossrepo.github.Client.lfs_download }
 
 ```python
-labdata.github.Client.lfs_download(owner, repo, oid, size, dest)
+crossrepo.github.Client.lfs_download(owner, repo, oid, size, dest)
 ```
 
 Stream a Git LFS object to a file.
@@ -211,14 +211,14 @@ from.
 
 #### Raises {.doc-section .doc-section-raises}
 
-<code>[:]{.parameter-annotation-sep} [[GitHubError](`labdata.github.GitHubError`)]{.parameter-annotation}</code>
+<code>[:]{.parameter-annotation-sep} [[GitHubError](`crossrepo.github.GitHubError`)]{.parameter-annotation}</code>
 
 :   If the batch endpoint refuses, or names no download for the object.
 
-### paginate { #labdata.github.Client.paginate }
+### paginate { #crossrepo.github.Client.paginate }
 
 ```python
-labdata.github.Client.paginate(endpoint, **params)
+crossrepo.github.Client.paginate(endpoint, **params)
 ```
 
 Fetch every page of a listing.
@@ -239,16 +239,16 @@ Fetch every page of a listing.
 
 :   An iterator over every item, across all pages. Pages are fetched as it is consumed, so stopping early stops requesting.
 
-### read_blob { #labdata.github.Client.read_blob }
+### read_blob { #crossrepo.github.Client.read_blob }
 
 ```python
-labdata.github.Client.read_blob(owner, repo, sha)
+crossrepo.github.Client.read_blob(owner, repo, sha)
 ```
 
 Read a blob into memory.
 
 Only for content known to be small, such as a manifest or a Git LFS
-pointer. Use [](`labdata.github.Client.download_blob`) for result files.
+pointer. Use [](`crossrepo.github.Client.download_blob`) for result files.
 
 #### Parameters {.doc-section .doc-section-parameters}
 
@@ -270,10 +270,10 @@ pointer. Use [](`labdata.github.Client.download_blob`) for result files.
 
 :   The raw content.
 
-### repositories { #labdata.github.Client.repositories }
+### repositories { #crossrepo.github.Client.repositories }
 
 ```python
-labdata.github.Client.repositories(owner)
+crossrepo.github.Client.repositories(owner)
 ```
 
 List the repositories an organisation or user owns.
@@ -290,10 +290,10 @@ List the repositories an organisation or user owns.
 
 :   Tuples of ``(name, default_branch)``, skipping empty repositories.
 
-### tree { #labdata.github.Client.tree }
+### tree { #crossrepo.github.Client.tree }
 
 ```python
-labdata.github.Client.tree(owner, repo, ref)
+crossrepo.github.Client.tree(owner, repo, ref)
 ```
 
 List everything in a repository at a revision, in one request.

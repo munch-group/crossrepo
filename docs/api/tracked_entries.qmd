@@ -1,7 +1,7 @@
-# tracked_entries { #labdata.gitutil.tracked_entries }
+# tracked_entries { #crossrepo.gitutil.tracked_entries }
 
 ```python
-labdata.gitutil.tracked_entries(repo, subdir)
+crossrepo.gitutil.tracked_entries(repo, subdir)
 ```
 
 List everything tracked at HEAD under a directory, symbolic links included.
@@ -12,7 +12,7 @@ of publishing it.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
-<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[Location](`labdata.location.Location`), [Path](`pathlib.Path`), [str](`str`)\]]{.parameter-annotation}</code>
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[Location](`crossrepo.location.Location`), [Path](`pathlib.Path`), [str](`str`)\]]{.parameter-annotation}</code>
 
 :   Working tree to inspect, on this machine or another.
 
@@ -28,5 +28,5 @@ of publishing it.
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`labdata.gitutil.tracked_blobs`)
-[](`labdata.gitutil.link_target`)
+[](`crossrepo.gitutil.tracked_blobs`)
+[](`crossrepo.gitutil.link_target`)

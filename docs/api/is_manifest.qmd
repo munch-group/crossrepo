@@ -1,7 +1,7 @@
-# is_manifest { #labdata.manifest.is_manifest }
+# is_manifest { #crossrepo.manifest.is_manifest }
 
 ```python
-labdata.manifest.is_manifest(path)
+crossrepo.manifest.is_manifest(path)
 ```
 
 Test whether a repository path is a manifest.

@@ -1,10 +1,10 @@
-# Registration { #labdata.config.Registration }
+# Registration { #crossrepo.config.Registration }
 
 ```python
-labdata.config.Registration(previous)
+crossrepo.config.Registration(previous)
 ```
 
-The undo for one call to [](`labdata.config.use_config`).
+The undo for one call to [](`crossrepo.config.use_config`).
 
 Returned rather than used directly. Ignoring it leaves the registration in
 place for the rest of the session; entering it with ``with`` puts the
@@ -14,19 +14,19 @@ prints something worth reading.
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`labdata.config.use_config`)
-[](`labdata.config.active_config`)
+[](`crossrepo.config.use_config`)
+[](`crossrepo.config.active_config`)
 
 ## Methods
 
 | Name | Description |
 | --- | --- |
-| [undo](#labdata.config.Registration.undo) | Put back the settings that were registered before this call. |
+| [undo](#crossrepo.config.Registration.undo) | Put back the settings that were registered before this call. |
 
-### undo { #labdata.config.Registration.undo }
+### undo { #crossrepo.config.Registration.undo }
 
 ```python
-labdata.config.Registration.undo()
+crossrepo.config.Registration.undo()
 ```
 
 Put back the settings that were registered before this call.

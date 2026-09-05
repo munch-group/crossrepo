@@ -1,7 +1,7 @@
-# blob_url { #labdata.github.blob_url }
+# blob_url { #crossrepo.github.blob_url }
 
 ```python
-labdata.github.blob_url(owner, repo, commit, path, directory=False)
+crossrepo.github.blob_url(owner, repo, commit, path, directory=False)
 ```
 
 Build a stable URL for one version of a published file.

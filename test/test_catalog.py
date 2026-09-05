@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from labdata import gitutil
+from crossrepo import gitutil
 
 
 def test_finds_repos_not_plain_dirs(cfg):
@@ -64,7 +64,7 @@ def test_non_ascii_filename_is_cataloged(entries):
 def test_non_ascii_filename_can_be_fetched(entries):
     import unicodedata
 
-    from labdata import core
+    from crossrepo import core
 
     entry = next(
         e for e in entries
@@ -122,8 +122,8 @@ def _mk(path):
 
 def test_a_root_that_is_not_there_is_reported(tmp_path):
     """A misspelled root must not look like a group that published nothing."""
-    from labdata import core
-    from labdata.config import Config, SourceWarning
+    from crossrepo import core
+    from crossrepo.config import Config, SourceWarning
 
     with pytest.warns(SourceWarning, match="no such directory"):
         assert core.build(Config(roots=[str(tmp_path / "nope")])) == []
@@ -131,7 +131,7 @@ def test_a_root_that_is_not_there_is_reported(tmp_path):
 
 def test_a_root_that_cannot_be_listed_is_reported(tmp_path, monkeypatch):
     """A folder whose provider never answers is named, not silently skipped."""
-    from labdata.config import SourceWarning
+    from crossrepo.config import SourceWarning
 
     real_is_dir = Path.is_dir
 

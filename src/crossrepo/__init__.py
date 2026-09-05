@@ -1,7 +1,7 @@
 """
 Catalog and fetch versioned result files across many git repositories.
 
-`labdata` lets one project read result files produced by another without adding
+`crossrepo` lets one project read result files produced by another without adding
 a submodule and without downloading files by hand. A file is published simply by
 committing it under a repository's ``results`` directory; no manifest is needed.
 The version of a file is the commit in which it last changed, so versioning
@@ -13,7 +13,7 @@ Examples
 List everything the configured repositories publish:
 
 ```python
-from labdata import catalog
+from crossrepo import catalog
 
 for entry in catalog():
     print(entry.spec, entry.latest.size)
@@ -24,11 +24,11 @@ taken and its hash printed, so the pinned call can be copied back into the cell:
 
 ```python
 import pandas as pd
-from labdata import get
+from crossrepo import get
 
 df = pd.read_csv(get("x-gwas", "hits.csv"))
 # munch-group/x-gwas:results/hits.csv@e4f5a6b  (2026-04-11, 1.2M)
-# pin this version:  labdata.get("x-gwas", "hits.csv", "e4f5a6b")
+# pin this version:  crossrepo.get("x-gwas", "hits.csv", "e4f5a6b")
 
 df = pd.read_csv(get("x-gwas", "hits.csv", "e4f5a6b"))   # pinned, and silent
 ```
@@ -37,19 +37,22 @@ Settings are read from the configuration file. To use different ones, register
 them once rather than passing them to every call:
 
 ```python
-import labdata
+import crossrepo
 
-labdata.use_config(labdata.Config(repos=["munch-group/x-gwas"]))
-df = labdata.refresh()
+crossrepo.use_config(crossrepo.Config(repos=["munch-group/x-gwas"]))
+df = crossrepo.refresh()
 ```
 
 See Also
 --------
-[](`labdata.core.get`)
-[](`labdata.core.fetch`)
-[](`labdata.core.catalog`)
-[](`labdata.config.use_config`)
+[](`crossrepo.core.get`)
+[](`crossrepo.core.fetch`)
+[](`crossrepo.core.catalog`)
+[](`crossrepo.config.use_config`)
 """
+
+from importlib.metadata import PackageNotFoundError
+from importlib.metadata import version as _installed_version
 
 from .config import Config, active_config, use_config
 from .core import (
@@ -57,7 +60,10 @@ from .core import (
 )
 from .model import Entry, Spec, Version
 
-__version__ = "0.1.16"
+try:
+    __version__ = _installed_version("crossrepo")
+except PackageNotFoundError:            # a source tree that was never installed
+    __version__ = "0.0.0+unknown"
 
 __all__ = [
     "active_config",
@@ -82,7 +88,7 @@ __all__ = [
 ]
 
 
-#: Columns [](`labdata.frame`) always has, so an empty catalog still tabulates.
+#: Columns [](`crossrepo.frame`) always has, so an empty catalog still tabulates.
 #: ``owner`` and ``repo`` are the two halves of ``github``, and ``dir`` and
 #: ``name`` the two halves of ``path``, so that either can be grouped or sorted
 #: on without taking the other apart first.
@@ -91,10 +97,10 @@ FRAME_COLUMNS = (
     "bytes", "tags", "lfs", "version", "parts", "spec", "url",
 )
 
-#: Columns [](`labdata.versions`) always has.
+#: Columns [](`crossrepo.versions`) always has.
 VERSION_COLUMNS = ("version", "date", "bytes", "parts", "tags", "subject")
 
-#: Columns [](`labdata.repos`) always has.
+#: Columns [](`crossrepo.repos`) always has.
 REPO_COLUMNS = ("repo", "files", "bytes", "latest")
 
 
@@ -121,7 +127,7 @@ def frame(entries=None):
     Raises
     ------
     ImportError
-        If pandas is not installed. It is not a dependency of `labdata`.
+        If pandas is not installed. It is not a dependency of `crossrepo`.
 
     Examples
     --------
@@ -129,7 +135,7 @@ def frame(entries=None):
     Find the largest result file in each repository:
 
     ```python
-    from labdata import frame
+    from crossrepo import frame
 
     df = frame()
     df.sort_values("bytes").groupby("github").last()
@@ -137,7 +143,7 @@ def frame(entries=None):
 
     See Also
     --------
-    [](`labdata.core.catalog`)
+    [](`crossrepo.core.catalog`)
     """
     import pandas as pd
 
@@ -167,18 +173,18 @@ def frame(entries=None):
     )
 
 
-#: Columns [](`labdata.list`) leaves out unless they are asked for. Each is wide
+#: Columns [](`crossrepo.list`) leaves out unless they are asked for. Each is wide
 #: and each restates something the other columns already carry.
 _OPTIONAL = ("version", "spec", "url")
 
-#: Columns [](`labdata.list`) shows, in the order it shows them: what the file
+#: Columns [](`crossrepo.list`) shows, in the order it shows them: what the file
 #: is, then where it came from, then what it is made of.
 LIST_COLUMNS = (
     "owner", "repo", "name", "description", "date", "github", "path", "dir",
     "bytes", "tags", "lfs",
 )
 
-#: Columns ``labdata.list(brief=True)`` shows: what a file is and how big, and
+#: Columns ``crossrepo.list(brief=True)`` shows: what a file is and how big, and
 #: nothing about where it is kept. ``size`` is ``bytes`` written for reading.
 BRIEF_COLUMNS = ("owner", "repo", "name", "size", "description", "date")
 
@@ -188,7 +194,7 @@ def _size(n: int) -> str:
     Write a byte count the way a result file is talked about.
 
     Megabytes and gigabytes of a million and a billion bytes, rather than the
-    powers of two [](`labdata.core.human`) uses for the command line: these are
+    powers of two [](`crossrepo.core.human`) uses for the command line: these are
     the numbers a table of results is read against, and the difference of a few
     percent is not what the column is for.
 
@@ -214,8 +220,8 @@ def _size(n: int) -> str:
         return "?"
     return f"{n / 1e6:.1f} MB" if n < 1e9 else f"{n / 1e9:.1f} GB"
 
-#: Columns [](`labdata.list`) never shows, being a detail of how a dataset is
-#: stored rather than of what it holds. [](`labdata.frame`) still carries it.
+#: Columns [](`crossrepo.list`) never shows, being a detail of how a dataset is
+#: stored rather than of what it holds. [](`crossrepo.frame`) still carries it.
 _HIDDEN = ("parts",)
 
 
@@ -234,7 +240,7 @@ def list(
     """
     Tabulate what the configured repositories publish.
 
-    The python side of ``labdata list``, and like it the version is left out
+    The python side of ``crossrepo list``, and like it the version is left out
     unless asked for: it is a full commit sha, and every file a repository
     publishes carries the same one.
 
@@ -242,7 +248,7 @@ def list(
     ----------
     repo :
         Keep only repositories whose ``owner/repo`` contains this, as
-        ``labdata list <repo>`` does.
+        ``crossrepo list <repo>`` does.
     pattern :
         Keep only files whose name matches this glob, such as ``"*.csv"``.
     brief :
@@ -253,7 +259,7 @@ def list(
         Include the ``version`` column, the full commit sha.
     spec :
         Include the ``spec`` column, the one string naming a file at a version,
-        which [](`labdata.fetch`) and the command line take. It restates the
+        which [](`crossrepo.fetch`) and the command line take. It restates the
         repository, the path and the version, so it is the widest column there
         is and is left out unless wanted.
     url :
@@ -264,8 +270,8 @@ def list(
         Show a progress bar while rescanning. Only meaningful with `refresh`,
         since a stored catalog is read at once.
     cfg :
-        Settings. Defaults to [](`labdata.config.active_config`): what
-        [](`labdata.config.use_config`) registered, or the configuration file.
+        Settings. Defaults to [](`crossrepo.config.active_config`): what
+        [](`crossrepo.config.use_config`) registered, or the configuration file.
 
     Returns
     -------
@@ -275,32 +281,32 @@ def list(
         ``path``, ``dir``, ``bytes``, ``tags`` and ``lfs``, or the six columns
         of `brief`, plus whichever of ``version``, ``spec`` and ``url`` were
         asked for. ``github`` is the repository as ``owner/repo``, and ``path``
-        the file as ``dir/name``. [](`labdata.frame`) has everything, including
+        the file as ``dir/name``. [](`crossrepo.frame`) has everything, including
         the number of files a dataset holds.
 
     Raises
     ------
     ImportError
-        If pandas is not installed. It is not a dependency of `labdata`.
+        If pandas is not installed. It is not a dependency of `crossrepo`.
 
     Examples
     --------
 
     ```python
-    import labdata
+    import crossrepo
 
-    labdata.list()                        # everything published
-    labdata.list(brief=True)              # just what each file is, and how big
-    labdata.list("x-gwas")                # one repository
-    labdata.list(pattern="*.parquet")     # by file name
-    labdata.list(version=True)            # with the sha that pins each file
-    labdata.list(spec=True)               # with the string the shell takes
+    crossrepo.list()                        # everything published
+    crossrepo.list(brief=True)              # just what each file is, and how big
+    crossrepo.list("x-gwas")                # one repository
+    crossrepo.list(pattern="*.parquet")     # by file name
+    crossrepo.list(version=True)            # with the sha that pins each file
+    crossrepo.list(spec=True)               # with the string the shell takes
     ```
 
     See Also
     --------
-    [](`labdata.get`)
-    [](`labdata.repos`)
+    [](`crossrepo.get`)
+    [](`crossrepo.repos`)
     """
     entries = catalog(refresh=refresh, cfg=cfg, progress=progress)
     return _tabulate(entries, repo, pattern, brief=brief, version=version,
@@ -312,10 +318,10 @@ def _tabulate(
     version: bool = False, spec: bool = False, url: bool = False,
 ):
     """
-    Filter and tabulate entries, as [](`labdata.list`) shows them.
+    Filter and tabulate entries, as [](`crossrepo.list`) shows them.
 
-    The half of [](`labdata.list`) that is not about getting the catalog, so
-    that [](`labdata.refresh`) can rescan in its own way and still show what it
+    The half of [](`crossrepo.list`) that is not about getting the catalog, so
+    that [](`crossrepo.refresh`) can rescan in its own way and still show what it
     found in the same table.
 
     Parameters
@@ -338,7 +344,7 @@ def _tabulate(
     Returns
     -------
     :
-        A [](`pandas.DataFrame`), as [](`labdata.list`) returns.
+        A [](`pandas.DataFrame`), as [](`crossrepo.list`) returns.
     """
     import fnmatch
 
@@ -360,15 +366,15 @@ def repos(*, refresh: bool = False, cfg=None):
     """
     Tabulate one row per repository that publishes something.
 
-    The python side of ``labdata repos``.
+    The python side of ``crossrepo repos``.
 
     Parameters
     ----------
     refresh :
         Rescan before listing, rather than using the stored catalog.
     cfg :
-        Settings. Defaults to [](`labdata.config.active_config`): what
-        [](`labdata.config.use_config`) registered, or the configuration file.
+        Settings. Defaults to [](`crossrepo.config.active_config`): what
+        [](`crossrepo.config.use_config`) registered, or the configuration file.
 
     Returns
     -------
@@ -385,7 +391,7 @@ def repos(*, refresh: bool = False, cfg=None):
     --------
 
     ```python
-    labdata.repos().sort_values("bytes", ascending=False)
+    crossrepo.repos().sort_values("bytes", ascending=False)
     ```
     """
     import pandas as pd
@@ -412,7 +418,7 @@ def versions(entry_or_repo, filename=None, *, refresh: bool = False, cfg=None):
     """
     Tabulate the history of one published file or dataset.
 
-    The python side of ``labdata versions``. These are the commits in which the
+    The python side of ``crossrepo versions``. These are the commits in which the
     file itself changed, which is the useful set to pin; the catalog stamps a
     file with the repository's current commit instead.
 
@@ -420,23 +426,23 @@ def versions(entry_or_repo, filename=None, *, refresh: bool = False, cfg=None):
     ----------
     entry_or_repo :
         Repository name, optionally ``owner/repo``, or an
-        [](`labdata.model.Entry`) already in hand.
+        [](`crossrepo.model.Entry`) already in hand.
     filename :
         File name, or as much of the path as is unambiguous. Omitted when an
         entry was given.
     refresh :
         Rescan before resolving, rather than using the stored catalog.
     cfg :
-        Settings. Defaults to [](`labdata.config.active_config`): what
-        [](`labdata.config.use_config`) registered, or the configuration file.
+        Settings. Defaults to [](`crossrepo.config.active_config`): what
+        [](`crossrepo.config.use_config`) registered, or the configuration file.
 
     Returns
     -------
     :
         A [](`pandas.DataFrame`) with columns ``version``, ``date``, ``bytes``,
-        ``parts``, ``tags`` and ``subject``, newest first. ``labdata.core``
+        ``parts``, ``tags`` and ``subject``, newest first. ``crossrepo.core``
         holds a ``versions`` taking an entry and returning
-        [](`labdata.model.Version`) objects, which is what this tabulates.
+        [](`crossrepo.model.Version`) objects, which is what this tabulates.
 
     Raises
     ------
@@ -449,12 +455,12 @@ def versions(entry_or_repo, filename=None, *, refresh: bool = False, cfg=None):
     --------
 
     ```python
-    labdata.versions("x-gwas", "hits.csv")
+    crossrepo.versions("x-gwas", "hits.csv")
     ```
 
     See Also
     --------
-    [](`labdata.list`)
+    [](`crossrepo.list`)
     """
     import pandas as pd
 
@@ -499,8 +505,8 @@ def _select(owner=None, repo=None):
     Returns
     -------
     :
-        Text to match against ``owner/repo``, as [](`labdata.core.selects`) and
-        [](`labdata.list`) both match it, or `None` when neither was given. An
+        Text to match against ``owner/repo``, as [](`crossrepo.core.selects`) and
+        [](`crossrepo.list`) both match it, or `None` when neither was given. An
         owner alone becomes ``owner/``, which no repository name can match.
     """
     if owner and repo:
@@ -514,7 +520,7 @@ def refresh(*, cfg=None, progress: bool = True, owner=None, repo=None, **kwargs)
     """
     Rescan the repositories and store the catalog.
 
-    The python side of ``labdata refresh``. The rebuilt catalog is returned, so
+    The python side of ``crossrepo refresh``. The rebuilt catalog is returned, so
     a notebook cell shows what is there now.
 
     Naming an `owner` or a `repo` rescans that much and no more, which is the
@@ -526,8 +532,8 @@ def refresh(*, cfg=None, progress: bool = True, owner=None, repo=None, **kwargs)
     Parameters
     ----------
     cfg :
-        Settings. Defaults to [](`labdata.config.active_config`): what
-        [](`labdata.config.use_config`) registered, or the configuration file.
+        Settings. Defaults to [](`crossrepo.config.active_config`): what
+        [](`crossrepo.config.use_config`) registered, or the configuration file.
     progress :
         Show a progress bar, one step per repository. On by default: this is the
         one call that can take a while, and it is otherwise silent throughout.
@@ -536,20 +542,20 @@ def refresh(*, cfg=None, progress: bool = True, owner=None, repo=None, **kwargs)
         the settings name are left as the stored catalog has them, and an
         organisation that cannot hold a match is not even listed.
     repo :
-        Rescan only repositories matching this, as [](`labdata.list`) filters on
+        Rescan only repositories matching this, as [](`crossrepo.list`) filters on
         it: the text is matched anywhere in ``owner/repo``, ignoring case, so a
         name, a fragment of one, or a whole ``owner/repo`` all work.
     **kwargs :
-        Passed to [](`labdata.list`), so ``version=True`` and ``url=True`` work
+        Passed to [](`crossrepo.list`), so ``version=True`` and ``url=True`` work
         here too.
 
     Returns
     -------
     :
-        A [](`pandas.DataFrame`), as [](`labdata.list`) returns, holding what
+        A [](`pandas.DataFrame`), as [](`crossrepo.list`) returns, holding what
         was rescanned when `owner` or `repo` was given and the whole catalog
         otherwise. Where nothing configured matches, the table is empty and a
-        [](`labdata.config.SourceWarning`) says so, a rescan that looked at
+        [](`crossrepo.config.SourceWarning`) says so, a rescan that looked at
         nothing being otherwise an empty table and no explanation.
 
     Raises
@@ -561,18 +567,18 @@ def refresh(*, cfg=None, progress: bool = True, owner=None, repo=None, **kwargs)
     --------
 
     ```python
-    labdata.refresh()                       # everything, with a progress bar
-    labdata.refresh(progress=False)         # without the bar
+    crossrepo.refresh()                       # everything, with a progress bar
+    crossrepo.refresh(progress=False)         # without the bar
 
-    labdata.refresh(repo="x-gwas")          # one repository
-    labdata.refresh(owner="munch-group")    # one organisation
-    labdata.refresh(owner="munch-group", repo="x-gwas")
+    crossrepo.refresh(repo="x-gwas")          # one repository
+    crossrepo.refresh(owner="munch-group")    # one organisation
+    crossrepo.refresh(owner="munch-group", repo="x-gwas")
     ```
 
     See Also
     --------
-    [](`labdata.list`)
-    [](`labdata.core.catalog`)
+    [](`crossrepo.list`)
+    [](`crossrepo.core.catalog`)
     """
     import warnings
 

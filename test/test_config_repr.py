@@ -5,7 +5,7 @@ import string
 from dataclasses import dataclass, fields, make_dataclass
 from pprint import pformat
 
-from labdata.config import Config
+from crossrepo.config import Config
 
 
 def reference(cfg: Config) -> str:
@@ -29,7 +29,7 @@ def configs():
         min_bytes=1024,
         max_bytes=10**9,
     )
-    yield Config(labdata_dirs=["results", "steps/data", "analysis/step3/results"])
+    yield Config(crossrepo_dirs=["results", "steps/data", "analysis/step3/results"])
     yield Config(roots=["a" * 200])
     yield Config(include=["*.csv"] * 40)
     rand = random.Random(0)
@@ -42,7 +42,7 @@ def configs():
             ]
         yield Config(
             roots=words(4, 30), owners=words(3, 12), repos=words(5, 25),
-            labdata_dirs=words(4, 20), include=words(25, 10), exclude=words(25, 10),
+            crossrepo_dirs=words(4, 20), include=words(25, 10), exclude=words(25, 10),
             min_bytes=rand.randint(0, 10**12), max_bytes=rand.randint(0, 10**12),
         )
 
@@ -60,7 +60,7 @@ def test_pprint_still_agrees_now_that_there_is_a_repr():
 def test_one_setting_to_a_line_within_eighty_columns():
     cfg = Config(
         owners=["munch-group"],
-        labdata_dirs=["results", "data"],
+        crossrepo_dirs=["results", "data"],
         include=["*.csv", "*.tsv", "*.parquet", "*.h5", "*.hdf5", "*.json", "*.zarr"],
     )
     lines = repr(cfg).splitlines()

@@ -1,27 +1,27 @@
-# versions { #labdata.remote.versions }
+# versions { #crossrepo.remote.versions }
 
 ```python
-labdata.remote.versions(entry, client=None)
+crossrepo.remote.versions(entry, client=None)
 ```
 
 List every version of one published file or dataset on GitHub.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
-<code>[**entry**]{.parameter-name} [:]{.parameter-annotation-sep} [[Entry](`labdata.model.Entry`)]{.parameter-annotation}</code>
+<code>[**entry**]{.parameter-name} [:]{.parameter-annotation-sep} [[Entry](`crossrepo.model.Entry`)]{.parameter-annotation}</code>
 
 :   Entry whose history to read. Its `remote` names the repository.
 
-<code>[**client**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Client](`labdata.github.Client`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+<code>[**client**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Client](`crossrepo.github.Client`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
 
 :   Client to read with. Defaults to a new one.
 
 ## Returns {.doc-section .doc-section-returns}
 
-<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[Version](`labdata.model.Version`)\]]{.parameter-annotation}</code>
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[Version](`crossrepo.model.Version`)\]]{.parameter-annotation}</code>
 
 :   Versions newest first.
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`labdata.versions`)
+[](`crossrepo.versions`)

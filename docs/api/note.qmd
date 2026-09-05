@@ -1,7 +1,7 @@
-# note { #labdata.cli.note }
+# note { #crossrepo.cli.note }
 
 ```python
-labdata.cli.note(version)
+crossrepo.cli.note(version)
 ```
 
 Summarise what is unusual about a version, for the table's NOTE column.

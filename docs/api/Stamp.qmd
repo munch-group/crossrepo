@@ -1,7 +1,7 @@
-# Stamp { #labdata.manifest.Stamp }
+# Stamp { #crossrepo.manifest.Stamp }
 
 ```python
-labdata.manifest.Stamp(sha256, size)
+crossrepo.manifest.Stamp(sha256, size)
 ```
 
 The content a published link stands for.
@@ -25,4 +25,4 @@ anything cheaper.
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`labdata.manifest.Manifest.stamp`)
+[](`crossrepo.manifest.Manifest.stamp`)

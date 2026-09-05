@@ -4,8 +4,8 @@ from pathlib import Path
 
 import pytest
 
-from labdata import core
-from labdata.config import Config
+from crossrepo import core
+from crossrepo.config import Config
 
 
 def test_a_truncated_catalog_is_rebuilt_rather_than_fatal(cfg):
@@ -49,7 +49,7 @@ def test_fingerprint_tracks_what_decides_the_catalog(tmp_path):
         Config(roots=[str(tmp_path)], include=["*.csv"])
     )
     assert core.fingerprint(base) != core.fingerprint(
-        Config(roots=[str(tmp_path)], labdata_dirs=["out"])
+        Config(roots=[str(tmp_path)], crossrepo_dirs=["out"])
     )
 
 
@@ -93,8 +93,8 @@ def test_a_renamed_setting_is_read_under_its_old_name(tmp_path):
     """`results_dirs` still says what was meant, so it is honoured."""
     old = tmp_path / "old.toml"
     old.write_text('results_dirs = ["results"]\n')
-    with pytest.warns(UserWarning, match="`results_dirs` is now `labdata_dirs`"):
-        assert Config.load(old).labdata_dirs == ["results"]
+    with pytest.warns(UserWarning, match="`results_dirs` is now `crossrepo_dirs`"):
+        assert Config.load(old).crossrepo_dirs == ["results"]
 
 
 def test_a_key_that_was_never_a_setting_is_still_refused(tmp_path):

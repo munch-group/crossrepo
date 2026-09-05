@@ -1,12 +1,12 @@
-# repos { #labdata.repos }
+# repos { #crossrepo.repos }
 
 ```python
-labdata.repos(refresh=False, cfg=None)
+crossrepo.repos(refresh=False, cfg=None)
 ```
 
 Tabulate one row per repository that publishes something.
 
-The python side of ``labdata repos``.
+The python side of ``crossrepo repos``.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
@@ -16,7 +16,7 @@ The python side of ``labdata repos``.
 
 <code>[**cfg**]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
 
-:   Settings. Defaults to [](`labdata.config.active_config`): what [](`labdata.config.use_config`) registered, or the configuration file.
+:   Settings. Defaults to [](`crossrepo.config.active_config`): what [](`crossrepo.config.use_config`) registered, or the configuration file.
 
 ## Returns {.doc-section .doc-section-returns}
 
@@ -33,5 +33,5 @@ The python side of ``labdata repos``.
 ## Examples {.doc-section .doc-section-examples}
 
 ```python
-labdata.repos().sort_values("bytes", ascending=False)
+crossrepo.repos().sort_values("bytes", ascending=False)
 ```

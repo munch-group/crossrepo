@@ -1,69 +1,69 @@
-# use_config { #labdata.config.use_config }
+# use_config { #crossrepo.config.use_config }
 
 ```python
-labdata.config.use_config(cfg=None, **overrides)
+crossrepo.config.use_config(cfg=None, **overrides)
 ```
 
 Register settings for the rest of the session, or for a block.
 
 Saves passing ``cfg=cfg`` to every call: what is registered here is what
-[](`labdata.config.active_config`) returns, and with it what every function
+[](`crossrepo.config.active_config`) returns, and with it what every function
 taking a ``cfg`` argument uses when it is not given one. An explicit ``cfg``
 still wins, so a single call can always step outside what is registered.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
-<code>[**cfg**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Config](`labdata.config.Config`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+<code>[**cfg**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Config](`crossrepo.config.Config`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
 
 :   Settings to register, replacing whatever is in effect. `None` with no `overrides` unregisters, so the configuration file is read again.
 
 <code>[****overrides**]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation} [ = ]{.parameter-default-sep} [{}]{.parameter-default}</code>
 
-:   Individual settings to change, named as the fields of [](`labdata.config.Config`). They are applied on top of `cfg`, or, when that is left out, on top of the configuration file, so one setting can be changed without restating the rest.
+:   Individual settings to change, named as the fields of [](`crossrepo.config.Config`). They are applied on top of `cfg`, or, when that is left out, on top of the configuration file, so one setting can be changed without restating the rest.
 
 ## Returns {.doc-section .doc-section-returns}
 
-<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Registration](`labdata.config.Registration`)]{.parameter-annotation}</code>
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Registration](`crossrepo.config.Registration`)]{.parameter-annotation}</code>
 
-:   A [](`labdata.config.Registration`), which is the undo. Ignore it to register for the rest of the session, or use it as a context manager to register for a block and put back the previous settings afterwards.
+:   A [](`crossrepo.config.Registration`), which is the undo. Ignore it to register for the rest of the session, or use it as a context manager to register for a block and put back the previous settings afterwards.
 
 ## Raises {.doc-section .doc-section-raises}
 
 <code>[:]{.parameter-annotation-sep} [[TypeError](`TypeError`)]{.parameter-annotation}</code>
 
-:   If `cfg` is not a [](`labdata.config.Config`), or if an override does not name one of its fields. The message lists the fields there are.
+:   If `cfg` is not a [](`crossrepo.config.Config`), or if an override does not name one of its fields. The message lists the fields there are.
 
 ## Examples {.doc-section .doc-section-examples}
 
 Register once, then call everything without `cfg`:
 
 ```python
-import labdata
+import crossrepo
 
-labdata.use_config(labdata.Config(repos=["munch-group/x-gwas"]))
-df = labdata.refresh()
+crossrepo.use_config(crossrepo.Config(repos=["munch-group/x-gwas"]))
+df = crossrepo.refresh()
 ```
 
 Change one setting and keep the rest of the configuration file:
 
 ```python
-labdata.use_config(repos=["munch-group/x-gwas"])
+crossrepo.use_config(repos=["munch-group/x-gwas"])
 ```
 
 Register for a block only:
 
 ```python
-with labdata.use_config(owners=["munch-group"]):
-    df = labdata.list()
+with crossrepo.use_config(owners=["munch-group"]):
+    df = crossrepo.list()
 ```
 
 Go back to the configuration file:
 
 ```python
-labdata.use_config(None)
+crossrepo.use_config(None)
 ```
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`labdata.config.active_config`)
-[](`labdata.config.Config`)
+[](`crossrepo.config.active_config`)
+[](`crossrepo.config.Config`)

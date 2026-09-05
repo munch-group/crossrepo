@@ -1,11 +1,11 @@
-# Config { #labdata.config.Config }
+# Config { #crossrepo.config.Config }
 
 ```python
-labdata.config.Config(
+crossrepo.config.Config(
     roots=list(),
     owners=list(),
     repos=list(),
-    labdata_dirs=(lambda: ['results'])(),
+    crossrepo_dirs=(lambda: ['results'])(),
     include=(lambda: list(DEFAULT_INCLUDE))(),
     exclude=(lambda: list(DEFAULT_EXCLUDE))(),
     min_bytes=0,
@@ -29,9 +29,9 @@ Settings controlling which files are cataloged.
 
 :   Further GitHub repositories to catalog, written ``owner/repo``, for ones outside `owners`.
 
-<code>[**labdata_dirs**]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[str](`str`)\]]{.parameter-annotation}</code>
+<code>[**crossrepo_dirs**]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[str](`str`)\]]{.parameter-annotation}</code>
 
-:   Directories within a repository holding a ``labdata.yml``, and with it the result files it publishes, given as paths relative to the repository root. They may be at any depth, so ``analysis/step3/results`` works as well as ``results``. Matching is case-insensitive, so a repository that committed ``Results/`` is found too. Each is searched, and each needs its own ``labdata.yml``. A manifest may publish files from anywhere else in its repository, by naming them from the repository root.
+:   Directories within a repository holding a ``crossrepo.yml``, and with it the result files it publishes, given as paths relative to the repository root. They may be at any depth, so ``analysis/step3/results`` works as well as ``results``. Matching is case-insensitive, so a repository that committed ``Results/`` is found too. Each is searched, and each needs its own ``crossrepo.yml``. A manifest may publish files from anywhere else in its repository, by naming them from the repository root.
 
 <code>[**include**]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[str](`str`)\]]{.parameter-annotation}</code>
 
@@ -58,19 +58,19 @@ entries = build(cfg)
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`labdata.core.build`)
+[](`crossrepo.core.build`)
 
 ## Methods
 
 | Name | Description |
 | --- | --- |
-| [load](#labdata.config.Config.load) | Read settings from a TOML file. |
-| [write_default](#labdata.config.Config.write_default) | Write a commented configuration file holding these settings. |
+| [load](#crossrepo.config.Config.load) | Read settings from a TOML file. |
+| [write_default](#crossrepo.config.Config.write_default) | Write a commented configuration file holding these settings. |
 
-### load { #labdata.config.Config.load }
+### load { #crossrepo.config.Config.load }
 
 ```python
-labdata.config.Config.load(path=None)
+crossrepo.config.Config.load(path=None)
 ```
 
 Read settings from a TOML file.
@@ -79,7 +79,7 @@ Read settings from a TOML file.
 
 <code>[**path**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Path](`pathlib.Path`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
 
-:   File to read. Defaults to [](`labdata.config.config_path`). A missing file is not an error and yields the defaults.
+:   File to read. Defaults to [](`crossrepo.config.config_path`). A missing file is not an error and yields the defaults.
 
 #### Returns {.doc-section .doc-section-returns}
 
@@ -97,10 +97,10 @@ Read settings from a TOML file.
 
 :   On Python older than 3.11 when `tomli` is not installed.
 
-### write_default { #labdata.config.Config.write_default }
+### write_default { #crossrepo.config.Config.write_default }
 
 ```python
-labdata.config.Config.write_default(path=None)
+crossrepo.config.Config.write_default(path=None)
 ```
 
 Write a commented configuration file holding these settings.
@@ -109,7 +109,7 @@ Write a commented configuration file holding these settings.
 
 <code>[**path**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Path](`pathlib.Path`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
 
-:   File to write. Defaults to [](`labdata.config.config_path`). Parent directories are created. An existing file is overwritten.
+:   File to write. Defaults to [](`crossrepo.config.config_path`). Parent directories are created. An existing file is overwritten.
 
 #### Returns {.doc-section .doc-section-returns}
 

@@ -31,7 +31,7 @@ def blob_path(sha: str, root: Optional[Path] = None) -> Path:
     sha :
         Git blob sha, or the sha256 object id for content held in Git LFS.
     root :
-        Cache root. Defaults to [](`labdata.config.cache_root`).
+        Cache root. Defaults to [](`crossrepo.config.cache_root`).
 
     Returns
     -------
@@ -81,14 +81,14 @@ def readable_path(
     Parameters
     ----------
     repo_key :
-        Repository identifier, as `labdata.model.Entry.repo_key`.
+        Repository identifier, as `crossrepo.model.Entry.repo_key`.
     version :
         Abbreviated commit sha of the version.
     path :
         Repository-relative path to expose the content under, for example
         ``results/sub/stable.csv``.
     root :
-        Cache root. Defaults to [](`labdata.config.cache_root`).
+        Cache root. Defaults to [](`crossrepo.config.cache_root`).
 
     Returns
     -------
@@ -112,7 +112,7 @@ def open_for_write(sha: str, root: Optional[Path] = None) -> Tuple[Path, Path]:
     sha :
         Key to store the object under.
     root :
-        Cache root. Defaults to [](`labdata.config.cache_root`).
+        Cache root. Defaults to [](`crossrepo.config.cache_root`).
 
     Returns
     -------
@@ -122,7 +122,7 @@ def open_for_write(sha: str, root: Optional[Path] = None) -> Tuple[Path, Path]:
 
     See Also
     --------
-    [](`labdata.gitutil.write_blob_to`)
+    [](`crossrepo.gitutil.write_blob_to`)
     """
     dest = blob_path(sha, root)
     dest.parent.mkdir(parents=True, exist_ok=True)
@@ -140,7 +140,7 @@ def store(sha: str, data: bytes, root: Optional[Path] = None) -> Path:
     data :
         Content to store.
     root :
-        Cache root. Defaults to [](`labdata.config.cache_root`).
+        Cache root. Defaults to [](`crossrepo.config.cache_root`).
 
     Returns
     -------
@@ -175,7 +175,7 @@ def store_from_file(sha: str, src: Path, root: Optional[Path] = None) -> Path:
     src :
         Existing file holding the content.
     root :
-        Cache root. Defaults to [](`labdata.config.cache_root`).
+        Cache root. Defaults to [](`crossrepo.config.cache_root`).
 
     Returns
     -------
@@ -286,7 +286,7 @@ def objects(root: Optional[Path] = None) -> List[Path]:
     Parameters
     ----------
     root :
-        Cache root. Defaults to [](`labdata.config.cache_root`).
+        Cache root. Defaults to [](`crossrepo.config.cache_root`).
 
     Returns
     -------
@@ -295,7 +295,7 @@ def objects(root: Optional[Path] = None) -> List[Path]:
 
     See Also
     --------
-    [](`labdata.cache.check_object`)
+    [](`crossrepo.cache.check_object`)
     """
     base = (root or cache_root()) / "blobs"
     if not base.is_dir():
@@ -310,7 +310,7 @@ def usage(root: Optional[Path] = None) -> Tuple[int, int]:
     Parameters
     ----------
     root :
-        Cache root. Defaults to [](`labdata.config.cache_root`).
+        Cache root. Defaults to [](`crossrepo.config.cache_root`).
 
     Returns
     -------
@@ -371,7 +371,7 @@ def content_hash(path: Path) -> str:
 
     See Also
     --------
-    [](`labdata.manifest.Stamp`)
+    [](`crossrepo.manifest.Stamp`)
     """
     return _digest(path, "sha256")
 
@@ -387,7 +387,7 @@ def check_object(path: Path) -> Optional[str]:
     Parameters
     ----------
     path :
-        Object to check, as listed by [](`labdata.cache.objects`).
+        Object to check, as listed by [](`crossrepo.cache.objects`).
 
     Returns
     -------
@@ -405,7 +405,7 @@ def check_object(path: Path) -> Optional[str]:
 
     See Also
     --------
-    [](`labdata.cache.discard`)
+    [](`crossrepo.cache.discard`)
     """
     key = path.name
     if not key or not HEX.issuperset(key):
@@ -432,7 +432,7 @@ def discard(path: Path, root: Optional[Path] = None) -> List[Path]:
     object is unlinked, and a readable path whose size still matches would then
     be reused in place of the content fetched to replace it. Links are found by
     inode, which covers the hard link and symbolic link cases; on a filesystem
-    that supports neither, [](`labdata.cache.link`) leaves copies, and those are
+    that supports neither, [](`crossrepo.cache.link`) leaves copies, and those are
     not found.
 
     Parameters
@@ -440,7 +440,7 @@ def discard(path: Path, root: Optional[Path] = None) -> List[Path]:
     path :
         Object to remove.
     root :
-        Cache root. Defaults to [](`labdata.config.cache_root`).
+        Cache root. Defaults to [](`crossrepo.config.cache_root`).
 
     Returns
     -------

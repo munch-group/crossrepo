@@ -1,7 +1,7 @@
-# resolve_link { #labdata.gitutil.resolve_link }
+# resolve_link { #crossrepo.gitutil.resolve_link }
 
 ```python
-labdata.gitutil.resolve_link(repo, path, target)
+crossrepo.gitutil.resolve_link(repo, path, target)
 ```
 
 Locate the file a committed symbolic link points at.
@@ -15,7 +15,7 @@ normal thing to publish.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
-<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[Location](`labdata.location.Location`), [Path](`pathlib.Path`), [str](`str`)\]]{.parameter-annotation}</code>
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[Location](`crossrepo.location.Location`), [Path](`pathlib.Path`), [str](`str`)\]]{.parameter-annotation}</code>
 
 :   Working tree holding the link, on this machine or another.
 
@@ -25,14 +25,14 @@ normal thing to publish.
 
 <code>[**target**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
 
-:   Target as committed, from [](`labdata.gitutil.link_target`).
+:   Target as committed, from [](`crossrepo.gitutil.link_target`).
 
 ## Returns {.doc-section .doc-section-returns}
 
-<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Location](`labdata.location.Location`)\]]{.parameter-annotation}</code>
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Location](`crossrepo.location.Location`)\]]{.parameter-annotation}</code>
 
 :   Location of the file, or `None` when nothing is there. A link resolves on the machine its repository is on, so a target read over ssh is looked for on the far side.
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`labdata.gitutil.write_file_to`)
+[](`crossrepo.gitutil.write_file_to`)

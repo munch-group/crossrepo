@@ -4,9 +4,9 @@ import json
 
 import pytest
 
-import labdata
-from labdata import core, remote
-from labdata.config import Config, SourceWarning
+import crossrepo
+from crossrepo import core, remote
+from crossrepo.config import Config, SourceWarning
 
 from test_remote import FakeClient, commit
 
@@ -25,10 +25,10 @@ def test_the_rule_is_the_one_a_listing_filters_by():
 
 
 def test_an_owner_and_a_repo_become_one_text():
-    assert labdata._select() is None
-    assert labdata._select(repo="x-gwas") == "x-gwas"
-    assert labdata._select(owner="munch-group") == "munch-group/"
-    assert labdata._select("munch-group", "x-gwas") == "munch-group/x-gwas"
+    assert crossrepo._select() is None
+    assert crossrepo._select(repo="x-gwas") == "x-gwas"
+    assert crossrepo._select(owner="munch-group") == "munch-group/"
+    assert crossrepo._select("munch-group", "x-gwas") == "munch-group/x-gwas"
 
 
 # ------------------------------------------------------------------ local clones
@@ -104,7 +104,7 @@ def canned(missing=()):
     """A GitHub client holding one publishing repository per owner."""
     return FakeClient(
         tree=[
-            {"path": "results/labdata.yml", "type": "blob", "sha": "man", "size": 40},
+            {"path": "results/crossrepo.yml", "type": "blob", "sha": "man", "size": 40},
             {"path": "results/hits.csv", "type": "blob", "sha": "aaa", "size": 10},
         ],
         commits=[commit("a" * 40, "add hits")],
@@ -152,20 +152,20 @@ def test_naming_nothing_reads_everything():
 
 def test_refresh_shows_what_it_rescanned(cfg, entries):
     core.save(entries, cfg)
-    df = labdata.refresh(cfg=cfg, progress=False, repo="sweep-scan")
+    df = crossrepo.refresh(cfg=cfg, progress=False, repo="sweep-scan")
     assert set(df["repo"]) == {"sweep-scan"}
     assert len(df) == len([e for e in entries if e.repo_key == "acme/sweep-scan"])
 
 
 def test_refresh_by_owner_shows_that_owner(cfg, entries):
     core.save(entries, cfg)
-    df = labdata.refresh(cfg=cfg, progress=False, owner="other-org")
+    df = crossrepo.refresh(cfg=cfg, progress=False, owner="other-org")
     assert set(df["owner"]) == {"other-org"}
 
 
 def test_refresh_still_takes_the_listing_options(cfg, entries):
     core.save(entries, cfg)
-    df = labdata.refresh(cfg=cfg, progress=False, repo="sweep-scan", brief=True,
+    df = crossrepo.refresh(cfg=cfg, progress=False, repo="sweep-scan", brief=True,
                          version=True, pattern="*.csv")
     assert "version" in df.columns and "size" in df.columns
     assert set(df["repo"]) == {"sweep-scan"}
@@ -174,13 +174,13 @@ def test_refresh_still_takes_the_listing_options(cfg, entries):
 
 def test_refresh_without_a_name_still_rebuilds_everything(cfg, entries):
     core._cache_file().unlink(missing_ok=True)
-    df = labdata.refresh(cfg=cfg, progress=False)
+    df = crossrepo.refresh(cfg=cfg, progress=False)
     assert len(df) == len(entries)
 
 
 def test_a_name_that_matches_nothing_says_so(cfg, entries):
     core.save(entries, cfg)
     with pytest.warns(SourceWarning, match="nothing matching 'no-such-repo'"):
-        df = labdata.refresh(cfg=cfg, progress=False, repo="no-such-repo")
+        df = crossrepo.refresh(cfg=cfg, progress=False, repo="no-such-repo")
     assert df.empty
     assert len(core.catalog(cfg=cfg)) == len(entries)   # and the catalog is intact

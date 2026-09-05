@@ -1,7 +1,7 @@
-# tag_map { #labdata.gitutil.tag_map }
+# tag_map { #crossrepo.gitutil.tag_map }
 
 ```python
-labdata.gitutil.tag_map(repo)
+crossrepo.gitutil.tag_map(repo)
 ```
 
 Map commits to the tags pointing at them.
@@ -11,7 +11,7 @@ but never define them.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
-<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[Location](`labdata.location.Location`), [Path](`pathlib.Path`), [str](`str`)\]]{.parameter-annotation}</code>
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[Location](`crossrepo.location.Location`), [Path](`pathlib.Path`), [str](`str`)\]]{.parameter-annotation}</code>
 
 :   Working tree to inspect, on this machine or another.
 

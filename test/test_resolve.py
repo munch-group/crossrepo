@@ -2,8 +2,8 @@
 
 import pytest
 
-from labdata import core
-from labdata.model import Spec
+from crossrepo import core
+from crossrepo.model import Spec
 
 
 def test_spec_round_trips():

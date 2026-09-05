@@ -2,7 +2,7 @@
 
 import pytest
 
-from labdata import core
+from crossrepo import core
 
 
 def test_every_file_in_a_repo_carries_the_repo_head(by_spec, repos):
@@ -59,7 +59,7 @@ def test_unknown_version_lists_the_known_ones(by_spec):
 
 def test_pinning_an_old_hash_does_not_list_every_version(by_spec, monkeypatch):
     """The catalog holds the current version; a named one is resolved directly."""
-    from labdata import core
+    from crossrepo import core
 
     entry = by_spec["acme/sweep-scan:results/candidates.csv"]
     old = core.versions(entry)[-1]
@@ -75,7 +75,7 @@ def test_pinning_an_old_hash_does_not_list_every_version(by_spec, monkeypatch):
 
 
 def test_the_current_version_is_answered_without_touching_git(by_spec, monkeypatch):
-    from labdata import core
+    from crossrepo import core
 
     entry = by_spec["acme/sweep-scan:results/candidates.csv"]
     monkeypatch.setattr(core, "_version_at", lambda *a, **k: pytest.fail("no lookup"))
@@ -84,7 +84,7 @@ def test_the_current_version_is_answered_without_touching_git(by_spec, monkeypat
 
 
 def test_pinning_a_dataset_version_resolves_directly(by_spec, monkeypatch):
-    from labdata import core
+    from crossrepo import core
 
     entry = by_spec["acme/sweep-scan:results/table.parquet"]
     old = core.versions(entry)[-1]
@@ -99,7 +99,7 @@ def test_pinning_a_dataset_version_resolves_directly(by_spec, monkeypatch):
 
 
 def test_the_version_key_is_a_full_sha_git_understands(by_spec, repos):
-    """A spec must identify the version without labdata in hand."""
+    """A spec must identify the version without crossrepo in hand."""
     import subprocess
 
     entry = by_spec["acme/sweep-scan:results/candidates.csv"]
@@ -108,7 +108,7 @@ def test_the_version_key_is_a_full_sha_git_understands(by_spec, repos):
     assert set(version) <= set("0123456789abcdef")
     assert entry.spec.endswith("@" + version)
 
-    # plain git resolves it, with no labdata involved
+    # plain git resolves it, with no crossrepo involved
     got = subprocess.run(
         ["git", "-C", str(repos / "acme" / "sweep-scan"), "cat-file", "-t", version],
         capture_output=True, text=True, check=True,
@@ -118,7 +118,7 @@ def test_the_version_key_is_a_full_sha_git_understands(by_spec, repos):
 
 def test_a_short_prefix_is_still_accepted_as_input(by_spec):
     """Output is full, but a pasted abbreviation still resolves."""
-    from labdata import core
+    from crossrepo import core
 
     entry = by_spec["acme/sweep-scan:results/candidates.csv"]
     assert core.find_version(entry, entry.latest.sha[:7]).sha == entry.latest.sha

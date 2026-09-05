@@ -1,18 +1,18 @@
-# read_blob { #labdata.gitutil.read_blob }
+# read_blob { #crossrepo.gitutil.read_blob }
 
 ```python
-labdata.gitutil.read_blob(repo, blob_sha)
+crossrepo.gitutil.read_blob(repo, blob_sha)
 ```
 
 Read the content of a blob into memory.
 
 Only for content known to be small, such as a Git LFS pointer. Use
-[](`labdata.gitutil.write_blob_to`) for result files, which can be hundreds
+[](`crossrepo.gitutil.write_blob_to`) for result files, which can be hundreds
 of megabytes.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
-<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[Location](`labdata.location.Location`), [Path](`pathlib.Path`), [str](`str`)\]]{.parameter-annotation}</code>
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[Location](`crossrepo.location.Location`), [Path](`pathlib.Path`), [str](`str`)\]]{.parameter-annotation}</code>
 
 :   Working tree holding the blob, on this machine or another.
 

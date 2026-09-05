@@ -1,7 +1,7 @@
-# ManifestError { #labdata.manifest.ManifestError }
+# ManifestError { #crossrepo.manifest.ManifestError }
 
 ```python
-labdata.manifest.ManifestError()
+crossrepo.manifest.ManifestError()
 ```
 
 Raised when a manifest cannot be understood.

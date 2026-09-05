@@ -1,7 +1,7 @@
-# Spec { #labdata.Spec }
+# Spec { #crossrepo.Spec }
 
 ```python
-labdata.Spec(repo, path, owner=None, version=None)
+crossrepo.Spec(repo, path, owner=None, version=None)
 ```
 
 A parsed reference to a result file.
@@ -26,18 +26,18 @@ A parsed reference to a result file.
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`labdata.core.resolve_one`)
+[](`crossrepo.core.resolve_one`)
 
 ## Methods
 
 | Name | Description |
 | --- | --- |
-| [parse](#labdata.Spec.parse) | Parse a spec string. |
+| [parse](#crossrepo.Spec.parse) | Parse a spec string. |
 
-### parse { #labdata.Spec.parse }
+### parse { #crossrepo.Spec.parse }
 
 ```python
-labdata.Spec.parse(text)
+crossrepo.Spec.parse(text)
 ```
 
 Parse a spec string.

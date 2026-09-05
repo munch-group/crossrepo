@@ -1,7 +1,7 @@
-# objects { #labdata.cache.objects }
+# objects { #crossrepo.cache.objects }
 
 ```python
-labdata.cache.objects(root=None)
+crossrepo.cache.objects(root=None)
 ```
 
 List every object the store holds.
@@ -13,7 +13,7 @@ already, and neither are the temporary files of writes still in flight.
 
 <code>[**root**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Path](`pathlib.Path`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
 
-:   Cache root. Defaults to [](`labdata.config.cache_root`).
+:   Cache root. Defaults to [](`crossrepo.config.cache_root`).
 
 ## Returns {.doc-section .doc-section-returns}
 
@@ -23,4 +23,4 @@ already, and neither are the temporary files of writes still in flight.
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`labdata.cache.check_object`)
+[](`crossrepo.cache.check_object`)

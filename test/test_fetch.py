@@ -8,8 +8,8 @@ from concurrent.futures import ThreadPoolExecutor
 
 import pytest
 
-from labdata import cache, core
-from labdata.model import Spec
+from crossrepo import cache, core
+from crossrepo.model import Spec
 
 from fixtures import ENV, commit
 
@@ -77,7 +77,7 @@ def test_same_name_in_two_dirs_gets_its_own_bytes(by_spec):
 
 def test_a_readable_link_left_by_an_older_layout_is_replaced(by_spec):
     """A link that does not stand for the wanted blob is rebuilt, not trusted."""
-    from labdata import cache
+    from crossrepo import cache
 
     sub = by_spec["acme/sweep-scan:results/sub/stable.csv"]
     dest = cache.readable_path(sub.repo_key, sub.latest.sha, sub.path)

@@ -5,7 +5,7 @@ Everything here uses plumbing rather than porcelain, so the output does not
 depend on the user's git configuration, aliases or locale. Nothing in this
 module writes to a repository.
 
-Every call names a [](`labdata.location.Location`) rather than a path, so the
+Every call names a [](`crossrepo.location.Location`) rather than a path, so the
 same functions read a clone on this machine and a clone on a server reached over
 ssh. Only the command line differs; the output being parsed is git's own either
 way.
@@ -105,7 +105,7 @@ def git(
         Return raw bytes instead of decoded text. Use this for file content,
         which is not necessarily valid UTF-8.
     check :
-        Raise [](`labdata.gitutil.GitError`) when git exits non-zero. When
+        Raise [](`crossrepo.gitutil.GitError`) when git exits non-zero. When
         `False`, the standard output produced before the failure is returned.
 
     Returns
@@ -210,7 +210,7 @@ def discover_repos(roots: Iterable[Union[Location, str, Path]]) -> List[Location
         Directories to search. ``~`` is expanded, here for a local root and on
         the far side for a remote one. A root that does not exist, or that
         cannot be read, and a host that does not answer, are skipped with a
-        [](`labdata.config.SourceWarning`), since there is nothing about an
+        [](`crossrepo.config.SourceWarning`), since there is nothing about an
         empty result to say which source was the problem.
 
     Returns
@@ -345,8 +345,8 @@ def tracked_entries(
 
     See Also
     --------
-    [](`labdata.gitutil.tracked_blobs`)
-    [](`labdata.gitutil.link_target`)
+    [](`crossrepo.gitutil.tracked_blobs`)
+    [](`crossrepo.gitutil.link_target`)
     """
     specs = [subdir] if isinstance(subdir, str) else list(subdir)
     out = git(repo, "ls-files", "-s", "-z", "--", *specs, check=False)
@@ -376,7 +376,7 @@ def tracked_blobs(
     Only tracked files are reported, so untracked scratch output sitting in a
     results directory is invisible to the catalog: committing a file is the act
     of publishing it. Symbolic links are skipped, having no content of their own;
-    [](`labdata.gitutil.tracked_entries`) reports them.
+    [](`crossrepo.gitutil.tracked_entries`) reports them.
 
     Parameters
     ----------
@@ -391,11 +391,11 @@ def tracked_blobs(
     :
         A mapping of repository-relative path to ``(blob_sha, size)``. Sizes are
         those of the stored blob, so a Git LFS pointer reports the size of the
-        pointer; use [](`labdata.gitutil.parse_lfs_pointer`) to resolve it.
+        pointer; use [](`crossrepo.gitutil.parse_lfs_pointer`) to resolve it.
 
     See Also
     --------
-    [](`labdata.gitutil.head_commit`)
+    [](`crossrepo.gitutil.head_commit`)
     """
     return {
         path: (sha, size)
@@ -523,7 +523,7 @@ def entry_at(
 
     See Also
     --------
-    [](`labdata.gitutil.blob_at`)
+    [](`crossrepo.gitutil.blob_at`)
     """
     out = git(repo, "ls-tree", "-l", rev, "--", path, check=False).strip()
     if not out:
@@ -560,7 +560,7 @@ def blob_at(
 
     See Also
     --------
-    [](`labdata.gitutil.entry_at`)
+    [](`crossrepo.gitutil.entry_at`)
     """
     got = entry_at(repo, rev, path)
     return None if got is None else (got[0], got[1])
@@ -590,7 +590,7 @@ def tree_at(repo: Union[Location, Path, str], rev: str, path: str) -> Optional[s
 
     See Also
     --------
-    [](`labdata.gitutil.tree_files`)
+    [](`crossrepo.gitutil.tree_files`)
     """
     out = git(repo, "ls-tree", "-z", rev, "--", path, check=False)
     for rec in out.split("\0"):
@@ -627,7 +627,7 @@ def tree_files(
 
     See Also
     --------
-    [](`labdata.gitutil.tree_at`)
+    [](`crossrepo.gitutil.tree_at`)
     """
     out = git(repo, "ls-tree", "-r", "-l", "-z", rev, "--", path, check=False)
     rows: List[Tuple[str, str, int]] = []
@@ -684,7 +684,7 @@ def read_blob(repo: Union[Location, Path, str], blob_sha: str) -> bytes:
     Read the content of a blob into memory.
 
     Only for content known to be small, such as a Git LFS pointer. Use
-    [](`labdata.gitutil.write_blob_to`) for result files, which can be hundreds
+    [](`crossrepo.gitutil.write_blob_to`) for result files, which can be hundreds
     of megabytes.
 
     Parameters
@@ -800,7 +800,7 @@ def lfs_object_path(
 
     See Also
     --------
-    [](`labdata.gitutil.write_file_to`)
+    [](`crossrepo.gitutil.write_file_to`)
     """
     loc = Location.of(repo)
     obj = loc / f".git/lfs/objects/{oid[:2]}/{oid[2:4]}/{oid}"
@@ -834,7 +834,7 @@ def link_target(repo: Union[Location, Path, str], blob_sha: str) -> str:
 
     See Also
     --------
-    [](`labdata.gitutil.resolve_link`)
+    [](`crossrepo.gitutil.resolve_link`)
     """
     return read_blob(repo, blob_sha).decode("utf-8", "replace").strip()
 
@@ -859,7 +859,7 @@ def resolve_link(
     path :
         Repository-relative path of the link itself.
     target :
-        Target as committed, from [](`labdata.gitutil.link_target`).
+        Target as committed, from [](`crossrepo.gitutil.link_target`).
 
     Returns
     -------
@@ -870,7 +870,7 @@ def resolve_link(
 
     See Also
     --------
-    [](`labdata.gitutil.write_file_to`)
+    [](`crossrepo.gitutil.write_file_to`)
     """
     root = Location.of(repo)
     if not target:

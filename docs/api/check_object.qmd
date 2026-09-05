@@ -1,7 +1,7 @@
-# check_object { #labdata.cache.check_object }
+# check_object { #crossrepo.cache.check_object }
 
 ```python
-labdata.cache.check_object(path)
+crossrepo.cache.check_object(path)
 ```
 
 Test whether a cached object holds the content its key promises.
@@ -14,7 +14,7 @@ checking a large object costs no memory.
 
 <code>[**path**]{.parameter-name} [:]{.parameter-annotation-sep} [[Path](`pathlib.Path`)]{.parameter-annotation}</code>
 
-:   Object to check, as listed by [](`labdata.cache.objects`).
+:   Object to check, as listed by [](`crossrepo.cache.objects`).
 
 ## Returns {.doc-section .doc-section-returns}
 
@@ -31,4 +31,4 @@ check_object(blob_path("6f5d1ec6703f83e4b69c0b0d3cc3912697ba93c1"))
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`labdata.cache.discard`)
+[](`crossrepo.cache.discard`)

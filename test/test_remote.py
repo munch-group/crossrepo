@@ -7,9 +7,9 @@ pointers and version resolution all run for real against canned responses.
 
 import pytest
 
-from labdata import remote
-from labdata.config import Config, SourceWarning
-from labdata.github import GitHubError, blob_url
+from crossrepo import remote
+from crossrepo.config import Config, SourceWarning
+from crossrepo.github import GitHubError, blob_url
 
 MANIFEST = b"files:\n  hits.csv: Association hits\n  big.h5: Kept in LFS\n"
 POINTER = (
@@ -84,7 +84,7 @@ def test_a_repo_without_a_manifest_costs_one_tree_call():
 def test_published_files_carry_their_description_and_version():
     client = FakeClient(
         tree=[
-            {"path": "results/labdata.yml", "type": "blob", "sha": "man", "size": 60},
+            {"path": "results/crossrepo.yml", "type": "blob", "sha": "man", "size": 60},
             {"path": "results/hits.csv", "type": "blob", "sha": "aaa", "size": 10},
             {"path": "results/scratch.csv", "type": "blob", "sha": "bbb", "size": 10},
         ],
@@ -105,7 +105,7 @@ def test_published_files_carry_their_description_and_version():
 def test_the_url_names_the_commit_not_the_branch():
     client = FakeClient(
         tree=[
-            {"path": "results/labdata.yml", "type": "blob", "sha": "man", "size": 60},
+            {"path": "results/crossrepo.yml", "type": "blob", "sha": "man", "size": 60},
             {"path": "results/hits.csv", "type": "blob", "sha": "aaa", "size": 10},
         ],
         commits=[commit("d" * 40, "add hits")],
@@ -124,7 +124,7 @@ def test_an_lfs_pointer_reports_the_real_size():
     client = FakeClient(
         tree=[
             {"path": ".gitattributes", "type": "blob", "sha": "att", "size": 40},
-            {"path": "results/labdata.yml", "type": "blob", "sha": "man", "size": 60},
+            {"path": "results/crossrepo.yml", "type": "blob", "sha": "man", "size": 60},
             {"path": "results/big.h5", "type": "blob", "sha": "ptr", "size": 130},
         ],
         commits=[commit("e" * 40, "add big")],
@@ -144,7 +144,7 @@ def test_small_files_are_not_probed_when_nothing_is_in_lfs():
     """Reading every small blob to look for a pointer would cost a request each."""
     client = FakeClient(
         tree=[
-            {"path": "results/labdata.yml", "type": "blob", "sha": "man", "size": 60},
+            {"path": "results/crossrepo.yml", "type": "blob", "sha": "man", "size": 60},
             {"path": "results/hits.csv", "type": "blob", "sha": "aaa", "size": 10},
         ],
         commits=[commit("f" * 40, "add hits")],
@@ -159,7 +159,7 @@ def test_a_directory_named_in_the_manifest_is_one_dataset():
     manifest = b"files:\n  table.parquet: A partitioned table\n"
     client = FakeClient(
         tree=[
-            {"path": "results/labdata.yml", "type": "blob", "sha": "man", "size": 40},
+            {"path": "results/crossrepo.yml", "type": "blob", "sha": "man", "size": 40},
             {"path": "results/table.parquet", "type": "tree", "sha": "tre"},
             {"path": "results/table.parquet/p0.parquet", "type": "blob",
              "sha": "p0", "size": 100},
@@ -186,7 +186,7 @@ def test_build_needs_no_configuration_to_do_nothing():
 def test_build_enumerates_owners():
     client = FakeClient(
         tree=[
-            {"path": "results/labdata.yml", "type": "blob", "sha": "man", "size": 60},
+            {"path": "results/crossrepo.yml", "type": "blob", "sha": "man", "size": 60},
             {"path": "results/hits.csv", "type": "blob", "sha": "aaa", "size": 10},
         ],
         commits=[commit("b" * 40, "add hits")],
@@ -200,7 +200,7 @@ def test_build_enumerates_owners():
 def test_a_manifest_deeper_in_the_tree_is_ignored_remotely():
     client = FakeClient(
         tree=[
-            {"path": "results/sub/labdata.yml", "type": "blob", "sha": "man",
+            {"path": "results/sub/crossrepo.yml", "type": "blob", "sha": "man",
              "size": 40},
             {"path": "results/sub/x.csv", "type": "blob", "sha": "aaa", "size": 10},
         ],
@@ -212,7 +212,7 @@ def test_a_manifest_deeper_in_the_tree_is_ignored_remotely():
 
 def test_cataloguing_costs_the_same_however_many_files_there_are():
     """Two requests per repo, plus the manifest: flat in the number of files."""
-    tree = [{"path": "results/labdata.yml", "type": "blob", "sha": "man", "size": 60}]
+    tree = [{"path": "results/crossrepo.yml", "type": "blob", "sha": "man", "size": 60}]
     tree += [
         {"path": f"results/part-{i}.csv", "type": "blob", "sha": f"s{i}", "size": 10}
         for i in range(300)
@@ -230,7 +230,7 @@ def test_cataloguing_costs_the_same_however_many_files_there_are():
 def test_every_file_carries_the_repository_head():
     client = FakeClient(
         tree=[
-            {"path": "results/labdata.yml", "type": "blob", "sha": "man", "size": 60},
+            {"path": "results/crossrepo.yml", "type": "blob", "sha": "man", "size": 60},
             {"path": "results/hits.csv", "type": "blob", "sha": "aaa", "size": 10},
             {"path": "results/big.h5", "type": "blob", "sha": "bbb", "size": 10},
         ],
@@ -248,7 +248,7 @@ def test_gitattributes_is_not_read_when_nothing_could_be_a_pointer():
     client = FakeClient(
         tree=[
             {"path": ".gitattributes", "type": "blob", "sha": "att", "size": 40},
-            {"path": "results/labdata.yml", "type": "blob", "sha": "man", "size": 60},
+            {"path": "results/crossrepo.yml", "type": "blob", "sha": "man", "size": 60},
             {"path": "results/hits.csv", "type": "blob", "sha": "aaa", "size": 5_000_000},
         ],
         commits=[commit("1" * 40, "big only")],
@@ -261,7 +261,7 @@ def test_gitattributes_is_not_read_when_nothing_could_be_a_pointer():
 def test_the_default_branch_costs_no_request():
     client = FakeClient(
         tree=[
-            {"path": "results/labdata.yml", "type": "blob", "sha": "man", "size": 60},
+            {"path": "results/crossrepo.yml", "type": "blob", "sha": "man", "size": 60},
             {"path": "results/hits.csv", "type": "blob", "sha": "aaa", "size": 10},
         ],
         commits=[commit("2" * 40, "tip")],
@@ -272,18 +272,18 @@ def test_the_default_branch_costs_no_request():
 
 
 def test_a_nested_results_dir_is_read_over_the_api_too():
-    """labdata_dirs are paths from the repo root, however deep, on both backends."""
+    """crossrepo_dirs are paths from the repo root, however deep, on both backends."""
     deep = "some_dir/some_sub_dir/some_sub_sub_dir"
     client = FakeClient(
         tree=[
-            {"path": f"{deep}/labdata.yml", "type": "blob", "sha": "man", "size": 40},
+            {"path": f"{deep}/crossrepo.yml", "type": "blob", "sha": "man", "size": 40},
             {"path": f"{deep}/deep.csv", "type": "blob", "sha": "aaa", "size": 10},
             {"path": "some_dir/elsewhere.csv", "type": "blob", "sha": "bbb", "size": 10},
         ],
         commits=[commit("3" * 40, "publish")],
         blobs={"man": b"files:\n  deep.csv: a buried result\n"},
     )
-    entries = remote.scan_repo(client, "o", "demo", Config(labdata_dirs=[deep]), "main")
+    entries = remote.scan_repo(client, "o", "demo", Config(crossrepo_dirs=[deep]), "main")
     assert [e.path for e in entries] == [f"{deep}/deep.csv"]
     assert entries[0].description == "a buried result"
 
@@ -295,7 +295,7 @@ def test_a_blob_sharing_only_a_first_component_is_not_under_results():
         commits=[], blobs={},
     )
     assert remote.scan_repo(
-        client, "o", "demo", Config(labdata_dirs=["some_dir/results"]), "main"
+        client, "o", "demo", Config(crossrepo_dirs=["some_dir/results"]), "main"
     ) == []
 
 
@@ -303,7 +303,7 @@ def test_a_key_from_the_root_is_read_over_the_api_too():
     """A manifest publishes files outside its directory on both backends."""
     client = FakeClient(
         tree=[
-            {"path": "results/labdata.yml", "type": "blob", "sha": "man", "size": 60},
+            {"path": "results/crossrepo.yml", "type": "blob", "sha": "man", "size": 60},
             {"path": "results/hits.csv", "type": "blob", "sha": "aaa", "size": 10},
             {"path": "data/reference/samples.csv", "type": "blob",
              "sha": "bbb", "size": 20},
@@ -330,7 +330,7 @@ def test_the_tree_is_read_once_however_far_a_manifest_reaches():
     """Files outside the results directory cost no extra request."""
     client = FakeClient(
         tree=[
-            {"path": "results/labdata.yml", "type": "blob", "sha": "man", "size": 60},
+            {"path": "results/crossrepo.yml", "type": "blob", "sha": "man", "size": 60},
             {"path": "data/x.csv", "type": "blob", "sha": "aaa", "size": 10},
         ],
         commits=[commit("5" * 40, "publish")],
@@ -365,7 +365,7 @@ def test_a_repo_that_merely_publishes_nothing_is_not_reported(recwarn):
 def test_a_repo_that_publishes_is_never_asked_about_twice():
     client = FakeClient(
         tree=[
-            {"path": "results/labdata.yml", "type": "blob", "sha": "man", "size": 60},
+            {"path": "results/crossrepo.yml", "type": "blob", "sha": "man", "size": 60},
             {"path": "results/hits.csv", "type": "blob", "sha": "aaa", "size": 10},
         ],
         commits=[commit("6" * 40, "publish")],

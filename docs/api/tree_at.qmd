@@ -1,7 +1,7 @@
-# tree_at { #labdata.gitutil.tree_at }
+# tree_at { #crossrepo.gitutil.tree_at }
 
 ```python
-labdata.gitutil.tree_at(repo, rev, path)
+crossrepo.gitutil.tree_at(repo, rev, path)
 ```
 
 Find the tree sha of a directory as of a revision.
@@ -12,7 +12,7 @@ as a blob sha identifies a single file, and two identical datasets share one.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
-<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[Location](`labdata.location.Location`), [Path](`pathlib.Path`), [str](`str`)\]]{.parameter-annotation}</code>
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[Location](`crossrepo.location.Location`), [Path](`pathlib.Path`), [str](`str`)\]]{.parameter-annotation}</code>
 
 :   Working tree to inspect, on this machine or another.
 
@@ -32,4 +32,4 @@ as a blob sha identifies a single file, and two identical datasets share one.
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`labdata.gitutil.tree_files`)
+[](`crossrepo.gitutil.tree_files`)

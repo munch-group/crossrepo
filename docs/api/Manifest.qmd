@@ -1,7 +1,7 @@
-# Manifest { #labdata.manifest.Manifest }
+# Manifest { #crossrepo.manifest.Manifest }
 
 ```python
-labdata.manifest.Manifest(directory, files, stamps=dict())
+crossrepo.manifest.Manifest(directory, files, stamps=dict())
 ```
 
 What one directory of a repository publishes.
@@ -16,29 +16,29 @@ What one directory of a repository publishes.
 
 :   Keys in the order they were written, each mapped to its description. A key is a path relative to `directory`, a bare file name, a glob pattern over either, or -- written with a leading ``/`` -- a path or pattern from the root of the repository, naming a file outside `directory`.
 
-<code>[**stamps**]{.parameter-name} [:]{.parameter-annotation-sep} [[Dict](`typing.Dict`)\[[str](`str`), [Stamp](`labdata.manifest.Stamp`)\]]{.parameter-annotation}</code>
+<code>[**stamps**]{.parameter-name} [:]{.parameter-annotation-sep} [[Dict](`typing.Dict`)\[[str](`str`), [Stamp](`crossrepo.manifest.Stamp`)\]]{.parameter-annotation}</code>
 
 :   The content stamps, under the same keys as `files` and only for the keys that carry one. A key with a stamp names a link: a symbolic link whose target holds the real content. Empty for a manifest that publishes no links.
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`labdata.manifest.parse`)
-[](`labdata.manifest.Stamp`)
+[](`crossrepo.manifest.parse`)
+[](`crossrepo.manifest.Stamp`)
 
 ## Methods
 
 | Name | Description |
 | --- | --- |
-| [anchored_prefixes](#labdata.manifest.Manifest.anchored_prefixes) | Where to look for the files this manifest names from the repository root. |
-| [describe](#labdata.manifest.Manifest.describe) | Look up what a file is, and thereby whether it is published at all. |
-| [governs](#labdata.manifest.Manifest.governs) | Test whether a file lies in the part of the tree this manifest covers. |
-| [relative](#labdata.manifest.Manifest.relative) | Express a repository path relative to the manifest. |
-| [stamp](#labdata.manifest.Manifest.stamp) | Look up the content a file's link stands for. |
+| [anchored_prefixes](#crossrepo.manifest.Manifest.anchored_prefixes) | Where to look for the files this manifest names from the repository root. |
+| [describe](#crossrepo.manifest.Manifest.describe) | Look up what a file is, and thereby whether it is published at all. |
+| [governs](#crossrepo.manifest.Manifest.governs) | Test whether a file lies in the part of the tree this manifest covers. |
+| [relative](#crossrepo.manifest.Manifest.relative) | Express a repository path relative to the manifest. |
+| [stamp](#crossrepo.manifest.Manifest.stamp) | Look up the content a file's link stands for. |
 
-### anchored_prefixes { #labdata.manifest.Manifest.anchored_prefixes }
+### anchored_prefixes { #crossrepo.manifest.Manifest.anchored_prefixes }
 
 ```python
-labdata.manifest.Manifest.anchored_prefixes()
+crossrepo.manifest.Manifest.anchored_prefixes()
 ```
 
 Where to look for the files this manifest names from the repository root.
@@ -56,12 +56,12 @@ glob character, which is the least that has to be listed.
 
 #### See Also {.doc-section .doc-section-see-also}
 
-[](`labdata.manifest.Manifest.describe`)
+[](`crossrepo.manifest.Manifest.describe`)
 
-### describe { #labdata.manifest.Manifest.describe }
+### describe { #crossrepo.manifest.Manifest.describe }
 
 ```python
-labdata.manifest.Manifest.describe(path)
+crossrepo.manifest.Manifest.describe(path)
 ```
 
 Look up what a file is, and thereby whether it is published at all.
@@ -96,10 +96,10 @@ m.describe("results/hits.csv")
 # 'the good one'
 ```
 
-### governs { #labdata.manifest.Manifest.governs }
+### governs { #crossrepo.manifest.Manifest.governs }
 
 ```python
-labdata.manifest.Manifest.governs(path)
+crossrepo.manifest.Manifest.governs(path)
 ```
 
 Test whether a file lies in the part of the tree this manifest covers.
@@ -116,10 +116,10 @@ Test whether a file lies in the part of the tree this manifest covers.
 
 :   `True` if `path` is inside `directory`.
 
-### relative { #labdata.manifest.Manifest.relative }
+### relative { #crossrepo.manifest.Manifest.relative }
 
 ```python
-labdata.manifest.Manifest.relative(path)
+crossrepo.manifest.Manifest.relative(path)
 ```
 
 Express a repository path relative to the manifest.
@@ -136,17 +136,17 @@ Express a repository path relative to the manifest.
 
 :   The path as the manifest would write it.
 
-### stamp { #labdata.manifest.Manifest.stamp }
+### stamp { #crossrepo.manifest.Manifest.stamp }
 
 ```python
-labdata.manifest.Manifest.stamp(path)
+crossrepo.manifest.Manifest.stamp(path)
 ```
 
 Look up the content a file's link stands for.
 
-Keys are matched as [](`labdata.manifest.Manifest.describe`) matches
+Keys are matched as [](`crossrepo.manifest.Manifest.describe`) matches
 them, except that no glob is tried: a stamp identifies one file's
-content, so [](`labdata.manifest.parse`) refuses to put one on a
+content, so [](`crossrepo.manifest.parse`) refuses to put one on a
 pattern.
 
 #### Parameters {.doc-section .doc-section-parameters}
@@ -157,7 +157,7 @@ pattern.
 
 #### Returns {.doc-section .doc-section-returns}
 
-<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Stamp](`labdata.manifest.Stamp`)\]]{.parameter-annotation}</code>
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Stamp](`crossrepo.manifest.Stamp`)\]]{.parameter-annotation}</code>
 
 :   The stamp, or `None` when the file is not published as a link. A file with no stamp is an ordinary committed file, versioned by git itself.
 

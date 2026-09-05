@@ -40,7 +40,10 @@ root to look for repositories; a root is now either a repository itself or a
 directory holding them.
 """
 
-RENAMED: Dict[str, str] = {"results_dirs": "labdata_dirs"}
+RENAMED: Dict[str, str] = {
+    "results_dirs": "crossrepo_dirs",
+    "labdata_dirs": "crossrepo_dirs",   # the tool was once called labdata
+}
 """
 Settings that changed name, read under the old one with a warning.
 
@@ -51,7 +54,7 @@ for the same reason as `RETIRED`.
 
 _WIDTH = 80
 """
-Column to wrap a [](`labdata.config.Config`) at when showing it.
+Column to wrap a [](`crossrepo.config.Config`) at when showing it.
 
 The width `pprint.pprint` uses, since that is what its output is meant to look
 like.
@@ -105,14 +108,14 @@ def config_path() -> Path:
         Path of ``config.toml``, whether or not it exists.
     """
     base = os.environ.get("XDG_CONFIG_HOME") or (Path.home() / ".config")
-    return Path(base) / "labdata" / "config.toml"
+    return Path(base) / "crossrepo" / "config.toml"
 
 
 def cache_root() -> Path:
     """
     Location of the local cache.
 
-    Honours ``LABDATA_CACHE`` first and ``XDG_CACHE_HOME`` second.
+    Honours ``CROSSREPO_CACHE`` first and ``XDG_CACHE_HOME`` second.
 
     Returns
     -------
@@ -121,12 +124,12 @@ def cache_root() -> Path:
 
     See Also
     --------
-    [](`labdata.cache.blob_path`)
+    [](`crossrepo.cache.blob_path`)
     """
-    if os.environ.get("LABDATA_CACHE"):
-        return Path(os.environ["LABDATA_CACHE"]).expanduser()
+    if os.environ.get("CROSSREPO_CACHE"):
+        return Path(os.environ["CROSSREPO_CACHE"]).expanduser()
     base = os.environ.get("XDG_CACHE_HOME") or (Path.home() / ".cache")
-    return Path(base) / "labdata"
+    return Path(base) / "crossrepo"
 
 
 @dataclass
@@ -152,13 +155,13 @@ class Config:
     repos :
         Further GitHub repositories to catalog, written ``owner/repo``, for ones
         outside `owners`.
-    labdata_dirs :
-        Directories within a repository holding a ``labdata.yml``, and with it
+    crossrepo_dirs :
+        Directories within a repository holding a ``crossrepo.yml``, and with it
         the result files it publishes, given as paths relative to the repository
         root. They may be at any depth, so
         ``analysis/step3/results`` works as well as ``results``. Matching is
         case-insensitive, so a repository that committed ``Results/`` is found
-        too. Each is searched, and each needs its own ``labdata.yml``. A
+        too. Each is searched, and each needs its own ``crossrepo.yml``. A
         manifest may publish files from anywhere else in its repository, by
         naming them from the repository root.
     include :
@@ -181,13 +184,13 @@ class Config:
 
     See Also
     --------
-    [](`labdata.core.build`)
+    [](`crossrepo.core.build`)
     """
 
     roots: List[str] = field(default_factory=list)
     owners: List[str] = field(default_factory=list)
     repos: List[str] = field(default_factory=list)
-    labdata_dirs: List[str] = field(default_factory=lambda: ["results"])
+    crossrepo_dirs: List[str] = field(default_factory=lambda: ["results"])
     include: List[str] = field(default_factory=lambda: list(DEFAULT_INCLUDE))
     exclude: List[str] = field(default_factory=lambda: list(DEFAULT_EXCLUDE))
     min_bytes: int = 0
@@ -213,11 +216,11 @@ class Config:
         --------
 
         ```python
-        labdata.active_config()
+        crossrepo.active_config()
         # Config(roots=[],
         #        owners=['munch-group'],
         #        repos=[],
-        #        labdata_dirs=['results'],
+        #        crossrepo_dirs=['results'],
         #        include=[],
         #        exclude=[],
         #        min_bytes=0,
@@ -246,7 +249,7 @@ class Config:
         Parameters
         ----------
         path :
-            File to read. Defaults to [](`labdata.config.config_path`). A
+            File to read. Defaults to [](`crossrepo.config.config_path`). A
             missing file is not an error and yields the defaults.
 
         Returns
@@ -312,7 +315,7 @@ class Config:
         Parameters
         ----------
         path :
-            File to write. Defaults to [](`labdata.config.config_path`). Parent
+            File to write. Defaults to [](`crossrepo.config.config_path`). Parent
             directories are created. An existing file is overwritten.
 
         Returns
@@ -350,13 +353,13 @@ class Config:
             '#   owners = ["munch-group"]\n'
             f"{_toml_list('owners', self.owners)}"
             f"{_toml_list('repos', self.repos)}\n"
-            "# Directories inside each repo holding a labdata.yml, and with it\n"
+            "# Directories inside each repo holding a crossrepo.yml, and with it\n"
             "# the result files it publishes. Paths from the repo root, at any\n"
             "# depth, matched case-insensitively, so Results/ is found too. A\n"
-            "# labdata.yml may publish files elsewhere in the repo as well, by\n"
+            "# crossrepo.yml may publish files elsewhere in the repo as well, by\n"
             "# naming them from the repo root, as /data/samples.csv.\n"
-            f"labdata_dirs = {self.labdata_dirs!r}\n\n"
-            "# What a repo publishes is decided by its labdata.yml. These\n"
+            f"crossrepo_dirs = {self.crossrepo_dirs!r}\n\n"
+            "# What a repo publishes is decided by its crossrepo.yml. These\n"
             "# narrow that on the reading side; empty means everything\n"
             "# published, e.g. include = [\"*.csv\"].\n"
             f"{inc}"
@@ -381,7 +384,7 @@ which is what a reader who has just registered one expects.
 
 class Registration:
     """
-    The undo for one call to [](`labdata.config.use_config`).
+    The undo for one call to [](`crossrepo.config.use_config`).
 
     Returned rather than used directly. Ignoring it leaves the registration in
     place for the rest of the session; entering it with ``with`` puts the
@@ -391,8 +394,8 @@ class Registration:
 
     See Also
     --------
-    [](`labdata.config.use_config`)
-    [](`labdata.config.active_config`)
+    [](`crossrepo.config.use_config`)
+    [](`crossrepo.config.active_config`)
     """
 
     def __init__(self, previous: Optional[Config]) -> None:
@@ -401,7 +404,7 @@ class Registration:
 
     def __repr__(self) -> str:
         """
-        Show the settings now in effect, as [](`labdata.config.Config`) does.
+        Show the settings now in effect, as [](`crossrepo.config.Config`) does.
 
         The handle itself is nothing to look at, and a notebook shows the last
         expression in a cell, which for a registration made as a statement is
@@ -411,7 +414,7 @@ class Registration:
         Returns
         -------
         :
-            What [](`labdata.config.active_config`) returns, shown as it shows
+            What [](`crossrepo.config.active_config`) returns, shown as it shows
             itself. Asked after the registration has been undone, it says what
             is in effect then rather than what this call once registered: it
             reports the settings, not the history.
@@ -446,9 +449,9 @@ def active_config() -> Config:
     Returns
     -------
     :
-        The settings registered with [](`labdata.config.use_config`), or, while
+        The settings registered with [](`crossrepo.config.use_config`), or, while
         none is registered, the ones read from
-        [](`labdata.config.config_path`). Every function taking a ``cfg``
+        [](`crossrepo.config.config_path`). Every function taking a ``cfg``
         argument falls back to this when it is left out, so this says what such
         a call is about to use.
 
@@ -456,13 +459,13 @@ def active_config() -> Config:
     --------
 
     ```python
-    labdata.active_config().owners
+    crossrepo.active_config().owners
     ```
 
     See Also
     --------
-    [](`labdata.config.use_config`)
-    [](`labdata.config.Config.load`)
+    [](`crossrepo.config.use_config`)
+    [](`crossrepo.config.Config.load`)
     """
     return _registered if _registered is not None else Config.load()
 
@@ -472,7 +475,7 @@ def use_config(cfg: Optional[Config] = None, **overrides) -> Registration:
     Register settings for the rest of the session, or for a block.
 
     Saves passing ``cfg=cfg`` to every call: what is registered here is what
-    [](`labdata.config.active_config`) returns, and with it what every function
+    [](`crossrepo.config.active_config`) returns, and with it what every function
     taking a ``cfg`` argument uses when it is not given one. An explicit ``cfg``
     still wins, so a single call can always step outside what is registered.
 
@@ -483,21 +486,21 @@ def use_config(cfg: Optional[Config] = None, **overrides) -> Registration:
         `overrides` unregisters, so the configuration file is read again.
     **overrides :
         Individual settings to change, named as the fields of
-        [](`labdata.config.Config`). They are applied on top of `cfg`, or, when
+        [](`crossrepo.config.Config`). They are applied on top of `cfg`, or, when
         that is left out, on top of the configuration file, so one setting can
         be changed without restating the rest.
 
     Returns
     -------
     :
-        A [](`labdata.config.Registration`), which is the undo. Ignore it to
+        A [](`crossrepo.config.Registration`), which is the undo. Ignore it to
         register for the rest of the session, or use it as a context manager to
         register for a block and put back the previous settings afterwards.
 
     Raises
     ------
     TypeError
-        If `cfg` is not a [](`labdata.config.Config`), or if an override does
+        If `cfg` is not a [](`crossrepo.config.Config`), or if an override does
         not name one of its fields. The message lists the fields there are.
 
     Examples
@@ -506,35 +509,35 @@ def use_config(cfg: Optional[Config] = None, **overrides) -> Registration:
     Register once, then call everything without `cfg`:
 
     ```python
-    import labdata
+    import crossrepo
 
-    labdata.use_config(labdata.Config(repos=["munch-group/x-gwas"]))
-    df = labdata.refresh()
+    crossrepo.use_config(crossrepo.Config(repos=["munch-group/x-gwas"]))
+    df = crossrepo.refresh()
     ```
 
     Change one setting and keep the rest of the configuration file:
 
     ```python
-    labdata.use_config(repos=["munch-group/x-gwas"])
+    crossrepo.use_config(repos=["munch-group/x-gwas"])
     ```
 
     Register for a block only:
 
     ```python
-    with labdata.use_config(owners=["munch-group"]):
-        df = labdata.list()
+    with crossrepo.use_config(owners=["munch-group"]):
+        df = crossrepo.list()
     ```
 
     Go back to the configuration file:
 
     ```python
-    labdata.use_config(None)
+    crossrepo.use_config(None)
     ```
 
     See Also
     --------
-    [](`labdata.config.active_config`)
-    [](`labdata.config.Config`)
+    [](`crossrepo.config.active_config`)
+    [](`crossrepo.config.Config`)
     """
     global _registered
     if cfg is not None and not isinstance(cfg, Config):

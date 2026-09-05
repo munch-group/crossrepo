@@ -1,12 +1,12 @@
-# selects { #labdata.core.selects }
+# selects { #crossrepo.core.selects }
 
 ```python
-labdata.core.selects(select, repo_key)
+crossrepo.core.selects(select, repo_key)
 ```
 
 Test whether a narrowed scan should look at a repository.
 
-The rule is the one [](`labdata.list`) filters with, so that narrowing a
+The rule is the one [](`crossrepo.list`) filters with, so that narrowing a
 rescan and narrowing a listing pick the same repositories: the text is
 matched anywhere in ``owner/repo``, ignoring case. An owner alone is written
 ``owner/``, which cannot match a repository name.
@@ -29,4 +29,4 @@ matched anywhere in ``owner/repo``, ignoring case. An owner alone is written
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`labdata.core.build`)
+[](`crossrepo.core.build`)

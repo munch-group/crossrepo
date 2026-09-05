@@ -1,7 +1,7 @@
-# main { #labdata.cli.main }
+# main { #crossrepo.cli.main }
 
 ```python
-labdata.cli.main(argv=None)
+crossrepo.cli.main(argv=None)
 ```
 
 Run the command line interface.

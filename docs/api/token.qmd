@@ -1,7 +1,7 @@
-# token { #labdata.github.token }
+# token { #crossrepo.github.token }
 
 ```python
-labdata.github.token()
+crossrepo.github.token()
 ```
 
 Find a GitHub token to authenticate with.

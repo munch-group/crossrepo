@@ -1,7 +1,7 @@
 """
 The per-directory manifest that decides what a repository publishes.
 
-A result file is published by committing it *and* naming it in a ``labdata.yml``
+A result file is published by committing it *and* naming it in a ``crossrepo.yml``
 beside it. Committing alone is not enough: a results directory without a
 manifest publishes nothing, which keeps working files, intermediates and
 scratch output out of other people's catalogs without anyone having to tidy up.
@@ -51,15 +51,15 @@ Git versions the link, not the bytes behind it, so a link on its own would let
 the content change without the version changing. The ``sha256`` and ``size``
 close that gap: they are the *stamp*, they say which content the link stands
 for, and because they are committed it is the commit that changes a stamp which
-makes a new version. ``labdata stamp`` writes them, so regenerating the file
+makes a new version. ``crossrepo stamp`` writes them, so regenerating the file
 means stamping it again and committing that.
 
 A stamp needs both keys, and cannot go on a glob pattern, one hash describing
 one file. Content reached through a link is never copied into the cache when it
 is on the same filesystem: the cache holds a hard link to it.
 
-One manifest governs a whole results directory: the ``labdata.yml`` sitting
-directly in it, covering everything beneath. A ``labdata.yml`` deeper in the
+One manifest governs a whole results directory: the ``crossrepo.yml`` sitting
+directly in it, covering everything beneath. A ``crossrepo.yml`` deeper in the
 tree is not read, so there is exactly one place to look to see what a repository
 publishes. Manifests are read from git, not from the working tree, so an
 uncommitted one publishes nothing and the same rules hold for a repository read
@@ -73,8 +73,19 @@ import re
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple
 
-MANIFEST_NAMES: Tuple[str, ...] = ("labdata.yml", "labdata.yaml")
-"""File names recognised as a manifest."""
+MANIFEST_NAMES: Tuple[str, ...] = (
+    "crossrepo.yml",
+    "crossrepo.yaml",
+    "labdata.yml",
+    "labdata.yaml",
+)
+"""
+File names recognised as a manifest.
+
+The first is what `default_path` writes. The rest are read too: the tool was
+once called ``labdata``, and a manifest sits in someone else's repository where
+it cannot be renamed on our say-so.
+"""
 
 _HEX = frozenset("0123456789abcdef")
 """Characters a stamp's digest is written with; a digest is lower case."""
@@ -125,7 +136,7 @@ class Stamp:
 
     See Also
     --------
-    [](`labdata.manifest.Manifest.stamp`)
+    [](`crossrepo.manifest.Manifest.stamp`)
     """
 
     sha256: str
@@ -155,8 +166,8 @@ class Manifest:
 
     See Also
     --------
-    [](`labdata.manifest.parse`)
-    [](`labdata.manifest.Stamp`)
+    [](`crossrepo.manifest.parse`)
+    [](`crossrepo.manifest.Stamp`)
     """
 
     directory: str
@@ -260,9 +271,9 @@ class Manifest:
         """
         Look up the content a file's link stands for.
 
-        Keys are matched as [](`labdata.manifest.Manifest.describe`) matches
+        Keys are matched as [](`crossrepo.manifest.Manifest.describe`) matches
         them, except that no glob is tried: a stamp identifies one file's
-        content, so [](`labdata.manifest.parse`) refuses to put one on a
+        content, so [](`crossrepo.manifest.parse`) refuses to put one on a
         pattern.
 
         Parameters
@@ -336,7 +347,7 @@ class Manifest:
 
         See Also
         --------
-        [](`labdata.manifest.Manifest.describe`)
+        [](`crossrepo.manifest.Manifest.describe`)
         """
         prefixes = set()
         for key in self._anchored():
@@ -395,7 +406,7 @@ def parse(text: str, directory: str) -> Manifest:
     Parameters
     ----------
     text :
-        Content of the ``labdata.yml`` file.
+        Content of the ``crossrepo.yml`` file.
     directory :
         Repository-relative directory the manifest sits in, used to make its
         keys relative and to report where a problem is.
@@ -423,7 +434,7 @@ def parse(text: str, directory: str) -> Manifest:
     """
     import yaml                      # a dependency only of this module
 
-    where = f"{directory}/labdata.yml" if directory else "labdata.yml"
+    where = f"{directory}/crossrepo.yml" if directory else "crossrepo.yml"
     try:
         doc = yaml.safe_load(text)
     except yaml.YAMLError as exc:
@@ -516,12 +527,12 @@ def _read_stamp(where: str, key: str, value: Dict[str, object]) -> Optional[Stam
         missing = "sha256" if sha is None else "size"
         raise ManifestError(
             f"{where}: `{key}` has a stamp with no `{missing}`; a stamp needs "
-            f"both, and `labdata stamp` writes them together"
+            f"both, and `crossrepo stamp` writes them together"
         )
     if not isinstance(sha, str) or len(sha) != 64 or not _HEX.issuperset(sha):
         raise ManifestError(
             f"{where}: `{key}` has `sha256: {sha}`, which is not a digest; it "
-            f"should be 64 lower case hexadecimal digits, as `labdata stamp` "
+            f"should be 64 lower case hexadecimal digits, as `crossrepo stamp` "
             f"writes it"
         )
     if isinstance(size, bool) or not isinstance(size, int) or size < 0:

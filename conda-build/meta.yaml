@@ -1,27 +1,31 @@
 {% set pyproject = load_file_data("../pyproject.toml", from_recipe_dir=True) %}
 
 package:
-  name: labdata
+  name: crossrepo
   version: {{ pyproject.get("project").get("version") }}
 
 source:
-  git_url: https://github.com/munch-group/labdata.git
+  git_url: https://github.com/munch-group/crossrepo.git
 
 build:
   number: 0
   script: {{ PYTHON }} -m pip install . -vv
-  python_version_independent: true
-  # entry_points:
-  #  - labdata = labdata:labdata
+  noarch: python
+  entry_points:
+    {% for name, target in pyproject.get("project").get("scripts").items() %}
+    - {{ name }} = {{ target }}
+    {% endfor %}
 
 requirements:
   host:
-    - python
+    - python {{ pyproject.get("project").get("requires-python") }}
     - pip
     - setuptools>=65.0    
   run:  # your library dependencies
+    - python {{ pyproject.get("project").get("requires-python") }}
     {% for dep in pyproject.get("project").get("dependencies") %}
-    - {{ dep.lower() }}
+    # drop the PEP 508 marker: conda specs have no `;` and noarch spans all pythons
+    - {{ dep.split(";")[0].strip().lower() }}
     {% endfor %}  
 
 channels:  # channels for your library dependencies
@@ -36,10 +40,10 @@ dependencies:   # keep this block with only these packages
 
 test:
   imports:
-    - labdata
+    - crossrepo
 
 about:
-  home: https://github.com/munch-group/labdata.git
+  home: https://github.com/munch-group/crossrepo.git
   license: MIT
-  dev_url: https://github.com/munch-group/labdata.git
-  doc_url: https://munch-group.org/labdata
+  dev_url: https://github.com/munch-group/crossrepo.git
+  doc_url: https://munch-group.org/crossrepo

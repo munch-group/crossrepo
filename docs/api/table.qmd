@@ -1,7 +1,7 @@
-# table { #labdata.cli.table }
+# table { #crossrepo.cli.table }
 
 ```python
-labdata.cli.table(rows, headers)
+crossrepo.cli.table(rows, headers)
 ```
 
 Render rows as a plain text table with aligned columns.

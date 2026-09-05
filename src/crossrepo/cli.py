@@ -3,12 +3,12 @@ Command line interface.
 
 Every subcommand prints specs in the form the other subcommands accept, so a
 line of output can be pasted straight into the next command. The commands are
-built with `click`; [](`labdata.cli.main`) wraps the group so that an expected
+built with `click`; [](`crossrepo.cli.main`) wraps the group so that an expected
 failure becomes a one line message rather than a traceback, and so that the
 process exit status is returned rather than raised.
 
 ``--config`` and ``--refresh`` are accepted both before and after the
-subcommand, so ``labdata --refresh list`` and ``labdata list --refresh`` mean
+subcommand, so ``crossrepo --refresh list`` and ``crossrepo list --refresh`` mean
 the same thing.
 """
 
@@ -199,7 +199,7 @@ def _require_sources(cfg: Config) -> None:
         return
     raise click.ClickException(
         "nothing is configured to read.\n"
-        f"Run `labdata config --init` to write {config_path()}, then set either\n"
+        f"Run `crossrepo config --init` to write {config_path()}, then set either\n"
         "  owners = [\"munch-group\"]        # read GitHub directly, nothing cloned\n"
         "  roots  = [\"~/projects\"]         # or scan clones already on this machine\n"
         "  roots  = [\"me@server:~/projects\"] # or clones on a server, over ssh"
@@ -215,7 +215,7 @@ def _collecting() -> Iterator[List[warnings.WarningMessage]]:
     could not be read, since one unreachable source must not cost the others.
     Python would print each with the file and line it came from, which says
     nothing to the person who wrote the settings, so they are collected here and
-    handed to [](`labdata.cli._report`) instead.
+    handed to [](`crossrepo.cli._report`) instead.
 
     Yields
     ------
@@ -302,7 +302,7 @@ def _entries(
     is_flag=True,
     help="rescan repos instead of using the cached catalog",
 )
-@click.version_option(__version__, "-V", "--version", prog_name="labdata")
+@click.version_option(__version__, "-V", "--version", prog_name="crossrepo")
 @click.pass_context
 def cli(ctx: click.Context, config_file: Optional[str], refresh: bool) -> None:
     """Catalog and fetch versioned result files across git repos."""
@@ -329,7 +329,7 @@ def _explain_empty(
     for line in cat.diagnose(cfg):
         click.echo(line, err=True)
     click.echo(
-        "\nA repo publishes by committing a labdata.yml in the results directory\n"
+        "\nA repo publishes by committing a crossrepo.yml in the results directory\n"
         "at its root, naming the files:\n"
         "  files:\n"
         "    hits.csv: what this file holds\n"
@@ -569,7 +569,7 @@ def _manifest_file(root: Path, wanted: str) -> Optional[Path]:
     Returns
     -------
     :
-        Path of the ``labdata.yml``, or `None` when the directory or the
+        Path of the ``crossrepo.yml``, or `None` when the directory or the
         manifest is not there.
     """
     here = root
@@ -675,7 +675,7 @@ def cmd_stamp(ctx: click.Context, path: Optional[str], check: bool) -> int:
     Record what the published symbolic links in a repository point at.
 
     A result file too large to commit is published as a symbolic link to
-    wherever the pipeline wrote it, together with a stamp in the ``labdata.yml``
+    wherever the pipeline wrote it, together with a stamp in the ``crossrepo.yml``
     saying which content the link stands for. Git versions the link and not the
     bytes, so it is the stamp that makes the version: this command writes it,
     and committing the manifest publishes the new version.
@@ -696,7 +696,7 @@ def cmd_stamp(ctx: click.Context, path: Optional[str], check: bool) -> int:
     done: List[str] = []
     problems: List[str] = []
     current = 0
-    for wanted in cfg.labdata_dirs:
+    for wanted in cfg.crossrepo_dirs:
         where = _manifest_file(root, wanted)
         if where is None:
             continue
@@ -778,14 +778,14 @@ def cmd_stamp(ctx: click.Context, path: Optional[str], check: bool) -> int:
         if done:
             click.echo(
                 f"{len(done)} stamp{'' if len(done) == 1 else 's'} out of date; "
-                f"run `labdata stamp`",
+                f"run `crossrepo stamp`",
                 err=True,
             )
         return 1
     if done:
         click.echo(
             f"stamped {len(done)} file{'' if len(done) == 1 else 's'}; "
-            f"commit the labdata.yml to publish this version"
+            f"commit the crossrepo.yml to publish this version"
         )
     return 1 if problems else 0
 
@@ -837,7 +837,7 @@ def cmd_cache(do_verify: bool, repair: bool) -> int:
         click.echo(f"  {path.name[:16]}...  {problem}", err=True)
     if not repair:
         click.echo(
-            "run `labdata cache --repair` to remove them; "
+            "run `crossrepo cache --repair` to remove them; "
             "the content is fetched again the next time it is used",
             err=True,
         )
@@ -879,7 +879,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     ```
     """
     try:
-        rv = cli.main(args=argv, prog_name="labdata", standalone_mode=False)
+        rv = cli.main(args=argv, prog_name="crossrepo", standalone_mode=False)
     except click.ClickException as exc:
         exc.show()
         return exc.exit_code

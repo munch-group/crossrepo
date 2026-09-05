@@ -2,7 +2,7 @@
 
 import pytest
 
-from labdata import core
+from crossrepo import core
 
 
 def test_repo_filename_and_hash_is_silent(by_spec, cfg, capsys):
@@ -18,7 +18,7 @@ def test_repo_and_filename_alone_prints_the_hash(cfg, capsys):
     out = capsys.readouterr().out
     assert path.read_text().count("\n") == 4      # the latest version
     assert "acme/sweep-scan:results/candidates.csv@" in out
-    assert 'labdata.get("sweep-scan", "candidates.csv", "' in out
+    assert 'crossrepo.get("sweep-scan", "candidates.csv", "' in out
 
 
 def test_the_printed_hash_pins_that_version(cfg, capsys):
@@ -36,7 +36,7 @@ def test_quiet_suppresses_the_note(cfg, capsys):
 
 def test_owner_qualified_repo_name(cfg, capsys):
     path = core.get("other-org/hic-borders", "borders.tsv", cfg=cfg)
-    assert 'labdata.get("other-org/hic-borders"' in capsys.readouterr().out
+    assert 'crossrepo.get("other-org/hic-borders"' in capsys.readouterr().out
     assert "chrom" in path.read_text()
 
 

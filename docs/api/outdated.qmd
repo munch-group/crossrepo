@@ -1,7 +1,7 @@
-# outdated { #labdata.outdated }
+# outdated { #crossrepo.outdated }
 
 ```python
-labdata.outdated(entry, version)
+crossrepo.outdated(entry, version)
 ```
 
 Say whether a pinned version has been overtaken.
@@ -13,11 +13,11 @@ having actually changed is.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
-<code>[**entry**]{.parameter-name} [:]{.parameter-annotation-sep} [[Entry](`labdata.model.Entry`)]{.parameter-annotation}</code>
+<code>[**entry**]{.parameter-name} [:]{.parameter-annotation-sep} [[Entry](`crossrepo.model.Entry`)]{.parameter-annotation}</code>
 
 :   Entry holding the current version.
 
-<code>[**version**]{.parameter-name} [:]{.parameter-annotation-sep} [[Version](`labdata.model.Version`)]{.parameter-annotation}</code>
+<code>[**version**]{.parameter-name} [:]{.parameter-annotation-sep} [[Version](`crossrepo.model.Version`)]{.parameter-annotation}</code>
 
 :   Version that was asked for.
 

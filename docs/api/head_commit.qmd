@@ -1,7 +1,7 @@
-# head_commit { #labdata.gitutil.head_commit }
+# head_commit { #crossrepo.gitutil.head_commit }
 
 ```python
-labdata.gitutil.head_commit(repo)
+crossrepo.gitutil.head_commit(repo)
 ```
 
 Read the commit a repository currently points at.
@@ -11,7 +11,7 @@ repository however many files it publishes.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
-<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[Location](`labdata.location.Location`), [Path](`pathlib.Path`), [str](`str`)\]]{.parameter-annotation}</code>
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[Location](`crossrepo.location.Location`), [Path](`pathlib.Path`), [str](`str`)\]]{.parameter-annotation}</code>
 
 :   Working tree to inspect, on this machine or another.
 

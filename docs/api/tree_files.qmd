@@ -1,14 +1,14 @@
-# tree_files { #labdata.gitutil.tree_files }
+# tree_files { #crossrepo.gitutil.tree_files }
 
 ```python
-labdata.gitutil.tree_files(repo, rev, path)
+crossrepo.gitutil.tree_files(repo, rev, path)
 ```
 
 List every file beneath a directory as of a revision.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
-<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[Location](`labdata.location.Location`), [Path](`pathlib.Path`), [str](`str`)\]]{.parameter-annotation}</code>
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[Location](`crossrepo.location.Location`), [Path](`pathlib.Path`), [str](`str`)\]]{.parameter-annotation}</code>
 
 :   Working tree to inspect, on this machine or another.
 
@@ -28,4 +28,4 @@ List every file beneath a directory as of a revision.
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`labdata.gitutil.tree_at`)
+[](`crossrepo.gitutil.tree_at`)

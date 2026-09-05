@@ -1,7 +1,7 @@
-# link { #labdata.cache.link }
+# link { #crossrepo.cache.link }
 
 ```python
-labdata.cache.link(blob, dest)
+crossrepo.cache.link(blob, dest)
 ```
 
 Expose a cached object under a readable name.

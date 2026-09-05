@@ -1,7 +1,7 @@
-# copy_out { #labdata.core.copy_out }
+# copy_out { #crossrepo.core.copy_out }
 
 ```python
-labdata.core.copy_out(src, out, name)
+crossrepo.core.copy_out(src, out, name)
 ```
 
 Write a copy of a cached file where the caller asked for it.
@@ -13,7 +13,7 @@ have to fit in memory.
 
 <code>[**src**]{.parameter-name} [:]{.parameter-annotation-sep} [[Path](`pathlib.Path`)]{.parameter-annotation}</code>
 
-:   File to copy, typically a path returned by [](`labdata.core.materialize`).
+:   File to copy, typically a path returned by [](`crossrepo.core.materialize`).
 
 <code>[**out**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[str](`str`), [Path](`pathlib.Path`)\]]{.parameter-annotation}</code>
 
@@ -31,4 +31,4 @@ have to fit in memory.
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`labdata.core.get`)
+[](`crossrepo.core.get`)

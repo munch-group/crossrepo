@@ -1,14 +1,14 @@
-# dataset_files { #labdata.remote.dataset_files }
+# dataset_files { #crossrepo.remote.dataset_files }
 
 ```python
-labdata.remote.dataset_files(entry, commit, client=None)
+crossrepo.remote.dataset_files(entry, commit, client=None)
 ```
 
 List the parts of a dataset at one commit.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
-<code>[**entry**]{.parameter-name} [:]{.parameter-annotation-sep} [[Entry](`labdata.model.Entry`)]{.parameter-annotation}</code>
+<code>[**entry**]{.parameter-name} [:]{.parameter-annotation-sep} [[Entry](`crossrepo.model.Entry`)]{.parameter-annotation}</code>
 
 :   Entry naming the dataset.
 
@@ -16,7 +16,7 @@ List the parts of a dataset at one commit.
 
 :   Commit sha to read at.
 
-<code>[**client**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Client](`labdata.github.Client`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+<code>[**client**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Client](`crossrepo.github.Client`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
 
 :   Client to read with. Defaults to a new one.
 
@@ -28,4 +28,4 @@ List the parts of a dataset at one commit.
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`labdata.gitutil.tree_files`)
+[](`crossrepo.gitutil.tree_files`)

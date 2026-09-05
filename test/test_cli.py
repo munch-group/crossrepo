@@ -6,7 +6,7 @@ from pathlib import Path
 import click
 import pytest
 
-from labdata import cli
+from crossrepo import cli
 
 
 @pytest.fixture()
@@ -95,25 +95,25 @@ def test_unknown_command_is_a_usage_error(capsys):
 def test_nothing_configured_says_what_to_do(tmp_path, capsys):
     """The default config reads nothing, so it must say so rather than hang."""
     empty = tmp_path / "empty.toml"
-    empty.write_text("labdata_dirs = [\"results\"]\n")
+    empty.write_text("crossrepo_dirs = [\"results\"]\n")
     assert cli.main(["--config", str(empty), "list"]) == 1
     err = capsys.readouterr().err
     assert "nothing is configured to read" in err
     assert "owners" in err and "roots" in err
-    assert "labdata config --init" in err
+    assert "crossrepo config --init" in err
     assert "Traceback" not in err
 
 
 def test_refresh_also_refuses_without_sources(tmp_path, capsys):
     empty = tmp_path / "empty.toml"
-    empty.write_text("labdata_dirs = [\"results\"]\n")
+    empty.write_text("crossrepo_dirs = [\"results\"]\n")
     assert cli.main(["--config", str(empty), "refresh"]) == 1
     assert "nothing is configured to read" in capsys.readouterr().err
 
 
 def test_owners_alone_count_as_configured():
     """A GitHub-only setup needs no local roots at all. Checked without a request."""
-    from labdata.config import Config
+    from crossrepo.config import Config
 
     cli._require_sources(Config(owners=["munch-group"]))       # must not raise
     cli._require_sources(Config(repos=["munch-group/tree-stats"]))
@@ -157,7 +157,7 @@ def test_an_empty_result_says_what_was_looked_at(tmp_path, capsys):
     assert "no such directory" in err                 # the root that is not there
     assert "0 repos" in err                           # the one that is, but is empty
     assert "no owners or repos configured" in err     # and no GitHub source
-    assert "labdata.yml" in err
+    assert "crossrepo.yml" in err
 
 
 def test_refresh_also_explains_an_empty_result(tmp_path, capsys):
@@ -175,7 +175,7 @@ def test_the_count_of_repos_with_a_manifest_is_reported(repos, tmp_path, capsys)
     assert cli.main(["--config", str(conf), "--refresh", "list"]) == 1
     err = capsys.readouterr().err
     assert "with a results directory" in err
-    assert "with results/labdata.yml" in err
+    assert "with results/crossrepo.yml" in err
 
 
 def test_list_leaves_out_the_version_by_default(conf, capsys):

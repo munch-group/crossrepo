@@ -1,14 +1,14 @@
-# scan_repo { #labdata.remote.scan_repo }
+# scan_repo { #crossrepo.remote.scan_repo }
 
 ```python
-labdata.remote.scan_repo(client, owner, repo, cfg, ref=None)
+crossrepo.remote.scan_repo(client, owner, repo, cfg, ref=None)
 ```
 
 Catalog the result files one GitHub repository publishes.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
-<code>[**client**]{.parameter-name} [:]{.parameter-annotation-sep} [[Client](`labdata.github.Client`)]{.parameter-annotation}</code>
+<code>[**client**]{.parameter-name} [:]{.parameter-annotation-sep} [[Client](`crossrepo.github.Client`)]{.parameter-annotation}</code>
 
 :   Client to read with.
 
@@ -20,7 +20,7 @@ Catalog the result files one GitHub repository publishes.
 
 :   Repository name.
 
-<code>[**cfg**]{.parameter-name} [:]{.parameter-annotation-sep} [[Config](`labdata.config.Config`)]{.parameter-annotation}</code>
+<code>[**cfg**]{.parameter-name} [:]{.parameter-annotation-sep} [[Config](`crossrepo.config.Config`)]{.parameter-annotation}</code>
 
 :   Settings supplying the results directories and the reading side filters.
 
@@ -30,10 +30,10 @@ Catalog the result files one GitHub repository publishes.
 
 ## Returns {.doc-section .doc-section-returns}
 
-<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[Entry](`labdata.model.Entry`)\]]{.parameter-annotation}</code>
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[Entry](`crossrepo.model.Entry`)\]]{.parameter-annotation}</code>
 
 :   One entry per published result file or dataset, each stamped with the commit the repository points at. Empty, at the cost of a single request, when the repository publishes nothing.
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`labdata.core.scan_repo`)
+[](`crossrepo.core.scan_repo`)

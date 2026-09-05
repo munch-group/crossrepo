@@ -1,14 +1,14 @@
-# blob_at { #labdata.gitutil.blob_at }
+# blob_at { #crossrepo.gitutil.blob_at }
 
 ```python
-labdata.gitutil.blob_at(repo, rev, path)
+crossrepo.gitutil.blob_at(repo, rev, path)
 ```
 
 Find the blob sha and size of a file as of a revision.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
-<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[Location](`labdata.location.Location`), [Path](`pathlib.Path`), [str](`str`)\]]{.parameter-annotation}</code>
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[Location](`crossrepo.location.Location`), [Path](`pathlib.Path`), [str](`str`)\]]{.parameter-annotation}</code>
 
 :   Working tree to inspect, on this machine or another.
 
@@ -28,4 +28,4 @@ Find the blob sha and size of a file as of a revision.
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`labdata.gitutil.entry_at`)
+[](`crossrepo.gitutil.entry_at`)

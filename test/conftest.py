@@ -1,4 +1,4 @@
-"""Shared fixtures for the labdata tests."""
+"""Shared fixtures for the crossrepo tests."""
 
 from __future__ import annotations
 
@@ -7,8 +7,8 @@ from pathlib import Path
 
 import pytest
 
-from labdata.config import Config
-from labdata.core import build
+from crossrepo.config import Config
+from crossrepo.core import build
 
 from fixtures import make
 
@@ -17,7 +17,7 @@ from fixtures import make
 def repos(tmp_path_factory):
     """Fixture repositories, with the cache pointed at a temporary directory."""
     base = make(tmp_path_factory.mktemp("repos") / "fx")
-    os.environ["LABDATA_CACHE"] = str(tmp_path_factory.mktemp("cache"))
+    os.environ["CROSSREPO_CACHE"] = str(tmp_path_factory.mktemp("cache"))
     return base
 
 

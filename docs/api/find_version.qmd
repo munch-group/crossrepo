@@ -1,14 +1,14 @@
-# find_version { #labdata.core.find_version }
+# find_version { #crossrepo.core.find_version }
 
 ```python
-labdata.core.find_version(entry, ref)
+crossrepo.core.find_version(entry, ref)
 ```
 
 Resolve a version reference against a file's history.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
-<code>[**entry**]{.parameter-name} [:]{.parameter-annotation-sep} [[Entry](`labdata.model.Entry`)]{.parameter-annotation}</code>
+<code>[**entry**]{.parameter-name} [:]{.parameter-annotation-sep} [[Entry](`crossrepo.model.Entry`)]{.parameter-annotation}</code>
 
 :   Entry whose history to search.
 
@@ -18,7 +18,7 @@ Resolve a version reference against a file's history.
 
 ## Returns {.doc-section .doc-section-returns}
 
-<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Version](`labdata.model.Version`)]{.parameter-annotation}</code>
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Version](`crossrepo.model.Version`)]{.parameter-annotation}</code>
 
 :   The matching version.
 

@@ -1,14 +1,14 @@
-# download { #labdata.remote.download }
+# download { #crossrepo.remote.download }
 
 ```python
-labdata.remote.download(entry, blob_sha, lfs_oid, size, dest, client=None)
+crossrepo.remote.download(entry, blob_sha, lfs_oid, size, dest, client=None)
 ```
 
 Stream one file's content from GitHub into a local path.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
-<code>[**entry**]{.parameter-name} [:]{.parameter-annotation-sep} [[Entry](`labdata.model.Entry`)]{.parameter-annotation}</code>
+<code>[**entry**]{.parameter-name} [:]{.parameter-annotation-sep} [[Entry](`crossrepo.model.Entry`)]{.parameter-annotation}</code>
 
 :   Entry naming the repository.
 
@@ -28,12 +28,12 @@ Stream one file's content from GitHub into a local path.
 
 :   File to write.
 
-<code>[**client**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Client](`labdata.github.Client`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+<code>[**client**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Client](`crossrepo.github.Client`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
 
 :   Client to read with. Defaults to a new one.
 
 ## Raises {.doc-section .doc-section-raises}
 
-<code>[:]{.parameter-annotation-sep} [[GitHubError](`labdata.github.GitHubError`)]{.parameter-annotation}</code>
+<code>[:]{.parameter-annotation-sep} [[GitHubError](`crossrepo.github.GitHubError`)]{.parameter-annotation}</code>
 
 :   If the content cannot be read.

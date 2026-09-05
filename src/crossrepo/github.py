@@ -71,12 +71,12 @@ def token() -> Optional[str]:
 
 class Client:
     """
-    A thin, streaming client for the parts of the GitHub API labdata needs.
+    A thin, streaming client for the parts of the GitHub API crossrepo needs.
 
     Parameters
     ----------
     auth :
-        Token to authenticate with. Defaults to [](`labdata.github.token`).
+        Token to authenticate with. Defaults to [](`crossrepo.github.token`).
     api :
         Base address of the API, so a test can point this somewhere else.
 
@@ -120,7 +120,7 @@ class Client:
             If the request fails. Missing, unauthorised and rate limited are
             each reported in the terms that suggest what to do about them.
         """
-        headers = {"Accept": accept, "User-Agent": "labdata"}
+        headers = {"Accept": accept, "User-Agent": "crossrepo"}
         if self.auth and url.startswith((self.api, WEB)):
             headers["Authorization"] = f"Bearer {self.auth}"
         headers.update(extra or {})
@@ -308,7 +308,7 @@ class Client:
         Read a blob into memory.
 
         Only for content known to be small, such as a manifest or a Git LFS
-        pointer. Use [](`labdata.github.Client.download_blob`) for result files.
+        pointer. Use [](`crossrepo.github.Client.download_blob`) for result files.
 
         Parameters
         ----------
@@ -392,7 +392,7 @@ class Client:
         headers = {
             "Accept": "application/vnd.git-lfs+json",
             "Content-Type": "application/vnd.git-lfs+json",
-            "User-Agent": "labdata",
+            "User-Agent": "crossrepo",
         }
         if self.auth:
             headers["Authorization"] = f"Bearer {self.auth}"

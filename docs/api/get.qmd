@@ -1,7 +1,7 @@
-# get { #labdata.get }
+# get { #crossrepo.get }
 
 ```python
-labdata.get(
+crossrepo.get(
     repo,
     filename,
     version=None,
@@ -51,9 +51,9 @@ pinned form can be copied straight back into the cell.
 
 :   Do not print the hash even when `version` was not given. The warning that a pinned version has been overtaken is still printed, on standard error: it says something happened rather than merely reporting.
 
-<code>[**cfg**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Config](`labdata.config.Config`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+<code>[**cfg**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Config](`crossrepo.config.Config`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
 
-:   Settings. Defaults to [](`labdata.config.active_config`): what [](`labdata.config.use_config`) registered, or the configuration file.
+:   Settings. Defaults to [](`crossrepo.config.active_config`): what [](`crossrepo.config.use_config`) registered, or the configuration file.
 
 ## Returns {.doc-section .doc-section-returns}
 
@@ -80,22 +80,22 @@ pinned form can be copied straight back into the cell.
 Read the latest version, and be told the hash that pins it:
 
 ```python
-import labdata
+import crossrepo
 import pandas as pd
 
-df = pd.read_csv(labdata.get("x-gwas", "hits.csv"))
+df = pd.read_csv(crossrepo.get("x-gwas", "hits.csv"))
 # munch-group/x-gwas:results/hits.csv@e4f5a6b  (2026-04-11, 1.2M)
-# pin this version:  labdata.get("x-gwas", "hits.csv", "e4f5a6b")
+# pin this version:  crossrepo.get("x-gwas", "hits.csv", "e4f5a6b")
 ```
 
 Pin it, so the notebook reads the same bytes next year:
 
 ```python
-df = pd.read_csv(labdata.get("x-gwas", "hits.csv", "e4f5a6b"))
+df = pd.read_csv(crossrepo.get("x-gwas", "hits.csv", "e4f5a6b"))
 ```
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`labdata.core.fetch`)
-[](`labdata.versions`)
-[](`labdata.core.outdated`)
+[](`crossrepo.core.fetch`)
+[](`crossrepo.versions`)
+[](`crossrepo.core.outdated`)

@@ -1,7 +1,7 @@
-# link_target { #labdata.gitutil.link_target }
+# link_target { #crossrepo.gitutil.link_target }
 
 ```python
-labdata.gitutil.link_target(repo, blob_sha)
+crossrepo.gitutil.link_target(repo, blob_sha)
 ```
 
 Read where a committed symbolic link points.
@@ -12,7 +12,7 @@ to hold, which is the same rule manifests are read by.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
-<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[Location](`labdata.location.Location`), [Path](`pathlib.Path`), [str](`str`)\]]{.parameter-annotation}</code>
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[Union](`typing.Union`)\[[Location](`crossrepo.location.Location`), [Path](`pathlib.Path`), [str](`str`)\]]{.parameter-annotation}</code>
 
 :   Working tree holding the blob, on this machine or another.
 
@@ -28,4 +28,4 @@ to hold, which is the same rule manifests are read by.
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`labdata.gitutil.resolve_link`)
+[](`crossrepo.gitutil.resolve_link`)

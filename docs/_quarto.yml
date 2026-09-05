@@ -37,7 +37,7 @@ interlinks:
     #   inv: objects-test.txt
 
 website:
-  title: "labdata"
+  title: "crossrepo"
   page-navigation: true
   navbar:
     left:
@@ -47,7 +47,7 @@ website:
       #   text: Gallery
     right:
       - icon: github
-        href: https://github.com/munch-group/labdata/
+        href: https://github.com/munch-group/crossrepo/
   sidebar:
     - id: pages
       title: Get Started
@@ -76,7 +76,7 @@ format:
       theme: neutral 
 
 quartodoc:
-  package: labdata
+  package: crossrepo
   style: pkgdown
   dir: api
   render_interlinks: true
@@ -90,7 +90,7 @@ quartodoc:
 
   sections:
     - title: Catalog
-      package: labdata
+      package: crossrepo
       desc: |
         Finding out what the repositories publish.
       contents:
@@ -103,7 +103,7 @@ quartodoc:
         - build
         - diagnose
     - title: Fetching
-      package: labdata
+      package: crossrepo
       desc: |
         Getting a local path to one version of a result file.
       contents:
@@ -111,7 +111,7 @@ quartodoc:
         - fetch
         - outdated
     - title: Resolving
-      package: labdata.core
+      package: crossrepo.core
       desc: |
         Turning a spec such as `repo:file@version` into one entry and one
         version.
@@ -127,7 +127,7 @@ quartodoc:
         - progress_bar
         - copy_out
     - title: Data types
-      package: labdata
+      package: crossrepo
       desc: |
         What the catalog is made of.
       contents:
@@ -136,7 +136,7 @@ quartodoc:
         - Spec
 
     - title: GitHub
-      package: labdata.remote
+      package: crossrepo.remote
       desc: |
         Cataloguing and fetching repositories over the GitHub API, without
         cloning them.
@@ -149,7 +149,7 @@ quartodoc:
         - download
 
     - title: GitHub API
-      package: labdata.github
+      package: crossrepo.github
       desc: |
         The client the GitHub backend reads with.
       contents:
@@ -159,9 +159,9 @@ quartodoc:
         - GitHubError
 
     - title: Manifests
-      package: labdata.manifest
+      package: crossrepo.manifest
       desc: |
-        The `labdata.yml` by which a repository states what it publishes, what
+        The `crossrepo.yml` by which a repository states what it publishes, what
         each published file holds, and, for a file published as a symbolic link,
         which content that link stands for.
       contents:
@@ -173,7 +173,7 @@ quartodoc:
         - manifest_path
         - ManifestError
     - title: Configuration
-      package: labdata.config
+      package: crossrepo.config
       desc: |
         Which directories are searched, which files are cataloged, and where
         settings and the cache live.
@@ -185,7 +185,7 @@ quartodoc:
         - config_path
         - cache_root
     - title: Cache
-      package: labdata.cache
+      package: crossrepo.cache
       desc: |
         The content-addressed store, keyed by git blob sha, by Git LFS object
         id, or by the stamp of a file published as a symbolic link.
@@ -202,7 +202,7 @@ quartodoc:
         - discard
         - usage
     - title: Git access
-      package: labdata.gitutil
+      package: crossrepo.gitutil
       desc: |
         Plumbing wrappers used to read repositories.
       contents:
@@ -225,9 +225,9 @@ quartodoc:
         - resolve_link
         - GitError
     - title: Command line
-      package: labdata.cli
+      package: crossrepo.cli
       desc: |
-        Entry points behind the `labdata` command.
+        Entry points behind the `crossrepo` command.
       contents:
         - main
         - table

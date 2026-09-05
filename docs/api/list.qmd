@@ -1,7 +1,7 @@
-# list { #labdata.list }
+# list { #crossrepo.list }
 
 ```python
-labdata.list(
+crossrepo.list(
     repo=None,
     pattern=None,
     *,
@@ -17,7 +17,7 @@ labdata.list(
 
 Tabulate what the configured repositories publish.
 
-The python side of ``labdata list``, and like it the version is left out
+The python side of ``crossrepo list``, and like it the version is left out
 unless asked for: it is a full commit sha, and every file a repository
 publishes carries the same one.
 
@@ -25,7 +25,7 @@ publishes carries the same one.
 
 <code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
 
-:   Keep only repositories whose ``owner/repo`` contains this, as ``labdata list <repo>`` does.
+:   Keep only repositories whose ``owner/repo`` contains this, as ``crossrepo list <repo>`` does.
 
 <code>[**pattern**]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
 
@@ -41,7 +41,7 @@ publishes carries the same one.
 
 <code>[**spec**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [False]{.parameter-default}</code>
 
-:   Include the ``spec`` column, the one string naming a file at a version, which [](`labdata.fetch`) and the command line take. It restates the repository, the path and the version, so it is the widest column there is and is left out unless wanted.
+:   Include the ``spec`` column, the one string naming a file at a version, which [](`crossrepo.fetch`) and the command line take. It restates the repository, the path and the version, so it is the widest column there is and is left out unless wanted.
 
 <code>[**url**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [False]{.parameter-default}</code>
 
@@ -57,34 +57,34 @@ publishes carries the same one.
 
 <code>[**cfg**]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
 
-:   Settings. Defaults to [](`labdata.config.active_config`): what [](`labdata.config.use_config`) registered, or the configuration file.
+:   Settings. Defaults to [](`crossrepo.config.active_config`): what [](`crossrepo.config.use_config`) registered, or the configuration file.
 
 ## Returns {.doc-section .doc-section-returns}
 
 <code>[]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation}</code>
 
-:   A [](`pandas.DataFrame`) with one row per published file or dataset: ``owner``, ``repo``, ``name``, ``description``, ``date``, ``github``, ``path``, ``dir``, ``bytes``, ``tags`` and ``lfs``, or the six columns of `brief`, plus whichever of ``version``, ``spec`` and ``url`` were asked for. ``github`` is the repository as ``owner/repo``, and ``path`` the file as ``dir/name``. [](`labdata.frame`) has everything, including the number of files a dataset holds.
+:   A [](`pandas.DataFrame`) with one row per published file or dataset: ``owner``, ``repo``, ``name``, ``description``, ``date``, ``github``, ``path``, ``dir``, ``bytes``, ``tags`` and ``lfs``, or the six columns of `brief`, plus whichever of ``version``, ``spec`` and ``url`` were asked for. ``github`` is the repository as ``owner/repo``, and ``path`` the file as ``dir/name``. [](`crossrepo.frame`) has everything, including the number of files a dataset holds.
 
 ## Raises {.doc-section .doc-section-raises}
 
 <code>[:]{.parameter-annotation-sep} [[ImportError](`ImportError`)]{.parameter-annotation}</code>
 
-:   If pandas is not installed. It is not a dependency of `labdata`.
+:   If pandas is not installed. It is not a dependency of `crossrepo`.
 
 ## Examples {.doc-section .doc-section-examples}
 
 ```python
-import labdata
+import crossrepo
 
-labdata.list()                        # everything published
-labdata.list(brief=True)              # just what each file is, and how big
-labdata.list("x-gwas")                # one repository
-labdata.list(pattern="*.parquet")     # by file name
-labdata.list(version=True)            # with the sha that pins each file
-labdata.list(spec=True)               # with the string the shell takes
+crossrepo.list()                        # everything published
+crossrepo.list(brief=True)              # just what each file is, and how big
+crossrepo.list("x-gwas")                # one repository
+crossrepo.list(pattern="*.parquet")     # by file name
+crossrepo.list(version=True)            # with the sha that pins each file
+crossrepo.list(spec=True)               # with the string the shell takes
 ```
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`labdata.get`)
-[](`labdata.repos`)
+[](`crossrepo.get`)
+[](`crossrepo.repos`)

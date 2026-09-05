@@ -2,7 +2,7 @@
 
 import pytest
 
-from labdata import cli, core
+from crossrepo import cli, core
 
 
 def test_pinning_an_older_content_warns(by_spec, cfg, capsys):

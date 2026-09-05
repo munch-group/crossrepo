@@ -1,7 +1,7 @@
-# fetch { #labdata.fetch }
+# fetch { #crossrepo.fetch }
 
 ```python
-labdata.fetch(spec_text, refresh=False, cfg=None)
+crossrepo.fetch(spec_text, refresh=False, cfg=None)
 ```
 
 Get a local path to a result file, fetching it if it is not cached.
@@ -16,9 +16,9 @@ Get a local path to a result file, fetching it if it is not cached.
 
 :   Rescan the repositories before resolving the spec.
 
-<code>[**cfg**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Config](`labdata.config.Config`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+<code>[**cfg**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Config](`crossrepo.config.Config`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
 
-:   Settings. Defaults to [](`labdata.config.active_config`): what [](`labdata.config.use_config`) registered, or the configuration file.
+:   Settings. Defaults to [](`crossrepo.config.active_config`): what [](`crossrepo.config.use_config`) registered, or the configuration file.
 
 ## Returns {.doc-section .doc-section-returns}
 
@@ -51,4 +51,4 @@ df = pd.read_csv(fetch("munch-group/xwas:hits.csv@e4f5a6b"))
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`labdata.core.catalog`)
+[](`crossrepo.core.catalog`)

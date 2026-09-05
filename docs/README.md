@@ -18,4 +18,4 @@ Finally you should see the filter run when previewing your docs:
 
 Uninstall 
 
-    pip uninstall labdata
+    pip uninstall crossrepo

@@ -1,7 +1,7 @@
 """
 Tests for repositories on another machine, read over ssh.
 
-No server is involved: ``LABDATA_SSH`` points at a stand-in that runs the
+No server is involved: ``CROSSREPO_SSH`` points at a stand-in that runs the
 command it is given on this machine, with its own home directory, so what is
 being tested is everything on this side — how the command is built, how a path
 is quoted, that ``~`` is left for the far side, and that the catalog, the
@@ -15,9 +15,9 @@ from pathlib import Path
 
 import pytest
 
-from labdata import core, gitutil
-from labdata.config import Config, SourceWarning
-from labdata.location import Location, quote
+from crossrepo import core, gitutil
+from crossrepo.config import Config, SourceWarning
+from crossrepo.location import Location, quote
 
 from fixtures import CODE, commit, fake_ssh, init
 
@@ -35,12 +35,12 @@ def server(tmp_path, monkeypatch):
     """A directory of repositories reachable only as ``tester@fakehost:~/...``."""
     home = tmp_path / "home"
     (home / "projects").mkdir(parents=True)
-    monkeypatch.setenv("LABDATA_SSH", fake_ssh(tmp_path, home))
-    monkeypatch.setenv("LABDATA_CACHE", str(tmp_path / "cache"))
+    monkeypatch.setenv("CROSSREPO_SSH", fake_ssh(tmp_path, home))
+    monkeypatch.setenv("CROSSREPO_CACHE", str(tmp_path / "cache"))
 
     repo = init(home / "projects" / "sweep-scan")
     (repo / "results").mkdir()
-    (repo / "results" / "labdata.yml").write_text(
+    (repo / "results" / "crossrepo.yml").write_text(
         "files:\n"
         "  hits.csv: Sweep hits, one row per gene\n"
         "  /data/samples.csv: Kept beside the raw data\n"
@@ -85,7 +85,7 @@ def test_quoting_leaves_the_tilde_for_the_far_side():
 
 
 def test_a_remote_command_is_one_ssh_call(monkeypatch):
-    monkeypatch.delenv("LABDATA_SSH", raising=False)
+    monkeypatch.delenv("CROSSREPO_SSH", raising=False)
     argv = Location(path="~/x", host=HOST).command(["git", "-C", "~/x", "status"])
     assert argv[0] == "ssh"
     assert HOST in argv
@@ -167,7 +167,7 @@ def test_a_clone_on_this_machine_wins_over_one_on_a_server(server, tmp_path):
     here = tmp_path / "here" / "projects"          # same owner, from the parent
     repo = init(_made(here / "sweep-scan"))
     (repo / "results").mkdir(parents=True)
-    (repo / "results" / "labdata.yml").write_text("files:\n  hits.csv: The same file\n")
+    (repo / "results" / "crossrepo.yml").write_text("files:\n  hits.csv: The same file\n")
     (repo / "results" / "hits.csv").write_text("gene,score\nA,1\nB,2\n")
     commit(repo, "the same results, checked out here")
 
@@ -194,7 +194,7 @@ def test_an_lfs_object_is_streamed_from_the_far_side(server):
     repo = server / "projects" / "big-thing"
     init(repo)
     (repo / "results").mkdir()
-    (repo / "results" / "labdata.yml").write_text("files:\n  big.h5: Held in LFS\n")
+    (repo / "results" / "crossrepo.yml").write_text("files:\n  big.h5: Held in LFS\n")
     oid = "ab" * 32
     (repo / "results" / "big.h5").write_text(
         "version https://git-lfs.github.com/spec/v1\n"
@@ -214,7 +214,7 @@ def test_a_missing_lfs_object_names_the_machine_it_is_on(server):
     repo = server / "projects" / "no-object"
     init(repo)
     (repo / "results").mkdir()
-    (repo / "results" / "labdata.yml").write_text("files:\n  gone.h5: Held in LFS\n")
+    (repo / "results" / "crossrepo.yml").write_text("files:\n  gone.h5: Held in LFS\n")
     (repo / "results" / "gone.h5").write_text(
         "version https://git-lfs.github.com/spec/v1\n"
         "oid sha256:" + "cd" * 32 + "\nsize 512\n"
@@ -233,7 +233,7 @@ def test_a_dataset_is_assembled_from_the_far_side(server):
     parts.mkdir()
     for i in range(3):
         (parts / f"part-{i}.parquet").write_text(f"row,{i}\n")
-    (repo / "results" / "labdata.yml").write_text(
+    (repo / "results" / "crossrepo.yml").write_text(
         "files:\n"
         "  hits.csv: Sweep hits, one row per gene\n"
         "  table.parquet: One table split over files\n"
@@ -253,7 +253,7 @@ def test_a_dataset_is_assembled_from_the_far_side(server):
 
 def test_the_control_socket_fits_in_a_unix_socket_path(monkeypatch):
     """A socket path over the limit is not a slow connection but a failed one."""
-    from labdata import location
+    from crossrepo import location
 
     long_tmp = "/var/folders/" + "x" * 40 + "/T"          # as macOS gives one
     monkeypatch.setattr(location, "_configured", lambda host: {})
@@ -265,7 +265,7 @@ def test_the_control_socket_fits_in_a_unix_socket_path(monkeypatch):
 
 
 def test_a_socket_path_that_cannot_be_had_costs_only_the_sharing(monkeypatch):
-    from labdata import location
+    from crossrepo import location
 
     monkeypatch.setattr(location.tempfile, "gettempdir", lambda: "/" + "x" * 200)
     monkeypatch.setattr(location, "_private_dir", lambda path: False)
@@ -275,8 +275,8 @@ def test_a_socket_path_that_cannot_be_had_costs_only_the_sharing(monkeypatch):
 
 
 def test_each_host_gets_its_own_socket(monkeypatch):
-    from labdata import location
-    from labdata.location import ssh_argv
+    from crossrepo import location
+    from crossrepo.location import ssh_argv
 
     monkeypatch.setattr(location, "_configured", lambda host: {})
 
@@ -296,7 +296,7 @@ def _control_path(argv):
 # ------------------------------------------------ reporting from the cli
 
 def test_refresh_names_a_server_that_did_not_answer(server, tmp_path, capsys):
-    from labdata import cli
+    from crossrepo import cli
 
     conf = tmp_path / "c.toml"
     conf.write_text(
@@ -314,7 +314,7 @@ def test_refresh_names_a_server_that_did_not_answer(server, tmp_path, capsys):
 def test_ssh_may_ask_when_a_terminal_can_answer(monkeypatch):
     """A key passphrase or a two-factor code is typed, so the prompt must reach
     the terminal rather than being turned into a refusal."""
-    from labdata import location
+    from crossrepo import location
 
     monkeypatch.setattr(location, "_configured", lambda host: {})
     monkeypatch.setattr(location, "_interactive", lambda: True)
@@ -322,7 +322,7 @@ def test_ssh_may_ask_when_a_terminal_can_answer(monkeypatch):
 
 
 def test_ssh_is_told_not_to_ask_when_nothing_could_answer(monkeypatch):
-    from labdata import location
+    from crossrepo import location
 
     monkeypatch.setattr(location, "_configured", lambda host: {})
     monkeypatch.setattr(location, "_interactive", lambda: False)
@@ -331,7 +331,7 @@ def test_ssh_is_told_not_to_ask_when_nothing_could_answer(monkeypatch):
 
 def test_what_the_users_own_ssh_config_settles_is_left_alone(monkeypatch):
     """Command line options beat the config file, so anything set there stands."""
-    from labdata import location
+    from crossrepo import location
 
     monkeypatch.setattr(location, "_configured", lambda host: {
         "controlpath": "~/.ssh/cm-%r@%h:%p",
@@ -343,7 +343,7 @@ def test_what_the_users_own_ssh_config_settles_is_left_alone(monkeypatch):
 
 
 def test_our_own_multiplexing_is_added_when_there_is_none(monkeypatch):
-    from labdata import location
+    from crossrepo import location
 
     monkeypatch.setattr(location, "_configured", lambda host: {
         "controlmaster": "false", "connecttimeout": "none",
@@ -354,7 +354,7 @@ def test_our_own_multiplexing_is_added_when_there_is_none(monkeypatch):
 
 
 def test_a_host_answering_is_how_the_connection_is_opened(server):
-    from labdata.location import warm
+    from crossrepo.location import warm
 
     assert warm(HOST) is None
     assert "Connection refused" in warm("unreachable@nowhere")
@@ -362,7 +362,7 @@ def test_a_host_answering_is_how_the_connection_is_opened(server):
 
 def test_a_refusal_says_where_to_answer_the_prompt(server, monkeypatch):
     """Without a terminal, a host that wanted a code must say what to do."""
-    from labdata import location
+    from crossrepo import location
 
     monkeypatch.setattr(location, "_interactive", lambda: False)
     said = location.warm("kmt@twofactor.example")
@@ -372,7 +372,7 @@ def test_a_refusal_says_where_to_answer_the_prompt(server, monkeypatch):
 
 
 def test_a_refusal_on_a_terminal_is_left_to_speak_for_itself(server, monkeypatch):
-    from labdata import location
+    from crossrepo import location
 
     monkeypatch.setattr(location, "_interactive", lambda: True)
     said = location.warm("kmt@twofactor.example")
@@ -385,7 +385,7 @@ def test_a_refusal_on_a_terminal_is_left_to_speak_for_itself(server, monkeypatch
 @pytest.fixture()
 def notebook(monkeypatch):
     """Stand in for a kernel: no terminal, but able to put a question."""
-    from labdata import location
+    from crossrepo import location
 
     asked = []
 
@@ -400,15 +400,15 @@ def notebook(monkeypatch):
 
 
 def test_a_notebook_is_asked_for_the_code(server, notebook):
-    """ssh has no terminal either, so it asks labdata, which asks the notebook."""
-    from labdata.location import warm
+    """ssh has no terminal either, so it asks crossrepo, which asks the notebook."""
+    from crossrepo.location import warm
 
     assert warm("kmt@askpass.example") is None
     assert notebook == ["Verification code: "]
 
 
 def test_the_answer_is_what_lets_the_connection_through(server, monkeypatch):
-    from labdata import location
+    from crossrepo import location
 
     monkeypatch.setattr(location, "_interactive", lambda: False)
     monkeypatch.setattr(location, "_kernel", lambda: object())
@@ -418,7 +418,7 @@ def test_the_answer_is_what_lets_the_connection_through(server, monkeypatch):
 
 def test_a_notebook_is_not_told_to_stay_quiet(notebook):
     """BatchMode would silence the prompt this whole arrangement exists for."""
-    from labdata import location
+    from crossrepo import location
 
     assert "BatchMode=yes" not in location.ssh_options("kmt@askpass.example")
 
@@ -442,7 +442,7 @@ def test_a_repo_with_many_files_does_not_wedge_on_its_own_input(server, notebook
     repo = server / "projects" / "wide"
     init(repo)
     (repo / "results").mkdir()
-    (repo / "results" / "labdata.yml").write_text('files:\n  "*.csv": one of many\n')
+    (repo / "results" / "crossrepo.yml").write_text('files:\n  "*.csv": one of many\n')
     for i in range(400):
         (repo / "results" / f"table-{i:03}.csv").write_text(f"n\n{i}\n")
     commit(repo, "many small tables")
@@ -454,7 +454,7 @@ def test_a_repo_with_many_files_does_not_wedge_on_its_own_input(server, notebook
 
 
 def test_the_helper_ssh_calls_is_private_and_runs_this_python():
-    from labdata.location import _helper
+    from crossrepo.location import _helper
 
     helper = Path(_helper())
     assert helper.stat().st_mode & 0o777 == 0o700
@@ -469,7 +469,7 @@ def test_real_openssh_asks_us_and_takes_the_answer(tmp_path, monkeypatch):
     same way, so it stands in for a host asking — without an account, a network,
     or a failed login attempt anywhere.
     """
-    from labdata import location
+    from crossrepo import location
 
     key = tmp_path / "k"
     subprocess.run(
@@ -499,14 +499,14 @@ def test_a_root_relative_to_the_home_directory_is_read(tmp_path, monkeypatch):
     repo = home / "xy-drive" / "people" / "kmt" / "hic-xy-sperm"
     (repo / "results").mkdir(parents=True)
     init(repo)
-    (repo / "results" / "labdata.yml").write_text(
+    (repo / "results" / "crossrepo.yml").write_text(
         "files:\n  all_genes.h5: all genes\n  segments_50000.csv: 50kb segments\n"
     )
     (repo / "results" / "all_genes.h5").write_text("h\n")
     (repo / "results" / "segments_50000.csv").write_text("s\n")
     commit(repo, "publish")
-    monkeypatch.setenv("LABDATA_SSH", fake_ssh(tmp_path, home))
-    monkeypatch.setenv("LABDATA_CACHE", str(tmp_path / "cache"))
+    monkeypatch.setenv("CROSSREPO_SSH", fake_ssh(tmp_path, home))
+    monkeypatch.setenv("CROSSREPO_CACHE", str(tmp_path / "cache"))
 
     cfg = Config(roots=[f"{HOST}:xy-drive/people/kmt"])
     assert [str(f) for f in gitutil.discover_repos(cfg.roots)] == [
@@ -522,7 +522,7 @@ def test_a_root_relative_to_the_home_directory_is_read(tmp_path, monkeypatch):
 def test_a_host_without_git_says_so(server):
     """Finding repos takes a shell; reading one takes git, and a login shell
     having git is not the same as an ssh command having it."""
-    from labdata.location import warm
+    from crossrepo.location import warm
 
     said = warm("kmt@nogit.example")
     assert said is not None
@@ -531,7 +531,7 @@ def test_a_host_without_git_says_so(server):
 
 
 def test_a_host_without_git_publishes_nothing_and_reports_it(server, tmp_path):
-    from labdata import cli
+    from crossrepo import cli
 
     conf = tmp_path / "c.toml"
     conf.write_text(f'roots = ["kmt@nogit.example:~/projects"]\n')

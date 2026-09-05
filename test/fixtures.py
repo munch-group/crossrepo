@@ -97,7 +97,7 @@ def fake_ssh(where: Path, home: Path) -> str:
     Returns
     -------
     :
-        Path of the script, to be put in ``LABDATA_SSH``. A destination holding
+        Path of the script, to be put in ``CROSSREPO_SSH``. A destination holding
         ``unreachable`` fails the way an unanswering host does; one holding
         ``twofactor`` the way a host does that wanted something typed and had
         nobody to ask; one holding ``askpass`` asks for `CODE` the way a host
@@ -181,7 +181,7 @@ def make(base: Path) -> Path:
     a = init(_mkdir(base / "acme" / "sweep-scan"))
     run(a, "remote", "add", "origin", "git@github.com:acme/sweep-scan.git")
     (a / "results").mkdir()
-    (a / "results" / "labdata.yml").write_text(
+    (a / "results" / "crossrepo.yml").write_text(
         "files:\n"
         '  candidates.csv: Sweep candidates, one row per gene\n'
         '  stable.csv: A table that never changes\n'
@@ -205,7 +205,7 @@ def make(base: Path) -> Path:
     # A manifest deeper in the tree, which is not read: only the one directly in
     # the results directory governs, so both files here fall under its "*.csv".
     (a / "results" / "nested").mkdir()
-    (a / "results" / "nested" / "labdata.yml").write_text(
+    (a / "results" / "nested" / "crossrepo.yml").write_text(
         "files:\n  one.csv: this manifest is too deep to be read\n"
     )
     (a / "results" / "nested" / "one.csv").write_text("s,1\n")
@@ -230,7 +230,7 @@ def make(base: Path) -> Path:
     b = init(_mkdir(base / "acme" / "hic-borders"))
     run(b, "remote", "add", "origin", "https://github.com/other-org/hic-borders.git")
     (b / "Results").mkdir()
-    (b / "Results" / "labdata.yml").write_text(
+    (b / "Results" / "crossrepo.yml").write_text(
         "files:\n"
         "  borders.tsv: TAD borders called from Hi-C\n"
         "  stable.csv: A table that never changes\n"
@@ -243,7 +243,7 @@ def make(base: Path) -> Path:
     # A Git LFS pointer with no local object, and no remote at all.
     c = init(_mkdir(base / "other" / "big-thing"))
     (c / "results").mkdir()
-    (c / "results" / "labdata.yml").write_text(
+    (c / "results" / "crossrepo.yml").write_text(
         "files:\n  big.h5: A large table kept in Git LFS\n"
     )
     (c / ".gitattributes").write_text("results/*.h5 filter=lfs diff=lfs merge=lfs -text\n")
@@ -292,7 +292,7 @@ def digest(text: str) -> str:
     """
     Hash content the way a manifest stamp records it.
 
-    Computed here rather than with `labdata.cache.content_hash`, so that the
+    Computed here rather than with `crossrepo.cache.content_hash`, so that the
     tests check the library against an independent answer.
 
     Parameters
@@ -359,7 +359,7 @@ def write_link_repo(
         said = stamp_for if stamp_for is not None else content
         assert said is not None, "a stamp needs content to describe"
         stamp = f'    sha256: "{digest(said)}"\n    size: {len(said)}\n'
-    (repo / "results" / "labdata.yml").write_text(
+    (repo / "results" / "crossrepo.yml").write_text(
         "files:\n"
         "  plain.csv: An ordinary committed table\n"
         f"  {key}:\n    description: {description}\n{stamp}"
@@ -390,10 +390,10 @@ def restamp(repo: Path, content: str, message: str) -> None:
     fresh = target.with_suffix(".new")
     fresh.write_text(content)
     fresh.replace(target)
-    text = (repo / "results" / "labdata.yml").read_text()
+    text = (repo / "results" / "crossrepo.yml").read_text()
     text = re.sub(r'sha256: "[0-9a-f]{64}"', f'sha256: "{digest(content)}"', text)
     text = re.sub(r"size: \d+", f"size: {len(content)}", text)
-    (repo / "results" / "labdata.yml").write_text(text)
+    (repo / "results" / "crossrepo.yml").write_text(text)
     commit(repo, message)
 
 
@@ -428,8 +428,8 @@ def make_links(base: Path) -> Path:
     restamp(proj, LINK_V2, "regenerate the big table")
     # A commit that touches the manifest without changing this stamp, which is
     # therefore not a version of this file.
-    text = (proj / "results" / "labdata.yml").read_text()
-    (proj / "results" / "labdata.yml").write_text(
+    text = (proj / "results" / "crossrepo.yml").read_text()
+    (proj / "results" / "crossrepo.yml").write_text(
         text.replace("Merged table", "Merged per-sample table")
     )
     commit(proj, "describe the table better")

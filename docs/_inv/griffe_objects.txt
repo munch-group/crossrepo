@@ -1538,6 +1538,8 @@ griffe.Extensions.add(*extensions) py:param 1 reference/api/extensions/#$ -
 griffe.Extensions.call py:function 1 reference/api/extensions/#$ -
 griffe.Extensions.call(**kwargs) py:param 1 reference/api/extensions/#$ -
 griffe.Extensions.call(event) py:param 1 reference/api/extensions/#$ -
+griffe.Extensions.has_hooks py:function 1 reference/api/extensions/#$ -
+griffe.Extensions.has_hooks(*events) py:param 1 reference/api/extensions/#$ -
 griffe.Function py:class 1 reference/api/models/function/#$ -
 griffe.Function(**kwargs) py:param 1 reference/api/models/function/#$ -
 griffe.Function(*args) py:param 1 reference/api/models/function/#$ -
@@ -1655,6 +1657,7 @@ griffe.GitError py:class 1 reference/api/exceptions/#$ -
 griffe.GitInfo py:class 1 reference/api/models/#$ -
 griffe.GitInfo.commit_hash py:attr 1 reference/api/models/#$ -
 griffe.GitInfo.from_package py:function 1 reference/api/models/#$ -
+griffe.GitInfo.from_package(package) py:param 1 reference/api/models/#$ -
 griffe.GitInfo.get_source_link py:function 1 reference/api/models/#$ -
 griffe.GitInfo.remote_url py:attr 1 reference/api/models/#$ -
 griffe.GitInfo.repository py:attr 1 reference/api/models/#$ -
@@ -1678,6 +1681,7 @@ griffe.GriffeLoader(docstring_parser) py:param 1 reference/api/loaders/#$ -
 griffe.GriffeLoader(extensions) py:param 1 reference/api/loaders/#$ -
 griffe.GriffeLoader(lines_collection) py:param 1 reference/api/loaders/#$ -
 griffe.GriffeLoader(modules_collection) py:param 1 reference/api/loaders/#$ -
+griffe.GriffeLoader(prefer_stubs_docs) py:param 1 reference/api/loaders/#$ -
 griffe.GriffeLoader(search_paths) py:param 1 reference/api/loaders/#$ -
 griffe.GriffeLoader(store_source) py:param 1 reference/api/loaders/#$ -
 griffe.GriffeLoader.allow_inspection py:attr 1 reference/api/loaders/#$ -
@@ -1700,7 +1704,7 @@ griffe.GriffeLoader.load(find_stubs_package) py:param 1 reference/api/loaders/#$
 griffe.GriffeLoader.load(objspec) py:param 1 reference/api/loaders/#$ -
 griffe.GriffeLoader.load(submodules) py:param 1 reference/api/loaders/#$ -
 griffe.GriffeLoader.load(try_relative_path) py:param 1 reference/api/loaders/#$ -
-griffe.GriffeLoader.modules_collection py:attr 1 reference/api/loaders/#$ -
+griffe.GriffeLoader.prefer_stubs_docs py:attr 1 reference/api/loaders/#$ -
 griffe.GriffeLoader.resolve_aliases py:function 1 reference/api/loaders/#$ -
 griffe.GriffeLoader.resolve_aliases(external) py:param 1 reference/api/loaders/#$ -
 griffe.GriffeLoader.resolve_aliases(implicit) py:param 1 reference/api/loaders/#$ -
@@ -4272,6 +4276,8 @@ griffe._internal.extensions.base.Extensions.add(*extensions) py:param 2 referenc
 griffe._internal.extensions.base.Extensions.call py:function 2 reference/api/extensions/#griffe.Extensions.call -
 griffe._internal.extensions.base.Extensions.call(**kwargs) py:param 2 reference/api/extensions/#griffe.Extensions.call(**kwargs) -
 griffe._internal.extensions.base.Extensions.call(event) py:param 2 reference/api/extensions/#griffe.Extensions.call(event) -
+griffe._internal.extensions.base.Extensions.has_hooks py:function 2 reference/api/extensions/#griffe.Extensions.has_hooks -
+griffe._internal.extensions.base.Extensions.has_hooks(*events) py:param 2 reference/api/extensions/#griffe.Extensions.has_hooks(*events) -
 griffe._internal.extensions.base.LoadableExtensionType py:data 2 reference/api/extensions/#griffe.LoadableExtensionType -
 griffe._internal.extensions.base.builtin_extensions py:data 2 reference/api/extensions/#griffe.builtin_extensions -
 griffe._internal.extensions.base.load_extensions py:function 2 reference/api/extensions/#griffe.load_extensions -
@@ -4320,6 +4326,7 @@ griffe._internal.finder.Package.stubs py:attr 2 reference/api/finder/#griffe.Pac
 griffe._internal.git.GitInfo py:class 2 reference/api/models/#griffe.GitInfo -
 griffe._internal.git.GitInfo.commit_hash py:attr 2 reference/api/models/#griffe.GitInfo.commit_hash -
 griffe._internal.git.GitInfo.from_package py:function 2 reference/api/models/#griffe.GitInfo.from_package -
+griffe._internal.git.GitInfo.from_package(package) py:param 2 reference/api/models/#griffe.GitInfo.from_package(package) -
 griffe._internal.git.GitInfo.get_source_link py:function 2 reference/api/models/#griffe.GitInfo.get_source_link -
 griffe._internal.git.GitInfo.remote_url py:attr 2 reference/api/models/#griffe.GitInfo.remote_url -
 griffe._internal.git.GitInfo.repository py:attr 2 reference/api/models/#griffe.GitInfo.repository -
@@ -4356,6 +4363,7 @@ griffe._internal.helpers.temporary_inspected_package(lines_collection) py:param 
 griffe._internal.helpers.temporary_inspected_package(modules) py:param 2 reference/api/helpers/#griffe.temporary_inspected_package(modules) -
 griffe._internal.helpers.temporary_inspected_package(modules_collection) py:param 2 reference/api/helpers/#griffe.temporary_inspected_package(modules_collection) -
 griffe._internal.helpers.temporary_inspected_package(package) py:param 2 reference/api/helpers/#griffe.temporary_inspected_package(package) -
+griffe._internal.helpers.temporary_inspected_package(prefer_stubs_docs) py:param 2 reference/api/helpers/#griffe.temporary_inspected_package(prefer_stubs_docs) -
 griffe._internal.helpers.temporary_inspected_package(resolve_aliases) py:param 2 reference/api/helpers/#griffe.temporary_inspected_package(resolve_aliases) -
 griffe._internal.helpers.temporary_inspected_package(resolve_external) py:param 2 reference/api/helpers/#griffe.temporary_inspected_package(resolve_external) -
 griffe._internal.helpers.temporary_inspected_package(resolve_implicit) py:param 2 reference/api/helpers/#griffe.temporary_inspected_package(resolve_implicit) -
@@ -4389,6 +4397,7 @@ griffe._internal.helpers.temporary_visited_package(lines_collection) py:param 2 
 griffe._internal.helpers.temporary_visited_package(modules) py:param 2 reference/api/helpers/#griffe.temporary_visited_package(modules) -
 griffe._internal.helpers.temporary_visited_package(modules_collection) py:param 2 reference/api/helpers/#griffe.temporary_visited_package(modules_collection) -
 griffe._internal.helpers.temporary_visited_package(package) py:param 2 reference/api/helpers/#griffe.temporary_visited_package(package) -
+griffe._internal.helpers.temporary_visited_package(prefer_stubs_docs) py:param 2 reference/api/helpers/#griffe.temporary_visited_package(prefer_stubs_docs) -
 griffe._internal.helpers.temporary_visited_package(resolve_aliases) py:param 2 reference/api/helpers/#griffe.temporary_visited_package(resolve_aliases) -
 griffe._internal.helpers.temporary_visited_package(resolve_external) py:param 2 reference/api/helpers/#griffe.temporary_visited_package(resolve_external) -
 griffe._internal.helpers.temporary_visited_package(resolve_implicit) py:param 2 reference/api/helpers/#griffe.temporary_visited_package(resolve_implicit) -
@@ -4409,6 +4418,7 @@ griffe._internal.loader.GriffeLoader(docstring_parser) py:param 2 reference/api/
 griffe._internal.loader.GriffeLoader(extensions) py:param 2 reference/api/loaders/#griffe.GriffeLoader(extensions) -
 griffe._internal.loader.GriffeLoader(lines_collection) py:param 2 reference/api/loaders/#griffe.GriffeLoader(lines_collection) -
 griffe._internal.loader.GriffeLoader(modules_collection) py:param 2 reference/api/loaders/#griffe.GriffeLoader(modules_collection) -
+griffe._internal.loader.GriffeLoader(prefer_stubs_docs) py:param 2 reference/api/loaders/#griffe.GriffeLoader(prefer_stubs_docs) -
 griffe._internal.loader.GriffeLoader(search_paths) py:param 2 reference/api/loaders/#griffe.GriffeLoader(search_paths) -
 griffe._internal.loader.GriffeLoader(store_source) py:param 2 reference/api/loaders/#griffe.GriffeLoader(store_source) -
 griffe._internal.loader.GriffeLoader.allow_inspection py:attr 2 reference/api/loaders/#griffe.GriffeLoader.allow_inspection -
@@ -4431,7 +4441,7 @@ griffe._internal.loader.GriffeLoader.load(find_stubs_package) py:param 2 referen
 griffe._internal.loader.GriffeLoader.load(objspec) py:param 2 reference/api/loaders/#griffe.GriffeLoader.load(objspec) -
 griffe._internal.loader.GriffeLoader.load(submodules) py:param 2 reference/api/loaders/#griffe.GriffeLoader.load(submodules) -
 griffe._internal.loader.GriffeLoader.load(try_relative_path) py:param 2 reference/api/loaders/#griffe.GriffeLoader.load(try_relative_path) -
-griffe._internal.loader.GriffeLoader.modules_collection py:attr 2 reference/api/loaders/#griffe.GriffeLoader.modules_collection -
+griffe._internal.loader.GriffeLoader.prefer_stubs_docs py:attr 2 reference/api/loaders/#griffe.GriffeLoader.prefer_stubs_docs -
 griffe._internal.loader.GriffeLoader.resolve_aliases py:function 2 reference/api/loaders/#griffe.GriffeLoader.resolve_aliases -
 griffe._internal.loader.GriffeLoader.resolve_aliases(external) py:param 2 reference/api/loaders/#griffe.GriffeLoader.resolve_aliases(external) -
 griffe._internal.loader.GriffeLoader.resolve_aliases(implicit) py:param 2 reference/api/loaders/#griffe.GriffeLoader.resolve_aliases(implicit) -
@@ -4454,6 +4464,7 @@ griffe._internal.loader.load(force_inspection) py:param 2 reference/api/loaders/
 griffe._internal.loader.load(lines_collection) py:param 2 reference/api/loaders/#griffe.load(lines_collection) -
 griffe._internal.loader.load(modules_collection) py:param 2 reference/api/loaders/#griffe.load(modules_collection) -
 griffe._internal.loader.load(objspec) py:param 2 reference/api/loaders/#griffe.load(objspec) -
+griffe._internal.loader.load(prefer_stubs_docs) py:param 2 reference/api/loaders/#griffe.load(prefer_stubs_docs) -
 griffe._internal.loader.load(resolve_aliases) py:param 2 reference/api/loaders/#griffe.load(resolve_aliases) -
 griffe._internal.loader.load(resolve_external) py:param 2 reference/api/loaders/#griffe.load(resolve_external) -
 griffe._internal.loader.load(resolve_implicit) py:param 2 reference/api/loaders/#griffe.load(resolve_implicit) -
@@ -4471,6 +4482,7 @@ griffe._internal.loader.load_git(force_inspection) py:param 2 reference/api/load
 griffe._internal.loader.load_git(lines_collection) py:param 2 reference/api/loaders/#griffe.load_git(lines_collection) -
 griffe._internal.loader.load_git(modules_collection) py:param 2 reference/api/loaders/#griffe.load_git(modules_collection) -
 griffe._internal.loader.load_git(objspec) py:param 2 reference/api/loaders/#griffe.load_git(objspec) -
+griffe._internal.loader.load_git(prefer_stubs_docs) py:param 2 reference/api/loaders/#griffe.load_git(prefer_stubs_docs) -
 griffe._internal.loader.load_git(ref) py:param 2 reference/api/loaders/#griffe.load_git(ref) -
 griffe._internal.loader.load_git(repo) py:param 2 reference/api/loaders/#griffe.load_git(repo) -
 griffe._internal.loader.load_git(resolve_aliases) py:param 2 reference/api/loaders/#griffe.load_git(resolve_aliases) -
@@ -4489,6 +4501,7 @@ griffe._internal.loader.load_pypi(force_inspection) py:param 2 reference/api/loa
 griffe._internal.loader.load_pypi(lines_collection) py:param 2 reference/api/loaders/#griffe.load_pypi(lines_collection) -
 griffe._internal.loader.load_pypi(modules_collection) py:param 2 reference/api/loaders/#griffe.load_pypi(modules_collection) -
 griffe._internal.loader.load_pypi(package) py:param 2 reference/api/loaders/#griffe.load_pypi(package) -
+griffe._internal.loader.load_pypi(prefer_stubs_docs) py:param 2 reference/api/loaders/#griffe.load_pypi(prefer_stubs_docs) -
 griffe._internal.loader.load_pypi(resolve_aliases) py:param 2 reference/api/loaders/#griffe.load_pypi(resolve_aliases) -
 griffe._internal.loader.load_pypi(resolve_external) py:param 2 reference/api/loaders/#griffe.load_pypi(resolve_external) -
 griffe._internal.loader.load_pypi(resolve_implicit) py:param 2 reference/api/loaders/#griffe.load_pypi(resolve_implicit) -
@@ -4505,6 +4518,7 @@ griffe._internal.logger.patch_loggers(get_logger_func) py:param 2 reference/api/
 griffe._internal.merger.merge_stubs py:function 2 reference/api/loaders/#griffe.merge_stubs -
 griffe._internal.merger.merge_stubs(mod1) py:param 2 reference/api/loaders/#griffe.merge_stubs(mod1) -
 griffe._internal.merger.merge_stubs(mod2) py:param 2 reference/api/loaders/#griffe.merge_stubs(mod2) -
+griffe._internal.merger.merge_stubs(prefer_stubs_docs) py:param 2 reference/api/loaders/#griffe.merge_stubs(prefer_stubs_docs) -
 griffe._internal.mixins.DelMembersMixin py:class 2 reference/api/models/#griffe.DelMembersMixin -
 griffe._internal.mixins.DelMembersMixin.__delitem__ py:function 2 reference/api/loaders/#griffe.ModulesCollection.__delitem__ -
 griffe._internal.mixins.DelMembersMixin.__delitem__(key) py:param 2 reference/api/loaders/#griffe.ModulesCollection.__delitem__(key) -
@@ -5444,8 +5458,10 @@ griffe.check(allow_inspection) py:param 2 reference/api/cli/#griffecli.check(all
 griffe.check(append_sys_path) py:param 2 reference/api/cli/#griffecli.check(append_sys_path) -
 griffe.check(base_ref) py:param 2 reference/api/cli/#griffecli.check(base_ref) -
 griffe.check(extensions) py:param 2 reference/api/cli/#griffecli.check(extensions) -
+griffe.check(find_stubs_package) py:param 2 reference/api/cli/#griffecli.check(find_stubs_package) -
 griffe.check(force_inspection) py:param 2 reference/api/cli/#griffecli.check(force_inspection) -
 griffe.check(package) py:param 2 reference/api/cli/#griffecli.check(package) -
+griffe.check(prefer_stubs_docs) py:param 2 reference/api/cli/#griffecli.check(prefer_stubs_docs) -
 griffe.check(search_paths) py:param 2 reference/api/cli/#griffecli.check(search_paths) -
 griffe.check(verbose) py:param 2 reference/api/cli/#griffecli.check(verbose) -
 griffe.docstring_warning py:function 1 reference/api/docstrings/parsers/#$ -
@@ -5463,6 +5479,7 @@ griffe.dump(force_inspection) py:param 2 reference/api/cli/#griffecli.dump(force
 griffe.dump(full) py:param 2 reference/api/cli/#griffecli.dump(full) -
 griffe.dump(output) py:param 2 reference/api/cli/#griffecli.dump(output) -
 griffe.dump(packages) py:param 2 reference/api/cli/#griffecli.dump(packages) -
+griffe.dump(prefer_stubs_docs) py:param 2 reference/api/cli/#griffecli.dump(prefer_stubs_docs) -
 griffe.dump(resolve_aliases) py:param 2 reference/api/cli/#griffecli.dump(resolve_aliases) -
 griffe.dump(resolve_external) py:param 2 reference/api/cli/#griffecli.dump(resolve_external) -
 griffe.dump(resolve_implicit) py:param 2 reference/api/cli/#griffecli.dump(resolve_implicit) -
@@ -5531,6 +5548,7 @@ griffe.load(force_inspection) py:param 1 reference/api/loaders/#$ -
 griffe.load(lines_collection) py:param 1 reference/api/loaders/#$ -
 griffe.load(modules_collection) py:param 1 reference/api/loaders/#$ -
 griffe.load(objspec) py:param 1 reference/api/loaders/#$ -
+griffe.load(prefer_stubs_docs) py:param 1 reference/api/loaders/#$ -
 griffe.load(resolve_aliases) py:param 1 reference/api/loaders/#$ -
 griffe.load(resolve_external) py:param 1 reference/api/loaders/#$ -
 griffe.load(resolve_implicit) py:param 1 reference/api/loaders/#$ -
@@ -5550,6 +5568,7 @@ griffe.load_git(force_inspection) py:param 1 reference/api/loaders/#$ -
 griffe.load_git(lines_collection) py:param 1 reference/api/loaders/#$ -
 griffe.load_git(modules_collection) py:param 1 reference/api/loaders/#$ -
 griffe.load_git(objspec) py:param 1 reference/api/loaders/#$ -
+griffe.load_git(prefer_stubs_docs) py:param 1 reference/api/loaders/#$ -
 griffe.load_git(ref) py:param 1 reference/api/loaders/#$ -
 griffe.load_git(repo) py:param 1 reference/api/loaders/#$ -
 griffe.load_git(resolve_aliases) py:param 1 reference/api/loaders/#$ -
@@ -5568,6 +5587,7 @@ griffe.load_pypi(force_inspection) py:param 1 reference/api/loaders/#$ -
 griffe.load_pypi(lines_collection) py:param 1 reference/api/loaders/#$ -
 griffe.load_pypi(modules_collection) py:param 1 reference/api/loaders/#$ -
 griffe.load_pypi(package) py:param 1 reference/api/loaders/#$ -
+griffe.load_pypi(prefer_stubs_docs) py:param 1 reference/api/loaders/#$ -
 griffe.load_pypi(resolve_aliases) py:param 1 reference/api/loaders/#$ -
 griffe.load_pypi(resolve_external) py:param 1 reference/api/loaders/#$ -
 griffe.load_pypi(resolve_implicit) py:param 1 reference/api/loaders/#$ -
@@ -5580,6 +5600,7 @@ griffe.main(args) py:param 2 reference/api/cli/#griffecli.main(args) -
 griffe.merge_stubs py:function 1 reference/api/loaders/#$ -
 griffe.merge_stubs(mod1) py:param 1 reference/api/loaders/#$ -
 griffe.merge_stubs(mod2) py:param 1 reference/api/loaders/#$ -
+griffe.merge_stubs(prefer_stubs_docs) py:param 1 reference/api/loaders/#$ -
 griffe.module_vtree py:function 1 reference/api/helpers/#$ -
 griffe.module_vtree(leaf_package) py:param 1 reference/api/helpers/#$ -
 griffe.module_vtree(path) py:param 1 reference/api/helpers/#$ -
@@ -5671,6 +5692,7 @@ griffe.temporary_inspected_package(lines_collection) py:param 1 reference/api/he
 griffe.temporary_inspected_package(modules) py:param 1 reference/api/helpers/#$ -
 griffe.temporary_inspected_package(modules_collection) py:param 1 reference/api/helpers/#$ -
 griffe.temporary_inspected_package(package) py:param 1 reference/api/helpers/#$ -
+griffe.temporary_inspected_package(prefer_stubs_docs) py:param 1 reference/api/helpers/#$ -
 griffe.temporary_inspected_package(resolve_aliases) py:param 1 reference/api/helpers/#$ -
 griffe.temporary_inspected_package(resolve_external) py:param 1 reference/api/helpers/#$ -
 griffe.temporary_inspected_package(resolve_implicit) py:param 1 reference/api/helpers/#$ -
@@ -5704,6 +5726,7 @@ griffe.temporary_visited_package(lines_collection) py:param 1 reference/api/help
 griffe.temporary_visited_package(modules) py:param 1 reference/api/helpers/#$ -
 griffe.temporary_visited_package(modules_collection) py:param 1 reference/api/helpers/#$ -
 griffe.temporary_visited_package(package) py:param 1 reference/api/helpers/#$ -
+griffe.temporary_visited_package(prefer_stubs_docs) py:param 1 reference/api/helpers/#$ -
 griffe.temporary_visited_package(resolve_aliases) py:param 1 reference/api/helpers/#$ -
 griffe.temporary_visited_package(resolve_external) py:param 1 reference/api/helpers/#$ -
 griffe.temporary_visited_package(resolve_implicit) py:param 1 reference/api/helpers/#$ -
@@ -5732,8 +5755,10 @@ griffecli._internal.cli.check(allow_inspection) py:param 2 reference/api/cli/#gr
 griffecli._internal.cli.check(append_sys_path) py:param 2 reference/api/cli/#griffecli.check(append_sys_path) -
 griffecli._internal.cli.check(base_ref) py:param 2 reference/api/cli/#griffecli.check(base_ref) -
 griffecli._internal.cli.check(extensions) py:param 2 reference/api/cli/#griffecli.check(extensions) -
+griffecli._internal.cli.check(find_stubs_package) py:param 2 reference/api/cli/#griffecli.check(find_stubs_package) -
 griffecli._internal.cli.check(force_inspection) py:param 2 reference/api/cli/#griffecli.check(force_inspection) -
 griffecli._internal.cli.check(package) py:param 2 reference/api/cli/#griffecli.check(package) -
+griffecli._internal.cli.check(prefer_stubs_docs) py:param 2 reference/api/cli/#griffecli.check(prefer_stubs_docs) -
 griffecli._internal.cli.check(search_paths) py:param 2 reference/api/cli/#griffecli.check(search_paths) -
 griffecli._internal.cli.check(verbose) py:param 2 reference/api/cli/#griffecli.check(verbose) -
 griffecli._internal.cli.dump py:function 2 reference/api/cli/#griffecli.dump -
@@ -5747,6 +5772,7 @@ griffecli._internal.cli.dump(force_inspection) py:param 2 reference/api/cli/#gri
 griffecli._internal.cli.dump(full) py:param 2 reference/api/cli/#griffecli.dump(full) -
 griffecli._internal.cli.dump(output) py:param 2 reference/api/cli/#griffecli.dump(output) -
 griffecli._internal.cli.dump(packages) py:param 2 reference/api/cli/#griffecli.dump(packages) -
+griffecli._internal.cli.dump(prefer_stubs_docs) py:param 2 reference/api/cli/#griffecli.dump(prefer_stubs_docs) -
 griffecli._internal.cli.dump(resolve_aliases) py:param 2 reference/api/cli/#griffecli.dump(resolve_aliases) -
 griffecli._internal.cli.dump(resolve_external) py:param 2 reference/api/cli/#griffecli.dump(resolve_external) -
 griffecli._internal.cli.dump(resolve_implicit) py:param 2 reference/api/cli/#griffecli.dump(resolve_implicit) -
@@ -5762,8 +5788,10 @@ griffecli.check(allow_inspection) py:param 1 reference/api/cli/#$ -
 griffecli.check(append_sys_path) py:param 1 reference/api/cli/#$ -
 griffecli.check(base_ref) py:param 1 reference/api/cli/#$ -
 griffecli.check(extensions) py:param 1 reference/api/cli/#$ -
+griffecli.check(find_stubs_package) py:param 1 reference/api/cli/#$ -
 griffecli.check(force_inspection) py:param 1 reference/api/cli/#$ -
 griffecli.check(package) py:param 1 reference/api/cli/#$ -
+griffecli.check(prefer_stubs_docs) py:param 1 reference/api/cli/#$ -
 griffecli.check(search_paths) py:param 1 reference/api/cli/#$ -
 griffecli.check(verbose) py:param 1 reference/api/cli/#$ -
 griffecli.dump py:function 1 reference/api/cli/#$ -
@@ -5777,6 +5805,7 @@ griffecli.dump(force_inspection) py:param 1 reference/api/cli/#$ -
 griffecli.dump(full) py:param 1 reference/api/cli/#$ -
 griffecli.dump(output) py:param 1 reference/api/cli/#$ -
 griffecli.dump(packages) py:param 1 reference/api/cli/#$ -
+griffecli.dump(prefer_stubs_docs) py:param 1 reference/api/cli/#$ -
 griffecli.dump(resolve_aliases) py:param 1 reference/api/cli/#$ -
 griffecli.dump(resolve_external) py:param 1 reference/api/cli/#$ -
 griffecli.dump(resolve_implicit) py:param 1 reference/api/cli/#$ -

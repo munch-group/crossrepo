@@ -2,7 +2,7 @@
 Cataloguing repositories on GitHub without checking them out.
 
 The rules are the ones the local scanner follows: a file is published if it is
-committed under a results directory and named by the ``labdata.yml`` governing
+committed under a results directory and named by the ``crossrepo.yml`` governing
 it, and its version is the commit in which it last changed. Only the way the
 repository is read differs.
 
@@ -196,7 +196,7 @@ def scan_repo(
 
     See Also
     --------
-    [](`labdata.core.scan_repo`)
+    [](`crossrepo.core.scan_repo`)
     """
     # "HEAD" is a ref GitHub resolves itself, so the default branch costs no
     # request of its own.
@@ -207,7 +207,7 @@ def scan_repo(
 
     # Results directories are paths relative to the repository root, at any
     # depth, so a blob belongs to one when that path is a leading part of it.
-    wanted_dirs = tuple(d.strip("/").lower() for d in cfg.labdata_dirs if d.strip("/"))
+    wanted_dirs = tuple(d.strip("/").lower() for d in cfg.crossrepo_dirs if d.strip("/"))
 
     def under_results(path: str) -> bool:
         lowered = path.lower()
@@ -217,7 +217,7 @@ def scan_repo(
     # for a result file would publish the path as though it were the data. Its
     # content is not in the repository at all, and the API cannot reach the
     # machine that has it, so a link is left to the clones that can: reading one
-    # is [](`labdata.core.scan_repo`)'s to do.
+    # is [](`crossrepo.core.scan_repo`)'s to do.
     blobs = {
         item["path"]: (item["sha"], item.get("size", -1))
         for item in tree
@@ -364,7 +364,7 @@ def _may_hold(select: Optional[str], owner: str) -> bool:
     Parameters
     ----------
     select :
-        Text a repository is selected by, as [](`labdata.core.selects`) matches
+        Text a repository is selected by, as [](`crossrepo.core.selects`) matches
         it. `None` selects everything.
     owner :
         The organisation or user about to be listed.
@@ -392,12 +392,12 @@ def build(
         Settings supplying `owners` and `repos`.
     client :
         Client to read with. Defaults to a new one, authenticated as
-        [](`labdata.github.token`) finds.
+        [](`crossrepo.github.token`) finds.
     progress :
         Show a progress bar, one step per repository. Reading a whole
         organisation is otherwise silent for as long as it takes.
     select :
-        Read only the repositories this names, by [](`labdata.core.selects`).
+        Read only the repositories this names, by [](`crossrepo.core.selects`).
         An owner that cannot hold a match is not even listed, and one that can
         is listed but only read into where a repository matches, so narrowing a
         scan to one repository of an organisation costs one request for the
@@ -407,14 +407,14 @@ def build(
     -------
     :
         Entries from every repository that publishes something. A repository
-        that cannot be read is skipped with a [](`labdata.config.SourceWarning`)
+        that cannot be read is skipped with a [](`crossrepo.config.SourceWarning`)
         rather than failing the scan, as is an owner GitHub will not list and a
         repository named in the settings that is not there.
 
     See Also
     --------
-    [](`labdata.remote.scan_repo`)
-    [](`labdata.core.selects`)
+    [](`crossrepo.remote.scan_repo`)
+    [](`crossrepo.core.selects`)
     """
     if not cfg.owners and not cfg.repos:
         return []
@@ -482,7 +482,7 @@ def _check_named(
     client :
         Client to ask with.
     named :
-        ``(owner, repo)`` for each repository named in `labdata.config.Config`.
+        ``(owner, repo)`` for each repository named in `crossrepo.config.Config`.
     published :
         Those that published something, lowercased, which are known to exist.
     """
@@ -513,7 +513,7 @@ def versions(entry: Entry, client: Optional[Client] = None) -> List[Version]:
 
     See Also
     --------
-    [](`labdata.versions`)
+    [](`crossrepo.versions`)
     """
     client = client or Client()
     owner, _, repo = entry.remote.partition("/")
@@ -570,7 +570,7 @@ def dataset_files(
 
     See Also
     --------
-    [](`labdata.gitutil.tree_files`)
+    [](`crossrepo.gitutil.tree_files`)
     """
     client = client or Client()
     owner, _, repo = entry.remote.partition("/")
