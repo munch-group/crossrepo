@@ -275,19 +275,18 @@ duckdb -c "select * from '$(crossrepo get x-gwas:hits.csv)' limit 5"
 ## From python
 
 `get(repo, filename, hash)` is the notebook form. Give the hash to pin a result;
-leave it out to take the latest, and the hash is printed together with the call
-that pins it, ready to be copied back into the cell.
+leave it out to take the latest, and the argument that pins it is printed, ready
+to be pasted into the call.
 
 ```python
 import pandas as pd
 import crossrepo
 
 df = pd.read_csv(crossrepo.get("x-gwas", "hits.csv"))
-# munch-group/x-gwas:results/hits.csv@e4f5a6b  (2026-04-11, 1.2M)
-# pin this version:  crossrepo.get("x-gwas", "hits.csv", "e4f5a6b")
+# Add version="4f2a9c1e8b7d6350a1c4e9f2b8d70a3c5e1f9b24" to pin this version.
 ```
 
-Paste that line back and the notebook reads the same bytes next year. A pinned
+Paste that argument in and the notebook reads the same bytes next year. A pinned
 call is silent — unless the file has changed since, in which case it says so and
 names the version to move to:
 

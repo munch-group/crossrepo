@@ -18,8 +18,8 @@ Download one result file, addressed by repository and file name.
 
 This is the form meant for a notebook. Passing `version` pins the result, and
 the call is then silent and reproducible. Leaving it out takes the latest
-version and prints its hash together with the call that pins it, so the
-pinned form can be copied straight back into the cell.
+version and prints the argument that pins it, ready to be pasted into the
+call.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
@@ -77,21 +77,22 @@ pinned form can be copied straight back into the cell.
 
 ## Examples {.doc-section .doc-section-examples}
 
-Read the latest version, and be told the hash that pins it:
+Read the latest version, and be told what pins it:
 
 ```python
 import crossrepo
 import pandas as pd
 
 df = pd.read_csv(crossrepo.get("x-gwas", "hits.csv"))
-# munch-group/x-gwas:results/hits.csv@e4f5a6b  (2026-04-11, 1.2M)
-# pin this version:  crossrepo.get("x-gwas", "hits.csv", "e4f5a6b")
+# Add version="4f2a9c1e8b7d6350a1c4e9f2b8d70a3c5e1f9b24" to pin this version.
 ```
 
-Pin it, so the notebook reads the same bytes next year:
+Paste that argument in, so the notebook reads the same bytes next year:
 
 ```python
-df = pd.read_csv(crossrepo.get("x-gwas", "hits.csv", "e4f5a6b"))
+df = pd.read_csv(crossrepo.get(
+    "x-gwas", "hits.csv", version="4f2a9c1e8b7d6350a1c4e9f2b8d70a3c5e1f9b24"
+))
 ```
 
 ## See Also {.doc-section .doc-section-see-also}

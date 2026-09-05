@@ -88,7 +88,7 @@ def test_the_notebook_api_returns_the_directory(cfg, capsys):
     path = core.get("sweep-scan", "table.parquet", cfg=cfg)
     out = capsys.readouterr().out
     assert path.is_dir()
-    assert "One dataset split over files" in out
+    assert out.startswith('Add version="')       # a dataset pins like a file
 
 
 def test_an_unlisted_directory_is_not_a_dataset(entries):

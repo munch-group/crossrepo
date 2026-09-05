@@ -17,14 +17,15 @@ def test_repo_and_filename_alone_prints_the_hash(cfg, capsys):
     path = core.get("sweep-scan", "candidates.csv", cfg=cfg)
     out = capsys.readouterr().out
     assert path.read_text().count("\n") == 4      # the latest version
-    assert "acme/sweep-scan:results/candidates.csv@" in out
-    assert 'crossrepo.get("sweep-scan", "candidates.csv", "' in out
+    assert out.startswith('Add version="')
+    assert len(out.split('"')[1]) == 40           # a whole hash, not an abbreviation
 
 
 def test_the_printed_hash_pins_that_version(cfg, capsys):
+    """The point of printing it: pasting it back is a working call."""
     core.get("sweep-scan", "candidates.csv", cfg=cfg)
-    sha = capsys.readouterr().out.split("@", 1)[1].split()[0]
-    again = core.get("sweep-scan", "candidates.csv", sha, cfg=cfg)
+    sha = capsys.readouterr().out.split('"')[1]
+    again = core.get("sweep-scan", "candidates.csv", version=sha, cfg=cfg)
     assert capsys.readouterr().out == ""
     assert "C,3" in again.read_text()
 
@@ -36,7 +37,7 @@ def test_quiet_suppresses_the_note(cfg, capsys):
 
 def test_owner_qualified_repo_name(cfg, capsys):
     path = core.get("other-org/hic-borders", "borders.tsv", cfg=cfg)
-    assert 'crossrepo.get("other-org/hic-borders"' in capsys.readouterr().out
+    assert capsys.readouterr().out.startswith('Add version="')
     assert "chrom" in path.read_text()
 
 
@@ -76,8 +77,8 @@ def test_ambiguous_filename_lists_candidates(cfg):
 
 def test_a_path_disambiguates(cfg, capsys):
     path = core.get("sweep-scan", "sub/stable.csv", cfg=cfg)
-    assert "results/sub/stable.csv@" in capsys.readouterr().out
-    assert path.exists()
+    capsys.readouterr()
+    assert path.read_text() == "k,v\ny,2\n"      # the one below results/, not beside
 
 
 def test_unknown_hash_lists_the_known_ones(cfg):

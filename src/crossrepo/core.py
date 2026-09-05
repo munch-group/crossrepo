@@ -1650,8 +1650,8 @@ def get(
 
     This is the form meant for a notebook. Passing `version` pins the result, and
     the call is then silent and reproducible. Leaving it out takes the latest
-    version and prints its hash together with the call that pins it, so the
-    pinned form can be copied straight back into the cell.
+    version and prints the argument that pins it, ready to be pasted into the
+    call.
 
     Parameters
     ----------
@@ -1703,21 +1703,22 @@ def get(
     Examples
     --------
 
-    Read the latest version, and be told the hash that pins it:
+    Read the latest version, and be told what pins it:
 
     ```python
     import crossrepo
     import pandas as pd
 
     df = pd.read_csv(crossrepo.get("x-gwas", "hits.csv"))
-    # munch-group/x-gwas:results/hits.csv@e4f5a6b  (2026-04-11, 1.2M)
-    # pin this version:  crossrepo.get("x-gwas", "hits.csv", "e4f5a6b")
+    # Add version="4f2a9c1e8b7d6350a1c4e9f2b8d70a3c5e1f9b24" to pin this version.
     ```
 
-    Pin it, so the notebook reads the same bytes next year:
+    Paste that argument in, so the notebook reads the same bytes next year:
 
     ```python
-    df = pd.read_csv(crossrepo.get("x-gwas", "hits.csv", "e4f5a6b"))
+    df = pd.read_csv(crossrepo.get(
+        "x-gwas", "hits.csv", version="4f2a9c1e8b7d6350a1c4e9f2b8d70a3c5e1f9b24"
+    ))
     ```
 
     See Also
@@ -1726,7 +1727,6 @@ def get(
     [](`crossrepo.versions`)
     [](`crossrepo.core.outdated`)
     """
-    given = repo
     if owner is None and "/" in repo:
         owner, _, repo = repo.partition("/")
     entries = catalog(refresh=refresh, cfg=cfg)
@@ -1738,13 +1738,7 @@ def get(
         if stale:
             print(stale, file=sys.stderr)
     if version is None and not quiet:
-        note = f"  {entry.description}" if entry.description else ""
         print(f'Add version="{found.sha}" to pin this version.')
-        # print(
-        #     f"{entry.repo_key}:{entry.path}@{found.sha}  "
-        #     f"({found.date[:10]}, {human(found.size)}){note}\n"
-        #     f'pin this version:  crossrepo.get("{given}", "{filename}", "{found.sha}")'
-        # )
     if out is not None:
         path = copy_out(path, out, entry.name)
     return path

@@ -21,17 +21,16 @@ for entry in catalog():
 ```
 
 Read one file into a meta-analysis notebook. Without a version the latest is
-taken and its hash printed, so the pinned call can be copied back into the cell:
+taken and the argument that pins it printed, ready to paste into the call:
 
 ```python
 import pandas as pd
 from crossrepo import get
 
 df = pd.read_csv(get("x-gwas", "hits.csv"))
-# munch-group/x-gwas:results/hits.csv@e4f5a6b  (2026-04-11, 1.2M)
-# pin this version:  crossrepo.get("x-gwas", "hits.csv", "e4f5a6b")
+# Add version="4f2a9c1e8b7d6350a1c4e9f2b8d70a3c5e1f9b24" to pin this version.
 
-df = pd.read_csv(get("x-gwas", "hits.csv", "e4f5a6b"))   # pinned, and silent
+df = pd.read_csv(get("x-gwas", "hits.csv", version="4f2a9c1e8b7d6350a1c4e9f2b8d70a3c5e1f9b24"))   # pinned, silent
 ```
 
 Settings are read from the configuration file. To use different ones, register
