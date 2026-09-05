@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>refresh – labdata</title>
+<title>registration – labdata</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -71,8 +71,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../api/frame.html" rel="next">
-<link href="../api/versions.html" rel="prev">
+<link href="../api/config_path.html" rel="next">
+<link href="../api/active_config.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -155,7 +155,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../api/list.html">Catalog</a></li><li class="breadcrumb-item"><a href="../api/refresh.html">refresh</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../api/Config.html">Configuration</a></li><li class="breadcrumb-item"><a href="../api/Registration.html">Registration</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -202,7 +202,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../api/refresh.html" class="sidebar-item-text sidebar-link active">
+  <a href="../api/refresh.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">refresh</span></a>
   </div>
 </li>
@@ -525,7 +525,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../api/Registration.html" class="sidebar-item-text sidebar-link">
+  <a href="../api/Registration.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Registration</span></a>
   </div>
 </li>
@@ -784,86 +784,56 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#labdata.refresh" id="toc-labdata.refresh" class="nav-link active" data-scroll-target="#labdata.refresh">refresh</a>
+  <li><a href="#labdata.config.Registration" id="toc-labdata.config.Registration" class="nav-link active" data-scroll-target="#labdata.config.Registration">Registration</a>
   <ul class="collapse">
-  <li><a href="#parameters" id="toc-parameters" class="nav-link" data-scroll-target="#parameters">Parameters</a></li>
-  <li><a href="#returns" id="toc-returns" class="nav-link" data-scroll-target="#returns">Returns</a></li>
-  <li><a href="#raises" id="toc-raises" class="nav-link" data-scroll-target="#raises">Raises</a></li>
-  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
   <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See Also</a></li>
+  <li><a href="#methods" id="toc-methods" class="nav-link" data-scroll-target="#methods">Methods</a>
+  <ul class="collapse">
+  <li><a href="#labdata.config.Registration.undo" id="toc-labdata.config.Registration.undo" class="nav-link" data-scroll-target="#labdata.config.Registration.undo">undo</a></li>
+  </ul></li>
   </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../api/list.html">Catalog</a></li><li class="breadcrumb-item"><a href="../api/refresh.html">refresh</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../api/Config.html">Configuration</a></li><li class="breadcrumb-item"><a href="../api/Registration.html">Registration</a></li></ol></nav></header>
 
 
 
 
-<section id="labdata.refresh" class="level1">
-<h1>refresh</h1>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>labdata.refresh(cfg<span class="op">=</span><span class="va">None</span>, progress<span class="op">=</span><span class="va">True</span>, owner<span class="op">=</span><span class="va">None</span>, repo<span class="op">=</span><span class="va">None</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Rescan the repositories and store the catalog.</p>
-<p>The python side of <code>labdata refresh</code>. The rebuilt catalog is returned, so a notebook cell shows what is there now.</p>
-<p>Naming an <code>owner</code> or a <code>repo</code> rescans that much and no more, which is the difference between a request or two and a request for every repository an organisation holds. The rest of the catalog is neither rescanned nor forgotten: what is stored is still the whole of it, with the named repositories as they are now.</p>
-<section id="parameters" class="level2 doc-section doc-section-parameters">
-<h2 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h2>
-<dl>
-<dt><code><span class="parameter-name"><strong>cfg</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"></span> <span class="parameter-default-sep">=</span> <span class="parameter-default">None</span></code></dt>
-<dd>
-<p>Settings. Defaults to <a href="../api/active_config.html#labdata.config.active_config"><code>labdata.config.active_config</code></a>: what <a href="../api/use_config.html#labdata.config.use_config"><code>labdata.config.use_config</code></a> registered, or the configuration file.</p>
-</dd>
-<dt><code><span class="parameter-name"><strong>progress</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="parameter-default-sep">=</span> <span class="parameter-default">True</span></code></dt>
-<dd>
-<p>Show a progress bar, one step per repository. On by default: this is the one call that can take a while, and it is otherwise silent throughout.</p>
-</dd>
-<dt><code><span class="parameter-name"><strong>owner</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"></span> <span class="parameter-default-sep">=</span> <span class="parameter-default">None</span></code></dt>
-<dd>
-<p>Rescan only repositories of this owner. Repositories of any other owner the settings name are left as the stored catalog has them, and an organisation that cannot hold a match is not even listed.</p>
-</dd>
-<dt><code><span class="parameter-name"><strong>repo</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"></span> <span class="parameter-default-sep">=</span> <span class="parameter-default">None</span></code></dt>
-<dd>
-<p>Rescan only repositories matching this, as <a href="../api/list.html#labdata.list"><code>labdata.list</code></a> filters on it: the text is matched anywhere in <code>owner/repo</code>, ignoring case, so a name, a fragment of one, or a whole <code>owner/repo</code> all work.</p>
-</dd>
-<dt><code><span class="parameter-name">****kwargs**</span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"></span> <span class="parameter-default-sep">=</span> <span class="parameter-default">{}</span></code></dt>
-<dd>
-<p>Passed to <a href="../api/list.html#labdata.list"><code>labdata.list</code></a>, so <code>version=True</code> and <code>url=True</code> work here too.</p>
-</dd>
-</dl>
-</section>
-<section id="returns" class="level2 doc-section doc-section-returns">
-<h2 class="doc-section doc-section-returns anchored" data-anchor-id="returns">Returns</h2>
-<dl>
-<dt><code><span class="parameter-name"></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"></span></code></dt>
-<dd>
-<p>A <code>pandas.DataFrame</code>, as <a href="../api/list.html#labdata.list"><code>labdata.list</code></a> returns, holding what was rescanned when <code>owner</code> or <code>repo</code> was given and the whole catalog otherwise. Where nothing configured matches, the table is empty and a <code>labdata.config.SourceWarning</code> says so, a rescan that looked at nothing being otherwise an empty table and no explanation.</p>
-</dd>
-</dl>
-</section>
-<section id="raises" class="level2 doc-section doc-section-raises">
-<h2 class="doc-section doc-section-raises anchored" data-anchor-id="raises">Raises</h2>
-<dl>
-<dt><code><span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/exceptions.html#ImportError">ImportError</a></span></code></dt>
-<dd>
-<p>If pandas is not installed.</p>
-</dd>
-</dl>
-</section>
-<section id="examples" class="level2 doc-section doc-section-examples">
-<h2 class="doc-section doc-section-examples anchored" data-anchor-id="examples">Examples</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>labdata.refresh()                       <span class="co"># everything, with a progress bar</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>labdata.refresh(progress<span class="op">=</span><span class="va">False</span>)         <span class="co"># without the bar</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>labdata.refresh(repo<span class="op">=</span><span class="st">"x-gwas"</span>)          <span class="co"># one repository</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>labdata.refresh(owner<span class="op">=</span><span class="st">"munch-group"</span>)    <span class="co"># one organisation</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>labdata.refresh(owner<span class="op">=</span><span class="st">"munch-group"</span>, repo<span class="op">=</span><span class="st">"x-gwas"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
+<section id="labdata.config.Registration" class="level1">
+<h1>Registration</h1>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>labdata.config.Registration(previous)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The undo for one call to <a href="../api/use_config.html#labdata.config.use_config"><code>labdata.config.use_config</code></a>.</p>
+<p>Returned rather than used directly. Ignoring it leaves the registration in place for the rest of the session; entering it with <code>with</code> puts the previous settings back on the way out. It shows itself as the settings now in effect, so that a registration made as the last line of a notebook cell prints something worth reading.</p>
 <section id="see-also" class="level2 doc-section doc-section-see-also">
 <h2 class="doc-section doc-section-see-also anchored" data-anchor-id="see-also">See Also</h2>
-<p><a href="../api/list.html#labdata.list"><code>labdata.list</code></a> <a href="../api/catalog.html#labdata.catalog"><code>labdata.core.catalog</code></a></p>
+<p><a href="../api/use_config.html#labdata.config.use_config"><code>labdata.config.use_config</code></a> <a href="../api/active_config.html#labdata.config.active_config"><code>labdata.config.active_config</code></a></p>
+</section>
+<section id="methods" class="level2">
+<h2 class="anchored" data-anchor-id="methods">Methods</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#labdata.config.Registration.undo">undo</a></td>
+<td>Put back the settings that were registered before this call.</td>
+</tr>
+</tbody>
+</table>
+<section id="labdata.config.Registration.undo" class="level3">
+<h3 class="anchored" data-anchor-id="labdata.config.Registration.undo">undo</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>labdata.config.Registration.undo()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Put back the settings that were registered before this call.</p>
+<p>Doing it twice is not an error: the second time does nothing, so a registration undone by hand inside a <code>with</code> block is not undone again on the way out.</p>
 
 
+</section>
 </section>
 </section>
 
@@ -1270,13 +1240,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../api/versions.html" class="pagination-link" aria-label="versions">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">versions</span>
+      <a href="../api/active_config.html" class="pagination-link" aria-label="active_config">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">active_config</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../api/frame.html" class="pagination-link" aria-label="frame">
-        <span class="nav-page-text">frame</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../api/config_path.html" class="pagination-link" aria-label="config_path">
+        <span class="nav-page-text">config_path</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

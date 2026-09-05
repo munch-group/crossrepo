@@ -2,17 +2,23 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.26">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>giterror – labdata</title>
 <style>
-code{white-space: pre-wrap;}
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -66,18 +72,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
 <link href="../api/main.html" rel="next">
-<link href="../api/lfs_object_path.html" rel="prev">
+<link href="../api/resolve_link.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-1c33c0780a01951c1c2d77b4a45239a1.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-3e9b1289f5f353c49b617ce48ad2bc38.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -279,6 +284,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../api/selects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">selects</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../api/find_version.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">find_version</span></a>
   </div>
@@ -449,8 +460,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../api/Stamp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Stamp</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../api/parse.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">parse</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/write_stamp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">write_stamp</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -486,6 +509,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../api/Config.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Config</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/use_config.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">use_config</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/active_config.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">active_config</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/Registration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Registration</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -555,6 +596,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../api/content_hash.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">content_hash</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../api/check_object.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">check_object</span></a>
   </div>
@@ -596,6 +643,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../api/tracked_entries.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">tracked_entries</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../api/head_commit.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">head_commit</span></a>
   </div>
@@ -610,6 +663,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../api/blob_at.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">blob_at</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/entry_at.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">entry_at</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -644,6 +703,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../api/write_file_to.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">write_file_to</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../api/parse_lfs_pointer.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">parse_lfs_pointer</span></a>
   </div>
@@ -652,6 +717,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../api/lfs_object_path.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">lfs_object_path</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/link_target.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">link_target</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/resolve_link.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">resolve_link</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -1128,8 +1205,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../api/lfs_object_path.html" class="pagination-link" aria-label="lfs_object_path">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">lfs_object_path</span>
+      <a href="../api/resolve_link.html" class="pagination-link" aria-label="resolve_link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">resolve_link</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

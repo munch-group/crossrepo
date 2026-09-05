@@ -2,17 +2,23 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.26">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>config – labdata</title>
 <style>
-code{white-space: pre-wrap;}
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -65,19 +71,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../api/config_path.html" rel="next">
+<link href="../api/use_config.html" rel="next">
 <link href="../api/ManifestError.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-1c33c0780a01951c1c2d77b4a45239a1.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-3e9b1289f5f353c49b617ce48ad2bc38.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -279,6 +284,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../api/selects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">selects</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../api/find_version.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">find_version</span></a>
   </div>
@@ -449,8 +460,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../api/Stamp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Stamp</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../api/parse.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">parse</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/write_stamp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">write_stamp</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -486,6 +509,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../api/Config.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Config</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/use_config.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">use_config</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/active_config.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">active_config</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/Registration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Registration</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -555,6 +596,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../api/content_hash.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">content_hash</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../api/check_object.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">check_object</span></a>
   </div>
@@ -596,6 +643,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../api/tracked_entries.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">tracked_entries</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../api/head_commit.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">head_commit</span></a>
   </div>
@@ -610,6 +663,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../api/blob_at.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">blob_at</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/entry_at.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">entry_at</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -644,6 +703,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../api/write_file_to.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">write_file_to</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../api/parse_lfs_pointer.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">parse_lfs_pointer</span></a>
   </div>
@@ -652,6 +717,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../api/lfs_object_path.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">lfs_object_path</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/link_target.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">link_target</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/resolve_link.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">resolve_link</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -733,20 +810,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    roots<span class="op">=</span><span class="bu">list</span>(),</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    owners<span class="op">=</span><span class="bu">list</span>(),</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    repos<span class="op">=</span><span class="bu">list</span>(),</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    depth<span class="op">=</span><span class="dv">2</span>,</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    results_dirs<span class="op">=</span>(<span class="kw">lambda</span>: [<span class="st">'results'</span>])(),</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    include<span class="op">=</span>(<span class="kw">lambda</span>: <span class="bu">list</span>(DEFAULT_INCLUDE))(),</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    exclude<span class="op">=</span>(<span class="kw">lambda</span>: <span class="bu">list</span>(DEFAULT_EXCLUDE))(),</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    min_bytes<span class="op">=</span><span class="dv">0</span>,</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    max_bytes<span class="op">=</span><span class="dv">0</span>,</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    labdata_dirs<span class="op">=</span>(<span class="kw">lambda</span>: [<span class="st">'results'</span>])(),</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    include<span class="op">=</span>(<span class="kw">lambda</span>: <span class="bu">list</span>(DEFAULT_INCLUDE))(),</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    exclude<span class="op">=</span>(<span class="kw">lambda</span>: <span class="bu">list</span>(DEFAULT_EXCLUDE))(),</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    min_bytes<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    max_bytes<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Settings controlling which files are cataloged.</p>
 <section id="attributes" class="level2 doc-section doc-section-attributes">
 <h2 class="doc-section doc-section-attributes anchored" data-anchor-id="attributes">Attributes</h2>
 <dl>
 <dt><code><span class="parameter-name"><strong>roots</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.List">List</a>[<a href="https://docs.python.org/3/library/stdtypes.html#str">str</a>]</span></code></dt>
 <dd>
-<p>Directories searched for git working trees. <code>~</code> is expanded. Empty by default: nothing is scanned until this is set. Naming the directories your repositories are in keeps the scan away from synced folders such as OneDrive, which can block for a long time on a directory that is not there.</p>
+<p>Directories searched for git working trees. Each is either a repository itself or a directory whose immediate subdirectories are repositories; nothing deeper is looked at. <code>~</code> is expanded. A directory on another machine is written <code>user@host:path</code> and read over ssh, without being cloned or mounted. Empty by default: nothing is scanned until this is set. Naming the directories your repositories are in keeps the scan away from synced folders such as OneDrive, which can block for a long time on a directory that is not there.</p>
 </dd>
 <dt><code><span class="parameter-name"><strong>owners</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.List">List</a>[<a href="https://docs.python.org/3/library/stdtypes.html#str">str</a>]</span></code></dt>
 <dd>
@@ -756,13 +832,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dd>
 <p>Further GitHub repositories to catalog, written <code>owner/repo</code>, for ones outside <code>owners</code>.</p>
 </dd>
-<dt><code><span class="parameter-name"><strong>depth</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/functions.html#int">int</a></span></code></dt>
+<dt><code><span class="parameter-name"><strong>labdata_dirs</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.List">List</a>[<a href="https://docs.python.org/3/library/stdtypes.html#str">str</a>]</span></code></dt>
 <dd>
-<p>How many levels below each root to search.</p>
-</dd>
-<dt><code><span class="parameter-name"><strong>results_dirs</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.List">List</a>[<a href="https://docs.python.org/3/library/stdtypes.html#str">str</a>]</span></code></dt>
-<dd>
-<p>Directories within a repository holding published result files, given as paths relative to the repository root. They may be at any depth, so <code>analysis/step3/results</code> works as well as <code>results</code>. Matching is case-insensitive, so a repository that committed <code>Results/</code> is found too. Each is searched, and each needs its own <code>labdata.yml</code>.</p>
+<p>Directories within a repository holding a <code>labdata.yml</code>, and with it the result files it publishes, given as paths relative to the repository root. They may be at any depth, so <code>analysis/step3/results</code> works as well as <code>results</code>. Matching is case-insensitive, so a repository that committed <code>Results/</code> is found too. Each is searched, and each needs its own <code>labdata.yml</code>. A manifest may publish files from anywhere else in its repository, by naming them from the repository root.</p>
 </dd>
 <dt><code><span class="parameter-name"><strong>include</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.List">List</a>[<a href="https://docs.python.org/3/library/stdtypes.html#str">str</a>]</span></code></dt>
 <dd>
@@ -784,7 +856,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="examples" class="level2 doc-section doc-section-examples">
 <h2 class="doc-section doc-section-examples anchored" data-anchor-id="examples">Examples</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>cfg <span class="op">=</span> Config(roots<span class="op">=</span>[<span class="st">"~/github-backup/munch-group"</span>], depth<span class="op">=</span><span class="dv">1</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>cfg <span class="op">=</span> Config(roots<span class="op">=</span>[<span class="st">"~/github-backup/munch-group"</span>, <span class="st">"kmt@genome.au.dk:~/projects"</span>])</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>entries <span class="op">=</span> build(cfg)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="see-also" class="level2 doc-section doc-section-see-also">
@@ -838,7 +910,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dl>
 <dt><code><span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/exceptions.html#ValueError">ValueError</a></span></code></dt>
 <dd>
-<p>If the file contains keys that are not settings.</p>
+<p>If the file contains keys that are not settings. A key that used to be one is not refused, so that a file written by an earlier version still loads: one listed in <code>RETIRED</code> is ignored with a warning, and one listed in <code>RENAMED</code> is read under its new name, also with a warning.</p>
 </dd>
 <dt><code><span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/exceptions.html#RuntimeError">RuntimeError</a></span></code></dt>
 <dd>
@@ -1283,8 +1355,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../api/config_path.html" class="pagination-link" aria-label="config_path">
-        <span class="nav-page-text">config_path</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../api/use_config.html" class="pagination-link" aria-label="use_config">
+        <span class="nav-page-text">use_config</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
