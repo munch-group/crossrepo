@@ -145,41 +145,30 @@ def test_a_manifest_below_a_nested_results_dir_is_still_ignored(tmp_path):
     assert entries[0].description == "from the right place"
 
 
-# ------------------------------------------------- the name it used to have
+# ---------------------------------------------------------- which manifest
 
-def test_a_manifest_under_the_old_name_is_still_read(tmp_path):
-    """The tool was once called labdata; manifests written then still publish."""
-    repo = init(tmp_path / "old-name")
+def test_yml_wins_over_yaml_when_a_repo_carries_both(tmp_path):
+    """Precedence follows MANIFEST_NAMES, not the alphabet, which would say .yaml."""
+    repo = init(tmp_path / "both-suffixes")
     (repo / "results").mkdir()
-    (repo / "results" / "labdata.yml").write_text("files:\n  x.csv: written long ago\n")
+    (repo / "results" / "crossrepo.yml").write_text("files:\n  x.csv: the one that wins\n")
+    (repo / "results" / "crossrepo.yaml").write_text("files:\n  x.csv: the other one\n")
     (repo / "results" / "x.csv").write_text("a\n")
-    commit(repo, "a manifest under the old name")
+    commit(repo, "two spellings of the manifest")
 
     entries = core.build(Config(roots=[str(tmp_path)]))
-    assert [e.path for e in entries] == ["results/x.csv"]
-    assert entries[0].description == "written long ago"
+    assert [e.description for e in entries] == ["the one that wins"]
 
 
-def test_the_old_manifest_name_is_never_a_result_file(tmp_path):
-    repo = init(tmp_path / "old-name-hidden")
+def test_a_yaml_manifest_is_read_when_it_is_the_only_one(tmp_path):
+    repo = init(tmp_path / "yaml-only")
     (repo / "results").mkdir()
-    (repo / "results" / "labdata.yml").write_text('files:\n  "*": everything\n')
+    (repo / "results" / "crossrepo.yaml").write_text("files:\n  x.csv: spelled out\n")
     (repo / "results" / "x.csv").write_text("a\n")
-    commit(repo, "a glob that would otherwise match the manifest")
-
-    assert [e.name for e in core.build(Config(roots=[str(tmp_path)]))] == ["x.csv"]
-
-
-def test_the_new_name_wins_when_a_repo_carries_both(tmp_path):
-    repo = init(tmp_path / "both-names")
-    (repo / "results").mkdir()
-    (repo / "results" / "crossrepo.yml").write_text("files:\n  x.csv: the new one\n")
-    (repo / "results" / "labdata.yml").write_text("files:\n  x.csv: the old one\n")
-    (repo / "results" / "x.csv").write_text("a\n")
-    commit(repo, "mid-migration, both present")
+    commit(repo, "the longer suffix")
 
     entries = core.build(Config(roots=[str(tmp_path)]))
-    assert [e.description for e in entries] == ["the new one"]
+    assert [e.description for e in entries] == ["spelled out"]
 
 
 # ------------------------------------------------------------ bad input

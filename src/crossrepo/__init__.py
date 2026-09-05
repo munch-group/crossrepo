@@ -2,10 +2,11 @@
 Catalog and fetch versioned result files across many git repositories.
 
 `crossrepo` lets one project read result files produced by another without adding
-a submodule and without downloading files by hand. A file is published simply by
-committing it under a repository's ``results`` directory; no manifest is needed.
-The version of a file is the commit in which it last changed, so versioning
-works in repositories that are never tagged.
+a submodule and without downloading files by hand. A file is published by
+committing it under a repository's ``results`` directory and naming it in the
+``crossrepo.yml`` there; a results directory without a manifest publishes
+nothing. The version of a file is the commit in which it last changed, so
+versioning works in repositories that are never tagged.
 
 Examples
 --------

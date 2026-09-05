@@ -73,18 +73,12 @@ import re
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple
 
-MANIFEST_NAMES: Tuple[str, ...] = (
-    "crossrepo.yml",
-    "crossrepo.yaml",
-    "labdata.yml",
-    "labdata.yaml",
-)
+MANIFEST_NAMES: Tuple[str, ...] = ("crossrepo.yml", "crossrepo.yaml")
 """
 File names recognised as a manifest.
 
-The first is what `default_path` writes. The rest are read too: the tool was
-once called ``labdata``, and a manifest sits in someone else's repository where
-it cannot be renamed on our say-so.
+The first is what `default_path` writes; a repository spelling it ``.yaml`` is
+read too.
 """
 
 _HEX = frozenset("0123456789abcdef")

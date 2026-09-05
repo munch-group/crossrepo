@@ -335,9 +335,9 @@ def _read_manifest(root: Location, blobs, results_dir: str):
         no manifest or it cannot be parsed; a manifest that will not parse costs
         its repository, with a warning, rather than the whole scan.
 
-        A directory holding more than one accepted name is read in
-        `crossrepo.manifest.MANIFEST_NAMES` order, so the current name wins over
-        the one the tool used to have.
+        A directory holding both accepted spellings is read in
+        `crossrepo.manifest.MANIFEST_NAMES` order rather than alphabetical
+        order, so ``crossrepo.yml`` wins over ``crossrepo.yaml``.
     """
     wanted = results_dir.strip("/").lower()
     here = []

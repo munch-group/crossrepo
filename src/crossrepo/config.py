@@ -40,10 +40,7 @@ root to look for repositories; a root is now either a repository itself or a
 directory holding them.
 """
 
-RENAMED: Dict[str, str] = {
-    "results_dirs": "crossrepo_dirs",
-    "labdata_dirs": "crossrepo_dirs",   # the tool was once called labdata
-}
+RENAMED: Dict[str, str] = {"results_dirs": "crossrepo_dirs"}
 """
 Settings that changed name, read under the old one with a warning.
 
