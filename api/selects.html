@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>selects – labdata</title>
+<title>selects – crossrepo</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -124,7 +124,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">labdata</span>
+    <span class="navbar-title">crossrepo</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -140,7 +140,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/munch-group/labdata/"> <i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/munch-group/crossrepo/"> <i class="bi bi-github" role="img">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
@@ -784,7 +784,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#labdata.core.selects" id="toc-labdata.core.selects" class="nav-link active" data-scroll-target="#labdata.core.selects">selects</a>
+  <li><a href="#crossrepo.core.selects" id="toc-crossrepo.core.selects" class="nav-link active" data-scroll-target="#crossrepo.core.selects">selects</a>
   <ul class="collapse">
   <li><a href="#parameters" id="toc-parameters" class="nav-link" data-scroll-target="#parameters">Parameters</a></li>
   <li><a href="#returns" id="toc-returns" class="nav-link" data-scroll-target="#returns">Returns</a></li>
@@ -799,11 +799,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="labdata.core.selects" class="level1">
+<section id="crossrepo.core.selects" class="level1">
 <h1>selects</h1>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>labdata.core.selects(select, repo_key)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>crossrepo.core.selects(select, repo_key)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Test whether a narrowed scan should look at a repository.</p>
-<p>The rule is the one <a href="../api/list.html#labdata.list"><code>labdata.list</code></a> filters with, so that narrowing a rescan and narrowing a listing pick the same repositories: the text is matched anywhere in <code>owner/repo</code>, ignoring case. An owner alone is written <code>owner/</code>, which cannot match a repository name.</p>
+<p>The rule is the one <a href="../api/list.html#crossrepo.list"><code>crossrepo.list</code></a> filters with, so that narrowing a rescan and narrowing a listing pick the same repositories: the text is matched anywhere in <code>owner/repo</code>, ignoring case. An owner alone is written <code>owner/</code>, which cannot match a repository name.</p>
 <section id="parameters" class="level2 doc-section doc-section-parameters">
 <h2 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h2>
 <dl>
@@ -828,7 +828,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="see-also" class="level2 doc-section doc-section-see-also">
 <h2 class="doc-section doc-section-see-also anchored" data-anchor-id="see-also">See Also</h2>
-<p><a href="../api/build.html#labdata.build"><code>labdata.core.build</code></a></p>
+<p><a href="../api/build.html#crossrepo.build"><code>crossrepo.core.build</code></a></p>
 
 
 </section>
@@ -908,7 +908,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/munch-group\.github\.io\/labdata\/");
+        var filterRegex = new RegExp("https:\/\/munch-group\.github\.io\/crossrepo\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

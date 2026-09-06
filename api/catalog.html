@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>catalog – labdata</title>
+<title>catalog – crossrepo</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -124,7 +124,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">labdata</span>
+    <span class="navbar-title">crossrepo</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -140,7 +140,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/munch-group/labdata/"> <i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/munch-group/crossrepo/"> <i class="bi bi-github" role="img">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
@@ -784,7 +784,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#labdata.catalog" id="toc-labdata.catalog" class="nav-link active" data-scroll-target="#labdata.catalog">catalog</a>
+  <li><a href="#crossrepo.catalog" id="toc-crossrepo.catalog" class="nav-link active" data-scroll-target="#crossrepo.catalog">catalog</a>
   <ul class="collapse">
   <li><a href="#parameters" id="toc-parameters" class="nav-link" data-scroll-target="#parameters">Parameters</a></li>
   <li><a href="#returns" id="toc-returns" class="nav-link" data-scroll-target="#returns">Returns</a></li>
@@ -800,9 +800,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="labdata.catalog" class="level1">
+<section id="crossrepo.catalog" class="level1">
 <h1>catalog</h1>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>labdata.catalog(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>crossrepo.catalog(</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    refresh<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    max_age<span class="op">=</span><span class="fl">3600.0</span>,</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    cfg<span class="op">=</span><span class="va">None</span>,</span>
@@ -821,9 +821,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dd>
 <p>Age in seconds beyond which the stored catalog is rescanned.</p>
 </dd>
-<dt><code><span class="parameter-name"><strong>cfg</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a href="../api/Config.html#labdata.config.Config">Config</a>]</span> <span class="parameter-default-sep">=</span> <span class="parameter-default">None</span></code></dt>
+<dt><code><span class="parameter-name"><strong>cfg</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a href="../api/Config.html#crossrepo.config.Config">Config</a>]</span> <span class="parameter-default-sep">=</span> <span class="parameter-default">None</span></code></dt>
 <dd>
-<p>Settings. Defaults to <a href="../api/active_config.html#labdata.config.active_config"><code>labdata.config.active_config</code></a>: what <a href="../api/use_config.html#labdata.config.use_config"><code>labdata.config.use_config</code></a> registered, or the configuration file. A stored catalog built with different settings is rescanned rather than reused.</p>
+<p>Settings. Defaults to <a href="../api/active_config.html#crossrepo.config.active_config"><code>crossrepo.config.active_config</code></a>: what <a href="../api/use_config.html#crossrepo.config.use_config"><code>crossrepo.config.use_config</code></a> registered, or the configuration file. A stored catalog built with different settings is rescanned rather than reused.</p>
 </dd>
 <dt><code><span class="parameter-name"><strong>progress</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="parameter-default-sep">=</span> <span class="parameter-default">False</span></code></dt>
 <dd>
@@ -831,16 +831,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </dd>
 <dt><code><span class="parameter-name"><strong>select</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a href="https://docs.python.org/3/library/stdtypes.html#str">str</a>]</span> <span class="parameter-default-sep">=</span> <span class="parameter-default">None</span></code></dt>
 <dd>
-<p>Rescan only the repositories this names, by <a href="../api/selects.html#labdata.core.selects"><code>labdata.core.selects</code></a>, and keep the stored catalog for the rest. The whole catalog is returned and stored, with the named repositories as they are now: rescanning one repository must not lose the others, which are not being looked at rather than known to be gone. Ignored unless <code>refresh</code> is set, since a stored catalog is read whole.</p>
+<p>Rescan only the repositories this names, by <a href="../api/selects.html#crossrepo.core.selects"><code>crossrepo.core.selects</code></a>, and keep the stored catalog for the rest. The whole catalog is returned and stored, with the named repositories as they are now: rescanning one repository must not lose the others, which are not being looked at rather than known to be gone. Ignored unless <code>refresh</code> is set, since a stored catalog is read whole.</p>
 </dd>
 </dl>
 </section>
 <section id="returns" class="level2 doc-section doc-section-returns">
 <h2 class="doc-section doc-section-returns anchored" data-anchor-id="returns">Returns</h2>
 <dl>
-<dt><code><span class="parameter-name"></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.List">List</a>[<a href="../api/Entry.html#labdata.Entry">Entry</a>]</span></code></dt>
+<dt><code><span class="parameter-name"></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.List">List</a>[<a href="../api/Entry.html#crossrepo.Entry">Entry</a>]</span></code></dt>
 <dd>
-<p>Entries sorted by repository and path. Where <code>select</code> is given and there is no stored catalog to update, what was scanned is returned with a <code>labdata.config.SourceWarning</code> and nothing is stored: storing it would leave a catalog holding one repository and claiming to hold them all.</p>
+<p>Entries sorted by repository and path. Where <code>select</code> is given and there is no stored catalog to update, what was scanned is returned with a <code>crossrepo.config.SourceWarning</code> and nothing is stored: storing it would leave a catalog holding one repository and claiming to hold them all.</p>
 </dd>
 </dl>
 </section>
@@ -853,7 +853,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="see-also" class="level2 doc-section doc-section-see-also">
 <h2 class="doc-section doc-section-see-also anchored" data-anchor-id="see-also">See Also</h2>
-<p><a href="../api/selects.html#labdata.core.selects"><code>labdata.core.selects</code></a></p>
+<p><a href="../api/selects.html#crossrepo.core.selects"><code>crossrepo.core.selects</code></a></p>
 
 
 </section>
@@ -933,7 +933,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/munch-group\.github\.io\/labdata\/");
+        var filterRegex = new RegExp("https:\/\/munch-group\.github\.io\/crossrepo\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

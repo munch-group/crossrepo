@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>list – labdata</title>
+<title>list – crossrepo</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -124,7 +124,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">labdata</span>
+    <span class="navbar-title">crossrepo</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -140,7 +140,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/munch-group/labdata/"> <i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/munch-group/crossrepo/"> <i class="bi bi-github" role="img">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
@@ -784,7 +784,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#labdata.list" id="toc-labdata.list" class="nav-link active" data-scroll-target="#labdata.list">list</a>
+  <li><a href="#crossrepo.list" id="toc-crossrepo.list" class="nav-link active" data-scroll-target="#crossrepo.list">list</a>
   <ul class="collapse">
   <li><a href="#parameters" id="toc-parameters" class="nav-link" data-scroll-target="#parameters">Parameters</a></li>
   <li><a href="#returns" id="toc-returns" class="nav-link" data-scroll-target="#returns">Returns</a></li>
@@ -801,9 +801,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="labdata.list" class="level1">
+<section id="crossrepo.list" class="level1">
 <h1>list</h1>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>labdata.<span class="bu">list</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>crossrepo.<span class="bu">list</span>(</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    repo<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    pattern<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
@@ -816,13 +816,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    cfg<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Tabulate what the configured repositories publish.</p>
-<p>The python side of <code>labdata list</code>, and like it the version is left out unless asked for: it is a full commit sha, and every file a repository publishes carries the same one.</p>
+<p>The python side of <code>crossrepo list</code>, and like it the version is left out unless asked for: it is a full commit sha, and every file a repository publishes carries the same one.</p>
 <section id="parameters" class="level2 doc-section doc-section-parameters">
 <h2 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h2>
 <dl>
 <dt><code><span class="parameter-name"><strong>repo</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"></span> <span class="parameter-default-sep">=</span> <span class="parameter-default">None</span></code></dt>
 <dd>
-<p>Keep only repositories whose <code>owner/repo</code> contains this, as <code>labdata list &lt;repo&gt;</code> does.</p>
+<p>Keep only repositories whose <code>owner/repo</code> contains this, as <code>crossrepo list &lt;repo&gt;</code> does.</p>
 </dd>
 <dt><code><span class="parameter-name"><strong>pattern</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"></span> <span class="parameter-default-sep">=</span> <span class="parameter-default">None</span></code></dt>
 <dd>
@@ -838,7 +838,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </dd>
 <dt><code><span class="parameter-name"><strong>spec</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="parameter-default-sep">=</span> <span class="parameter-default">False</span></code></dt>
 <dd>
-<p>Include the <code>spec</code> column, the one string naming a file at a version, which <a href="../api/fetch.html#labdata.fetch"><code>labdata.fetch</code></a> and the command line take. It restates the repository, the path and the version, so it is the widest column there is and is left out unless wanted.</p>
+<p>Include the <code>spec</code> column, the one string naming a file at a version, which <a href="../api/fetch.html#crossrepo.fetch"><code>crossrepo.fetch</code></a> and the command line take. It restates the repository, the path and the version, so it is the widest column there is and is left out unless wanted.</p>
 </dd>
 <dt><code><span class="parameter-name"><strong>url</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="parameter-default-sep">=</span> <span class="parameter-default">False</span></code></dt>
 <dd>
@@ -854,7 +854,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </dd>
 <dt><code><span class="parameter-name"><strong>cfg</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"></span> <span class="parameter-default-sep">=</span> <span class="parameter-default">None</span></code></dt>
 <dd>
-<p>Settings. Defaults to <a href="../api/active_config.html#labdata.config.active_config"><code>labdata.config.active_config</code></a>: what <a href="../api/use_config.html#labdata.config.use_config"><code>labdata.config.use_config</code></a> registered, or the configuration file.</p>
+<p>Settings. Defaults to <a href="../api/active_config.html#crossrepo.config.active_config"><code>crossrepo.config.active_config</code></a>: what <a href="../api/use_config.html#crossrepo.config.use_config"><code>crossrepo.config.use_config</code></a> registered, or the configuration file.</p>
 </dd>
 </dl>
 </section>
@@ -863,7 +863,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dl>
 <dt><code><span class="parameter-name"></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"></span></code></dt>
 <dd>
-<p>A <code>pandas.DataFrame</code> with one row per published file or dataset: <code>owner</code>, <code>repo</code>, <code>name</code>, <code>description</code>, <code>date</code>, <code>github</code>, <code>path</code>, <code>dir</code>, <code>bytes</code>, <code>tags</code> and <code>lfs</code>, or the six columns of <code>brief</code>, plus whichever of <code>version</code>, <code>spec</code> and <code>url</code> were asked for. <code>github</code> is the repository as <code>owner/repo</code>, and <code>path</code> the file as <code>dir/name</code>. <a href="../api/frame.html#labdata.frame"><code>labdata.frame</code></a> has everything, including the number of files a dataset holds.</p>
+<p>A <code>pandas.DataFrame</code> with one row per published file or dataset: <code>owner</code>, <code>repo</code>, <code>name</code>, <code>description</code>, <code>date</code>, <code>github</code>, <code>path</code>, <code>dir</code>, <code>bytes</code>, <code>tags</code> and <code>lfs</code>, or the six columns of <code>brief</code>, plus whichever of <code>version</code>, <code>spec</code> and <code>url</code> were asked for. <code>github</code> is the repository as <code>owner/repo</code>, and <code>path</code> the file as <code>dir/name</code>. <a href="../api/frame.html#crossrepo.frame"><code>crossrepo.frame</code></a> has everything, including the number of files a dataset holds.</p>
 </dd>
 </dl>
 </section>
@@ -872,24 +872,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dl>
 <dt><code><span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/exceptions.html#ImportError">ImportError</a></span></code></dt>
 <dd>
-<p>If pandas is not installed. It is not a dependency of <code>labdata</code>.</p>
+<p>If pandas is not installed. It is not a dependency of <code>crossrepo</code>.</p>
 </dd>
 </dl>
 </section>
 <section id="examples" class="level2 doc-section doc-section-examples">
 <h2 class="doc-section doc-section-examples anchored" data-anchor-id="examples">Examples</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> labdata</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> crossrepo</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>labdata.<span class="bu">list</span>()                        <span class="co"># everything published</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>labdata.<span class="bu">list</span>(brief<span class="op">=</span><span class="va">True</span>)              <span class="co"># just what each file is, and how big</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>labdata.<span class="bu">list</span>(<span class="st">"x-gwas"</span>)                <span class="co"># one repository</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>labdata.<span class="bu">list</span>(pattern<span class="op">=</span><span class="st">"*.parquet"</span>)     <span class="co"># by file name</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>labdata.<span class="bu">list</span>(version<span class="op">=</span><span class="va">True</span>)            <span class="co"># with the sha that pins each file</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>labdata.<span class="bu">list</span>(spec<span class="op">=</span><span class="va">True</span>)               <span class="co"># with the string the shell takes</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>crossrepo.<span class="bu">list</span>()                        <span class="co"># everything published</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>crossrepo.<span class="bu">list</span>(brief<span class="op">=</span><span class="va">True</span>)              <span class="co"># just what each file is, and how big</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>crossrepo.<span class="bu">list</span>(<span class="st">"x-gwas"</span>)                <span class="co"># one repository</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>crossrepo.<span class="bu">list</span>(pattern<span class="op">=</span><span class="st">"*.parquet"</span>)     <span class="co"># by file name</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>crossrepo.<span class="bu">list</span>(version<span class="op">=</span><span class="va">True</span>)            <span class="co"># with the sha that pins each file</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>crossrepo.<span class="bu">list</span>(spec<span class="op">=</span><span class="va">True</span>)               <span class="co"># with the string the shell takes</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="see-also" class="level2 doc-section doc-section-see-also">
 <h2 class="doc-section doc-section-see-also anchored" data-anchor-id="see-also">See Also</h2>
-<p><a href="../api/get.html#labdata.get"><code>labdata.get</code></a> <a href="../api/repos.html#labdata.repos"><code>labdata.repos</code></a></p>
+<p><a href="../api/get.html#crossrepo.get"><code>crossrepo.get</code></a> <a href="../api/repos.html#crossrepo.repos"><code>crossrepo.repos</code></a></p>
 
 
 </section>
@@ -969,7 +969,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/munch-group\.github\.io\/labdata\/");
+        var filterRegex = new RegExp("https:\/\/munch-group\.github\.io\/crossrepo\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

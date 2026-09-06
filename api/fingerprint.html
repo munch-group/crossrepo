@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>fingerprint – labdata</title>
+<title>fingerprint – crossrepo</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -124,7 +124,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">labdata</span>
+    <span class="navbar-title">crossrepo</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -140,7 +140,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/munch-group/labdata/"> <i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/munch-group/crossrepo/"> <i class="bi bi-github" role="img">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
@@ -784,7 +784,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#labdata.core.fingerprint" id="toc-labdata.core.fingerprint" class="nav-link active" data-scroll-target="#labdata.core.fingerprint">fingerprint</a>
+  <li><a href="#crossrepo.core.fingerprint" id="toc-crossrepo.core.fingerprint" class="nav-link active" data-scroll-target="#crossrepo.core.fingerprint">fingerprint</a>
   <ul class="collapse">
   <li><a href="#parameters" id="toc-parameters" class="nav-link" data-scroll-target="#parameters">Parameters</a></li>
   <li><a href="#returns" id="toc-returns" class="nav-link" data-scroll-target="#returns">Returns</a></li>
@@ -799,15 +799,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="labdata.core.fingerprint" class="level1">
+<section id="crossrepo.core.fingerprint" class="level1">
 <h1>fingerprint</h1>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>labdata.core.fingerprint(cfg)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>crossrepo.core.fingerprint(cfg)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Summarise the settings that decide what a catalog contains.</p>
 <p>A stored catalog is only reusable for the settings that produced it, and nothing about a catalog file says which those were. This gives the stored catalog a key, so that pointing <code>roots</code> somewhere else takes effect at once instead of after the stored catalog has aged out.</p>
 <section id="parameters" class="level2 doc-section doc-section-parameters">
 <h2 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h2>
 <dl>
-<dt><code><span class="parameter-name"><strong>cfg</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="../api/Config.html#labdata.config.Config">Config</a></span></code></dt>
+<dt><code><span class="parameter-name"><strong>cfg</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="../api/Config.html#crossrepo.config.Config">Config</a></span></code></dt>
 <dd>
 <p>Settings to summarise. Only the fields that change which files are cataloged are used, and <code>~</code> in <code>roots</code> is expanded first so that two spellings of one directory agree.</p>
 </dd>
@@ -824,7 +824,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="see-also" class="level2 doc-section doc-section-see-also">
 <h2 class="doc-section doc-section-see-also anchored" data-anchor-id="see-also">See Also</h2>
-<p><a href="../api/catalog.html#labdata.catalog"><code>labdata.core.catalog</code></a></p>
+<p><a href="../api/catalog.html#crossrepo.catalog"><code>crossrepo.core.catalog</code></a></p>
 
 
 </section>
@@ -904,7 +904,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/munch-group\.github\.io\/labdata\/");
+        var filterRegex = new RegExp("https:\/\/munch-group\.github\.io\/crossrepo\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

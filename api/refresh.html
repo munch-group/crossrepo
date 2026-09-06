@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>refresh – labdata</title>
+<title>refresh – crossrepo</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -124,7 +124,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">labdata</span>
+    <span class="navbar-title">crossrepo</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -140,7 +140,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/munch-group/labdata/"> <i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/munch-group/crossrepo/"> <i class="bi bi-github" role="img">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
@@ -784,7 +784,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#labdata.refresh" id="toc-labdata.refresh" class="nav-link active" data-scroll-target="#labdata.refresh">refresh</a>
+  <li><a href="#crossrepo.refresh" id="toc-crossrepo.refresh" class="nav-link active" data-scroll-target="#crossrepo.refresh">refresh</a>
   <ul class="collapse">
   <li><a href="#parameters" id="toc-parameters" class="nav-link" data-scroll-target="#parameters">Parameters</a></li>
   <li><a href="#returns" id="toc-returns" class="nav-link" data-scroll-target="#returns">Returns</a></li>
@@ -801,18 +801,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="labdata.refresh" class="level1">
+<section id="crossrepo.refresh" class="level1">
 <h1>refresh</h1>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>labdata.refresh(cfg<span class="op">=</span><span class="va">None</span>, progress<span class="op">=</span><span class="va">True</span>, owner<span class="op">=</span><span class="va">None</span>, repo<span class="op">=</span><span class="va">None</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>crossrepo.refresh(cfg<span class="op">=</span><span class="va">None</span>, progress<span class="op">=</span><span class="va">True</span>, owner<span class="op">=</span><span class="va">None</span>, repo<span class="op">=</span><span class="va">None</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Rescan the repositories and store the catalog.</p>
-<p>The python side of <code>labdata refresh</code>. The rebuilt catalog is returned, so a notebook cell shows what is there now.</p>
+<p>The python side of <code>crossrepo refresh</code>. The rebuilt catalog is returned, so a notebook cell shows what is there now.</p>
 <p>Naming an <code>owner</code> or a <code>repo</code> rescans that much and no more, which is the difference between a request or two and a request for every repository an organisation holds. The rest of the catalog is neither rescanned nor forgotten: what is stored is still the whole of it, with the named repositories as they are now.</p>
 <section id="parameters" class="level2 doc-section doc-section-parameters">
 <h2 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h2>
 <dl>
 <dt><code><span class="parameter-name"><strong>cfg</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"></span> <span class="parameter-default-sep">=</span> <span class="parameter-default">None</span></code></dt>
 <dd>
-<p>Settings. Defaults to <a href="../api/active_config.html#labdata.config.active_config"><code>labdata.config.active_config</code></a>: what <a href="../api/use_config.html#labdata.config.use_config"><code>labdata.config.use_config</code></a> registered, or the configuration file.</p>
+<p>Settings. Defaults to <a href="../api/active_config.html#crossrepo.config.active_config"><code>crossrepo.config.active_config</code></a>: what <a href="../api/use_config.html#crossrepo.config.use_config"><code>crossrepo.config.use_config</code></a> registered, or the configuration file.</p>
 </dd>
 <dt><code><span class="parameter-name"><strong>progress</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="parameter-default-sep">=</span> <span class="parameter-default">True</span></code></dt>
 <dd>
@@ -824,11 +824,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </dd>
 <dt><code><span class="parameter-name"><strong>repo</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"></span> <span class="parameter-default-sep">=</span> <span class="parameter-default">None</span></code></dt>
 <dd>
-<p>Rescan only repositories matching this, as <a href="../api/list.html#labdata.list"><code>labdata.list</code></a> filters on it: the text is matched anywhere in <code>owner/repo</code>, ignoring case, so a name, a fragment of one, or a whole <code>owner/repo</code> all work.</p>
+<p>Rescan only repositories matching this, as <a href="../api/list.html#crossrepo.list"><code>crossrepo.list</code></a> filters on it: the text is matched anywhere in <code>owner/repo</code>, ignoring case, so a name, a fragment of one, or a whole <code>owner/repo</code> all work.</p>
 </dd>
 <dt><code><span class="parameter-name">****kwargs**</span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"></span> <span class="parameter-default-sep">=</span> <span class="parameter-default">{}</span></code></dt>
 <dd>
-<p>Passed to <a href="../api/list.html#labdata.list"><code>labdata.list</code></a>, so <code>version=True</code> and <code>url=True</code> work here too.</p>
+<p>Passed to <a href="../api/list.html#crossrepo.list"><code>crossrepo.list</code></a>, so <code>version=True</code> and <code>url=True</code> work here too.</p>
 </dd>
 </dl>
 </section>
@@ -837,7 +837,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dl>
 <dt><code><span class="parameter-name"></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"></span></code></dt>
 <dd>
-<p>A <code>pandas.DataFrame</code>, as <a href="../api/list.html#labdata.list"><code>labdata.list</code></a> returns, holding what was rescanned when <code>owner</code> or <code>repo</code> was given and the whole catalog otherwise. Where nothing configured matches, the table is empty and a <code>labdata.config.SourceWarning</code> says so, a rescan that looked at nothing being otherwise an empty table and no explanation.</p>
+<p>A <code>pandas.DataFrame</code>, as <a href="../api/list.html#crossrepo.list"><code>crossrepo.list</code></a> returns, holding what was rescanned when <code>owner</code> or <code>repo</code> was given and the whole catalog otherwise. Where nothing configured matches, the table is empty and a <code>crossrepo.config.SourceWarning</code> says so, a rescan that looked at nothing being otherwise an empty table and no explanation.</p>
 </dd>
 </dl>
 </section>
@@ -852,16 +852,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="examples" class="level2 doc-section doc-section-examples">
 <h2 class="doc-section doc-section-examples anchored" data-anchor-id="examples">Examples</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>labdata.refresh()                       <span class="co"># everything, with a progress bar</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>labdata.refresh(progress<span class="op">=</span><span class="va">False</span>)         <span class="co"># without the bar</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>crossrepo.refresh()                       <span class="co"># everything, with a progress bar</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>crossrepo.refresh(progress<span class="op">=</span><span class="va">False</span>)         <span class="co"># without the bar</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>labdata.refresh(repo<span class="op">=</span><span class="st">"x-gwas"</span>)          <span class="co"># one repository</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>labdata.refresh(owner<span class="op">=</span><span class="st">"munch-group"</span>)    <span class="co"># one organisation</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>labdata.refresh(owner<span class="op">=</span><span class="st">"munch-group"</span>, repo<span class="op">=</span><span class="st">"x-gwas"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>crossrepo.refresh(repo<span class="op">=</span><span class="st">"x-gwas"</span>)          <span class="co"># one repository</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>crossrepo.refresh(owner<span class="op">=</span><span class="st">"munch-group"</span>)    <span class="co"># one organisation</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>crossrepo.refresh(owner<span class="op">=</span><span class="st">"munch-group"</span>, repo<span class="op">=</span><span class="st">"x-gwas"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="see-also" class="level2 doc-section doc-section-see-also">
 <h2 class="doc-section doc-section-see-also anchored" data-anchor-id="see-also">See Also</h2>
-<p><a href="../api/list.html#labdata.list"><code>labdata.list</code></a> <a href="../api/catalog.html#labdata.catalog"><code>labdata.core.catalog</code></a></p>
+<p><a href="../api/list.html#crossrepo.list"><code>crossrepo.list</code></a> <a href="../api/catalog.html#crossrepo.catalog"><code>crossrepo.core.catalog</code></a></p>
 
 
 </section>
@@ -941,7 +941,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/munch-group\.github\.io\/labdata\/");
+        var filterRegex = new RegExp("https:\/\/munch-group\.github\.io\/crossrepo\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

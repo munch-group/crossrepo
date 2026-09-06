@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>write_stamp – labdata</title>
+<title>write_stamp – crossrepo</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -124,7 +124,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">labdata</span>
+    <span class="navbar-title">crossrepo</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -140,7 +140,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/munch-group/labdata/"> <i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/munch-group/crossrepo/"> <i class="bi bi-github" role="img">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
@@ -784,7 +784,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#labdata.manifest.write_stamp" id="toc-labdata.manifest.write_stamp" class="nav-link active" data-scroll-target="#labdata.manifest.write_stamp">write_stamp</a>
+  <li><a href="#crossrepo.manifest.write_stamp" id="toc-crossrepo.manifest.write_stamp" class="nav-link active" data-scroll-target="#crossrepo.manifest.write_stamp">write_stamp</a>
   <ul class="collapse">
   <li><a href="#parameters" id="toc-parameters" class="nav-link" data-scroll-target="#parameters">Parameters</a></li>
   <li><a href="#returns" id="toc-returns" class="nav-link" data-scroll-target="#returns">Returns</a></li>
@@ -800,9 +800,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="labdata.manifest.write_stamp" class="level1">
+<section id="crossrepo.manifest.write_stamp" class="level1">
 <h1>write_stamp</h1>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>labdata.manifest.write_stamp(text, key, stamp)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>crossrepo.manifest.write_stamp(text, key, stamp)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Write one entry’s stamp into a manifest, leaving the rest of the file alone.</p>
 <p>Only the entry’s own <code>sha256</code> and <code>size</code> lines are touched, so comments, key order, quoting and formatting survive: the manifest is a file people write by hand and read in diffs, and a stamping run should show up in one as two changed lines and nothing else. An entry written as a bare description grows into a mapping holding that description, which is the one case where a line has to be rewritten rather than added.</p>
 <section id="parameters" class="level2 doc-section doc-section-parameters">
@@ -816,7 +816,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dd>
 <p>Key to stamp, which must already be in the file: naming a file is how it is published, and stamping does not publish anything.</p>
 </dd>
-<dt><code><span class="parameter-name"><strong>stamp</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="../api/Stamp.html#labdata.manifest.Stamp">Stamp</a></span></code></dt>
+<dt><code><span class="parameter-name"><strong>stamp</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="../api/Stamp.html#crossrepo.manifest.Stamp">Stamp</a></span></code></dt>
 <dd>
 <p>The stamp to write.</p>
 </dd>
@@ -834,7 +834,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="raises" class="level2 doc-section doc-section-raises">
 <h2 class="doc-section doc-section-raises anchored" data-anchor-id="raises">Raises</h2>
 <dl>
-<dt><code><span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="../api/ManifestError.html#labdata.manifest.ManifestError">ManifestError</a></span></code></dt>
+<dt><code><span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="../api/ManifestError.html#crossrepo.manifest.ManifestError">ManifestError</a></span></code></dt>
 <dd>
 <p>If the key is not in the file.</p>
 </dd>
@@ -923,7 +923,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/munch-group\.github\.io\/labdata\/");
+        var filterRegex = new RegExp("https:\/\/munch-group\.github\.io\/crossrepo\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

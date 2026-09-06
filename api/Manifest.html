@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>manifest – labdata</title>
+<title>manifest – crossrepo</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -124,7 +124,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">labdata</span>
+    <span class="navbar-title">crossrepo</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -140,7 +140,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/munch-group/labdata/"> <i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/munch-group/crossrepo/"> <i class="bi bi-github" role="img">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
@@ -784,17 +784,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#labdata.manifest.Manifest" id="toc-labdata.manifest.Manifest" class="nav-link active" data-scroll-target="#labdata.manifest.Manifest">Manifest</a>
+  <li><a href="#crossrepo.manifest.Manifest" id="toc-crossrepo.manifest.Manifest" class="nav-link active" data-scroll-target="#crossrepo.manifest.Manifest">Manifest</a>
   <ul class="collapse">
   <li><a href="#attributes" id="toc-attributes" class="nav-link" data-scroll-target="#attributes">Attributes</a></li>
   <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See Also</a></li>
   <li><a href="#methods" id="toc-methods" class="nav-link" data-scroll-target="#methods">Methods</a>
   <ul class="collapse">
-  <li><a href="#labdata.manifest.Manifest.anchored_prefixes" id="toc-labdata.manifest.Manifest.anchored_prefixes" class="nav-link" data-scroll-target="#labdata.manifest.Manifest.anchored_prefixes">anchored_prefixes</a></li>
-  <li><a href="#labdata.manifest.Manifest.describe" id="toc-labdata.manifest.Manifest.describe" class="nav-link" data-scroll-target="#labdata.manifest.Manifest.describe">describe</a></li>
-  <li><a href="#labdata.manifest.Manifest.governs" id="toc-labdata.manifest.Manifest.governs" class="nav-link" data-scroll-target="#labdata.manifest.Manifest.governs">governs</a></li>
-  <li><a href="#labdata.manifest.Manifest.relative" id="toc-labdata.manifest.Manifest.relative" class="nav-link" data-scroll-target="#labdata.manifest.Manifest.relative">relative</a></li>
-  <li><a href="#labdata.manifest.Manifest.stamp" id="toc-labdata.manifest.Manifest.stamp" class="nav-link" data-scroll-target="#labdata.manifest.Manifest.stamp">stamp</a></li>
+  <li><a href="#crossrepo.manifest.Manifest.anchored_prefixes" id="toc-crossrepo.manifest.Manifest.anchored_prefixes" class="nav-link" data-scroll-target="#crossrepo.manifest.Manifest.anchored_prefixes">anchored_prefixes</a></li>
+  <li><a href="#crossrepo.manifest.Manifest.describe" id="toc-crossrepo.manifest.Manifest.describe" class="nav-link" data-scroll-target="#crossrepo.manifest.Manifest.describe">describe</a></li>
+  <li><a href="#crossrepo.manifest.Manifest.governs" id="toc-crossrepo.manifest.Manifest.governs" class="nav-link" data-scroll-target="#crossrepo.manifest.Manifest.governs">governs</a></li>
+  <li><a href="#crossrepo.manifest.Manifest.relative" id="toc-crossrepo.manifest.Manifest.relative" class="nav-link" data-scroll-target="#crossrepo.manifest.Manifest.relative">relative</a></li>
+  <li><a href="#crossrepo.manifest.Manifest.stamp" id="toc-crossrepo.manifest.Manifest.stamp" class="nav-link" data-scroll-target="#crossrepo.manifest.Manifest.stamp">stamp</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -806,9 +806,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="labdata.manifest.Manifest" class="level1">
+<section id="crossrepo.manifest.Manifest" class="level1">
 <h1>Manifest</h1>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>labdata.manifest.Manifest(directory, files, stamps<span class="op">=</span><span class="bu">dict</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>crossrepo.manifest.Manifest(directory, files, stamps<span class="op">=</span><span class="bu">dict</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>What one directory of a repository publishes.</p>
 <section id="attributes" class="level2 doc-section doc-section-attributes">
 <h2 class="doc-section doc-section-attributes anchored" data-anchor-id="attributes">Attributes</h2>
@@ -821,7 +821,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dd>
 <p>Keys in the order they were written, each mapped to its description. A key is a path relative to <code>directory</code>, a bare file name, a glob pattern over either, or – written with a leading <code>/</code> – a path or pattern from the root of the repository, naming a file outside <code>directory</code>.</p>
 </dd>
-<dt><code><span class="parameter-name"><strong>stamps</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.Dict">Dict</a>[<a href="https://docs.python.org/3/library/stdtypes.html#str">str</a>, <a href="../api/Stamp.html#labdata.manifest.Stamp">Stamp</a>]</span></code></dt>
+<dt><code><span class="parameter-name"><strong>stamps</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.Dict">Dict</a>[<a href="https://docs.python.org/3/library/stdtypes.html#str">str</a>, <a href="../api/Stamp.html#crossrepo.manifest.Stamp">Stamp</a>]</span></code></dt>
 <dd>
 <p>The content stamps, under the same keys as <code>files</code> and only for the keys that carry one. A key with a stamp names a link: a symbolic link whose target holds the real content. Empty for a manifest that publishes no links.</p>
 </dd>
@@ -829,7 +829,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="see-also" class="level2 doc-section doc-section-see-also">
 <h2 class="doc-section doc-section-see-also anchored" data-anchor-id="see-also">See Also</h2>
-<p><a href="../api/parse.html#labdata.manifest.parse"><code>labdata.manifest.parse</code></a> <a href="../api/Stamp.html#labdata.manifest.Stamp"><code>labdata.manifest.Stamp</code></a></p>
+<p><a href="../api/parse.html#crossrepo.manifest.parse"><code>crossrepo.manifest.parse</code></a> <a href="../api/Stamp.html#crossrepo.manifest.Stamp"><code>crossrepo.manifest.Stamp</code></a></p>
 </section>
 <section id="methods" class="level2">
 <h2 class="anchored" data-anchor-id="methods">Methods</h2>
@@ -842,30 +842,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#labdata.manifest.Manifest.anchored_prefixes">anchored_prefixes</a></td>
+<td><a href="#crossrepo.manifest.Manifest.anchored_prefixes">anchored_prefixes</a></td>
 <td>Where to look for the files this manifest names from the repository root.</td>
 </tr>
 <tr class="even">
-<td><a href="#labdata.manifest.Manifest.describe">describe</a></td>
+<td><a href="#crossrepo.manifest.Manifest.describe">describe</a></td>
 <td>Look up what a file is, and thereby whether it is published at all.</td>
 </tr>
 <tr class="odd">
-<td><a href="#labdata.manifest.Manifest.governs">governs</a></td>
+<td><a href="#crossrepo.manifest.Manifest.governs">governs</a></td>
 <td>Test whether a file lies in the part of the tree this manifest covers.</td>
 </tr>
 <tr class="even">
-<td><a href="#labdata.manifest.Manifest.relative">relative</a></td>
+<td><a href="#crossrepo.manifest.Manifest.relative">relative</a></td>
 <td>Express a repository path relative to the manifest.</td>
 </tr>
 <tr class="odd">
-<td><a href="#labdata.manifest.Manifest.stamp">stamp</a></td>
+<td><a href="#crossrepo.manifest.Manifest.stamp">stamp</a></td>
 <td>Look up the content a file’s link stands for.</td>
 </tr>
 </tbody>
 </table>
-<section id="labdata.manifest.Manifest.anchored_prefixes" class="level3">
-<h3 class="anchored" data-anchor-id="labdata.manifest.Manifest.anchored_prefixes">anchored_prefixes</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>labdata.manifest.Manifest.anchored_prefixes()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="crossrepo.manifest.Manifest.anchored_prefixes" class="level3">
+<h3 class="anchored" data-anchor-id="crossrepo.manifest.Manifest.anchored_prefixes">anchored_prefixes</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>crossrepo.manifest.Manifest.anchored_prefixes()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Where to look for the files this manifest names from the repository root.</p>
 <p>A key written from the root may name a file anywhere in the repository, so finding what it names means listing more than the results directory. Each such key contributes the literal part of its path, up to its first glob character, which is the least that has to be listed.</p>
 <section id="returns" class="level4 doc-section doc-section-returns">
@@ -879,12 +879,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="see-also-1" class="level4 doc-section doc-section-see-also">
 <h4 class="doc-section doc-section-see-also anchored" data-anchor-id="see-also-1">See Also</h4>
-<p><a href="../api/Manifest.html#labdata.manifest.Manifest.describe"><code>labdata.manifest.Manifest.describe</code></a></p>
+<p><a href="../api/Manifest.html#crossrepo.manifest.Manifest.describe"><code>crossrepo.manifest.Manifest.describe</code></a></p>
 </section>
 </section>
-<section id="labdata.manifest.Manifest.describe" class="level3">
-<h3 class="anchored" data-anchor-id="labdata.manifest.Manifest.describe">describe</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>labdata.manifest.Manifest.describe(path)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="crossrepo.manifest.Manifest.describe" class="level3">
+<h3 class="anchored" data-anchor-id="crossrepo.manifest.Manifest.describe">describe</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>crossrepo.manifest.Manifest.describe(path)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Look up what a file is, and thereby whether it is published at all.</p>
 <p>An exact key wins over a glob, and a full path wins over a bare file name, so a specific description can be given for one file among many covered by a pattern. A key written from the repository root is the most specific spelling of all and is tried first. Globs are tried in the order they were written.</p>
 <p>A key that does not start with <code>/</code> only ever reaches inside <code>directory</code>: a bare file name is matched against files this manifest governs, never against the same name elsewhere in the repository.</p>
@@ -913,9 +913,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 'the good one'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
-<section id="labdata.manifest.Manifest.governs" class="level3">
-<h3 class="anchored" data-anchor-id="labdata.manifest.Manifest.governs">governs</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>labdata.manifest.Manifest.governs(path)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="crossrepo.manifest.Manifest.governs" class="level3">
+<h3 class="anchored" data-anchor-id="crossrepo.manifest.Manifest.governs">governs</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>crossrepo.manifest.Manifest.governs(path)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Test whether a file lies in the part of the tree this manifest covers.</p>
 <section id="parameters-1" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
@@ -936,9 +936,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </dl>
 </section>
 </section>
-<section id="labdata.manifest.Manifest.relative" class="level3">
-<h3 class="anchored" data-anchor-id="labdata.manifest.Manifest.relative">relative</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>labdata.manifest.Manifest.relative(path)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="crossrepo.manifest.Manifest.relative" class="level3">
+<h3 class="anchored" data-anchor-id="crossrepo.manifest.Manifest.relative">relative</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>crossrepo.manifest.Manifest.relative(path)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Express a repository path relative to the manifest.</p>
 <section id="parameters-2" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-2">Parameters</h4>
@@ -959,11 +959,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </dl>
 </section>
 </section>
-<section id="labdata.manifest.Manifest.stamp" class="level3">
-<h3 class="anchored" data-anchor-id="labdata.manifest.Manifest.stamp">stamp</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>labdata.manifest.Manifest.stamp(path)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="crossrepo.manifest.Manifest.stamp" class="level3">
+<h3 class="anchored" data-anchor-id="crossrepo.manifest.Manifest.stamp">stamp</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>crossrepo.manifest.Manifest.stamp(path)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Look up the content a file’s link stands for.</p>
-<p>Keys are matched as <a href="../api/Manifest.html#labdata.manifest.Manifest.describe"><code>labdata.manifest.Manifest.describe</code></a> matches them, except that no glob is tried: a stamp identifies one file’s content, so <a href="../api/parse.html#labdata.manifest.parse"><code>labdata.manifest.parse</code></a> refuses to put one on a pattern.</p>
+<p>Keys are matched as <a href="../api/Manifest.html#crossrepo.manifest.Manifest.describe"><code>crossrepo.manifest.Manifest.describe</code></a> matches them, except that no glob is tried: a stamp identifies one file’s content, so <a href="../api/parse.html#crossrepo.manifest.parse"><code>crossrepo.manifest.parse</code></a> refuses to put one on a pattern.</p>
 <section id="parameters-3" class="level4 doc-section doc-section-parameters">
 <h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-3">Parameters</h4>
 <dl>
@@ -976,7 +976,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="returns-4" class="level4 doc-section doc-section-returns">
 <h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-4">Returns</h4>
 <dl>
-<dt><code><span class="parameter-name"></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a href="../api/Stamp.html#labdata.manifest.Stamp">Stamp</a>]</span></code></dt>
+<dt><code><span class="parameter-name"></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a href="../api/Stamp.html#crossrepo.manifest.Stamp">Stamp</a>]</span></code></dt>
 <dd>
 <p>The stamp, or <code>None</code> when the file is not published as a link. A file with no stamp is an ordinary committed file, versioned by git itself.</p>
 </dd>
@@ -1068,7 +1068,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/munch-group\.github\.io\/labdata\/");
+        var filterRegex = new RegExp("https:\/\/munch-group\.github\.io\/crossrepo\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

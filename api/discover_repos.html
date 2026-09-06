@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>discover_repos – labdata</title>
+<title>discover_repos – crossrepo</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -124,7 +124,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">labdata</span>
+    <span class="navbar-title">crossrepo</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -140,7 +140,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/munch-group/labdata/"> <i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/munch-group/crossrepo/"> <i class="bi bi-github" role="img">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
@@ -784,7 +784,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#labdata.gitutil.discover_repos" id="toc-labdata.gitutil.discover_repos" class="nav-link active" data-scroll-target="#labdata.gitutil.discover_repos">discover_repos</a>
+  <li><a href="#crossrepo.gitutil.discover_repos" id="toc-crossrepo.gitutil.discover_repos" class="nav-link active" data-scroll-target="#crossrepo.gitutil.discover_repos">discover_repos</a>
   <ul class="collapse">
   <li><a href="#parameters" id="toc-parameters" class="nav-link" data-scroll-target="#parameters">Parameters</a></li>
   <li><a href="#returns" id="toc-returns" class="nav-link" data-scroll-target="#returns">Returns</a></li>
@@ -799,9 +799,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="labdata.gitutil.discover_repos" class="level1">
+<section id="crossrepo.gitutil.discover_repos" class="level1">
 <h1>discover_repos</h1>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>labdata.gitutil.discover_repos(roots)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>crossrepo.gitutil.discover_repos(roots)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Find git working trees under a set of root directories.</p>
 <p>A root that is itself a working tree is returned directly; otherwise its immediate subdirectories are the working trees. Nothing deeper is looked at, which keeps the scan quick and predictable: a repository is either the root you named or something sitting directly in it.</p>
 <p>A root written <code>user@host:path</code> is looked at on that machine instead, in one round trip rather than one per directory. The connection to each host is opened first, so that whatever ssh asks for is asked once, before the scan starts printing.</p>
@@ -810,7 +810,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dl>
 <dt><code><span class="parameter-name"><strong>roots</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.Iterable">Iterable</a>[<a href="https://docs.python.org/3/library/typing.html#typing.Union">Union</a>[<code>Location</code>, <a href="https://docs.python.org/3/library/stdtypes.html#str">str</a>, <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path">Path</a>]]</span></code></dt>
 <dd>
-<p>Directories to search. <code>~</code> is expanded, here for a local root and on the far side for a remote one. A root that does not exist, or that cannot be read, and a host that does not answer, are skipped with a <code>labdata.config.SourceWarning</code>, since there is nothing about an empty result to say which source was the problem.</p>
+<p>Directories to search. <code>~</code> is expanded, here for a local root and on the far side for a remote one. A root that does not exist, or that cannot be read, and a host that does not answer, are skipped with a <code>crossrepo.config.SourceWarning</code>, since there is nothing about an empty result to say which source was the problem.</p>
 </dd>
 </dl>
 </section>
@@ -905,7 +905,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/munch-group\.github\.io\/labdata\/");
+        var filterRegex = new RegExp("https:\/\/munch-group\.github\.io\/crossrepo\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>registration – labdata</title>
+<title>registration – crossrepo</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -124,7 +124,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">labdata</span>
+    <span class="navbar-title">crossrepo</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -140,7 +140,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/munch-group/labdata/"> <i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/munch-group/crossrepo/"> <i class="bi bi-github" role="img">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
@@ -784,12 +784,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#labdata.config.Registration" id="toc-labdata.config.Registration" class="nav-link active" data-scroll-target="#labdata.config.Registration">Registration</a>
+  <li><a href="#crossrepo.config.Registration" id="toc-crossrepo.config.Registration" class="nav-link active" data-scroll-target="#crossrepo.config.Registration">Registration</a>
   <ul class="collapse">
   <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See Also</a></li>
   <li><a href="#methods" id="toc-methods" class="nav-link" data-scroll-target="#methods">Methods</a>
   <ul class="collapse">
-  <li><a href="#labdata.config.Registration.undo" id="toc-labdata.config.Registration.undo" class="nav-link" data-scroll-target="#labdata.config.Registration.undo">undo</a></li>
+  <li><a href="#crossrepo.config.Registration.undo" id="toc-crossrepo.config.Registration.undo" class="nav-link" data-scroll-target="#crossrepo.config.Registration.undo">undo</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -801,14 +801,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="labdata.config.Registration" class="level1">
+<section id="crossrepo.config.Registration" class="level1">
 <h1>Registration</h1>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>labdata.config.Registration(previous)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The undo for one call to <a href="../api/use_config.html#labdata.config.use_config"><code>labdata.config.use_config</code></a>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>crossrepo.config.Registration(previous)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The undo for one call to <a href="../api/use_config.html#crossrepo.config.use_config"><code>crossrepo.config.use_config</code></a>.</p>
 <p>Returned rather than used directly. Ignoring it leaves the registration in place for the rest of the session; entering it with <code>with</code> puts the previous settings back on the way out. It shows itself as the settings now in effect, so that a registration made as the last line of a notebook cell prints something worth reading.</p>
 <section id="see-also" class="level2 doc-section doc-section-see-also">
 <h2 class="doc-section doc-section-see-also anchored" data-anchor-id="see-also">See Also</h2>
-<p><a href="../api/use_config.html#labdata.config.use_config"><code>labdata.config.use_config</code></a> <a href="../api/active_config.html#labdata.config.active_config"><code>labdata.config.active_config</code></a></p>
+<p><a href="../api/use_config.html#crossrepo.config.use_config"><code>crossrepo.config.use_config</code></a> <a href="../api/active_config.html#crossrepo.config.active_config"><code>crossrepo.config.active_config</code></a></p>
 </section>
 <section id="methods" class="level2">
 <h2 class="anchored" data-anchor-id="methods">Methods</h2>
@@ -821,14 +821,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#labdata.config.Registration.undo">undo</a></td>
+<td><a href="#crossrepo.config.Registration.undo">undo</a></td>
 <td>Put back the settings that were registered before this call.</td>
 </tr>
 </tbody>
 </table>
-<section id="labdata.config.Registration.undo" class="level3">
-<h3 class="anchored" data-anchor-id="labdata.config.Registration.undo">undo</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>labdata.config.Registration.undo()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="crossrepo.config.Registration.undo" class="level3">
+<h3 class="anchored" data-anchor-id="crossrepo.config.Registration.undo">undo</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>crossrepo.config.Registration.undo()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Put back the settings that were registered before this call.</p>
 <p>Doing it twice is not an error: the second time does nothing, so a registration undone by hand inside a <code>with</code> block is not undone again on the way out.</p>
 
@@ -911,7 +911,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/munch-group\.github\.io\/labdata\/");
+        var filterRegex = new RegExp("https:\/\/munch-group\.github\.io\/crossrepo\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
