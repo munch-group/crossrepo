@@ -84,6 +84,7 @@ __all__ = [
     "Config",
     "Entry",
     "Spec",
+    "Table",
     "Version",
 ]
 
@@ -104,6 +105,138 @@ VERSION_COLUMNS = ("version", "date", "bytes", "parts", "tags", "subject")
 REPO_COLUMNS = ("repo", "files", "bytes", "latest")
 
 
+_TABLE = None
+"""The data frame subclass, once something has asked for it."""
+
+
+def _table():
+    """
+    The data frame subclass every table here is handed back as.
+
+    Built on first use rather than written out at the top of the module, because
+    pandas is not a dependency of `crossrepo` and importing it is the slowest
+    thing that happens in this file. A class cannot inherit from something that
+    may not be installed, so the definition waits until pandas is there, which is
+    the moment a table is asked for.
+
+    Returns
+    -------
+    :
+        The `Table` class, the same one on every call.
+    """
+    global _TABLE
+    if _TABLE is not None:
+        return _TABLE
+
+    import pandas as pd
+
+    class Table(pd.DataFrame):
+        """
+        A data frame that shows itself with its text columns left aligned.
+
+        A [](`pandas.DataFrame`) in every other respect -- it inherits from one,
+        so every method, every operator and every library that takes a data
+        frame takes this. What it adds is one thing: in a notebook, columns
+        holding text are drawn left aligned rather than right.
+
+        That is not decoration. pandas right aligns everything, which suits
+        numbers and is wrong for the columns a catalog is mostly made of: a
+        description, a path, a repository name. Read down a right aligned column
+        of text and the eye has no edge to run along, and the one column anybody
+        scans -- what each file holds -- is the worst of them.
+
+        Operations return a `Table` too, so the alignment survives a
+        `pandas.DataFrame.sort_values` or a column selection and does not have
+        to be asked for again.
+
+        Examples
+        --------
+
+        ```python
+        import crossrepo
+
+        crossrepo.list()                      # already one of these
+        crossrepo.Table(some_other_frame)     # or wrap your own
+        ```
+
+        See Also
+        --------
+        [](`crossrepo.list`)
+        [](`crossrepo.frame`)
+        """
+
+        @property
+        def _constructor(self):
+            """The class pandas rebuilds one of these as, so slicing keeps it."""
+            return Table
+
+        def _repr_html_(self):
+            """
+            Render for a notebook, left aligning the columns that hold text.
+
+            Which columns those are is decided by dtype rather than by name, so
+            a table nobody here wrote -- one the caller made, or one left after
+            a `pandas.DataFrame.groupby` -- is treated the same way.
+
+            Returns
+            -------
+            :
+                The table as HTML.
+            """
+            import pandas as pd
+
+            styler = self.style
+            styler.set_table_styles(
+                {
+                    name: [{"selector": "", "props": [("text-align", "left")]}]
+                    for name, dtype in zip(self.columns, self.dtypes)
+                    if pd.api.types.is_object_dtype(dtype)
+                },
+                overwrite=False,
+            )
+            # A styler draws every row it is given. A data frame stops at
+            # `display.max_rows`, and a catalog of three thousand files would
+            # otherwise arrive in the notebook whole.
+            return styler.to_html(
+                max_rows=(
+                    pd.get_option("styler.render.max_rows")
+                    or pd.get_option("display.max_rows")
+                ),
+                max_columns=(
+                    pd.get_option("styler.render.max_columns")
+                    or pd.get_option("display.max_columns")
+                ),
+            )
+
+    _TABLE = Table
+    return _TABLE
+
+
+def __getattr__(name):
+    """
+    Hand out `Table` without importing pandas to do it.
+
+    Parameters
+    ----------
+    name :
+        Attribute being looked for, once the module itself has none by that
+        name.
+
+    Returns
+    -------
+    :
+        The `Table` class.
+
+    Raises
+    ------
+    AttributeError
+        For anything else, as a module does.
+    """
+    if name == "Table":
+        return _table()
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
+
 def frame(entries=None):
     """
     Represent the catalog as a data frame.
@@ -116,7 +249,8 @@ def frame(entries=None):
     Returns
     -------
     :
-        A [](`pandas.DataFrame`) with one row per result file and columns
+        A `Table` -- a [](`pandas.DataFrame`) that left aligns its text
+        columns in a notebook -- with one row per result file and columns
         ``owner``, ``repo``, ``name``, ``description``, ``date``, ``github``,
         ``path``, ``dir``, ``bytes``, ``tags``, ``lfs``, ``version``, ``parts``,
         ``spec`` and ``url``. ``github`` is ``owner/repo`` and ``path`` is
@@ -145,10 +279,8 @@ def frame(entries=None):
     --------
     [](`crossrepo.core.catalog`)
     """
-    import pandas as pd
-
     entries = catalog() if entries is None else entries
-    return pd.DataFrame(
+    return _table()(
         [
             {
                 "owner": e.owner,
@@ -276,7 +408,8 @@ def list(
     Returns
     -------
     :
-        A [](`pandas.DataFrame`) with one row per published file or dataset:
+        A `Table`, which is a [](`pandas.DataFrame`), with one row per
+        published file or dataset:
         ``owner``, ``repo``, ``name``, ``description``, ``date``, ``github``,
         ``path``, ``dir``, ``bytes``, ``tags`` and ``lfs``, or the six columns
         of `brief`, plus whichever of ``version``, ``spec`` and ``url`` were
@@ -379,7 +512,8 @@ def repos(*, refresh: bool = False, cfg=None):
     Returns
     -------
     :
-        A [](`pandas.DataFrame`) with columns ``repo``, ``files``, ``bytes`` and
+        A `Table`, which is a [](`pandas.DataFrame`), with columns ``repo``,
+        ``files``, ``bytes`` and
         ``latest``.
 
     Raises
@@ -394,13 +528,11 @@ def repos(*, refresh: bool = False, cfg=None):
     crossrepo.repos().sort_values("bytes", ascending=False)
     ```
     """
-    import pandas as pd
-
     entries = catalog(refresh=refresh, cfg=cfg)
     by = {}
     for e in entries:
         by.setdefault(e.repo_key, []).append(e)
-    return pd.DataFrame(
+    return _table()(
         [
             {
                 "repo": key,
@@ -439,7 +571,8 @@ def versions(entry_or_repo, filename=None, *, refresh: bool = False, cfg=None):
     Returns
     -------
     :
-        A [](`pandas.DataFrame`) with columns ``version``, ``date``, ``bytes``,
+        A `Table`, which is a [](`pandas.DataFrame`), with columns
+        ``version``, ``date``, ``bytes``,
         ``parts``, ``tags`` and ``subject``, newest first. ``crossrepo.core``
         holds a ``versions`` taking an entry and returning
         [](`crossrepo.model.Version`) objects, which is what this tabulates.
@@ -462,8 +595,6 @@ def versions(entry_or_repo, filename=None, *, refresh: bool = False, cfg=None):
     --------
     [](`crossrepo.list`)
     """
-    import pandas as pd
-
     from . import core
 
     if isinstance(entry_or_repo, Entry):
@@ -475,7 +606,7 @@ def versions(entry_or_repo, filename=None, *, refresh: bool = False, cfg=None):
             owner, _, repo = repo.partition("/")
         entries = catalog(refresh=refresh, cfg=cfg)
         entry = resolve_one(entries, Spec(repo=repo, path=filename, owner=owner))
-    return pd.DataFrame(
+    return _table()(
         [
             {
                 "version": v.sha,

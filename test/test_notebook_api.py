@@ -211,3 +211,95 @@ def test_brief_of_nothing_still_has_its_columns(cfg):
     table = crossrepo.list(brief=True, pattern="*.nothing", cfg=cfg)
     assert len(table) == 0
     assert [*table.columns] == [*crossrepo.BRIEF_COLUMNS]
+
+
+# -------------------------------------------------- the table it hands back
+
+def aligned(table):
+    """The column numbers the rendered table left aligns."""
+    import re
+
+    html = table._repr_html_()
+    head = html[: html.index("</style>")]
+    return sorted(int(n) for n in re.findall(r"\.col(\d+)\s*\{\s*text-align: left", head))
+
+
+def text_columns(table):
+    """The column numbers holding text, which are the ones that should be."""
+    import pandas as pd
+
+    return [
+        i for i, dtype in enumerate(table.dtypes)
+        if pd.api.types.is_object_dtype(dtype)
+    ]
+
+
+def test_a_listing_is_still_a_data_frame(cfg):
+    """Everything that takes a data frame has to keep taking this."""
+    import pandas as pd
+
+    assert isinstance(crossrepo.list(cfg=cfg), pd.DataFrame)
+
+
+def test_a_listing_left_aligns_the_columns_that_hold_text(cfg):
+    table = crossrepo.list(cfg=cfg)
+    assert aligned(table) == text_columns(table)
+    assert aligned(table)                        # and there are some
+
+
+def test_a_number_column_is_left_where_it_was(cfg):
+    """Right aligned is right for numbers; this is only about text."""
+    table = crossrepo.list(cfg=cfg)
+    assert [*table.columns].index("bytes") not in aligned(table)
+
+
+def test_the_alignment_survives_being_worked_on(cfg):
+    """A sort or a column selection must not cost the styling."""
+    table = crossrepo.list(cfg=cfg)
+    assert aligned(table.sort_values("bytes")) == text_columns(table)
+    narrowed = table[["repo", "description", "bytes"]]
+    assert aligned(narrowed) == text_columns(narrowed)
+
+
+def test_one_column_of_it_is_an_ordinary_series(cfg):
+    import pandas as pd
+
+    assert type(crossrepo.list(cfg=cfg)["repo"]) is pd.Series
+
+
+def test_the_history_and_the_summary_are_tables_too(cfg, by_spec):
+    entry = next(iter(by_spec.values()))
+    assert aligned(crossrepo.versions(entry, cfg=cfg)) is not None
+    assert type(crossrepo.repos(cfg=cfg)) is type(crossrepo.list(cfg=cfg))
+
+
+def test_a_long_table_is_cut_off_where_a_data_frame_would_be():
+    """A styler draws every row it is given; a catalog can be long."""
+    import pandas as pd
+
+    table = crossrepo.Table({"text": [f"row {i}" for i in range(500)]})
+    with pd.option_context("display.max_rows", 10):
+        assert table._repr_html_().count("<tr>") <= 12       # header and a few
+    with pd.option_context("display.max_rows", None):
+        assert table._repr_html_().count("<tr>") == 501      # asked for all of it
+
+
+def test_a_table_of_nothing_but_numbers_is_left_alone():
+    assert aligned(crossrepo.Table({"x": [1, 2], "y": [3.5, 4.5]})) == []
+
+
+def test_an_empty_table_still_renders(cfg):
+    assert "<table" in crossrepo.list(pattern="*.nothing", cfg=cfg)._repr_html_()
+
+
+def test_anything_can_be_wrapped_in_one():
+    import pandas as pd
+
+    plain = pd.DataFrame({"note": ["a", "b"], "n": [1, 2]})
+    assert aligned(crossrepo.Table(plain)) == [0]
+
+
+def test_the_module_still_says_no_to_what_it_has_not_got():
+    """The lazy `Table` is served by a module __getattr__, which must not eat this."""
+    with pytest.raises(AttributeError, match="no attribute"):
+        crossrepo.no_such_thing
