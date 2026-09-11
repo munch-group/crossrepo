@@ -272,7 +272,7 @@ def test_the_default_branch_costs_no_request():
 
 
 def test_a_nested_results_dir_is_read_over_the_api_too():
-    """crossrepo_dirs are paths from the repo root, however deep, on both backends."""
+    """asset_dirs are paths from the repo root, however deep, on both backends."""
     deep = "some_dir/some_sub_dir/some_sub_sub_dir"
     client = FakeClient(
         tree=[
@@ -283,7 +283,7 @@ def test_a_nested_results_dir_is_read_over_the_api_too():
         commits=[commit("3" * 40, "publish")],
         blobs={"man": b"files:\n  deep.csv: a buried result\n"},
     )
-    entries = remote.scan_repo(client, "o", "demo", Config(crossrepo_dirs=[deep]), "main")
+    entries = remote.scan_repo(client, "o", "demo", Config(asset_dirs=[deep]), "main")
     assert [e.path for e in entries] == [f"{deep}/deep.csv"]
     assert entries[0].description == "a buried result"
 
@@ -295,7 +295,7 @@ def test_a_blob_sharing_only_a_first_component_is_not_under_results():
         commits=[], blobs={},
     )
     assert remote.scan_repo(
-        client, "o", "demo", Config(crossrepo_dirs=["some_dir/results"]), "main"
+        client, "o", "demo", Config(asset_dirs=["some_dir/results"]), "main"
     ) == []
 
 

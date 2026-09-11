@@ -453,6 +453,24 @@ def test_a_repo_with_many_files_does_not_wedge_on_its_own_input(server, notebook
     assert all(e.latest.size > 0 for e in entries)
 
 
+def test_the_question_is_repeated_where_the_cell_can_show_it(monkeypatch, capsys):
+    """getpass opens far from the waiting cell, so say so where it is looking."""
+    from crossrepo import location
+
+    monkeypatch.setattr("getpass.getpass", lambda prompt: CODE)
+    assert location._ask("Verification code: ") == CODE
+    said = capsys.readouterr().err
+    assert "Verification code:" in said
+    assert "waiting for an answer" in said
+
+
+def test_a_shared_connection_outlasts_a_pause_for_thought(monkeypatch):
+    """One answered prompt has to cover cataloguing and then reading."""
+    from crossrepo import location
+
+    assert int(location.CONTROL_PERSIST) >= 3600
+
+
 def test_the_helper_ssh_calls_is_private_and_runs_this_python():
     from crossrepo.location import _helper
 

@@ -40,12 +40,19 @@ root to look for repositories; a root is now either a repository itself or a
 directory holding them.
 """
 
-RENAMED: Dict[str, str] = {"results_dirs": "crossrepo_dirs"}
+RENAMED: Dict[str, str] = {
+    "results_dirs": "asset_dirs",
+    "crossrepo_dirs": "asset_dirs",
+}
 """
 Settings that changed name, read under the old one with a warning.
 
 The old name still says what was meant, so it is honoured rather than refused,
-for the same reason as `RETIRED`.
+for the same reason as `RETIRED`. Every name a released version wrote is here,
+`asset_dirs` having been `results_dirs` and then `crossrepo_dirs` before it: a
+configuration file is written once and then left alone for years, so a name
+dropped from this mapping is a file that stops loading on the day the tool is
+updated.
 """
 
 
@@ -152,7 +159,7 @@ class Config:
     repos :
         Further GitHub repositories to catalog, written ``owner/repo``, for ones
         outside `owners`.
-    crossrepo_dirs :
+    asset_dirs :
         Directories within a repository holding a ``crossrepo.yml``, and with it
         the result files it publishes, given as paths relative to the repository
         root. They may be at any depth, so
@@ -187,7 +194,7 @@ class Config:
     roots: List[str] = field(default_factory=list)
     owners: List[str] = field(default_factory=list)
     repos: List[str] = field(default_factory=list)
-    crossrepo_dirs: List[str] = field(default_factory=lambda: ["results"])
+    asset_dirs: List[str] = field(default_factory=lambda: ["results"])
     include: List[str] = field(default_factory=lambda: list(DEFAULT_INCLUDE))
     exclude: List[str] = field(default_factory=lambda: list(DEFAULT_EXCLUDE))
     min_bytes: int = 0
@@ -217,7 +224,7 @@ class Config:
         # Config(roots=[],
         #        owners=['munch-group'],
         #        repos=[],
-        #        crossrepo_dirs=['results'],
+        #        asset_dirs=['results'],
         #        include=[],
         #        exclude=[],
         #        min_bytes=0,
@@ -355,7 +362,7 @@ class Config:
             "# depth, matched case-insensitively, so Results/ is found too. A\n"
             "# crossrepo.yml may publish files elsewhere in the repo as well, by\n"
             "# naming them from the repo root, as /data/samples.csv.\n"
-            f"crossrepo_dirs = {self.crossrepo_dirs!r}\n\n"
+            f"asset_dirs = {self.asset_dirs!r}\n\n"
             "# What a repo publishes is decided by its crossrepo.yml. These\n"
             "# narrow that on the reading side; empty means everything\n"
             "# published, e.g. include = [\"*.csv\"].\n"

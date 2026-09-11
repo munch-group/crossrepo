@@ -95,11 +95,11 @@ def test_only_configured_directories_are_searched(tmp_path):
     assert core.build(default) == []
 
     configured = Config(roots=[str(tmp_path)],
-                        crossrepo_dirs=["analysis/results"])
+                        asset_dirs=["analysis/results"])
     assert [e.path for e in core.build(configured)] == ["analysis/results/x.csv"]
 
 
-def test_crossrepo_dirs_are_paths_at_any_depth(tmp_path):
+def test_asset_dirs_are_paths_at_any_depth(tmp_path):
     repo = init(tmp_path / "deep")
     nested = repo / "some_dir" / "some_sub_dir" / "some_sub_sub_dir"
     nested.mkdir(parents=True)
@@ -111,7 +111,7 @@ def test_crossrepo_dirs_are_paths_at_any_depth(tmp_path):
     commit(repo, "two results directories")
 
     cfg = Config(roots=[str(tmp_path)],
-                 crossrepo_dirs=["results", "some_dir/some_sub_dir/some_sub_sub_dir"])
+                 asset_dirs=["results", "some_dir/some_sub_dir/some_sub_sub_dir"])
     assert sorted(e.path for e in core.build(cfg)) == [
         "results/near.csv",
         "some_dir/some_sub_dir/some_sub_sub_dir/deep.csv",
@@ -126,7 +126,7 @@ def test_a_nested_results_dir_tolerates_slashes_and_casing(tmp_path):
     (nested / "x.csv").write_text("a\n")
     commit(repo, "capitalised and nested")
 
-    cfg = Config(roots=[str(tmp_path)], crossrepo_dirs=["/analysis/results/"])
+    cfg = Config(roots=[str(tmp_path)], asset_dirs=["/analysis/results/"])
     assert [e.path for e in core.build(cfg)] == ["Analysis/Results/x.csv"]
 
 
@@ -139,7 +139,7 @@ def test_a_manifest_below_a_nested_results_dir_is_still_ignored(tmp_path):
     (nested / "sub" / "y.csv").write_text("a\n")
     commit(repo, "one manifest below another")
 
-    cfg = Config(roots=[str(tmp_path)], crossrepo_dirs=["a/b"])
+    cfg = Config(roots=[str(tmp_path)], asset_dirs=["a/b"])
     entries = core.build(cfg)
     assert [e.path for e in entries] == ["a/b/sub/y.csv"]
     assert entries[0].description == "from the right place"

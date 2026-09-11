@@ -207,7 +207,7 @@ def scan_repo(
 
     # Results directories are paths relative to the repository root, at any
     # depth, so a blob belongs to one when that path is a leading part of it.
-    wanted_dirs = tuple(d.strip("/").lower() for d in cfg.crossrepo_dirs if d.strip("/"))
+    wanted_dirs = tuple(d.strip("/").lower() for d in cfg.asset_dirs if d.strip("/"))
 
     def under_results(path: str) -> bool:
         lowered = path.lower()

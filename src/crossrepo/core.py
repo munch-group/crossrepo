@@ -542,7 +542,7 @@ def scan_repo(root: Location, cfg: Config) -> List[Entry]:
     entries: List[Entry] = []
     seen = set()
 
-    for results_dir in cfg.crossrepo_dirs:
+    for results_dir in cfg.asset_dirs:
         wanted = results_dir.strip("/")
         if not wanted:
             continue
@@ -953,7 +953,7 @@ def _results_listing(root: Location, cfg: Config) -> List[str]:
         Repository-relative paths, empty when there is no results directory.
     """
     out: List[str] = []
-    for results_dir in cfg.crossrepo_dirs:
+    for results_dir in cfg.asset_dirs:
         listed = gitutil.git(
             root, "ls-files", "-z", "--", f':(icase){results_dir.strip("/")}',
             check=False,
@@ -1004,7 +1004,7 @@ def fingerprint(cfg: Config) -> str:
             "roots": sorted(str(Location.parse(r).resolved()) for r in cfg.roots),
             "owners": sorted(cfg.owners),
             "repos": sorted(cfg.repos),
-            "crossrepo_dirs": list(cfg.crossrepo_dirs),
+            "asset_dirs": list(cfg.asset_dirs),
             "include": list(cfg.include),
             "exclude": list(cfg.exclude),
             "min_bytes": cfg.min_bytes,

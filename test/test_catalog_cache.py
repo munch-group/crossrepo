@@ -49,7 +49,7 @@ def test_fingerprint_tracks_what_decides_the_catalog(tmp_path):
         Config(roots=[str(tmp_path)], include=["*.csv"])
     )
     assert core.fingerprint(base) != core.fingerprint(
-        Config(roots=[str(tmp_path)], crossrepo_dirs=["out"])
+        Config(roots=[str(tmp_path)], asset_dirs=["out"])
     )
 
 
@@ -93,8 +93,16 @@ def test_a_renamed_setting_is_read_under_its_old_name(tmp_path):
     """`results_dirs` still says what was meant, so it is honoured."""
     old = tmp_path / "old.toml"
     old.write_text('results_dirs = ["results"]\n')
-    with pytest.warns(UserWarning, match="`results_dirs` is now `crossrepo_dirs`"):
-        assert Config.load(old).crossrepo_dirs == ["results"]
+    with pytest.warns(UserWarning, match="`results_dirs` is now `asset_dirs`"):
+        assert Config.load(old).asset_dirs == ["results"]
+
+
+def test_the_setting_renamed_twice_is_read_under_either_old_name(tmp_path):
+    """`crossrepo_dirs` shipped, so a file written by that version must load."""
+    old = tmp_path / "old.toml"
+    old.write_text('crossrepo_dirs = ["results", "data"]\n')
+    with pytest.warns(UserWarning, match="`crossrepo_dirs` is now `asset_dirs`"):
+        assert Config.load(old).asset_dirs == ["results", "data"]
 
 
 def test_a_key_that_was_never_a_setting_is_still_refused(tmp_path):

@@ -696,7 +696,7 @@ def cmd_stamp(ctx: click.Context, path: Optional[str], check: bool) -> int:
     done: List[str] = []
     problems: List[str] = []
     current = 0
-    for wanted in cfg.crossrepo_dirs:
+    for wanted in cfg.asset_dirs:
         where = _manifest_file(root, wanted)
         if where is None:
             continue

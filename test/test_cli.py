@@ -95,7 +95,7 @@ def test_unknown_command_is_a_usage_error(capsys):
 def test_nothing_configured_says_what_to_do(tmp_path, capsys):
     """The default config reads nothing, so it must say so rather than hang."""
     empty = tmp_path / "empty.toml"
-    empty.write_text("crossrepo_dirs = [\"results\"]\n")
+    empty.write_text("asset_dirs = [\"results\"]\n")
     assert cli.main(["--config", str(empty), "list"]) == 1
     err = capsys.readouterr().err
     assert "nothing is configured to read" in err
@@ -106,7 +106,7 @@ def test_nothing_configured_says_what_to_do(tmp_path, capsys):
 
 def test_refresh_also_refuses_without_sources(tmp_path, capsys):
     empty = tmp_path / "empty.toml"
-    empty.write_text("crossrepo_dirs = [\"results\"]\n")
+    empty.write_text("asset_dirs = [\"results\"]\n")
     assert cli.main(["--config", str(empty), "refresh"]) == 1
     assert "nothing is configured to read" in capsys.readouterr().err
 

@@ -204,7 +204,7 @@ roots = [
   "~/github-backup/munch-group",       # clones on this machine
   "kmt@genome.au.dk:~/projects",       # clones on a server, read over ssh
 ]
-crossrepo_dirs = ["results"]
+asset_dirs = ["results"]
 include = ["*.csv", "*.tsv", "*.parquet", "*.h5", "*.hdf", "*.store"]
 exclude = ["*.png", "*.md", ".gitkeep"]
 max_bytes = 0     # 0 = no limit
@@ -220,7 +220,7 @@ is a bad idea, because the scan then reaches into synced folders such as
 OneDrive and into network mounts, which can block for a long time on a directory
 that is not there.
 
-`crossrepo_dirs` entries are paths relative to the repository root and may be at
+`asset_dirs` entries are paths relative to the repository root and may be at
 any depth, so `analysis/step3/results` works as well as `results`. Each is
 searched for a `crossrepo.yml`, which must sit directly in it — nothing deeper is
 read — and matching is case-insensitive, so a repository that committed

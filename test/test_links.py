@@ -396,7 +396,7 @@ def stampable(tmp_path):
     """A repository with an unstamped link, and a config file naming nothing."""
     repo = write_link_repo(tmp_path / "fresh", LINK_V1, stamped=False)
     conf = tmp_path / "config.toml"
-    conf.write_text('roots = []\ncrossrepo_dirs = ["results"]\n')
+    conf.write_text('roots = []\nasset_dirs = ["results"]\n')
     return repo, str(conf)
 
 
@@ -455,7 +455,7 @@ def test_check_passes_once_stamped(stampable, capsys):
 def test_stamp_reports_a_link_that_leads_nowhere(tmp_path, capsys):
     repo = write_link_repo(tmp_path / "dangling", None, stamped=False)
     conf = tmp_path / "config.toml"
-    conf.write_text('roots = []\ncrossrepo_dirs = ["results"]\n')
+    conf.write_text('roots = []\nasset_dirs = ["results"]\n')
     assert run_in(repo, str(conf), "stamp") == 1
     assert "not a file here" in capsys.readouterr().err
 
@@ -465,7 +465,7 @@ def test_stamp_reports_a_link_published_only_by_a_pattern(tmp_path, capsys):
         tmp_path / "globbed", LINK_V1, stamped=False, key='"*.csv"'
     )
     conf = tmp_path / "config.toml"
-    conf.write_text('roots = []\ncrossrepo_dirs = ["results"]\n')
+    conf.write_text('roots = []\nasset_dirs = ["results"]\n')
     assert run_in(repo, str(conf), "stamp") == 1
     said = capsys.readouterr().err
     assert "pattern" in said and "name the file in full" in said
@@ -484,7 +484,7 @@ def test_a_link_named_from_the_root_can_be_stamped(tmp_path, capsys):
     )
     commit(repo, "publish it unstamped")
     conf = tmp_path / "config.toml"
-    conf.write_text('roots = []\ncrossrepo_dirs = ["results"]\n')
+    conf.write_text('roots = []\nasset_dirs = ["results"]\n')
     assert run_in(repo, str(conf), "stamp") == 0
     capsys.readouterr()
     got = manifest.parse((repo / "results" / "crossrepo.yml").read_text(), "results")
@@ -503,7 +503,7 @@ def test_stamp_needs_a_repository(tmp_path, capsys):
 def test_stamping_then_committing_publishes_the_version(tmp_path):
     repo = write_link_repo(tmp_path / "flow", LINK_V1, stamped=False)
     conf = tmp_path / "config.toml"
-    conf.write_text('roots = []\ncrossrepo_dirs = ["results"]\n')
+    conf.write_text('roots = []\nasset_dirs = ["results"]\n')
     run_in(repo, str(conf), "stamp")
     commit(repo, "stamp the big table")
     cfg = Config(roots=[str(tmp_path)])

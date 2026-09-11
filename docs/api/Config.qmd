@@ -5,7 +5,7 @@ crossrepo.config.Config(
     roots=list(),
     owners=list(),
     repos=list(),
-    crossrepo_dirs=(lambda: ['results'])(),
+    asset_dirs=(lambda: ['results'])(),
     include=(lambda: list(DEFAULT_INCLUDE))(),
     exclude=(lambda: list(DEFAULT_EXCLUDE))(),
     min_bytes=0,
@@ -29,7 +29,7 @@ Settings controlling which files are cataloged.
 
 :   Further GitHub repositories to catalog, written ``owner/repo``, for ones outside `owners`.
 
-<code>[**crossrepo_dirs**]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[str](`str`)\]]{.parameter-annotation}</code>
+<code>[**asset_dirs**]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[str](`str`)\]]{.parameter-annotation}</code>
 
 :   Directories within a repository holding a ``crossrepo.yml``, and with it the result files it publishes, given as paths relative to the repository root. They may be at any depth, so ``analysis/step3/results`` works as well as ``results``. Matching is case-insensitive, so a repository that committed ``Results/`` is found too. Each is searched, and each needs its own ``crossrepo.yml``. A manifest may publish files from anywhere else in its repository, by naming them from the repository root.
 

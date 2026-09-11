@@ -75,7 +75,7 @@ their own. It bounds a scan against a server that is down, and is long enough
 not to matter for one that is up.
 """
 
-CONTROL_PERSIST = "300"
+CONTROL_PERSIST = "3600"
 """
 Seconds a shared connection is kept open after the last command using it.
 
@@ -83,6 +83,14 @@ Long enough that one answered prompt covers a whole session's work: a key
 passphrase or a two-factor code is asked for when the connection is opened, and
 a scan followed by a few reads would otherwise ask again each time the
 connection had lapsed.
+
+An hour rather than the five minutes this was, because a session is not five
+minutes long. Cataloguing and then reading a result is one piece of work with a
+person thinking in between, and a connection that lapses in that gap asks again
+from inside `crossrepo.core.get` -- where, unlike a scan, nothing has been
+printed to say a server is being reached at all. A user whose own ssh
+configuration shares connections for the host keeps their own setting: this is
+only for hosts that have none.
 """
 
 SOCKET_LIMIT = 104 - 16
@@ -670,6 +678,13 @@ def _ask(prompt: str) -> str:
     """
     Put ssh's question to the person at the notebook.
 
+    The question is written to standard error as well as being put, because
+    `getpass` in a notebook opens its prompt at the top of the window, far from
+    the cell that is waiting and easy to miss entirely. Standard error lands in
+    that cell's own output, where the person is already looking. A prompt nobody
+    notices cannot be told apart from a call that has hung, and waiting for an
+    answer that is never going to come is exactly what hanging looks like.
+
     Parameters
     ----------
     prompt :
@@ -683,6 +698,12 @@ def _ask(prompt: str) -> str:
     """
     import getpass
 
+    print(
+        f"crossrepo is waiting for an answer to an ssh prompt "
+        f"({prompt.strip()}). It opens at the top of the window; nothing is "
+        f"read from the server until it is answered.",
+        file=sys.stderr, flush=True,
+    )
     return getpass.getpass(prompt)
 
 

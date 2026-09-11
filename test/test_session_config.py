@@ -18,7 +18,7 @@ def unregistered():
 @pytest.fixture
 def from_file(monkeypatch):
     """A stand-in for the configuration file, so no real one is read."""
-    stored = Config(owners=["munch-group"], crossrepo_dirs=["results", "data"])
+    stored = Config(owners=["munch-group"], asset_dirs=["results", "data"])
     monkeypatch.setattr(Config, "load", classmethod(lambda cls, path=None: stored))
     return stored
 
@@ -68,7 +68,7 @@ def test_overrides_layer_on_the_file(from_file):
     active = active_config()
     assert active.repos == ["munch-group/x-gwas"]
     assert active.owners == ["munch-group"]                 # kept from the file
-    assert active.crossrepo_dirs == ["results", "data"]       # kept from the file
+    assert active.asset_dirs == ["results", "data"]       # kept from the file
     assert from_file.repos == []                            # and the file is untouched
 
 
