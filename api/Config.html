@@ -810,7 +810,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    roots<span class="op">=</span><span class="bu">list</span>(),</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    owners<span class="op">=</span><span class="bu">list</span>(),</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    repos<span class="op">=</span><span class="bu">list</span>(),</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    crossrepo_dirs<span class="op">=</span>(<span class="kw">lambda</span>: [<span class="st">'results'</span>])(),</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    asset_dirs<span class="op">=</span>(<span class="kw">lambda</span>: [<span class="st">'results'</span>])(),</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    include<span class="op">=</span>(<span class="kw">lambda</span>: <span class="bu">list</span>(DEFAULT_INCLUDE))(),</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    exclude<span class="op">=</span>(<span class="kw">lambda</span>: <span class="bu">list</span>(DEFAULT_EXCLUDE))(),</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    min_bytes<span class="op">=</span><span class="dv">0</span>,</span>
@@ -832,7 +832,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dd>
 <p>Further GitHub repositories to catalog, written <code>owner/repo</code>, for ones outside <code>owners</code>.</p>
 </dd>
-<dt><code><span class="parameter-name"><strong>crossrepo_dirs</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.List">List</a>[<a href="https://docs.python.org/3/library/stdtypes.html#str">str</a>]</span></code></dt>
+<dt><code><span class="parameter-name"><strong>asset_dirs</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.List">List</a>[<a href="https://docs.python.org/3/library/stdtypes.html#str">str</a>]</span></code></dt>
 <dd>
 <p>Directories within a repository holding a <code>crossrepo.yml</code>, and with it the result files it publishes, given as paths relative to the repository root. They may be at any depth, so <code>analysis/step3/results</code> works as well as <code>results</code>. Matching is case-insensitive, so a repository that committed <code>Results/</code> is found too. Each is searched, and each needs its own <code>crossrepo.yml</code>. A manifest may publish files from anywhere else in its repository, by naming them from the repository root.</p>
 </dd>

@@ -315,204 +315,161 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         
 </div>
 </div>
-<div id="5f65315a" class="cell">
+<div id="5f65315a" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>cfg <span class="op">=</span> crossrepo.config.Config(</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># search these paths under each repo roots for crossrepo.yml files:</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    crossrepo_dirs<span class="op">=</span>[<span class="st">'results'</span>], </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    asset_dirs<span class="op">=</span>[<span class="st">'results'</span>], </span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># # search all github repos under these accounts:</span></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># owners=["munch-group", ], </span></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># folders to search for working copies of git repos:</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    roots <span class="op">=</span> [<span class="st">"kmt@login.genome.au.dk:xy-drive/people/kmt"</span>, ]</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>crossrepo.use_config(cfg)</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>crossrepo.refresh()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    roots <span class="op">=</span> [</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"gdk:xy-drive/people/kmt"</span>, </span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        <span class="co"># "~/crossrepo",</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>crossrepo.use_config(cfg)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>crossrepo.refresh()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"e1c510fa80b74efa90e0776b121de6b4","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+{"model_id":"7e7ebce49f0c4d20ab16fd77c72ee4f2","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
 </script>
 </div>
-<div class="cell-output cell-output-display">
-<script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"4374cf7e7581417cbd5afe173d31ece0","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
-</script>
+<div class="cell-output cell-output-stderr">
+<pre><code>/Users/kmt/crossrepo/.pixi/envs/default/lib/python3.13/site-packages/crossrepo/core.py:793: UserWarning: gdk:xy-drive/people/kmt/vep_data: results/vep.parquet is published as a symbolic link but results/crossrepo.yml gives it no stamp, so nothing says which content it stands for. Run `crossrepo stamp` in the repository and commit the result.
+  clones.extend(scan_repo(root, cfg))</code></pre>
 </div>
-<div class="cell-output cell-output-error">
-<div class="ansi-escaped-output">
-<pre><span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">KeyboardInterrupt</span>                         Traceback (most recent call last)
-<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[2]</span><span class="ansi-green-fg">, line 12</span>
-<span class="ansi-green-fg">      8</span>     <span style="font-style:italic;color:rgb(95,135,135)"># folders to search for working copies of git repos:</span>
-<span class="ansi-green-fg">      9</span>     roots = [<span class="ansi-yellow-fg">"kmt@login.genome.au.dk:xy-drive/people/kmt"</span>, ]
-<span class="ansi-green-fg">     10</span> )
-<span class="ansi-green-fg">     11</span> crossrepo.use_config(cfg)
-<span class="ansi-green-fg">---&gt; </span><span class="ansi-green-fg">12</span> crossrepo.refresh()
+<div class="cell-output cell-output-display" data-execution_count="3">
+<div>
 
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">~/sandbox/crossrepo/.pixi/envs/default/lib/python3.13/site-packages/crossrepo/__init__.py:582</span>, in <span class="ansi-cyan-fg">refresh</span><span class="ansi-blue-fg">(cfg, progress, owner, repo, **kwargs)</span>
-<span class="ansi-green-fg">    579</span> <span style="font-weight:bold;color:rgb(0,135,0)">from</span><span style="color:rgb(188,188,188)"> </span><span class="ansi-blue-fg ansi-bold">.</span><span class="ansi-blue-fg ansi-bold">config</span><span style="color:rgb(188,188,188)"> </span><span style="font-weight:bold;color:rgb(0,135,0)">import</span> SourceWarning
-<span class="ansi-green-fg">    581</span> select = _select(owner, repo)
-<span class="ansi-green-fg">--&gt; </span><span class="ansi-green-fg">582</span> entries = <span class="ansi-black-fg ansi-yellow-bg">catalog</span><span class="ansi-black-fg ansi-yellow-bg">(</span><span class="ansi-black-fg ansi-yellow-bg">refresh</span><span class="ansi-black-fg ansi-yellow-bg">=</span><span class="ansi-black-fg ansi-yellow-bg ansi-bold">True</span><span class="ansi-black-fg ansi-yellow-bg">,</span><span class="ansi-black-fg ansi-yellow-bg"> </span><span class="ansi-black-fg ansi-yellow-bg">cfg</span><span class="ansi-black-fg ansi-yellow-bg">=</span><span class="ansi-black-fg ansi-yellow-bg">cfg</span><span class="ansi-black-fg ansi-yellow-bg">,</span><span class="ansi-black-fg ansi-yellow-bg"> </span><span class="ansi-black-fg ansi-yellow-bg">progress</span><span class="ansi-black-fg ansi-yellow-bg">=</span><span class="ansi-black-fg ansi-yellow-bg">progress</span><span class="ansi-black-fg ansi-yellow-bg">,</span><span class="ansi-black-fg ansi-yellow-bg"> </span><span class="ansi-black-fg ansi-yellow-bg">select</span><span class="ansi-black-fg ansi-yellow-bg">=</span><span class="ansi-black-fg ansi-yellow-bg">select</span><span class="ansi-black-fg ansi-yellow-bg">)</span>
-<span class="ansi-green-fg">    583</span> <span style="font-weight:bold;color:rgb(0,135,0)">if</span> select <span style="font-weight:bold;color:rgb(175,0,255)">is</span> <span style="font-weight:bold;color:rgb(175,0,255)">not</span> <span style="font-weight:bold;color:rgb(0,135,0)">None</span> <span style="font-weight:bold;color:rgb(175,0,255)">and</span> <span style="font-weight:bold;color:rgb(175,0,255)">not</span> <span style="color:rgb(0,135,0)">any</span>(
-<span class="ansi-green-fg">    584</span>     select.lower() <span style="font-weight:bold;color:rgb(175,0,255)">in</span> e.repo_key.lower() <span style="font-weight:bold;color:rgb(0,135,0)">for</span> e <span style="font-weight:bold;color:rgb(175,0,255)">in</span> entries
-<span class="ansi-green-fg">    585</span> ):
-<span class="ansi-green-fg">    586</span>     warnings.warn(
-<span class="ansi-green-fg">    587</span>         <span class="ansi-yellow-fg">f</span><span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">nothing matching </span><span style="font-weight:bold;color:rgb(175,95,135)">{</span>select<span style="font-weight:bold;color:rgb(175,95,135)">!r}</span><span class="ansi-yellow-fg"> publishes anything; </span><span class="ansi-yellow-fg">"</span>
-<span class="ansi-green-fg">    588</span>         <span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">the rest of the catalog was left as it was</span><span class="ansi-yellow-fg">"</span>,
-<span class="ansi-green-fg">    589</span>         SourceWarning, stacklevel=<span class="ansi-green-fg">2</span>,
-<span class="ansi-green-fg">    590</span>     )
 
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">~/sandbox/crossrepo/.pixi/envs/default/lib/python3.13/site-packages/crossrepo/core.py:1168</span>, in <span class="ansi-cyan-fg">catalog</span><span class="ansi-blue-fg">(refresh, max_age, cfg, progress, select)</span>
-<span class="ansi-green-fg">   1166</span> <span style="font-weight:bold;color:rgb(0,135,0)">if</span> refresh <span style="font-weight:bold;color:rgb(175,0,255)">and</span> select <span style="font-weight:bold;color:rgb(175,0,255)">is</span> <span style="font-weight:bold;color:rgb(175,0,255)">not</span> <span style="font-weight:bold;color:rgb(0,135,0)">None</span>:
-<span class="ansi-green-fg">   1167</span>     <span style="font-weight:bold;color:rgb(0,135,0)">return</span> _refresh_some(cfg, select, progress)
-<span class="ansi-green-fg">-&gt; </span><span class="ansi-green-fg">1168</span> entries = <span class="ansi-black-fg ansi-yellow-bg">build</span><span class="ansi-black-fg ansi-yellow-bg">(</span><span class="ansi-black-fg ansi-yellow-bg">cfg</span><span class="ansi-black-fg ansi-yellow-bg">,</span><span class="ansi-black-fg ansi-yellow-bg"> </span><span class="ansi-black-fg ansi-yellow-bg">progress</span><span class="ansi-black-fg ansi-yellow-bg">=</span><span class="ansi-black-fg ansi-yellow-bg">progress</span><span class="ansi-black-fg ansi-yellow-bg">)</span>
-<span class="ansi-green-fg">   1169</span> save(entries, cfg)
-<span class="ansi-green-fg">   1170</span> <span style="font-weight:bold;color:rgb(0,135,0)">return</span> entries
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">owner</th>
+<th data-quarto-table-cell-role="th">repo</th>
+<th data-quarto-table-cell-role="th">name</th>
+<th data-quarto-table-cell-role="th">description</th>
+<th data-quarto-table-cell-role="th">date</th>
+<th data-quarto-table-cell-role="th">github</th>
+<th data-quarto-table-cell-role="th">path</th>
+<th data-quarto-table-cell-role="th">dir</th>
+<th data-quarto-table-cell-role="th">bytes</th>
+<th data-quarto-table-cell-role="th">tags</th>
+<th data-quarto-table-cell-role="th">lfs</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>munch-group</td>
+<td>atlas-variant-ages</td>
+<td>atlas_variant_ages.parquet</td>
+<td>Variant ages using Abers method</td>
+<td>2026-09-06</td>
+<td>munch-group/atlas-variant-ages</td>
+<td>results/atlas_variant_ages.parquet</td>
+<td>results</td>
+<td>1890901982</td>
+<td></td>
+<td>False</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>munch-group</td>
+<td>hic-xy-sperm</td>
+<td>all_genes.h5</td>
+<td>all genes</td>
+<td>2026-09-06</td>
+<td>munch-group/hic-xy-sperm</td>
+<td>results/all_genes.h5</td>
+<td>results</td>
+<td>2873280</td>
+<td></td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>munch-group</td>
+<td>hic-xy-sperm</td>
+<td>segments_100000.csv</td>
+<td>100kb segments</td>
+<td>2026-09-06</td>
+<td>munch-group/hic-xy-sperm</td>
+<td>results/segments_100000.csv</td>
+<td>results</td>
+<td>1681136</td>
+<td></td>
+<td>False</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>munch-group</td>
+<td>hic-xy-sperm</td>
+<td>segments_50000.csv</td>
+<td>50kb segments</td>
+<td>2026-09-06</td>
+<td>munch-group/hic-xy-sperm</td>
+<td>results/segments_50000.csv</td>
+<td>results</td>
+<td>3370795</td>
+<td></td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>munch-group</td>
+<td>hic-xy-sperm</td>
+<td>segments_500000.csv</td>
+<td>500kb segments</td>
+<td>2026-09-06</td>
+<td>munch-group/hic-xy-sperm</td>
+<td>results/segments_500000.csv</td>
+<td>results</td>
+<td>334832</td>
+<td></td>
+<td>False</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>munch-group</td>
+<td>relate1Kgenomes</td>
+<td>relate_snps_p_vals.parquet</td>
+<td>Genome SNPs (hg38) with a log p-value below -2w</td>
+<td>2026-09-06</td>
+<td>munch-group/relate1Kgenomes</td>
+<td>results/relate_snps_p_vals.parquet</td>
+<td>results</td>
+<td>82477487</td>
+<td></td>
+<td>False</td>
+</tr>
+</tbody>
+</table>
 
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">~/sandbox/crossrepo/.pixi/envs/default/lib/python3.13/site-packages/crossrepo/core.py:790</span>, in <span class="ansi-cyan-fg">build</span><span class="ansi-blue-fg">(cfg, progress, select)</span>
-<span class="ansi-green-fg">    788</span>     <span style="font-weight:bold;color:rgb(0,135,0)">except</span> gitutil.GitError <span style="font-weight:bold;color:rgb(0,135,0)">as</span> exc:
-<span class="ansi-green-fg">    789</span>         warnings.warn(<span class="ansi-yellow-fg">f</span><span class="ansi-yellow-fg">"</span><span style="font-weight:bold;color:rgb(175,95,135)">{</span>root<span style="font-weight:bold;color:rgb(175,95,135)">}</span><span class="ansi-yellow-fg">: </span><span style="font-weight:bold;color:rgb(175,95,135)">{</span>exc<span style="font-weight:bold;color:rgb(175,95,135)">}</span><span class="ansi-yellow-fg">"</span>, SourceWarning, stacklevel=<span class="ansi-green-fg">2</span>)
-<span class="ansi-green-fg">--&gt; </span><span class="ansi-green-fg">790</span> fetched = <span class="ansi-black-fg ansi-yellow-bg">remote</span><span class="ansi-black-fg ansi-yellow-bg">.</span><span class="ansi-black-fg ansi-yellow-bg">build</span><span class="ansi-black-fg ansi-yellow-bg">(</span><span class="ansi-black-fg ansi-yellow-bg">cfg</span><span class="ansi-black-fg ansi-yellow-bg">,</span><span class="ansi-black-fg ansi-yellow-bg"> </span><span class="ansi-black-fg ansi-yellow-bg">progress</span><span class="ansi-black-fg ansi-yellow-bg">=</span><span class="ansi-black-fg ansi-yellow-bg">progress</span><span class="ansi-black-fg ansi-yellow-bg">,</span><span class="ansi-black-fg ansi-yellow-bg"> </span><span class="ansi-black-fg ansi-yellow-bg">select</span><span class="ansi-black-fg ansi-yellow-bg">=</span><span class="ansi-black-fg ansi-yellow-bg">select</span><span class="ansi-black-fg ansi-yellow-bg">)</span>
-<span class="ansi-green-fg">    791</span> entries = _merge(_nearest(clones), fetched)
-<span class="ansi-green-fg">    792</span> entries.sort(key=<span style="font-weight:bold;color:rgb(0,135,0)">lambda</span> e: (e.repo_key.lower(), e.path))
-
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">~/sandbox/crossrepo/.pixi/envs/default/lib/python3.13/site-packages/crossrepo/remote.py:457</span>, in <span class="ansi-cyan-fg">build</span><span class="ansi-blue-fg">(cfg, client, progress, select)</span>
-<span class="ansi-green-fg">    455</span> seen.add((owner.lower(), name.lower()))
-<span class="ansi-green-fg">    456</span> <span style="font-weight:bold;color:rgb(0,135,0)">try</span>:
-<span class="ansi-green-fg">--&gt; </span><span class="ansi-green-fg">457</span>     found = <span class="ansi-black-fg ansi-yellow-bg">scan_repo</span><span class="ansi-black-fg ansi-yellow-bg">(</span><span class="ansi-black-fg ansi-yellow-bg">client</span><span class="ansi-black-fg ansi-yellow-bg">,</span><span class="ansi-black-fg ansi-yellow-bg"> </span><span class="ansi-black-fg ansi-yellow-bg">owner</span><span class="ansi-black-fg ansi-yellow-bg">,</span><span class="ansi-black-fg ansi-yellow-bg"> </span><span class="ansi-black-fg ansi-yellow-bg">name</span><span class="ansi-black-fg ansi-yellow-bg">,</span><span class="ansi-black-fg ansi-yellow-bg"> </span><span class="ansi-black-fg ansi-yellow-bg">cfg</span><span class="ansi-black-fg ansi-yellow-bg">,</span><span class="ansi-black-fg ansi-yellow-bg"> </span><span class="ansi-black-fg ansi-yellow-bg">branch</span><span class="ansi-black-fg ansi-yellow-bg">)</span>
-<span class="ansi-green-fg">    458</span> <span style="font-weight:bold;color:rgb(0,135,0)">except</span> GitHubError <span style="font-weight:bold;color:rgb(0,135,0)">as</span> exc:
-<span class="ansi-green-fg">    459</span>     warnings.warn(<span class="ansi-yellow-fg">f</span><span class="ansi-yellow-fg">"</span><span style="font-weight:bold;color:rgb(175,95,135)">{</span>owner<span style="font-weight:bold;color:rgb(175,95,135)">}</span><span class="ansi-yellow-fg">/</span><span style="font-weight:bold;color:rgb(175,95,135)">{</span>name<span style="font-weight:bold;color:rgb(175,95,135)">}</span><span class="ansi-yellow-fg">: </span><span style="font-weight:bold;color:rgb(175,95,135)">{</span>exc<span style="font-weight:bold;color:rgb(175,95,135)">}</span><span class="ansi-yellow-fg">"</span>, SourceWarning, stacklevel=<span class="ansi-green-fg">2</span>)
-
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">~/sandbox/crossrepo/.pixi/envs/default/lib/python3.13/site-packages/crossrepo/remote.py:204</span>, in <span class="ansi-cyan-fg">scan_repo</span><span class="ansi-blue-fg">(client, owner, repo, cfg, ref)</span>
-<span class="ansi-green-fg">    201</span> <span style="font-style:italic;color:rgb(95,135,135)"># "HEAD" is a ref GitHub resolves itself, so the default branch costs no</span>
-<span class="ansi-green-fg">    202</span> <span style="font-style:italic;color:rgb(95,135,135)"># request of its own.</span>
-<span class="ansi-green-fg">    203</span> branch = ref <span style="font-weight:bold;color:rgb(175,0,255)">or</span> <span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">HEAD</span><span class="ansi-yellow-fg">"</span>
-<span class="ansi-green-fg">--&gt; </span><span class="ansi-green-fg">204</span> tree = <span class="ansi-black-fg ansi-yellow-bg">client</span><span class="ansi-black-fg ansi-yellow-bg">.</span><span class="ansi-black-fg ansi-yellow-bg">tree</span><span class="ansi-black-fg ansi-yellow-bg">(</span><span class="ansi-black-fg ansi-yellow-bg">owner</span><span class="ansi-black-fg ansi-yellow-bg">,</span><span class="ansi-black-fg ansi-yellow-bg"> </span><span class="ansi-black-fg ansi-yellow-bg">repo</span><span class="ansi-black-fg ansi-yellow-bg">,</span><span class="ansi-black-fg ansi-yellow-bg"> </span><span class="ansi-black-fg ansi-yellow-bg">branch</span><span class="ansi-black-fg ansi-yellow-bg">)</span>
-<span class="ansi-green-fg">    205</span> <span style="font-weight:bold;color:rgb(0,135,0)">if</span> <span style="font-weight:bold;color:rgb(175,0,255)">not</span> tree:
-<span class="ansi-green-fg">    206</span>     <span style="font-weight:bold;color:rgb(0,135,0)">return</span> []
-
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">~/sandbox/crossrepo/.pixi/envs/default/lib/python3.13/site-packages/crossrepo/github.py:252</span>, in <span class="ansi-cyan-fg">Client.tree</span><span class="ansi-blue-fg">(self, owner, repo, ref)</span>
-<span class="ansi-green-fg">    233</span> <span style="font-style:italic" class="ansi-yellow-fg">"""</span>
-<span class="ansi-green-fg">    234</span> <span style="font-style:italic" class="ansi-yellow-fg">List everything in a repository at a revision, in one request.</span>
-<span class="ansi-green-fg">    235</span> 
-<span class="ansi-green-fg">   (...)</span><span class="ansi-green-fg">    249</span> <span style="font-style:italic" class="ansi-yellow-fg">    An empty list when the repository has no such revision.</span>
-<span class="ansi-green-fg">    250</span> <span style="font-style:italic" class="ansi-yellow-fg">"""</span>
-<span class="ansi-green-fg">    251</span> <span style="font-weight:bold;color:rgb(0,135,0)">try</span>:
-<span class="ansi-green-fg">--&gt; </span><span class="ansi-green-fg">252</span>     doc = <span class="ansi-black-fg ansi-yellow-bg">self</span><span class="ansi-black-fg ansi-yellow-bg">.</span><span class="ansi-black-fg ansi-yellow-bg">get</span><span class="ansi-black-fg ansi-yellow-bg">(</span><span class="ansi-black-fg ansi-yellow-bg">f</span><span class="ansi-black-fg ansi-yellow-bg">"</span><span class="ansi-black-fg ansi-yellow-bg">repos/</span><span class="ansi-black-fg ansi-yellow-bg ansi-bold">{</span><span class="ansi-black-fg ansi-yellow-bg">owner</span><span class="ansi-black-fg ansi-yellow-bg ansi-bold">}</span><span class="ansi-black-fg ansi-yellow-bg">/</span><span class="ansi-black-fg ansi-yellow-bg ansi-bold">{</span><span class="ansi-black-fg ansi-yellow-bg">repo</span><span class="ansi-black-fg ansi-yellow-bg ansi-bold">}</span><span class="ansi-black-fg ansi-yellow-bg">/git/trees/</span><span class="ansi-black-fg ansi-yellow-bg ansi-bold">{</span><span class="ansi-black-fg ansi-yellow-bg">ref</span><span class="ansi-black-fg ansi-yellow-bg ansi-bold">}</span><span class="ansi-black-fg ansi-yellow-bg">"</span><span class="ansi-black-fg ansi-yellow-bg">,</span><span class="ansi-black-fg ansi-yellow-bg"> </span><span class="ansi-black-fg ansi-yellow-bg">recursive</span><span class="ansi-black-fg ansi-yellow-bg">=</span><span class="ansi-black-fg ansi-yellow-bg">"</span><span class="ansi-black-fg ansi-yellow-bg">1</span><span class="ansi-black-fg ansi-yellow-bg">"</span><span class="ansi-black-fg ansi-yellow-bg">)</span>
-<span class="ansi-green-fg">    253</span> <span style="font-weight:bold;color:rgb(0,135,0)">except</span> GitHubError:
-<span class="ansi-green-fg">    254</span>     <span style="font-weight:bold;color:rgb(0,135,0)">return</span> []
-
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">~/sandbox/crossrepo/.pixi/envs/default/lib/python3.13/site-packages/crossrepo/github.py:156</span>, in <span class="ansi-cyan-fg">Client.get</span><span class="ansi-blue-fg">(self, endpoint, **params)</span>
-<span class="ansi-green-fg">    154</span> <span style="font-weight:bold;color:rgb(0,135,0)">if</span> params:
-<span class="ansi-green-fg">    155</span>     url = <span class="ansi-yellow-fg">f</span><span class="ansi-yellow-fg">"</span><span style="font-weight:bold;color:rgb(175,95,135)">{</span>url<span style="font-weight:bold;color:rgb(175,95,135)">}</span><span class="ansi-yellow-fg">?</span><span style="font-weight:bold;color:rgb(175,95,135)">{</span>urllib.parse.urlencode(params)<span style="font-weight:bold;color:rgb(175,95,135)">}</span><span class="ansi-yellow-fg">"</span>
-<span class="ansi-green-fg">--&gt; </span><span class="ansi-green-fg">156</span> <span style="font-weight:bold;color:rgb(0,135,0)">with</span> <span class="ansi-black-fg ansi-yellow-bg">self</span><span class="ansi-black-fg ansi-yellow-bg">.</span><span class="ansi-black-fg ansi-yellow-bg">_open</span><span class="ansi-black-fg ansi-yellow-bg">(</span><span class="ansi-black-fg ansi-yellow-bg">url</span><span class="ansi-black-fg ansi-yellow-bg">,</span><span class="ansi-black-fg ansi-yellow-bg"> </span><span class="ansi-black-fg ansi-yellow-bg">"</span><span class="ansi-black-fg ansi-yellow-bg">application/vnd.github+json</span><span class="ansi-black-fg ansi-yellow-bg">"</span><span class="ansi-black-fg ansi-yellow-bg">)</span> <span style="font-weight:bold;color:rgb(0,135,0)">as</span> response:
-<span class="ansi-green-fg">    157</span>     <span style="font-weight:bold;color:rgb(0,135,0)">return</span> json.loads(response.read().decode(<span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">utf-8</span><span class="ansi-yellow-fg">"</span>))
-
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">~/sandbox/crossrepo/.pixi/envs/default/lib/python3.13/site-packages/crossrepo/github.py:129</span>, in <span class="ansi-cyan-fg">Client._open</span><span class="ansi-blue-fg">(self, url, accept, extra)</span>
-<span class="ansi-green-fg">    127</span> request = urllib.request.Request(url, headers=headers)
-<span class="ansi-green-fg">    128</span> <span style="font-weight:bold;color:rgb(0,135,0)">try</span>:
-<span class="ansi-green-fg">--&gt; </span><span class="ansi-green-fg">129</span>     <span style="font-weight:bold;color:rgb(0,135,0)">return</span> <span class="ansi-black-fg ansi-yellow-bg">urllib</span><span class="ansi-black-fg ansi-yellow-bg">.</span><span class="ansi-black-fg ansi-yellow-bg">request</span><span class="ansi-black-fg ansi-yellow-bg">.</span><span class="ansi-black-fg ansi-yellow-bg">urlopen</span><span class="ansi-black-fg ansi-yellow-bg">(</span><span class="ansi-black-fg ansi-yellow-bg">request</span><span class="ansi-black-fg ansi-yellow-bg">,</span><span class="ansi-black-fg ansi-yellow-bg"> </span><span class="ansi-black-fg ansi-yellow-bg">timeout</span><span class="ansi-black-fg ansi-yellow-bg">=</span><span class="ansi-black-fg ansi-yellow-bg">TIMEOUT</span><span class="ansi-black-fg ansi-yellow-bg">)</span>
-<span class="ansi-green-fg">    130</span> <span style="font-weight:bold;color:rgb(0,135,0)">except</span> urllib.error.HTTPError <span style="font-weight:bold;color:rgb(0,135,0)">as</span> exc:
-<span class="ansi-green-fg">    131</span>     <span style="font-weight:bold;color:rgb(0,135,0)">raise</span> GitHubError(_explain(exc, url, <span style="color:rgb(0,135,0)">self</span>.auth)) <span style="font-weight:bold;color:rgb(0,135,0)">from</span><span style="color:rgb(188,188,188)"> </span><span style="font-weight:bold;color:rgb(0,135,0)">None</span>
-
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">~/sandbox/crossrepo/.pixi/envs/default/lib/python3.13/urllib/request.py:189</span>, in <span class="ansi-cyan-fg">urlopen</span><span class="ansi-blue-fg">(url, data, timeout, context)</span>
-<span class="ansi-green-fg">    187</span> <span style="font-weight:bold;color:rgb(0,135,0)">else</span>:
-<span class="ansi-green-fg">    188</span>     opener = _opener
-<span class="ansi-green-fg">--&gt; </span><span class="ansi-green-fg">189</span> <span style="font-weight:bold;color:rgb(0,135,0)">return</span> <span class="ansi-black-fg ansi-yellow-bg">opener</span><span class="ansi-black-fg ansi-yellow-bg">.</span><span class="ansi-black-fg ansi-yellow-bg">open</span><span class="ansi-black-fg ansi-yellow-bg">(</span><span class="ansi-black-fg ansi-yellow-bg">url</span><span class="ansi-black-fg ansi-yellow-bg">,</span><span class="ansi-black-fg ansi-yellow-bg"> </span><span class="ansi-black-fg ansi-yellow-bg">data</span><span class="ansi-black-fg ansi-yellow-bg">,</span><span class="ansi-black-fg ansi-yellow-bg"> </span><span class="ansi-black-fg ansi-yellow-bg">timeout</span><span class="ansi-black-fg ansi-yellow-bg">)</span>
-
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">~/sandbox/crossrepo/.pixi/envs/default/lib/python3.13/urllib/request.py:489</span>, in <span class="ansi-cyan-fg">OpenerDirector.open</span><span class="ansi-blue-fg">(self, fullurl, data, timeout)</span>
-<span class="ansi-green-fg">    486</span>     req = meth(req)
-<span class="ansi-green-fg">    488</span> sys.audit(<span class="ansi-yellow-fg">'</span><span class="ansi-yellow-fg">urllib.Request</span><span class="ansi-yellow-fg">'</span>, req.full_url, req.data, req.headers, req.get_method())
-<span class="ansi-green-fg">--&gt; </span><span class="ansi-green-fg">489</span> response = <span class="ansi-black-fg ansi-yellow-bg">self</span><span class="ansi-black-fg ansi-yellow-bg">.</span><span class="ansi-black-fg ansi-yellow-bg">_open</span><span class="ansi-black-fg ansi-yellow-bg">(</span><span class="ansi-black-fg ansi-yellow-bg">req</span><span class="ansi-black-fg ansi-yellow-bg">,</span><span class="ansi-black-fg ansi-yellow-bg"> </span><span class="ansi-black-fg ansi-yellow-bg">data</span><span class="ansi-black-fg ansi-yellow-bg">)</span>
-<span class="ansi-green-fg">    491</span> <span style="font-style:italic;color:rgb(95,135,135)"># post-process response</span>
-<span class="ansi-green-fg">    492</span> meth_name = protocol+<span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">_response</span><span class="ansi-yellow-fg">"</span>
-
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">~/sandbox/crossrepo/.pixi/envs/default/lib/python3.13/urllib/request.py:506</span>, in <span class="ansi-cyan-fg">OpenerDirector._open</span><span class="ansi-blue-fg">(self, req, data)</span>
-<span class="ansi-green-fg">    503</span>     <span style="font-weight:bold;color:rgb(0,135,0)">return</span> result
-<span class="ansi-green-fg">    505</span> protocol = req.type
-<span class="ansi-green-fg">--&gt; </span><span class="ansi-green-fg">506</span> result = <span class="ansi-black-fg ansi-yellow-bg">self</span><span class="ansi-black-fg ansi-yellow-bg">.</span><span class="ansi-black-fg ansi-yellow-bg">_call_chain</span><span class="ansi-black-fg ansi-yellow-bg">(</span><span class="ansi-black-fg ansi-yellow-bg">self</span><span class="ansi-black-fg ansi-yellow-bg">.</span><span class="ansi-black-fg ansi-yellow-bg">handle_open</span><span class="ansi-black-fg ansi-yellow-bg">,</span><span class="ansi-black-fg ansi-yellow-bg"> </span><span class="ansi-black-fg ansi-yellow-bg">protocol</span><span class="ansi-black-fg ansi-yellow-bg">,</span><span class="ansi-black-fg ansi-yellow-bg"> </span><span class="ansi-black-fg ansi-yellow-bg">protocol</span><span class="ansi-black-fg ansi-yellow-bg"> </span><span class="ansi-black-fg ansi-yellow-bg">+</span>
-<span class="ansi-green-fg">    507</span> <span class="ansi-black-fg ansi-yellow-bg">                          </span><span class="ansi-black-fg ansi-yellow-bg">'</span><span class="ansi-black-fg ansi-yellow-bg">_open</span><span class="ansi-black-fg ansi-yellow-bg">'</span><span class="ansi-black-fg ansi-yellow-bg">,</span><span class="ansi-black-fg ansi-yellow-bg"> </span><span class="ansi-black-fg ansi-yellow-bg">req</span><span class="ansi-black-fg ansi-yellow-bg">)</span>
-<span class="ansi-green-fg">    508</span> <span style="font-weight:bold;color:rgb(0,135,0)">if</span> result:
-<span class="ansi-green-fg">    509</span>     <span style="font-weight:bold;color:rgb(0,135,0)">return</span> result
-
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">~/sandbox/crossrepo/.pixi/envs/default/lib/python3.13/urllib/request.py:466</span>, in <span class="ansi-cyan-fg">OpenerDirector._call_chain</span><span class="ansi-blue-fg">(self, chain, kind, meth_name, *args)</span>
-<span class="ansi-green-fg">    464</span> <span style="font-weight:bold;color:rgb(0,135,0)">for</span> handler <span style="font-weight:bold;color:rgb(175,0,255)">in</span> handlers:
-<span class="ansi-green-fg">    465</span>     func = <span style="color:rgb(0,135,0)">getattr</span>(handler, meth_name)
-<span class="ansi-green-fg">--&gt; </span><span class="ansi-green-fg">466</span>     result = <span class="ansi-black-fg ansi-yellow-bg">func</span><span class="ansi-black-fg ansi-yellow-bg">(</span><span class="ansi-black-fg ansi-yellow-bg">*</span><span class="ansi-black-fg ansi-yellow-bg">args</span><span class="ansi-black-fg ansi-yellow-bg">)</span>
-<span class="ansi-green-fg">    467</span>     <span style="font-weight:bold;color:rgb(0,135,0)">if</span> result <span style="font-weight:bold;color:rgb(175,0,255)">is</span> <span style="font-weight:bold;color:rgb(175,0,255)">not</span> <span style="font-weight:bold;color:rgb(0,135,0)">None</span>:
-<span class="ansi-green-fg">    468</span>         <span style="font-weight:bold;color:rgb(0,135,0)">return</span> result
-
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">~/sandbox/crossrepo/.pixi/envs/default/lib/python3.13/urllib/request.py:1367</span>, in <span class="ansi-cyan-fg">HTTPSHandler.https_open</span><span class="ansi-blue-fg">(self, req)</span>
-<span class="ansi-green-fg">   1366</span> <span style="font-weight:bold;color:rgb(0,135,0)">def</span><span style="color:rgb(188,188,188)"> </span><span class="ansi-blue-fg">https_open</span>(<span style="color:rgb(0,135,0)">self</span>, req):
-<span class="ansi-green-fg">-&gt; </span><span class="ansi-green-fg">1367</span>     <span style="font-weight:bold;color:rgb(0,135,0)">return</span> <span class="ansi-black-fg ansi-yellow-bg">self</span><span class="ansi-black-fg ansi-yellow-bg">.</span><span class="ansi-black-fg ansi-yellow-bg">do_open</span><span class="ansi-black-fg ansi-yellow-bg">(</span><span class="ansi-black-fg ansi-yellow-bg">http</span><span class="ansi-black-fg ansi-yellow-bg">.</span><span class="ansi-black-fg ansi-yellow-bg">client</span><span class="ansi-black-fg ansi-yellow-bg">.</span><span class="ansi-black-fg ansi-yellow-bg">HTTPSConnection</span><span class="ansi-black-fg ansi-yellow-bg">,</span><span class="ansi-black-fg ansi-yellow-bg"> </span><span class="ansi-black-fg ansi-yellow-bg">req</span><span class="ansi-black-fg ansi-yellow-bg">,</span>
-<span class="ansi-green-fg">   1368</span> <span class="ansi-black-fg ansi-yellow-bg">                        </span><span class="ansi-black-fg ansi-yellow-bg">context</span><span class="ansi-black-fg ansi-yellow-bg">=</span><span class="ansi-black-fg ansi-yellow-bg">self</span><span class="ansi-black-fg ansi-yellow-bg">.</span><span class="ansi-black-fg ansi-yellow-bg">_context</span><span class="ansi-black-fg ansi-yellow-bg">)</span>
-
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">~/sandbox/crossrepo/.pixi/envs/default/lib/python3.13/urllib/request.py:1323</span>, in <span class="ansi-cyan-fg">AbstractHTTPHandler.do_open</span><span class="ansi-blue-fg">(self, http_class, req, **http_conn_args)</span>
-<span class="ansi-green-fg">   1321</span>     <span style="font-weight:bold;color:rgb(0,135,0)">except</span> <span style="font-weight:bold;color:rgb(215,95,95)">OSError</span> <span style="font-weight:bold;color:rgb(0,135,0)">as</span> err: <span style="font-style:italic;color:rgb(95,135,135)"># timeout error</span>
-<span class="ansi-green-fg">   1322</span>         <span style="font-weight:bold;color:rgb(0,135,0)">raise</span> URLError(err)
-<span class="ansi-green-fg">-&gt; </span><span class="ansi-green-fg">1323</span>     r = <span class="ansi-black-fg ansi-yellow-bg">h</span><span class="ansi-black-fg ansi-yellow-bg">.</span><span class="ansi-black-fg ansi-yellow-bg">getresponse</span><span class="ansi-black-fg ansi-yellow-bg">(</span><span class="ansi-black-fg ansi-yellow-bg">)</span>
-<span class="ansi-green-fg">   1324</span> <span style="font-weight:bold;color:rgb(0,135,0)">except</span>:
-<span class="ansi-green-fg">   1325</span>     h.close()
-
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">~/sandbox/crossrepo/.pixi/envs/default/lib/python3.13/http/client.py:1450</span>, in <span class="ansi-cyan-fg">HTTPConnection.getresponse</span><span class="ansi-blue-fg">(self)</span>
-<span class="ansi-green-fg">   1448</span> <span style="font-weight:bold;color:rgb(0,135,0)">try</span>:
-<span class="ansi-green-fg">   1449</span>     <span style="font-weight:bold;color:rgb(0,135,0)">try</span>:
-<span class="ansi-green-fg">-&gt; </span><span class="ansi-green-fg">1450</span>         <span class="ansi-black-fg ansi-yellow-bg">response</span><span class="ansi-black-fg ansi-yellow-bg">.</span><span class="ansi-black-fg ansi-yellow-bg">begin</span><span class="ansi-black-fg ansi-yellow-bg">(</span><span class="ansi-black-fg ansi-yellow-bg">)</span>
-<span class="ansi-green-fg">   1451</span>     <span style="font-weight:bold;color:rgb(0,135,0)">except</span> <span style="font-weight:bold;color:rgb(215,95,95)">ConnectionError</span>:
-<span class="ansi-green-fg">   1452</span>         <span style="color:rgb(0,135,0)">self</span>.close()
-
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">~/sandbox/crossrepo/.pixi/envs/default/lib/python3.13/http/client.py:336</span>, in <span class="ansi-cyan-fg">HTTPResponse.begin</span><span class="ansi-blue-fg">(self)</span>
-<span class="ansi-green-fg">    334</span> <span style="font-style:italic;color:rgb(95,135,135)"># read until we get a non-100 response</span>
-<span class="ansi-green-fg">    335</span> <span style="font-weight:bold;color:rgb(0,135,0)">while</span> <span style="font-weight:bold;color:rgb(0,135,0)">True</span>:
-<span class="ansi-green-fg">--&gt; </span><span class="ansi-green-fg">336</span>     version, status, reason = <span class="ansi-black-fg ansi-yellow-bg">self</span><span class="ansi-black-fg ansi-yellow-bg">.</span><span class="ansi-black-fg ansi-yellow-bg">_read_status</span><span class="ansi-black-fg ansi-yellow-bg">(</span><span class="ansi-black-fg ansi-yellow-bg">)</span>
-<span class="ansi-green-fg">    337</span>     <span style="font-weight:bold;color:rgb(0,135,0)">if</span> status != CONTINUE:
-<span class="ansi-green-fg">    338</span>         <span style="font-weight:bold;color:rgb(0,135,0)">break</span>
-
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">~/sandbox/crossrepo/.pixi/envs/default/lib/python3.13/http/client.py:297</span>, in <span class="ansi-cyan-fg">HTTPResponse._read_status</span><span class="ansi-blue-fg">(self)</span>
-<span class="ansi-green-fg">    296</span> <span style="font-weight:bold;color:rgb(0,135,0)">def</span><span style="color:rgb(188,188,188)"> </span><span class="ansi-blue-fg">_read_status</span>(<span style="color:rgb(0,135,0)">self</span>):
-<span class="ansi-green-fg">--&gt; </span><span class="ansi-green-fg">297</span>     line = <span style="color:rgb(0,135,0)">str</span>(<span class="ansi-black-fg ansi-yellow-bg">self</span><span class="ansi-black-fg ansi-yellow-bg">.</span><span class="ansi-black-fg ansi-yellow-bg">fp</span><span class="ansi-black-fg ansi-yellow-bg">.</span><span class="ansi-black-fg ansi-yellow-bg">readline</span><span class="ansi-black-fg ansi-yellow-bg">(</span><span class="ansi-black-fg ansi-yellow-bg">_MAXLINE</span><span class="ansi-black-fg ansi-yellow-bg"> </span><span class="ansi-black-fg ansi-yellow-bg">+</span><span class="ansi-black-fg ansi-yellow-bg"> </span><span class="ansi-black-fg ansi-yellow-bg">1</span><span class="ansi-black-fg ansi-yellow-bg">)</span>, <span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">iso-8859-1</span><span class="ansi-yellow-fg">"</span>)
-<span class="ansi-green-fg">    298</span>     <span style="font-weight:bold;color:rgb(0,135,0)">if</span> <span style="color:rgb(0,135,0)">len</span>(line) &gt; _MAXLINE:
-<span class="ansi-green-fg">    299</span>         <span style="font-weight:bold;color:rgb(0,135,0)">raise</span> LineTooLong(<span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">status line</span><span class="ansi-yellow-fg">"</span>)
-
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">~/sandbox/crossrepo/.pixi/envs/default/lib/python3.13/socket.py:719</span>, in <span class="ansi-cyan-fg">SocketIO.readinto</span><span class="ansi-blue-fg">(self, b)</span>
-<span class="ansi-green-fg">    717</span>     <span style="font-weight:bold;color:rgb(0,135,0)">raise</span> <span style="font-weight:bold;color:rgb(215,95,95)">OSError</span>(<span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">cannot read from timed out object</span><span class="ansi-yellow-fg">"</span>)
-<span class="ansi-green-fg">    718</span> <span style="font-weight:bold;color:rgb(0,135,0)">try</span>:
-<span class="ansi-green-fg">--&gt; </span><span class="ansi-green-fg">719</span>     <span style="font-weight:bold;color:rgb(0,135,0)">return</span> <span class="ansi-black-fg ansi-yellow-bg">self</span><span class="ansi-black-fg ansi-yellow-bg">.</span><span class="ansi-black-fg ansi-yellow-bg">_sock</span><span class="ansi-black-fg ansi-yellow-bg">.</span><span class="ansi-black-fg ansi-yellow-bg">recv_into</span><span class="ansi-black-fg ansi-yellow-bg">(</span><span class="ansi-black-fg ansi-yellow-bg">b</span><span class="ansi-black-fg ansi-yellow-bg">)</span>
-<span class="ansi-green-fg">    720</span> <span style="font-weight:bold;color:rgb(0,135,0)">except</span> timeout:
-<span class="ansi-green-fg">    721</span>     <span style="color:rgb(0,135,0)">self</span>._timeout_occurred = <span style="font-weight:bold;color:rgb(0,135,0)">True</span>
-
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">~/sandbox/crossrepo/.pixi/envs/default/lib/python3.13/ssl.py:1304</span>, in <span class="ansi-cyan-fg">SSLSocket.recv_into</span><span class="ansi-blue-fg">(self, buffer, nbytes, flags)</span>
-<span class="ansi-green-fg">   1300</span>     <span style="font-weight:bold;color:rgb(0,135,0)">if</span> flags != <span class="ansi-green-fg">0</span>:
-<span class="ansi-green-fg">   1301</span>         <span style="font-weight:bold;color:rgb(0,135,0)">raise</span> <span style="font-weight:bold;color:rgb(215,95,95)">ValueError</span>(
-<span class="ansi-green-fg">   1302</span>           <span class="ansi-yellow-fg">"</span><span class="ansi-yellow-fg">non-zero flags not allowed in calls to recv_into() on </span><span style="font-weight:bold;color:rgb(175,95,135)">%s</span><span class="ansi-yellow-fg">"</span> %
-<span class="ansi-green-fg">   1303</span>           <span style="color:rgb(0,135,0)">self</span>.<span class="ansi-blue-fg">__class__</span>)
-<span class="ansi-green-fg">-&gt; </span><span class="ansi-green-fg">1304</span>     <span style="font-weight:bold;color:rgb(0,135,0)">return</span> <span class="ansi-black-fg ansi-yellow-bg">self</span><span class="ansi-black-fg ansi-yellow-bg">.</span><span class="ansi-black-fg ansi-yellow-bg">read</span><span class="ansi-black-fg ansi-yellow-bg">(</span><span class="ansi-black-fg ansi-yellow-bg">nbytes</span><span class="ansi-black-fg ansi-yellow-bg">,</span><span class="ansi-black-fg ansi-yellow-bg"> </span><span class="ansi-black-fg ansi-yellow-bg">buffer</span><span class="ansi-black-fg ansi-yellow-bg">)</span>
-<span class="ansi-green-fg">   1305</span> <span style="font-weight:bold;color:rgb(0,135,0)">else</span>:
-<span class="ansi-green-fg">   1306</span>     <span style="font-weight:bold;color:rgb(0,135,0)">return</span> <span style="color:rgb(0,135,0)">super</span>().recv_into(buffer, nbytes, flags)
-
-<span class="ansi-cyan-fg">File </span><span class="ansi-green-fg">~/sandbox/crossrepo/.pixi/envs/default/lib/python3.13/ssl.py:1138</span>, in <span class="ansi-cyan-fg">SSLSocket.read</span><span class="ansi-blue-fg">(self, len, buffer)</span>
-<span class="ansi-green-fg">   1136</span> <span style="font-weight:bold;color:rgb(0,135,0)">try</span>:
-<span class="ansi-green-fg">   1137</span>     <span style="font-weight:bold;color:rgb(0,135,0)">if</span> buffer <span style="font-weight:bold;color:rgb(175,0,255)">is</span> <span style="font-weight:bold;color:rgb(175,0,255)">not</span> <span style="font-weight:bold;color:rgb(0,135,0)">None</span>:
-<span class="ansi-green-fg">-&gt; </span><span class="ansi-green-fg">1138</span>         <span style="font-weight:bold;color:rgb(0,135,0)">return</span> <span class="ansi-black-fg ansi-yellow-bg">self</span><span class="ansi-black-fg ansi-yellow-bg">.</span><span class="ansi-black-fg ansi-yellow-bg">_sslobj</span><span class="ansi-black-fg ansi-yellow-bg">.</span><span class="ansi-black-fg ansi-yellow-bg">read</span><span class="ansi-black-fg ansi-yellow-bg">(</span><span class="ansi-black-fg ansi-yellow-bg">len</span><span class="ansi-black-fg ansi-yellow-bg">,</span><span class="ansi-black-fg ansi-yellow-bg"> </span><span class="ansi-black-fg ansi-yellow-bg">buffer</span><span class="ansi-black-fg ansi-yellow-bg">)</span>
-<span class="ansi-green-fg">   1139</span>     <span style="font-weight:bold;color:rgb(0,135,0)">else</span>:
-<span class="ansi-green-fg">   1140</span>         <span style="font-weight:bold;color:rgb(0,135,0)">return</span> <span style="color:rgb(0,135,0)">self</span>._sslobj.read(<span style="color:rgb(0,135,0)">len</span>)
-
-<span class="ansi-red-fg">KeyboardInterrupt</span>: </pre>
 </div>
 </div>
+</div>
+<div id="17689eb3" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>crossrepo.get(<span class="st">'hic-xy-sperm'</span>, <span class="st">'results/segments_500000.csv'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="1e0325bc" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>crossrepo.get(<span class="st">'crossrepo'</span>, <span class="st">'dummy.txt'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <section id="crossrepo.yml" class="level3">
 <h3 class="anchored" data-anchor-id="crossrepo.yml"><code>crossrepo.yml</code></h3>
 <p>To register files or directories as data available to <code>crossrepo</code>, add a <code>crossrepo.yml</code> to the repository <code>results</code>. Keys are file names, paths or globs and values say what the file holds. You can list parquet folders as if they were files, since they load as such.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode yml code-with-copy"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">files</span><span class="kw">:</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">hits.csv</span><span class="kw">:</span><span class="at"> Genome-wide association hits, p &lt; 5e-8</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">qc/summary.csv</span><span class="kw">:</span><span class="at"> Per-sample genotyping quality</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">by_chrom</span><span class="kw">:</span><span class="at"> Per-chromosome effect sizes, one file per chromosome</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode yml code-with-copy"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">files</span><span class="kw">:</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">hits.csv</span><span class="kw">:</span><span class="at"> Genome-wide association hits, p &lt; 5e-8</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">qc/summary.csv</span><span class="kw">:</span><span class="at"> Per-sample genotyping quality</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">by_chrom</span><span class="kw">:</span><span class="at"> Per-chromosome effect sizes, one file per chromosome</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A key beginning with <code>/</code> is a path from the repository root rather than from the <code>crossrepo.yml</code>, which publishes a file that is kept elsewhere in the repository. Any tracked file can be named this way; <code>..</code> cannot be used to climb out.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode yml code-with-copy"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">files</span><span class="kw">:</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">hits.csv</span><span class="kw">:</span><span class="at"> In the results directory, as usual</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">/data/reference/samples.csv</span><span class="kw">:</span><span class="at"> Somewhere else in the repository</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">/data/raw/*.tsv</span><span class="kw">:</span><span class="at"> A pattern, matched against the path from the root</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode yml code-with-copy"><code class="sourceCode yaml"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">files</span><span class="kw">:</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">hits.csv</span><span class="kw">:</span><span class="at"> In the results directory, as usual</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">/data/reference/samples.csv</span><span class="kw">:</span><span class="at"> Somewhere else in the repository</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">/data/raw/*.tsv</span><span class="kw">:</span><span class="at"> A pattern, matched against the path from the root</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="files-too-large-to-commit" class="level3">
 <h3 class="anchored" data-anchor-id="files-too-large-to-commit">Files too large to commit</h3>
@@ -521,15 +478,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 $ crossrepo stamp
   stamped  results/very_large_file.csv  (41M)
 stamped 1 file; commit the crossrepo.yml to publish this version</code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode yml code-with-copy"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">files</span><span class="kw">:</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">very_large_file.csv</span><span class="kw">:</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">description</span><span class="kw">:</span><span class="at"> Merged per-sample table</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">sha256</span><span class="kw">:</span><span class="at"> </span><span class="st">"3f9a...c1"</span><span class="co">        # written by `crossrepo stamp`</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">size</span><span class="kw">:</span><span class="at"> </span><span class="dv">41231234</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode yml code-with-copy"><code class="sourceCode yaml"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">files</span><span class="kw">:</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">very_large_file.csv</span><span class="kw">:</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">description</span><span class="kw">:</span><span class="at"> Merged per-sample table</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">sha256</span><span class="kw">:</span><span class="at"> </span><span class="st">"3f9a...c1"</span><span class="co">        # written by `crossrepo stamp`</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">size</span><span class="kw">:</span><span class="at"> </span><span class="dv">41231234</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Git versions the link, not the bytes behind it, so a link on its own would let the content change without the version changing. The stamp closes that gap: it is committed, so <strong>the commit that changes a stamp is the new version</strong>, and <code>crossrepo.versions()</code> lists the commits in which the stamp moved. Regenerating the file means running <code>crossrepo stamp</code> again and committing that; <code>crossrepo stamp --check</code> writes nothing and exits non-zero when a stamp is out of date, for a pre-commit hook or CI.</p>
 <p>Nothing is copied. When the file and the cache are on one filesystem, <code>crossrepo.get()</code> returns a <strong>hard link</strong> to the file the pipeline wrote:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>os.stat(crossrepo.get(<span class="st">"proj"</span>, <span class="st">"very_large_file.csv"</span>)).st_ino</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>os.stat(<span class="st">"steps/very_large_file.csv"</span>).st_ino          <span class="co"># the same inode</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>os.stat(crossrepo.get(<span class="st">"proj"</span>, <span class="st">"very_large_file.csv"</span>)).st_ino</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>os.stat(<span class="st">"steps/very_large_file.csv"</span>).st_ino          <span class="co"># the same inode</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>What it costs is that the bytes exist only where the pipeline wrote them. Cloning the repository from GitHub gets you the link and no content, and <code>crossrepo.get()</code> says so, naming the file and the machine; reading it means configuring a root that has it, including one on a server over ssh.</p>
 </section>
 <section id="config" class="level2">
@@ -537,7 +494,7 @@ stamped 1 file; commit the crossrepo.yml to publish this version</code></pre>
 <p>Roots on another machine are read over ssh. Where the host asks for a key passphrase or a second factor, ssh prompts for it at the terminal, once, and the shared connection covers the commands that follow. In a notebook the prompt opens at the top of the window, as any <code>getpass</code> in a cell does, and what you type goes to ssh. To be asked once a day rather than once a session, give the host a <code>ControlMaster</code>/<code>ControlPersist</code> block in <code>~/.ssh/config</code>; crossrepo reads through the connection you already opened.</p>
 <p><code>crossrepo</code> configuration is read from a config file that can be generated with <code>crossrepo config --init</code> and shown using:</p>
 <div id="0fd372f9" class="cell" data-execution_count="2">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>crossrepo.active_config()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>crossrepo.active_config()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="2">
 <pre><code>Config(roots=[],
        owners=['munch-group'],
@@ -578,24 +535,24 @@ stamped 1 file; commit the crossrepo.yml to publish this version</code></pre>
 </div>
 <p>You can also generate one on the fly in the notebook and pass along to each crossrepo function:</p>
 <div id="3581f353" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>cfg <span class="op">=</span> crossrepo.config.Config(</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># search these paths under each repo roots for crossrepo.yml files:</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    crossrepo_dirs<span class="op">=</span>[<span class="st">'results'</span>, <span class="st">'steps/data'</span>], </span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># only include these file types among those listed in crossrepo files (leave empty to include all)</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    include<span class="op">=</span>[<span class="st">'*.parquet'</span>, <span class="st">'*.csv'</span>, <span class="st">'*.tsv'</span>],</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># exclude include these file types in when listed in crossrepo files:</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    exclude<span class="op">=</span>[<span class="st">'.store'</span>, <span class="st">'*.fa'</span>, <span class="st">'*.vcf'</span>, <span class="st">'*.bim'</span>, <span class="st">'*.fam'</span>, <span class="st">'*.ped'</span>, <span class="st">'*.bam'</span>],</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># search all github repos under these accounts:</span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    owners<span class="op">=</span>[<span class="st">"munch-group"</span>, <span class="st">"erikfogh"</span> ], </span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># search these github repos:</span></span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    repos<span class="op">=</span>[<span class="st">'munch-group/relate1Kgenomes'</span>, <span class="st">'munch-group/atlas-variant-ages'</span>], </span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># folders to search for working copies of git repos:</span></span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    roots <span class="op">=</span> [<span class="st">"~/Documents/projects"</span>, <span class="st">"kmt@login.genome.au.dk:xy-drive/people/kmt"</span>, ]</span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>crossrepo.use_config(cfg)</span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>crossrepo.active_config() </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>cfg <span class="op">=</span> crossrepo.config.Config(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># search these paths under each repo roots for crossrepo.yml files:</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    asset_dirs<span class="op">=</span>[<span class="st">'results'</span>, <span class="st">'steps/data'</span>], </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># only include these file types among those listed in crossrepo files (leave empty to include all)</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    include<span class="op">=</span>[<span class="st">'*.parquet'</span>, <span class="st">'*.csv'</span>, <span class="st">'*.tsv'</span>],</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># exclude include these file types in when listed in crossrepo files:</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    exclude<span class="op">=</span>[<span class="st">'.store'</span>, <span class="st">'*.fa'</span>, <span class="st">'*.vcf'</span>, <span class="st">'*.bim'</span>, <span class="st">'*.fam'</span>, <span class="st">'*.ped'</span>, <span class="st">'*.bam'</span>],</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># search all github repos under these accounts:</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    owners<span class="op">=</span>[<span class="st">"munch-group"</span>, <span class="st">"erikfogh"</span> ], </span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># search these github repos:</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    repos<span class="op">=</span>[<span class="st">'munch-group/relate1Kgenomes'</span>, <span class="st">'munch-group/atlas-variant-ages'</span>], </span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># folders to search for working copies of git repos:</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>    roots <span class="op">=</span> [<span class="st">"~/Documents/projects"</span>, <span class="st">"kmt@login.genome.au.dk:xy-drive/people/kmt"</span>, ]</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>crossrepo.use_config(cfg)</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>crossrepo.active_config() </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="3">
 <pre><code>Config(roots=['~/Documents/projects',
               'kmt@login.genome.au.dk:xy-drive/people/kmt'],
@@ -609,7 +566,7 @@ stamped 1 file; commit the crossrepo.yml to publish this version</code></pre>
 </div>
 </div>
 <div id="f15cd747" class="cell" data-execution_count="24">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>crossrepo.use_config(<span class="va">None</span>)  <span class="co"># back to ~/.config/crossrepo/config.toml</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>crossrepo.use_config(<span class="va">None</span>)  <span class="co"># back to ~/.config/crossrepo/config.toml</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="24">
 <pre><code>Config(roots=[],
        owners=['munch-group'],
@@ -652,7 +609,7 @@ stamped 1 file; commit the crossrepo.yml to publish this version</code></pre>
 <section id="refresh" class="level2">
 <h2 class="anchored" data-anchor-id="refresh">Refresh</h2>
 <div id="ae223997" class="cell" data-execution_count="4">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>crossrepo.refresh()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>crossrepo.refresh()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
 {"model_id":"6cc25fafa420429abd4c436a31f8fe55","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
@@ -778,7 +735,7 @@ stamped 1 file; commit the crossrepo.yml to publish this version</code></pre>
 <section id="repos" class="level2">
 <h2 class="anchored" data-anchor-id="repos">Repos</h2>
 <div id="278fb8ae" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>crossrepo.repos()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>crossrepo.repos()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 
@@ -819,7 +776,7 @@ stamped 1 file; commit the crossrepo.yml to publish this version</code></pre>
 <h2 class="anchored" data-anchor-id="list">List</h2>
 <p><code>crossrepo.list()</code> is the python side of <code>crossrepo list</code>.</p>
 <div id="69d23b1e" class="cell" data-execution_count="27">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>crossrepo.<span class="bu">list</span>() <span class="op">&lt;&lt;</span> nice()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>crossrepo.<span class="bu">list</span>() <span class="op">&lt;&lt;</span> nice()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <style type="text/css">
 #T_ac78f .col0 {
@@ -944,7 +901,7 @@ stamped 1 file; commit the crossrepo.yml to publish this version</code></pre>
 </div>
 </div>
 <div id="f1133695" class="cell" data-execution_count="28">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>crossrepo.<span class="bu">list</span>(brief<span class="op">=</span><span class="va">True</span>) <span class="op">&lt;&lt;</span> nice()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>crossrepo.<span class="bu">list</span>(brief<span class="op">=</span><span class="va">True</span>) <span class="op">&lt;&lt;</span> nice()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <style type="text/css">
 #T_7274d .col0 {
@@ -1030,7 +987,7 @@ stamped 1 file; commit the crossrepo.yml to publish this version</code></pre>
 </div>
 </div>
 <div id="0e11f343" class="cell" data-execution_count="29">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>crossrepo.<span class="bu">list</span>(version<span class="op">=</span><span class="va">True</span>) <span class="op">&lt;&lt;</span> nice()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>crossrepo.<span class="bu">list</span>(version<span class="op">=</span><span class="va">True</span>) <span class="op">&lt;&lt;</span> nice()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <style type="text/css">
 #T_cacf6 .col0 {
@@ -1167,14 +1124,14 @@ stamped 1 file; commit the crossrepo.yml to publish this version</code></pre>
 <section id="get" class="level2">
 <h2 class="anchored" data-anchor-id="get">Get</h2>
 <div id="6f475d07" class="cell" data-execution_count="33">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>tmp_path <span class="op">=</span> crossrepo.get(<span class="st">"atlas-variant-ages"</span>, <span class="st">"atlas_variant_ages.parquet"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>tmp_path <span class="op">=</span> crossrepo.get(<span class="st">"atlas-variant-ages"</span>, <span class="st">"atlas_variant_ages.parquet"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Add version="619b60e3af78bed6494222f82f754a3863249fe9" to pin this version.</code></pre>
 </div>
 </div>
 <div id="8cd45140" class="cell" data-execution_count="9">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_parquet(tmp_path)</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>df.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_parquet(tmp_path)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>df.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="9">
 <div>
 
@@ -1238,13 +1195,13 @@ stamped 1 file; commit the crossrepo.yml to publish this version</code></pre>
 </div>
 </div>
 <div id="9030a54e" class="cell" data-execution_count="10">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>filters <span class="op">=</span> [</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'pos'</span>, <span class="st">'&gt;='</span>, <span class="dv">892733</span>), </span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'pos'</span>, <span class="st">'&lt;'</span>, <span class="dv">901516</span>),</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'pop'</span>, <span class="st">'=='</span>, <span class="st">"ACB"</span>),</span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'chrom'</span>, <span class="st">'=='</span>, <span class="st">"chrX"</span>),</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>pd.read_parquet(tmp_path, filters<span class="op">=</span>filters)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>filters <span class="op">=</span> [</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'pos'</span>, <span class="st">'&gt;='</span>, <span class="dv">892733</span>), </span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'pos'</span>, <span class="st">'&lt;'</span>, <span class="dv">901516</span>),</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'pop'</span>, <span class="st">'=='</span>, <span class="st">"ACB"</span>),</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'chrom'</span>, <span class="st">'=='</span>, <span class="st">"chrX"</span>),</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>pd.read_parquet(tmp_path, filters<span class="op">=</span>filters)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="10">
 <div>
 
@@ -1348,14 +1305,14 @@ stamped 1 file; commit the crossrepo.yml to publish this version</code></pre>
 </div>
 </div>
 <div id="eebb53b3" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-08-31T16:05:55.787034Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-08-31T16:05:55.786956Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-08-31T16:05:55.809735Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-08-31T16:05:55.809228Z&quot;}}">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>tmp_path <span class="op">=</span> crossrepo.get(<span class="st">"munch-group/relate1Kgenomes"</span>, <span class="st">"results/relate_snps_p_vals.parquet"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>tmp_path <span class="op">=</span> crossrepo.get(<span class="st">"munch-group/relate1Kgenomes"</span>, <span class="st">"results/relate_snps_p_vals.parquet"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Add version="590c4f17d5a2ff765e61b6df9a1fa88318c9760d" to pin this version.</code></pre>
 </div>
 </div>
 <div id="3ab59a3c" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_parquet(tmp_path)</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>df.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_parquet(tmp_path)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>df.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="34">
 <div>
 
@@ -1443,14 +1400,14 @@ stamped 1 file; commit the crossrepo.yml to publish this version</code></pre>
 </div>
 </div>
 <div id="70402cfe" class="cell" data-execution_count="16">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># silent, because this is still the current version</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>tmp_path <span class="op">=</span> crossrepo.get(<span class="st">"munch-group/relate1Kgenomes"</span>, </span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>                       <span class="st">"results/relate_snps_p_vals.parquet"</span>,</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>                       version<span class="op">=</span><span class="st">"590c4f17d5a2ff765e61b6df9a1fa88318c9760d"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># silent, because this is still the current version</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>tmp_path <span class="op">=</span> crossrepo.get(<span class="st">"munch-group/relate1Kgenomes"</span>, </span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>                       <span class="st">"results/relate_snps_p_vals.parquet"</span>,</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>                       version<span class="op">=</span><span class="st">"590c4f17d5a2ff765e61b6df9a1fa88318c9760d"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>The file name is enough when it is unambiguous; otherwise give as much of the path as it takes.</p>
 <div id="4c7d3cc3" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-08-31T16:05:55.823029Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-08-31T16:05:55.822950Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-08-31T16:05:55.846741Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-08-31T16:05:55.846225Z&quot;}}" data-execution_count="17">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>crossrepo.get(<span class="st">"relate1Kgenomes"</span>, <span class="st">"relate_snps_p_vals.parquet"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>crossrepo.get(<span class="st">"relate1Kgenomes"</span>, <span class="st">"relate_snps_p_vals.parquet"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Add version="590c4f17d5a2ff765e61b6df9a1fa88318c9760d" to pin this version.</code></pre>
 </div>
@@ -1463,7 +1420,7 @@ stamped 1 file; commit the crossrepo.yml to publish this version</code></pre>
 <h2 class="anchored" data-anchor-id="history">History</h2>
 <p>The catalog stamps every file with the repository’s current commit. <code>crossrepo.versions()</code> shows the commits in which the file itself changed, which is the useful set to pin.</p>
 <div id="6dd2ffc7" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-08-31T16:05:55.964532Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-08-31T16:05:55.964388Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-08-31T16:05:56.026262Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-08-31T16:05:56.025786Z&quot;}}" data-execution_count="18">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>crossrepo.versions(<span class="st">"relate1Kgenomes"</span>, <span class="st">"relate_snps_p_vals.parquet"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>crossrepo.versions(<span class="st">"relate1Kgenomes"</span>, <span class="st">"relate_snps_p_vals.parquet"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="18">
 <div>
 
@@ -1501,11 +1458,20 @@ stamped 1 file; commit the crossrepo.yml to publish this version</code></pre>
 <h2 class="anchored" data-anchor-id="when-nothing-shows-up">When nothing shows up</h2>
 <p>An empty catalog has several ordinary causes and they look alike from outside. <code>crossrepo.diagnose()</code> says which it is, reading only local git.</p>
 <div id="95a5bd78" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-08-31T16:05:56.028188Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-08-31T16:05:56.028056Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-08-31T16:05:56.030724Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-08-31T16:05:56.030330Z&quot;}}" data-execution_count="14">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">"</span>.join(crossrepo.diagnose(crossrepo.Config(roots<span class="op">=</span>[<span class="st">"~/no-such-place"</span>]))))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">"</span>.join(crossrepo.diagnose(crossrepo.Config(roots<span class="op">=</span>[<span class="st">"~/no-such-place"</span>]))))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  ~/no-such-place: no such directory
   github: no owners or repos configured, so nothing is read from GitHub</code></pre>
 </div>
+</div>
+<div id="70cf7d60" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> crossrepo <span class="im">import</span> location</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"interactive:"</span>, location._interactive())</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"kernel     :"</span>, location._kernel())</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"bridged    :"</span>, location._bridged())</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"stdin      :"</span>, <span class="bu">type</span>(sys.stdin), <span class="bu">getattr</span>(sys.stdin, <span class="st">"isatty"</span>, <span class="kw">lambda</span>: <span class="st">"n/a"</span>)())</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"options    :"</span>, location.ssh_options(<span class="st">"kmt@login.genome.au.dk"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 
 
