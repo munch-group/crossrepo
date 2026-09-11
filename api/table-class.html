@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>file_history – crossrepo</title>
+<title>table-class – crossrepo</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -71,8 +71,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../api/blob_at.html" rel="next">
-<link href="../api/head_commit.html" rel="prev">
+<link href="../api/version_at.html" rel="next">
+<link href="../api/Spec.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -155,7 +155,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../api/discover_repos.html">Git access</a></li><li class="breadcrumb-item"><a href="../api/file_history.html">file_history</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../api/table-class.html">Tables</a></li><li class="breadcrumb-item"><a href="../api/table-class.html">Table</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -372,7 +372,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../api/table-class.html" class="sidebar-item-text sidebar-link">
+  <a href="../api/table-class.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Table</span></a>
   </div>
 </li>
@@ -690,7 +690,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../api/file_history.html" class="sidebar-item-text sidebar-link active">
+  <a href="../api/file_history.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">file_history</span></a>
   </div>
 </li>
@@ -825,49 +825,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#crossrepo.gitutil.file_history" id="toc-crossrepo.gitutil.file_history" class="nav-link active" data-scroll-target="#crossrepo.gitutil.file_history">file_history</a>
+  <li><a href="#crossrepo.table.Table" id="toc-crossrepo.table.Table" class="nav-link active" data-scroll-target="#crossrepo.table.Table">Table</a>
   <ul class="collapse">
-  <li><a href="#parameters" id="toc-parameters" class="nav-link" data-scroll-target="#parameters">Parameters</a></li>
-  <li><a href="#returns" id="toc-returns" class="nav-link" data-scroll-target="#returns">Returns</a></li>
+  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
+  <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See Also</a></li>
   </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../api/discover_repos.html">Git access</a></li><li class="breadcrumb-item"><a href="../api/file_history.html">file_history</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../api/table-class.html">Tables</a></li><li class="breadcrumb-item"><a href="../api/table-class.html">Table</a></li></ol></nav></header>
 
 
 
 
-<section id="crossrepo.gitutil.file_history" class="level1">
-<h1>file_history</h1>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>crossrepo.gitutil.file_history(repo, path, follow<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>List every commit that changed one file, newest first.</p>
-<section id="parameters" class="level2 doc-section doc-section-parameters">
-<h2 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h2>
-<dl>
-<dt><code><span class="parameter-name"><strong>repo</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.Union">Union</a>[<code>Location</code>, <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path">Path</a>, <a href="https://docs.python.org/3/library/stdtypes.html#str">str</a>]</span></code></dt>
-<dd>
-<p>Working tree to inspect, on this machine or another.</p>
-</dd>
-<dt><code><span class="parameter-name"><strong>path</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span></code></dt>
-<dd>
-<p>Repository-relative path of the file.</p>
-</dd>
-<dt><code><span class="parameter-name"><strong>follow</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="parameter-default-sep">=</span> <span class="parameter-default">True</span></code></dt>
-<dd>
-<p>Follow renames, so history reaches back past a rename. Only meaningful for a single file; pass <code>False</code> for a directory, which <code>--follow</code> does not describe.</p>
-</dd>
-</dl>
+<section id="crossrepo.table.Table" class="level1">
+<h1>Table</h1>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>crossrepo.table.Table()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A data frame that shows itself with its text columns left aligned.</p>
+<p>A <code>pandas.DataFrame</code> in every other respect – it inherits from one, so every method, every operator and every library that takes a data frame takes this. What it adds is one thing: in a notebook, columns holding text are drawn left aligned rather than right.</p>
+<p>That is not decoration. pandas right aligns everything, which suits numbers and is wrong for the columns a catalog is mostly made of: a description, a path, a repository name. Read down a right aligned column of text and the eye has no edge to run along, and the one column anybody scans – what each file holds – is the worst of them.</p>
+<p>Operations return a <code>Table</code> too, so the alignment survives a <code>pandas.DataFrame.sort_values</code> or a column selection and does not have to be asked for again. One column of one is an ordinary <code>pandas.Series</code>, there being nothing to align in a single column.</p>
+<section id="examples" class="level2 doc-section doc-section-examples">
+<h2 class="doc-section doc-section-examples anchored" data-anchor-id="examples">Examples</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> crossrepo</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>crossrepo.<span class="bu">list</span>()                      <span class="co"># already one of these</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>crossrepo.Table(some_other_frame)     <span class="co"># or wrap your own</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="returns" class="level2 doc-section doc-section-returns">
-<h2 class="doc-section doc-section-returns anchored" data-anchor-id="returns">Returns</h2>
-<dl>
-<dt><code><span class="parameter-name"></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.List">List</a>[<a href="https://docs.python.org/3/library/typing.html#typing.Tuple">Tuple</a>[<a href="https://docs.python.org/3/library/stdtypes.html#str">str</a>, <a href="https://docs.python.org/3/library/stdtypes.html#str">str</a>, <a href="https://docs.python.org/3/library/stdtypes.html#str">str</a>]]</span></code></dt>
-<dd>
-<p>Tuples of <code>(sha, iso_date, subject)</code>, newest first.</p>
-</dd>
-</dl>
+<section id="see-also" class="level2 doc-section doc-section-see-also">
+<h2 class="doc-section doc-section-see-also anchored" data-anchor-id="see-also">See Also</h2>
+<p><a href="../api/list.html#crossrepo.list"><code>crossrepo.list</code></a> <a href="../api/frame.html#crossrepo.frame"><code>crossrepo.frame</code></a></p>
 
 
 </section>
@@ -1276,13 +1264,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../api/head_commit.html" class="pagination-link" aria-label="head_commit">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">head_commit</span>
+      <a href="../api/Spec.html" class="pagination-link" aria-label="Spec">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Spec</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../api/blob_at.html" class="pagination-link" aria-label="blob_at">
-        <span class="nav-page-text">blob_at</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../api/version_at.html" class="pagination-link" aria-label="version_at">
+        <span class="nav-page-text">version_at</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

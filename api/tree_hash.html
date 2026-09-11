@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>file_history – crossrepo</title>
+<title>tree_hash – crossrepo</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -71,8 +71,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../api/blob_at.html" rel="next">
-<link href="../api/head_commit.html" rel="prev">
+<link href="../api/check_object.html" rel="next">
+<link href="../api/tree_parts.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -155,7 +155,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../api/discover_repos.html">Git access</a></li><li class="breadcrumb-item"><a href="../api/file_history.html">file_history</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../api/blob_path.html">Cache</a></li><li class="breadcrumb-item"><a href="../api/tree_hash.html">tree_hash</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -631,7 +631,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../api/tree_hash.html" class="sidebar-item-text sidebar-link">
+  <a href="../api/tree_hash.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">tree_hash</span></a>
   </div>
 </li>
@@ -690,7 +690,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../api/file_history.html" class="sidebar-item-text sidebar-link active">
+  <a href="../api/file_history.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">file_history</span></a>
   </div>
 </li>
@@ -825,49 +825,53 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#crossrepo.gitutil.file_history" id="toc-crossrepo.gitutil.file_history" class="nav-link active" data-scroll-target="#crossrepo.gitutil.file_history">file_history</a>
+  <li><a href="#crossrepo.cache.tree_hash" id="toc-crossrepo.cache.tree_hash" class="nav-link active" data-scroll-target="#crossrepo.cache.tree_hash">tree_hash</a>
   <ul class="collapse">
   <li><a href="#parameters" id="toc-parameters" class="nav-link" data-scroll-target="#parameters">Parameters</a></li>
   <li><a href="#returns" id="toc-returns" class="nav-link" data-scroll-target="#returns">Returns</a></li>
+  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
+  <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See Also</a></li>
   </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../api/discover_repos.html">Git access</a></li><li class="breadcrumb-item"><a href="../api/file_history.html">file_history</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../api/blob_path.html">Cache</a></li><li class="breadcrumb-item"><a href="../api/tree_hash.html">tree_hash</a></li></ol></nav></header>
 
 
 
 
-<section id="crossrepo.gitutil.file_history" class="level1">
-<h1>file_history</h1>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>crossrepo.gitutil.file_history(repo, path, follow<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>List every commit that changed one file, newest first.</p>
+<section id="crossrepo.cache.tree_hash" class="level1">
+<h1>tree_hash</h1>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>crossrepo.cache.tree_hash(parts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Hash a directory the way a manifest stamp records it.</p>
+<p>A dataset published as a link needs one digest standing for the whole of it, since the manifest holds one stamp. It is taken over the parts rather than over a concatenation of their bytes, so that a part renamed or moved between subdirectories changes it as surely as a part rewritten does, and so that it can be recomputed on the far side of an ssh connection a part at a time without holding the dataset anywhere in one piece.</p>
 <section id="parameters" class="level2 doc-section doc-section-parameters">
 <h2 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h2>
 <dl>
-<dt><code><span class="parameter-name"><strong>repo</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.Union">Union</a>[<code>Location</code>, <a href="https://docs.python.org/3/library/pathlib.html#pathlib.Path">Path</a>, <a href="https://docs.python.org/3/library/stdtypes.html#str">str</a>]</span></code></dt>
+<dt><code><span class="parameter-name"><strong>parts</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.Iterable">Iterable</a>[<a href="https://docs.python.org/3/library/typing.html#typing.Tuple">Tuple</a>[<a href="https://docs.python.org/3/library/stdtypes.html#str">str</a>, <a href="https://docs.python.org/3/library/stdtypes.html#str">str</a>]]</span></code></dt>
 <dd>
-<p>Working tree to inspect, on this machine or another.</p>
-</dd>
-<dt><code><span class="parameter-name"><strong>path</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span></code></dt>
-<dd>
-<p>Repository-relative path of the file.</p>
-</dd>
-<dt><code><span class="parameter-name"><strong>follow</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="parameter-default-sep">=</span> <span class="parameter-default">True</span></code></dt>
-<dd>
-<p>Follow renames, so history reaches back past a rename. Only meaningful for a single file; pass <code>False</code> for a directory, which <code>--follow</code> does not describe.</p>
+<p><code>(relative_path, sha256)</code> for each part, in any order. The order here does not matter: they are sorted, so two machines that list a directory differently still agree on the digest.</p>
 </dd>
 </dl>
 </section>
 <section id="returns" class="level2 doc-section doc-section-returns">
 <h2 class="doc-section doc-section-returns anchored" data-anchor-id="returns">Returns</h2>
 <dl>
-<dt><code><span class="parameter-name"></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.List">List</a>[<a href="https://docs.python.org/3/library/typing.html#typing.Tuple">Tuple</a>[<a href="https://docs.python.org/3/library/stdtypes.html#str">str</a>, <a href="https://docs.python.org/3/library/stdtypes.html#str">str</a>, <a href="https://docs.python.org/3/library/stdtypes.html#str">str</a>]]</span></code></dt>
+<dt><code><span class="parameter-name"></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span></code></dt>
 <dd>
-<p>Tuples of <code>(sha, iso_date, subject)</code>, newest first.</p>
+<p>The sha256 digest in lower case hexadecimal.</p>
 </dd>
 </dl>
+</section>
+<section id="examples" class="level2 doc-section doc-section-examples">
+<h2 class="doc-section doc-section-examples anchored" data-anchor-id="examples">Examples</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>tree_hash([(<span class="st">"part-1.parquet"</span>, <span class="st">"b"</span> <span class="op">*</span> <span class="dv">64</span>), (<span class="st">"part-0.parquet"</span>, <span class="st">"a"</span> <span class="op">*</span> <span class="dv">64</span>)])</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># '2d3f...'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="see-also" class="level2 doc-section doc-section-see-also">
+<h2 class="doc-section doc-section-see-also anchored" data-anchor-id="see-also">See Also</h2>
+<p><a href="../api/Stamp.html#crossrepo.manifest.Stamp"><code>crossrepo.manifest.Stamp</code></a> <a href="../api/tree_parts.html#crossrepo.cache.tree_parts"><code>crossrepo.cache.tree_parts</code></a></p>
 
 
 </section>
@@ -1276,13 +1280,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../api/head_commit.html" class="pagination-link" aria-label="head_commit">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">head_commit</span>
+      <a href="../api/tree_parts.html" class="pagination-link" aria-label="tree_parts">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">tree_parts</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../api/blob_at.html" class="pagination-link" aria-label="blob_at">
-        <span class="nav-page-text">blob_at</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../api/check_object.html" class="pagination-link" aria-label="check_object">
+        <span class="nav-page-text">check_object</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
