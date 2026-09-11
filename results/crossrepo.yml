@@ -4,5 +4,9 @@ files:
     sha256: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     size: 0
   dummy.txt: Dummy text file
-  tester.parquet: Tester symlink to dir
+  tester.parquet:
+    description: Tester symlink to dir
+    sha256: "7d301dc1e95236310193039a66091de06fbefe7263bfc6c248c436a02a4ac77a"
+    size: 0
+    parts: 1
 
