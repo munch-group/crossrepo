@@ -244,7 +244,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><code>crossrepo</code> lets one project read result files produced by another, without submodules, without cloning, and without downloading anything by hand.</p>
 <p>A repository publishes by committing a <code>crossrepo.yml</code> in the <code>results/</code> directory at its root, naming the files it wants others to see and saying what each one holds. Everything else in <code>results/</code> stays private to that project.</p>
 <p>Repositories are read wherever they are: clones on this machine, clones on a server reached over ssh, and repositories on GitHub read over the API without being cloned at all.</p>
-<div id="4ea86094" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-08-31T16:05:53.645910Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-08-31T16:05:53.645652Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-08-31T16:05:55.428753Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-08-31T16:05:55.428330Z&quot;}}" data-execution_count="1">
+<div id="4ea86094" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-08-31T16:05:53.645910Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-08-31T16:05:53.645652Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-08-31T16:05:55.428753Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-08-31T16:05:55.428330Z&quot;}}" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> vscodenb</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> crossrepo</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -259,64 +259,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">#             overwrite=False</span></span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">#         )</span></span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">#         display(s)  </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display">
-
-        <style>
-        :root {
-            --vscodenb-foreground: var(--vscode-editor-foreground, var(--jp-content-font-color1, #1f1f1f));
-            --jp-widgets-color: var(--vscodenb-foreground);
-        }
-        </style>
-        
-        <style>
-        .cell-output-ipywidget-background {
-            background-color: transparent !important;
-        }
-       .jp-OutputArea-output {
-           background-color: transparent;
-        }  
-        /* tqdm styling: */
-        .widget-label,
-        .widget-html,
-        .widget-button,
-        .widget-dropdown,
-        .widget-text,
-        .widget-textarea {
-            font-size: 10px !important;      /* Font size */
-        }
-        /* tqdm progress bar labels ("47%" and "470/1000 [00:03<00:03, ...]") */
-        .widget-label,
-        .widget-html,
-        .widget-htmlmath,
-        .widget-html-content,
-        .widget-htmlmath-content {
-            color: var(--vscodenb-foreground) !important;
-        }
-        div.widget-html-content > progress { /* Outer container */
-            height: 10px !important;
-        
-        }
-        div.jp-OutputArea-output td.output_html { /* tqdm HTML output area */
-            height: 5px !important;
-        }
-        div.progress { /* Jupyter Notebook (classic) */
-            height: 5px !important;
-            min-height: 5px !important;
-            margin-top: 12px !important;    
-        }
-        div.progress-bar { /* inner bar */
-            height: 5px !important;
-            min-height: 5px !important;
-            line-height: 5px !important;
-            color: white !important;
-            padding-bottom: 0px !important;    
-        }
-        table {
-            font-variant-numeric: tabular-nums; 
-        }                     
-        </style>                          
-        
-</div>
 </div>
 <section id="crossrepo.yml" class="level3">
 <h3 class="anchored" data-anchor-id="crossrepo.yml"><code>crossrepo.yml</code></h3>
@@ -334,166 +276,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="github-repositories" class="level2">
 <h2 class="anchored" data-anchor-id="github-repositories">GitHub repositories</h2>
 <p>Search all github repos under these accounts:</p>
-<div id="5f65315a" class="cell" data-execution_count="5">
+<div id="5f65315a" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>cfg <span class="op">=</span> crossrepo.config.Config(</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    owners<span class="op">=</span>[<span class="st">"munch-group"</span>, ], </span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>crossrepo.use_config(cfg)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>crossrepo.refresh() <span class="op">&lt;&lt;</span> nice()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>crossrepo.refresh()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"20e5a0234d8648f98bbee764b0d72dce","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+{"model_id":"39906678d4ca43debb0c7ca77b3d33b7","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
 </script>
-</div>
-<div class="cell-output cell-output-display">
-<style type="text/css">
-#T_7ebbd .col0 {
-  text-align: left;
-}
-#T_7ebbd .col1 {
-  text-align: left;
-}
-#T_7ebbd .col2 {
-  text-align: left;
-}
-#T_7ebbd .col3 {
-  text-align: left;
-}
-#T_7ebbd .col4 {
-  text-align: left;
-}
-#T_7ebbd .col5 {
-  text-align: left;
-}
-#T_7ebbd .col6 {
-  text-align: left;
-}
-#T_7ebbd .col7 {
-  text-align: left;
-}
-#T_7ebbd .col9 {
-  text-align: left;
-}
-</style>
-
-<table id="T_7ebbd" class="caption-top table table-sm table-striped small">
-<thead>
-<tr class="header">
-<th class="blank level0" data-quarto-table-cell-role="th">&nbsp;</th>
-<th id="T_7ebbd_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">owner</th>
-<th id="T_7ebbd_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">repo</th>
-<th id="T_7ebbd_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">name</th>
-<th id="T_7ebbd_level0_col3" class="col_heading level0 col3" data-quarto-table-cell-role="th">description</th>
-<th id="T_7ebbd_level0_col4" class="col_heading level0 col4" data-quarto-table-cell-role="th">date</th>
-<th id="T_7ebbd_level0_col5" class="col_heading level0 col5" data-quarto-table-cell-role="th">github</th>
-<th id="T_7ebbd_level0_col6" class="col_heading level0 col6" data-quarto-table-cell-role="th">path</th>
-<th id="T_7ebbd_level0_col7" class="col_heading level0 col7" data-quarto-table-cell-role="th">dir</th>
-<th id="T_7ebbd_level0_col8" class="col_heading level0 col8" data-quarto-table-cell-role="th">bytes</th>
-<th id="T_7ebbd_level0_col9" class="col_heading level0 col9" data-quarto-table-cell-role="th">tags</th>
-<th id="T_7ebbd_level0_col10" class="col_heading level0 col10" data-quarto-table-cell-role="th">lfs</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<th id="T_7ebbd_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">0</th>
-<td id="T_7ebbd_row0_col0" class="data row0 col0">munch-group</td>
-<td id="T_7ebbd_row0_col1" class="data row0 col1">atlas-variant-ages</td>
-<td id="T_7ebbd_row0_col2" class="data row0 col2">atlas_variant_ages.parquet</td>
-<td id="T_7ebbd_row0_col3" class="data row0 col3">Variant ages using Abers method</td>
-<td id="T_7ebbd_row0_col4" class="data row0 col4">2026-09-06</td>
-<td id="T_7ebbd_row0_col5" class="data row0 col5">munch-group/atlas-variant-ages</td>
-<td id="T_7ebbd_row0_col6" class="data row0 col6">results/atlas_variant_ages.parquet</td>
-<td id="T_7ebbd_row0_col7" class="data row0 col7">results</td>
-<td id="T_7ebbd_row0_col8" class="data row0 col8">1890901982</td>
-<td id="T_7ebbd_row0_col9" class="data row0 col9"></td>
-<td id="T_7ebbd_row0_col10" class="data row0 col10">False</td>
-</tr>
-<tr class="even">
-<th id="T_7ebbd_level0_row1" class="row_heading level0 row1" data-quarto-table-cell-role="th">1</th>
-<td id="T_7ebbd_row1_col0" class="data row1 col0">munch-group</td>
-<td id="T_7ebbd_row1_col1" class="data row1 col1">crossrepo</td>
-<td id="T_7ebbd_row1_col2" class="data row1 col2">dummy.txt</td>
-<td id="T_7ebbd_row1_col3" class="data row1 col3">Dummy text file</td>
-<td id="T_7ebbd_row1_col4" class="data row1 col4">2026-09-11</td>
-<td id="T_7ebbd_row1_col5" class="data row1 col5">munch-group/crossrepo</td>
-<td id="T_7ebbd_row1_col6" class="data row1 col6">results/dummy.txt</td>
-<td id="T_7ebbd_row1_col7" class="data row1 col7">results</td>
-<td id="T_7ebbd_row1_col8" class="data row1 col8">12</td>
-<td id="T_7ebbd_row1_col9" class="data row1 col9"></td>
-<td id="T_7ebbd_row1_col10" class="data row1 col10">False</td>
-</tr>
-<tr class="odd">
-<th id="T_7ebbd_level0_row2" class="row_heading level0 row2" data-quarto-table-cell-role="th">2</th>
-<td id="T_7ebbd_row2_col0" class="data row2 col0">munch-group</td>
-<td id="T_7ebbd_row2_col1" class="data row2 col1">hic-xy-sperm</td>
-<td id="T_7ebbd_row2_col2" class="data row2 col2">all_genes.h5</td>
-<td id="T_7ebbd_row2_col3" class="data row2 col3">all genes</td>
-<td id="T_7ebbd_row2_col4" class="data row2 col4">2026-09-06</td>
-<td id="T_7ebbd_row2_col5" class="data row2 col5">munch-group/hic-xy-sperm</td>
-<td id="T_7ebbd_row2_col6" class="data row2 col6">results/all_genes.h5</td>
-<td id="T_7ebbd_row2_col7" class="data row2 col7">results</td>
-<td id="T_7ebbd_row2_col8" class="data row2 col8">2873280</td>
-<td id="T_7ebbd_row2_col9" class="data row2 col9"></td>
-<td id="T_7ebbd_row2_col10" class="data row2 col10">False</td>
-</tr>
-<tr class="even">
-<th id="T_7ebbd_level0_row3" class="row_heading level0 row3" data-quarto-table-cell-role="th">3</th>
-<td id="T_7ebbd_row3_col0" class="data row3 col0">munch-group</td>
-<td id="T_7ebbd_row3_col1" class="data row3 col1">hic-xy-sperm</td>
-<td id="T_7ebbd_row3_col2" class="data row3 col2">segments_100000.csv</td>
-<td id="T_7ebbd_row3_col3" class="data row3 col3">100kb segments</td>
-<td id="T_7ebbd_row3_col4" class="data row3 col4">2026-09-06</td>
-<td id="T_7ebbd_row3_col5" class="data row3 col5">munch-group/hic-xy-sperm</td>
-<td id="T_7ebbd_row3_col6" class="data row3 col6">results/segments_100000.csv</td>
-<td id="T_7ebbd_row3_col7" class="data row3 col7">results</td>
-<td id="T_7ebbd_row3_col8" class="data row3 col8">1681136</td>
-<td id="T_7ebbd_row3_col9" class="data row3 col9"></td>
-<td id="T_7ebbd_row3_col10" class="data row3 col10">False</td>
-</tr>
-<tr class="odd">
-<th id="T_7ebbd_level0_row4" class="row_heading level0 row4" data-quarto-table-cell-role="th">4</th>
-<td id="T_7ebbd_row4_col0" class="data row4 col0">munch-group</td>
-<td id="T_7ebbd_row4_col1" class="data row4 col1">hic-xy-sperm</td>
-<td id="T_7ebbd_row4_col2" class="data row4 col2">segments_50000.csv</td>
-<td id="T_7ebbd_row4_col3" class="data row4 col3">50kb segments</td>
-<td id="T_7ebbd_row4_col4" class="data row4 col4">2026-09-06</td>
-<td id="T_7ebbd_row4_col5" class="data row4 col5">munch-group/hic-xy-sperm</td>
-<td id="T_7ebbd_row4_col6" class="data row4 col6">results/segments_50000.csv</td>
-<td id="T_7ebbd_row4_col7" class="data row4 col7">results</td>
-<td id="T_7ebbd_row4_col8" class="data row4 col8">3370795</td>
-<td id="T_7ebbd_row4_col9" class="data row4 col9"></td>
-<td id="T_7ebbd_row4_col10" class="data row4 col10">False</td>
-</tr>
-<tr class="even">
-<th id="T_7ebbd_level0_row5" class="row_heading level0 row5" data-quarto-table-cell-role="th">5</th>
-<td id="T_7ebbd_row5_col0" class="data row5 col0">munch-group</td>
-<td id="T_7ebbd_row5_col1" class="data row5 col1">hic-xy-sperm</td>
-<td id="T_7ebbd_row5_col2" class="data row5 col2">segments_500000.csv</td>
-<td id="T_7ebbd_row5_col3" class="data row5 col3">500kb segments</td>
-<td id="T_7ebbd_row5_col4" class="data row5 col4">2026-09-06</td>
-<td id="T_7ebbd_row5_col5" class="data row5 col5">munch-group/hic-xy-sperm</td>
-<td id="T_7ebbd_row5_col6" class="data row5 col6">results/segments_500000.csv</td>
-<td id="T_7ebbd_row5_col7" class="data row5 col7">results</td>
-<td id="T_7ebbd_row5_col8" class="data row5 col8">334832</td>
-<td id="T_7ebbd_row5_col9" class="data row5 col9"></td>
-<td id="T_7ebbd_row5_col10" class="data row5 col10">False</td>
-</tr>
-<tr class="odd">
-<th id="T_7ebbd_level0_row6" class="row_heading level0 row6" data-quarto-table-cell-role="th">6</th>
-<td id="T_7ebbd_row6_col0" class="data row6 col0">munch-group</td>
-<td id="T_7ebbd_row6_col1" class="data row6 col1">relate1Kgenomes</td>
-<td id="T_7ebbd_row6_col2" class="data row6 col2">relate_snps_p_vals.parquet</td>
-<td id="T_7ebbd_row6_col3" class="data row6 col3">Genome SNPs (hg38) with a log p-value below -2w</td>
-<td id="T_7ebbd_row6_col4" class="data row6 col4">2026-09-06</td>
-<td id="T_7ebbd_row6_col5" class="data row6 col5">munch-group/relate1Kgenomes</td>
-<td id="T_7ebbd_row6_col6" class="data row6 col6">results/relate_snps_p_vals.parquet</td>
-<td id="T_7ebbd_row6_col7" class="data row6 col7">results</td>
-<td id="T_7ebbd_row6_col8" class="data row6 col8">82477487</td>
-<td id="T_7ebbd_row6_col9" class="data row6 col9"></td>
-<td id="T_7ebbd_row6_col10" class="data row6 col10">False</td>
-</tr>
-</tbody>
-</table>
 </div>
 </div>
 </section>
