@@ -121,6 +121,41 @@ A stamp cannot go on a glob pattern, one digest describing one file, so a link
 is named in full. Links inside a dataset directory are not published for the
 same reason.
 
+A link may point at a **directory** rather than a file, which is how a dataset
+too large to commit is published — usually a partitioned `.parquet` directory
+the pipeline wrote to scratch space. The stamp then carries a third key saying
+how many files the directory holds:
+
+```console
+$ ln -s ../steps/variants.parquet results/variants.parquet
+$ crossrepo stamp
+  stamped  results/variants.parquet  (2.1G in 24 parts)
+stamped 1 file; commit the crossrepo.yml to publish this version
+```
+
+```yaml
+files:
+  variants.parquet:
+    description: All called variants, partitioned by chromosome
+    sha256: "7c4e...9a"        # over the whole directory, not one file
+    size: 2147483648           # the total over the parts
+    parts: 24
+```
+
+`sha256` is taken over the parts — each one's path and the hash of its content —
+so a part rewritten, renamed, added or removed moves it, and the manifest stays
+two lines longer rather than growing with the dataset. It is `parts` that says a
+directory is meant, and it is written down rather than worked out because the
+catalog is read from git and the manifest alone: what the link stands for may be
+on another machine, and cataloguing must not reach for it.
+
+Reading one costs nothing extra. Parts are cached individually under their own
+hashes, so a part shared with another version is stored once, and a part on the
+same filesystem is hard linked rather than copied, exactly as a linked file is.
+The digest over the whole is checked before any of it is published to the cache,
+so a dataset half of which is a previous run is never handed back as a version of
+anything.
+
 ### Datasets split across files
 
 A table too large for one file — a `.parquet` directory partitioned to stay
@@ -142,6 +177,10 @@ The content key is the directory's **git tree sha**, which hashes the whole
 directory, so two identical datasets are stored once just as two identical files
 are. Parts are cached individually, so repartitioning one file of forty costs
 one file, not forty.
+
+That is for a directory *committed* to the repository. One too large to commit
+is published as a link to it instead, described above, which reads the same way
+from the outside.
 
 One manifest governs a repository: the `crossrepo.yml` sitting directly in the
 `results/` directory at the repository root. It covers everything beneath, so a

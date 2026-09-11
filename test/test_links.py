@@ -10,6 +10,7 @@ path rather than any content.
 """
 
 import os
+import shutil
 import warnings
 from pathlib import Path
 
@@ -21,7 +22,7 @@ from crossrepo.manifest import Stamp
 
 from fixtures import (
     LINK_OTHER, LINK_V1, LINK_V2, commit, digest, fake_ssh, init, make_links,
-    restamp, write_link_repo,
+    restamp, tree_digest, write_dataset_link_repo, write_link_repo,
 )
 
 
@@ -457,7 +458,7 @@ def test_stamp_reports_a_link_that_leads_nowhere(tmp_path, capsys):
     conf = tmp_path / "config.toml"
     conf.write_text('roots = []\nasset_dirs = ["results"]\n')
     assert run_in(repo, str(conf), "stamp") == 1
-    assert "not a file here" in capsys.readouterr().err
+    assert "not there" in capsys.readouterr().err
 
 
 def test_stamp_reports_a_link_published_only_by_a_pattern(tmp_path, capsys):
@@ -605,4 +606,137 @@ def test_a_missing_target_names_the_far_machine(server):
     cfg = Config(roots=["tester@fakehost:~/projects"])
     entry = [e for e in core.build(cfg) if e.name == "big.csv"][0]
     with pytest.raises(FileNotFoundError, match="fakehost"):
+        core.materialize(entry, entry.latest)
+
+
+# ------------------------------------------- a link pointing at a directory
+
+PARTS = {"part-0.parquet": "a,1\n", "sub/part-1.parquet": "b,2\nc,3\n"}
+"""A dataset of two parts, one of them a directory down, as parquet writes."""
+
+
+@pytest.fixture()
+def dataset(tmp_path):
+    """A repository publishing a directory as a link, and settings for it."""
+    repo = write_dataset_link_repo(tmp_path / "ds", PARTS)
+    conf = tmp_path / "config.toml"
+    conf.write_text('roots = []\nasset_dirs = ["results"]\n')
+    return repo, str(conf)
+
+
+def stamped_dataset(repo: Path, conf: str, capsys) -> Config:
+    """Stamp a dataset repository, commit it, and return settings covering it."""
+    assert run_in(repo, conf, "stamp") == 0
+    capsys.readouterr()
+    commit(repo, "stamp the dataset")
+    return Config(roots=[str(repo)])
+
+
+def test_stamp_writes_a_digest_over_the_whole_directory(dataset, capsys):
+    repo, conf = dataset
+    assert run_in(repo, conf, "stamp") == 0
+    capsys.readouterr()
+    got = manifest.parse(
+        (repo / "results" / "crossrepo.yml").read_text(), "results"
+    )
+    assert got.stamp("results/big.parquet") == Stamp(
+        sha256=tree_digest(PARTS),
+        size=sum(len(v) for v in PARTS.values()),
+        parts=len(PARTS),
+    )
+
+
+def test_stamp_counts_the_parts_out_loud(dataset, capsys):
+    repo, conf = dataset
+    run_in(repo, conf, "stamp")
+    assert "in 2 parts" in capsys.readouterr().out
+
+
+def test_stamp_refuses_a_directory_with_nothing_in_it(tmp_path, capsys):
+    repo = write_dataset_link_repo(tmp_path / "empty", {})
+    conf = tmp_path / "config.toml"
+    conf.write_text('roots = []\nasset_dirs = ["results"]\n')
+    assert run_in(repo, str(conf), "stamp") == 1
+    assert "empty directory" in capsys.readouterr().err
+
+
+def test_a_stamped_directory_is_up_to_date_on_the_next_run(dataset, capsys):
+    repo, conf = dataset
+    run_in(repo, conf, "stamp")
+    capsys.readouterr()
+    assert run_in(repo, conf, "stamp", "--check") == 0
+
+
+def test_a_linked_directory_is_cataloged_as_a_dataset(dataset, capsys):
+    repo, conf = dataset
+    cfg = stamped_dataset(repo, conf, capsys)
+    entry = {e.path: e for e in linked_entries(cfg)}["results/big.parquet"]
+    assert entry.latest.parts == len(PARTS)
+    assert entry.latest.size == sum(len(v) for v in PARTS.values())
+    assert entry.latest.link == "../steps/out.parquet"
+
+
+def test_a_linked_directory_is_assembled_on_reading(dataset, capsys):
+    repo, conf = dataset
+    cfg = stamped_dataset(repo, conf, capsys)
+    got = core.get("ds", "big.parquet", cfg=cfg, quiet=True)
+    assert got.is_dir()
+    assert {
+        p.relative_to(got).as_posix(): p.read_text()
+        for p in got.rglob("*") if p.is_file()
+    } == PARTS
+
+
+def test_a_part_is_the_pipelines_own_file_and_not_a_copy(tmp_path, capsys):
+    """The whole point of publishing this way: the bytes are written once.
+
+    The content is unique to this test because the store is shared and keyed by
+    content: a part another test cached first is already there under its hash,
+    and this one's copy of those bytes is then rightly left where it lies.
+    """
+    only = {"part-0.parquet": "only,this,test,writes,these,bytes\n"}
+    repo = write_dataset_link_repo(tmp_path / "inode", only)
+    conf = tmp_path / "config.toml"
+    conf.write_text('roots = []\nasset_dirs = ["results"]\n')
+    cfg = stamped_dataset(repo, str(conf), capsys)
+    got = core.get("inode", "big.parquet", cfg=cfg, quiet=True)
+    wrote = repo / "steps" / "out.parquet" / "part-0.parquet"
+    assert os.stat(got / "part-0.parquet").st_ino == os.stat(wrote).st_ino
+
+
+def test_a_part_regenerated_without_stamping_is_caught(dataset, capsys):
+    repo, conf = dataset
+    cfg = stamped_dataset(repo, conf, capsys)
+    (repo / "steps" / "out.parquet" / "part-0.parquet").write_text("a,9\n")
+    with pytest.raises(ValueError, match="stamped with"):
+        core.get("ds", "big.parquet", cfg=cfg, quiet=True, refresh=True)
+
+
+def test_a_part_renamed_without_stamping_is_caught(dataset, capsys):
+    """Same bytes and the same total, so only the digest over the whole says so."""
+    repo, conf = dataset
+    cfg = stamped_dataset(repo, conf, capsys)
+    out = repo / "steps" / "out.parquet"
+    (out / "part-0.parquet").rename(out / "part-2.parquet")
+    with pytest.raises(ValueError, match="hashes to"):
+        core.get("ds", "big.parquet", cfg=cfg, quiet=True, refresh=True)
+
+
+def test_a_part_added_without_stamping_is_caught(dataset, capsys):
+    repo, conf = dataset
+    cfg = stamped_dataset(repo, conf, capsys)
+    (repo / "steps" / "out.parquet" / "part-3.parquet").write_text("d,4\n")
+    with pytest.raises(ValueError, match="not "):
+        core.get("ds", "big.parquet", cfg=cfg, quiet=True, refresh=True)
+
+
+def test_a_directory_the_pipeline_never_wrote_says_so(tmp_path, capsys):
+    repo = write_dataset_link_repo(tmp_path / "gone", PARTS)
+    conf = tmp_path / "config.toml"
+    conf.write_text('roots = []\nasset_dirs = ["results"]\n')
+    cfg = stamped_dataset(repo, str(conf), capsys)
+    entries = linked_entries(cfg)                 # cataloged while it is there
+    shutil.rmtree(repo / "steps" / "out.parquet")
+    entry = {e.path: e for e in entries}["results/big.parquet"]
+    with pytest.raises(FileNotFoundError, match="no such directory"):
         core.materialize(entry, entry.latest)

@@ -17,7 +17,7 @@ import os
 import shutil
 import uuid
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import Iterable, Iterator, List, Optional, Tuple
 
 from .config import cache_root
 
@@ -127,6 +127,34 @@ def open_for_write(sha: str, root: Optional[Path] = None) -> Tuple[Path, Path]:
     dest = blob_path(sha, root)
     dest.parent.mkdir(parents=True, exist_ok=True)
     return _temp_path(dest), dest
+
+
+def open_staging(root: Optional[Path] = None) -> Path:
+    """
+    Name a temporary path for content whose key is not known yet.
+
+    [](`crossrepo.cache.open_for_write`) wants the key up front, which is the
+    ordinary case: what is being fetched is already known by its hash. A part of
+    a dataset published as a link is not. Nothing in the repository records the
+    parts, so a part read over ssh is hashed as it arrives and only then has a
+    name to be stored under.
+
+    Parameters
+    ----------
+    root :
+        Cache root. Defaults to [](`crossrepo.config.cache_root`).
+
+    Returns
+    -------
+    :
+        A path that does not exist, unique to this process and this call, beside
+        the objects so that storing what lands there costs no copy. It ends in
+        ``.tmp``, so [](`crossrepo.cache.objects`) passes it over, and it is the
+        caller's to remove.
+    """
+    base = (root or cache_root()) / "blobs"
+    base.mkdir(parents=True, exist_ok=True)
+    return base / f"staging.{os.getpid()}.{uuid.uuid4().hex[:8]}.tmp"
 
 
 def store(sha: str, data: bytes, root: Optional[Path] = None) -> Path:
@@ -374,6 +402,108 @@ def content_hash(path: Path) -> str:
     [](`crossrepo.manifest.Stamp`)
     """
     return _digest(path, "sha256")
+
+
+def tree_parts(directory: Path) -> List[Tuple[str, int, str]]:
+    """
+    List and hash every file a directory holds, as the parts of one dataset.
+
+    Every regular file counts, at any depth. A symbolic link inside the
+    directory is passed over rather than followed: what a link reaches is not
+    the directory's own content, and following one is how a walk meets a cycle.
+    The link that publishes the directory is a different matter and has already
+    been followed by the time this is called.
+
+    Parameters
+    ----------
+    directory :
+        Directory to walk. A symbolic link to a directory is walked as the
+        directory it names.
+
+    Returns
+    -------
+    :
+        ``(relative_path, size, sha256)`` for each part, ordered by path. Paths
+        are written with forward slashes, so a dataset stamped on one kind of
+        machine is read the same on another.
+
+    See Also
+    --------
+    [](`crossrepo.cache.tree_hash`)
+    """
+    out: List[Tuple[str, int, str]] = []
+    for here in _walk(directory):
+        rel = here.relative_to(directory).as_posix()
+        out.append((rel, here.stat().st_size, content_hash(here)))
+    return sorted(out)
+
+
+def _walk(directory: Path) -> Iterator[Path]:
+    """
+    Every regular file in a directory tree, links neither followed nor reported.
+
+    Parameters
+    ----------
+    directory :
+        Directory to walk.
+
+    Yields
+    ------
+    :
+        Each regular file found, in no particular order.
+    """
+    for here in sorted(directory.iterdir()):
+        if here.is_symlink():
+            continue
+        if here.is_dir():
+            yield from _walk(here)
+        elif here.is_file():
+            yield here
+
+
+def tree_hash(parts: Iterable[Tuple[str, str]]) -> str:
+    """
+    Hash a directory the way a manifest stamp records it.
+
+    A dataset published as a link needs one digest standing for the whole of it,
+    since the manifest holds one stamp. It is taken over the parts rather than
+    over a concatenation of their bytes, so that a part renamed or moved between
+    subdirectories changes it as surely as a part rewritten does, and so that it
+    can be recomputed on the far side of an ssh connection a part at a time
+    without holding the dataset anywhere in one piece.
+
+    Parameters
+    ----------
+    parts :
+        ``(relative_path, sha256)`` for each part, in any order. The order here
+        does not matter: they are sorted, so two machines that list a directory
+        differently still agree on the digest.
+
+    Returns
+    -------
+    :
+        The sha256 digest in lower case hexadecimal.
+
+    Examples
+    --------
+
+    ```python
+    tree_hash([("part-1.parquet", "b" * 64), ("part-0.parquet", "a" * 64)])
+    # '2d3f...'
+    ```
+
+    See Also
+    --------
+    [](`crossrepo.manifest.Stamp`)
+    [](`crossrepo.cache.tree_parts`)
+    """
+    digest = hashlib.sha256()
+    for path, sha in sorted(parts):
+        digest.update(path.encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(sha.encode("ascii"))
+        digest.update(b"\0")
+    return digest.hexdigest()
 
 
 def check_object(path: Path) -> Optional[str]:

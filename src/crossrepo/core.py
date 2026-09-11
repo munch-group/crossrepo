@@ -650,7 +650,7 @@ def scan_repo(root: Location, cfg: Config) -> List[Entry]:
                     latest=Version(
                         sha=sha, date=date, subject=subject,
                         blob=stamp.sha256, size=stamp.size, lfs_oid=None,
-                        tags=tags.get(sha, ()),
+                        parts=stamp.parts, tags=tags.get(sha, ()),
                         link=gitutil.link_target(root, blob_sha),
                     ),
                 )
@@ -1353,7 +1353,8 @@ def _link_versions(entry: Entry, tags) -> List[Version]:
             continue                        # this commit left the content alone
         out.append(
             Version(sha=sha, date=date, subject=subject, blob=stamp.sha256,
-                    size=stamp.size, link=target, tags=tags.get(sha, ()))
+                    size=stamp.size, parts=stamp.parts, link=target,
+                    tags=tags.get(sha, ()))
         )
     return out
 
@@ -1508,7 +1509,8 @@ def _version_at(entry: Entry, ref: str) -> Optional[Version]:
             return None
         stamp, target = got
         return Version(sha=info[0], date=info[1], subject=info[2],
-                       blob=stamp.sha256, size=stamp.size, link=target,
+                       blob=stamp.sha256, size=stamp.size, parts=stamp.parts,
+                       link=target,
                        tags=gitutil.tag_map(entry.root).get(info[0], ()))
     if dataset:
         tree = gitutil.tree_at(entry.root, sha, entry.path)
@@ -1815,10 +1817,12 @@ def materialize(entry: Entry, version: Version) -> Path:
         stamped again.
     """
     dest = cache.readable_path(entry.repo_key, version.sha, entry.path)
+    if version.link is not None:
+        if version.parts:
+            return _materialize_link_dataset(entry, version, dest)
+        return cache.link(_cache_link(entry, version), dest)
     if version.parts:
         return _materialize_dataset(entry, version, dest)
-    if version.link is not None:
-        return cache.link(_cache_link(entry, version), dest)
     blob = _cache_blob(
         entry, version.sha, entry.path, version.blob, version.lfs_oid, version.size
     )
@@ -1947,6 +1951,120 @@ def _cache_link(entry: Entry, version: Version) -> Path:
     finally:
         tmp.unlink(missing_ok=True)
     return blob
+
+
+def _materialize_link_dataset(entry: Entry, version: Version, dest: Path) -> Path:
+    """
+    Assemble a dataset published as a link to a directory.
+
+    Parameters
+    ----------
+    entry :
+        Entry the link belongs to.
+    version :
+        Version to materialize, whose `crossrepo.model.Version.blob` is the
+        stamped digest over the whole directory.
+    dest :
+        Directory to assemble.
+
+    Returns
+    -------
+    :
+        `dest`, holding every part of the dataset.
+    """
+    for rel, blob in _cache_link_parts(entry, version):
+        cache.link(blob, dest / rel)
+    return dest
+
+
+def _cache_link_parts(entry: Entry, version: Version) -> List[Tuple[str, Path]]:
+    """
+    Put every part of a linked dataset in the cache and return the objects.
+
+    Each part is stored under its own sha256, as any other object is, so a
+    version that rewrites some of a dataset costs only those and a part shared
+    with another version or another repository is stored once. What the stamp
+    holds is the digest over the whole, which is checked before any of it is
+    published: a dataset half of which is a previous run is not a version of
+    anything.
+
+    The parts are read where the repository is, so a directory on a server is
+    listed and streamed over the same connection the catalog came down.
+    Nothing in git records them -- git holds the link and not the directory --
+    so a part is hashed as it arrives rather than being known in advance, and
+    one already cached is recognised only after it has been read again. A
+    dataset published this way is written whole by a pipeline and read whole
+    here; it is the parts shared between its versions that the store saves.
+
+    Parameters
+    ----------
+    entry :
+        Entry the link belongs to.
+    version :
+        Version to fetch.
+
+    Returns
+    -------
+    :
+        ``(relative_path, object)`` for each part, ordered by path.
+
+    Raises
+    ------
+    FileNotFoundError
+        If the link resolves to no directory, which is what a clone without the
+        pipeline's output looks like.
+    ValueError
+        If the directory does not match the stamp.
+
+    See Also
+    --------
+    [](`crossrepo.core._cache_link`)
+    """
+    root = entry.root
+    src = None
+    if str(root) and str(root) != ".":
+        src = gitutil.resolve_link(
+            root, entry.path, version.link or "", directory=True
+        )
+    if src is None:
+        raise FileNotFoundError(
+            f"{entry.repo_key}:{entry.path}@{version.sha[:7]} is published as a "
+            f"symbolic link to the directory {version.link}, and there is no "
+            f"such directory {_on(root)}. Git holds the link and not the "
+            f"content, so the content can only be read from a clone that the "
+            f"pipeline wrote its output beside."
+        )
+    staged: List[Tuple[str, str, Path]] = []
+    temporary: List[Path] = []
+    try:
+        total = 0
+        for rel in gitutil.list_files(src):
+            part = Location(path=posixpath.join(src.path, rel), host=src.host)
+            here = part.local_path()
+            if here is None:
+                here = cache.open_staging()
+                temporary.append(here)
+                gitutil.write_file_to(part, here)   # streamed over ssh
+            staged.append((rel, cache.content_hash(here), here))
+            total += here.stat().st_size
+        if total != version.size:
+            raise ValueError(
+                _stale(entry, version, f"is {human(total)}, not {human(version.size)}")
+            )
+        digest = cache.tree_hash([(rel, sha) for rel, sha, _ in staged])
+        if digest != version.blob:
+            raise ValueError(
+                _stale(
+                    entry, version,
+                    f"hashes to {digest[:12]}, not {version.blob[:12]}",
+                )
+            )
+        return [
+            (rel, cache.store_from_file(sha, here)) for rel, sha, here in staged
+        ]
+    finally:
+        for here in temporary:
+            here.unlink(missing_ok=True)
 
 
 def _stale(entry: Entry, version: Version, what: str) -> str:

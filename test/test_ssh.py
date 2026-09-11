@@ -19,7 +19,7 @@ from crossrepo import core, gitutil
 from crossrepo.config import Config, SourceWarning
 from crossrepo.location import Location, quote
 
-from fixtures import CODE, commit, fake_ssh, init
+from fixtures import CODE, commit, fake_ssh, init, tree_digest
 
 HOST = "tester@fakehost"
 
@@ -247,6 +247,61 @@ def test_a_dataset_is_assembled_from_the_far_side(server):
         "part-0.parquet", "part-1.parquet", "part-2.parquet",
     ]
     assert (got / "part-1.parquet").read_text() == "row,1\n"
+
+
+def test_a_linked_dataset_is_streamed_from_the_far_side(server, tmp_path):
+    """A directory too large to commit, published as a link, read over ssh."""
+    repo = server / "projects" / "linked-set"
+    init(repo)
+    (repo / "results").mkdir(parents=True)
+    target = repo / "steps" / "out.parquet" / "sub"
+    target.mkdir(parents=True)
+    (target.parent / "part-0.parquet").write_text("far,0\n")
+    (target / "part-1.parquet").write_text("far,1\n")
+    (repo / "results" / "big.parquet").symlink_to("../steps/out.parquet")
+    (repo / ".gitignore").write_text("steps/\n")
+    (repo / "results" / "crossrepo.yml").write_text(
+        "files:\n"
+        "  big.parquet:\n"
+        "    description: Written by the pipeline, not committed\n"
+        f'    sha256: "{tree_digest({"part-0.parquet": "far,0\n", "sub/part-1.parquet": "far,1\n"})}"\n'
+        "    size: 12\n"
+        "    parts: 2\n"
+    )
+    commit(repo, "publish a linked dataset")
+
+    cfg = Config(roots=[f"{HOST}:~/projects"])
+    got = core.get("linked-set", "big.parquet", cfg=cfg, quiet=True)
+    assert got.is_dir()
+    assert {
+        p.relative_to(got).as_posix(): p.read_text()
+        for p in got.rglob("*") if p.is_file()
+    } == {"part-0.parquet": "far,0\n", "sub/part-1.parquet": "far,1\n"}
+
+
+def test_a_linked_dataset_that_changed_on_the_far_side_is_caught(server):
+    """The stamp is checked wherever the content is, not only on this machine."""
+    repo = server / "projects" / "drifted-set"
+    init(repo)
+    (repo / "results").mkdir(parents=True)
+    target = repo / "steps" / "out.parquet"
+    target.mkdir(parents=True)
+    (target / "part-0.parquet").write_text("drifted\n")
+    (repo / "results" / "big.parquet").symlink_to("../steps/out.parquet")
+    (repo / ".gitignore").write_text("steps/\n")
+    (repo / "results" / "crossrepo.yml").write_text(
+        "files:\n"
+        "  big.parquet:\n"
+        "    description: Stamped before it was rewritten\n"
+        f'    sha256: "{tree_digest({"part-0.parquet": "as stamped\n"})}"\n'
+        "    size: 8\n"
+        "    parts: 1\n"
+    )
+    commit(repo, "publish a linked dataset with a stale stamp")
+
+    cfg = Config(roots=[f"{HOST}:~/projects"])
+    with pytest.raises(ValueError, match="stamped with"):
+        core.get("drifted-set", "big.parquet", cfg=cfg, quiet=True)
 
 
 # ------------------------------------------------ the shared connection

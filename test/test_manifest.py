@@ -2,7 +2,7 @@
 
 import pytest
 
-from crossrepo import core, manifest
+from crossrepo import cache, core, manifest
 from crossrepo.config import Config
 
 from fixtures import commit, init
@@ -359,3 +359,69 @@ def test_anchored_prefixes_name_the_least_that_has_to_be_listed():
     assert manifest.parse(
         'files:\n  "/*.csv": anywhere\n', "results"
     ).anchored_prefixes() == [""]                   # the whole repository
+
+
+# ----------------------------------- the stamp that names a whole directory
+
+def stamped(body: str):
+    """Parse one entry written with the given stamp lines."""
+    return manifest.parse(f"files:\n  big.parquet:\n{body}", "results")
+
+
+def test_a_stamp_with_a_part_count_names_a_directory():
+    got = stamped(
+        f'    sha256: "{"a" * 64}"\n    size: 99\n    parts: 3\n'
+    ).stamp("results/big.parquet")
+    assert got == manifest.Stamp("a" * 64, 99, 3)
+    assert got.is_directory
+
+
+def test_a_stamp_without_a_part_count_names_one_file():
+    got = stamped(f'    sha256: "{"a" * 64}"\n    size: 99\n').stamp(
+        "results/big.parquet"
+    )
+    assert got.parts == 0
+    assert not got.is_directory
+
+
+def test_a_part_count_of_zero_is_refused():
+    """`parts` is what says a directory is meant, so it counts at least one."""
+    with pytest.raises(manifest.ManifestError, match="not a number of files"):
+        stamped(f'    sha256: "{"a" * 64}"\n    size: 99\n    parts: 0\n')
+
+
+def test_a_part_count_that_is_not_a_number_is_refused():
+    with pytest.raises(manifest.ManifestError, match="not a number of files"):
+        stamped(f'    sha256: "{"a" * 64}"\n    size: 99\n    parts: several\n')
+
+
+def test_a_part_count_on_its_own_is_still_half_a_stamp():
+    with pytest.raises(manifest.ManifestError, match="stamp with no"):
+        stamped("    parts: 3\n")
+
+
+def test_writing_a_file_stamp_takes_the_part_count_away():
+    """A dataset that became one file must not keep a count of its parts."""
+    text = manifest.write_stamp(
+        "files:\n  big.parquet: a dataset\n",
+        "big.parquet", manifest.Stamp("a" * 64, 99, 3),
+    )
+    assert "parts: 3" in text
+    after = manifest.write_stamp(
+        text, "big.parquet", manifest.Stamp("b" * 64, 5)
+    )
+    assert "parts" not in after
+    assert manifest.parse(after, "results").stamp("results/big.parquet").parts == 0
+
+
+def test_a_directory_digest_does_not_depend_on_the_order_it_is_listed_in():
+    one = cache.tree_hash([("a.parquet", "1" * 64), ("b.parquet", "2" * 64)])
+    other = cache.tree_hash([("b.parquet", "2" * 64), ("a.parquet", "1" * 64)])
+    assert one == other
+
+
+def test_a_directory_digest_changes_when_a_part_is_renamed():
+    """Same bytes in a different place is a different dataset."""
+    before = cache.tree_hash([("a.parquet", "1" * 64)])
+    after = cache.tree_hash([("sub/a.parquet", "1" * 64)])
+    assert before != after

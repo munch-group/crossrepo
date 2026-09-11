@@ -622,6 +622,12 @@ def _stamp_one(root: Path, path: str) -> Tuple[Optional[manifest.Stamp], str]:
     path :
         Repository-relative path of the link.
 
+    A link pointing at a directory publishes it as one dataset: the stamp is
+    then the digest over the whole of it, the total size, and the number of
+    parts. An empty directory is refused rather than stamped, a dataset with
+    nothing in it being a pipeline that has not run yet far more often than
+    something anyone meant to publish.
+
     Returns
     -------
     :
@@ -632,8 +638,20 @@ def _stamp_one(root: Path, path: str) -> Tuple[Optional[manifest.Stamp], str]:
     here = root / path
     target = here.readlink()
     resolved = target if target.is_absolute() else here.parent / target
+    if resolved.is_dir():
+        parts = cache.tree_parts(resolved)
+        if not parts:
+            return None, (
+                f"points at {target}, which is an empty directory; there is "
+                f"nothing to publish until the pipeline has written it"
+            )
+        return manifest.Stamp(
+            sha256=cache.tree_hash([(rel, sha) for rel, _size, sha in parts]),
+            size=sum(size for _rel, size, _sha in parts),
+            parts=len(parts),
+        ), ""
     if not resolved.is_file():
-        return None, f"points at {target}, which is not a file here"
+        return None, f"points at {target}, which is not there"
     return manifest.Stamp(
         sha256=cache.content_hash(resolved), size=resolved.stat().st_size
     ), ""
@@ -731,7 +749,10 @@ def cmd_stamp(ctx: click.Context, path: Optional[str], check: bool) -> int:
                 current += 1
                 continue
             was = "updated" if governing.stamp(path_in_repo) is not None else "stamped"
-            done.append(f"  {was}  {path_in_repo}  ({human(got.size)})")
+            how = human(got.size)
+            if got.parts:
+                how += f" in {got.parts} part{'' if got.parts == 1 else 's'}"
+            done.append(f"  {was}  {path_in_repo}  ({how})")
             wanted_stamps[key] = got
             text = manifest.write_stamp(text, key, got)
         # A pattern cannot carry a stamp, so a link published only by one would

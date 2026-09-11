@@ -58,6 +58,27 @@ A stamp needs both keys, and cannot go on a glob pattern, one hash describing
 one file. Content reached through a link is never copied into the cache when it
 is on the same filesystem: the cache holds a hard link to it.
 
+A link may point at a directory rather than a file, which is how a dataset too
+large to commit -- a partitioned parquet directory, most often -- is published.
+The stamp then carries a third key, ``parts``, saying how many files the
+directory holds:
+
+```yaml
+files:
+  big.parquet:
+    description: Per-chromosome effect sizes
+    sha256: "3f9a...c1"
+    size: 41231234
+    parts: 12
+```
+
+``sha256`` is taken over the whole directory rather than over one file, by
+[](`crossrepo.cache.tree_hash`), and ``size`` is the total over the parts. It is
+``parts`` that says a directory is meant, and it is there so that the scan knows
+what it is looking at without reaching for the target: a catalog is read from
+git and the manifest alone, and the content a link stands for may be on another
+machine entirely.
+
 One manifest governs a whole results directory: the ``crossrepo.yml`` sitting
 directly in it, covering everything beneath. A ``crossrepo.yml`` deeper in the
 tree is not read, so there is exactly one place to look to see what a repository
@@ -121,12 +142,19 @@ class Stamp:
     Attributes
     ----------
     sha256 :
-        Hash of the content, in lower case hexadecimal. The same digest Git LFS
-        keys an object by, so linked and LFS content of equal bytes share one
-        cached object.
+        Hash of the content, in lower case hexadecimal. For a link to a file
+        this is the digest Git LFS keys an object by, so linked and LFS content
+        of equal bytes share one cached object. For a link to a directory it is
+        the digest [](`crossrepo.cache.tree_hash`) takes over the whole of it.
     size :
-        Size of the content in bytes, which is checked before the hash so that a
-        stamp left behind by a regenerated file is caught without reading it.
+        Size of the content in bytes, the total over the parts for a directory.
+        It is checked before the hash so that a stamp left behind by a
+        regenerated file is caught without reading it.
+    parts :
+        Number of files in the directory, or ``0`` for a link to a single file.
+        A count rather than a flag because it is worth showing: it is the same
+        column a dataset committed to git fills in, and the two then read alike
+        in a listing.
 
     See Also
     --------
@@ -135,6 +163,12 @@ class Stamp:
 
     sha256: str
     size: int
+    parts: int = 0
+
+    @property
+    def is_directory(self) -> bool:
+        """Whether the stamp describes a directory rather than one file."""
+        return self.parts > 0
 
 
 @dataclass(frozen=True)
@@ -493,24 +527,25 @@ def _read_stamp(where: str, key: str, value: Dict[str, object]) -> Optional[Stam
     key :
         Key the stamp was written under.
     value :
-        The entry's mapping, which may hold ``sha256`` and ``size``.
+        The entry's mapping, which may hold ``sha256``, ``size`` and ``parts``.
 
     Returns
     -------
     :
-        The stamp, or `None` when the entry carries neither key and so names an
-        ordinary committed file.
+        The stamp, or `None` when the entry carries none of those keys and so
+        names an ordinary committed file.
 
     Raises
     ------
     ManifestError
-        If only one of the two keys is given, if the key is a glob, or if either
-        value is not what it should be. Half a stamp is refused rather than
-        ignored: it is a file whose content nothing is checking.
+        If only one of the two required keys is given, if the key is a glob, or
+        if any value is not what it should be. Half a stamp is refused rather
+        than ignored: it is a file whose content nothing is checking.
     """
     sha = value.get("sha256")
     size = value.get("size")
-    if sha is None and size is None:
+    parts = value.get("parts")
+    if sha is None and size is None and parts is None:
         return None
     if _is_glob(key):
         raise ManifestError(
@@ -533,7 +568,15 @@ def _read_stamp(where: str, key: str, value: Dict[str, object]) -> Optional[Stam
         raise ManifestError(
             f"{where}: `{key}` has `size: {size}`, which is not a number of bytes"
         )
-    return Stamp(sha256=sha, size=size)
+    if parts is None:
+        parts = 0
+    elif isinstance(parts, bool) or not isinstance(parts, int) or parts < 1:
+        raise ManifestError(
+            f"{where}: `{key}` has `parts: {parts}`, which is not a number of "
+            f"files; `parts` says the link points at a directory, so it counts "
+            f"at least one, and a link to a single file leaves it out"
+        )
+    return Stamp(sha256=sha, size=size, parts=parts)
 
 
 def _find_key(lines: List[str], key: str):
@@ -568,7 +611,8 @@ def write_stamp(text: str, key: str, stamp: Stamp) -> str:
     """
     Write one entry's stamp into a manifest, leaving the rest of the file alone.
 
-    Only the entry's own ``sha256`` and ``size`` lines are touched, so comments,
+    Only the entry's own ``sha256``, ``size`` and ``parts`` lines are touched, so
+    comments,
     key order, quoting and formatting survive: the manifest is a file people
     write by hand and read in diffs, and a stamping run should show up in one as
     two changed lines and nothing else. An entry written as a bare description
@@ -626,6 +670,8 @@ def write_stamp(text: str, key: str, stamp: Stamp) -> str:
     if child is None:
         child = indent + "  "
     written = [f'{child}sha256: "{stamp.sha256}"', f"{child}size: {stamp.size}"]
+    if stamp.parts:
+        written.append(f"{child}parts: {stamp.parts}")
 
     body = rest.strip()
     if body and not body.startswith("#"):
@@ -643,11 +689,18 @@ def write_stamp(text: str, key: str, stamp: Stamp) -> str:
         end += 1
     block = lines[i + 1:end]
     seen = set()
-    for j, line in enumerate(block):
+    kept = []
+    for line in block:
         if re.match(r"^\s*sha256\s*:", line):
-            block[j], seen = written[0], seen | {"sha256"}
+            line, seen = written[0], seen | {"sha256"}
         elif re.match(r"^\s*size\s*:", line):
-            block[j], seen = written[1], seen | {"size"}
+            line, seen = written[1], seen | {"size"}
+        elif re.match(r"^\s*parts\s*:", line):
+            if not stamp.parts:
+                continue        # a directory that is now one file: the count goes
+            line, seen = written[2], seen | {"parts"}
+        kept.append(line)
+    block = kept
     # A blank line after the entry separates it from the next one; an inserted
     # line belongs before it, not after.
     tail = []
@@ -657,6 +710,8 @@ def write_stamp(text: str, key: str, stamp: Stamp) -> str:
         block.append(written[0])
     if "size" not in seen:
         block.append(written[1])
+    if stamp.parts and "parts" not in seen:
+        block.append(written[2])
     lines[i + 1:end] = block + tail
     return newline.join(lines) + (newline if ends else "")
 

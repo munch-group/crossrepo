@@ -17,7 +17,7 @@ import posixpath
 import shutil
 import warnings
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Sequence, Tuple, Union
+from typing import Dict, Iterable, Iterator, List, Optional, Sequence, Tuple, Union
 
 from .config import SourceWarning
 from .location import Location, execute, quote, run, warm
@@ -840,7 +840,8 @@ def link_target(repo: Union[Location, Path, str], blob_sha: str) -> str:
 
 
 def resolve_link(
-    repo: Union[Location, Path, str], path: str, target: str
+    repo: Union[Location, Path, str], path: str, target: str,
+    directory: bool = False,
 ) -> Optional[Location]:
     """
     Locate the file a committed symbolic link points at.
@@ -860,17 +861,25 @@ def resolve_link(
         Repository-relative path of the link itself.
     target :
         Target as committed, from [](`crossrepo.gitutil.link_target`).
+    directory :
+        Look for a directory rather than a file, which is what a link
+        publishing a dataset points at. The two are asked for separately rather
+        than either being accepted: a stamp says which was meant, and a
+        directory found where the stamp describes a file is a repository that
+        has changed under the manifest, not a thing to be read as if nothing
+        had happened.
 
     Returns
     -------
     :
-        Location of the file, or `None` when nothing is there. A link resolves
-        on the machine its repository is on, so a target read over ssh is looked
-        for on the far side.
+        Location of the file or directory, or `None` when nothing of that kind
+        is there. A link resolves on the machine its repository is on, so a
+        target read over ssh is looked for on the far side.
 
     See Also
     --------
     [](`crossrepo.gitutil.write_file_to`)
+    [](`crossrepo.gitutil.list_files`)
     """
     root = Location.of(repo)
     if not target:
@@ -881,10 +890,96 @@ def resolve_link(
         rel = posixpath.join(posixpath.dirname(path), target)
         full = posixpath.normpath(posixpath.join(root.path, rel))
     loc = Location(path=full, host=root.host)
+    flag = "-d" if directory else "-f"
     if loc.is_remote:
-        proc = execute(loc.shell(f"test -f {quote(full)}"), remote=True)
+        proc = execute(loc.shell(f"test {flag} {quote(full)}"), remote=True)
         return loc if proc.returncode == 0 else None
-    return loc if Path(full).expanduser().is_file() else None
+    here = Path(full).expanduser()
+    return loc if (here.is_dir() if directory else here.is_file()) else None
+
+
+REMOTE_PARTS = 'cd {target} 2>/dev/null || exit 1; find . -type f -print'
+"""
+Shell snippet listing the files in one directory on another machine.
+
+``cd`` first, so that the paths come back relative to the directory and a
+directory reached through a symbolic link is entered as the directory it names.
+``find`` without ``-L`` does not descend into a symbolic link, and ``-type f``
+does not report one, which is how [](`crossrepo.cache.tree_parts`) walks a
+directory here: the two have to agree on what the parts are, or a dataset would
+not hash to what it was stamped with.
+"""
+
+
+def list_files(directory: Location) -> List[str]:
+    """
+    List the files a directory holds, as the parts of one dataset.
+
+    Parameters
+    ----------
+    directory :
+        Directory to list, on this machine or another.
+
+    Returns
+    -------
+    :
+        Paths relative to `directory`, with forward slashes, in a stable order.
+        Empty when the directory is empty or cannot be read.
+
+    Raises
+    ------
+    GitError
+        If a directory on another machine cannot be listed, which is a host that
+        stopped answering rather than a dataset with nothing in it.
+
+    See Also
+    --------
+    [](`crossrepo.cache.tree_parts`)
+    """
+    if not directory.is_remote:
+        base = Path(directory.path).expanduser()
+        return sorted(
+            here.relative_to(base).as_posix() for here in _files_under(base)
+        )
+    script = REMOTE_PARTS.format(target=quote(directory.path))
+    proc = execute(directory.shell(script), remote=True)
+    if proc.returncode != 0:
+        raise GitError(
+            f"cannot list {directory}: "
+            f"{proc.stderr.decode('utf-8', 'replace').strip()}"
+        )
+    out = []
+    for line in proc.stdout.decode("utf-8", "replace").splitlines():
+        rel = line[2:] if line.startswith("./") else line
+        if rel.strip():
+            out.append(rel)
+    return sorted(out)
+
+
+def _files_under(directory: Path) -> Iterator[Path]:
+    """
+    Every regular file in a directory tree on this machine.
+
+    Parameters
+    ----------
+    directory :
+        Directory to walk.
+
+    Yields
+    ------
+    :
+        Each regular file found. A symbolic link is passed over rather than
+        followed, which is what ``find`` does on the far side.
+    """
+    if not directory.is_dir():
+        return
+    for here in sorted(directory.iterdir()):
+        if here.is_symlink():
+            continue
+        if here.is_dir():
+            yield from _files_under(here)
+        elif here.is_file():
+            yield here
 
 
 def write_file_to(src: Location, dest: Path) -> None:

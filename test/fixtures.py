@@ -14,7 +14,7 @@ import shutil
 import subprocess
 import re
 from pathlib import Path
-from typing import Optional
+from typing import Dict, Optional
 
 ENV = {
     **os.environ,
@@ -306,6 +306,75 @@ def digest(text: str) -> str:
         The sha256 digest in lower case hexadecimal.
     """
     return hashlib.sha256(text.encode()).hexdigest()
+
+
+def tree_digest(parts: Dict[str, str]) -> str:
+    """
+    Hash a directory the way a manifest stamp records it.
+
+    Computed here rather than with `crossrepo.cache.tree_hash`, so that the
+    tests check the library against an independent answer.
+
+    Parameters
+    ----------
+    parts :
+        Content of each part, keyed by its path relative to the directory.
+
+    Returns
+    -------
+    :
+        The sha256 digest in lower case hexadecimal.
+    """
+    out = hashlib.sha256()
+    for name in sorted(parts):
+        out.update(name.encode("utf-8"))
+        out.update(b"\0")
+        out.update(digest(parts[name]).encode("ascii"))
+        out.update(b"\0")
+    return out.hexdigest()
+
+
+def write_dataset_link_repo(
+    path: Path, parts: Optional[Dict[str, str]], stamped: bool = False,
+) -> Path:
+    """
+    Build a repository publishing a directory as a symbolic link.
+
+    The directory is untracked, exactly as a linked file's target is: a dataset
+    published this way is one the pipeline wrote and nobody wants in git.
+
+    Parameters
+    ----------
+    path :
+        Directory to create the repository in.
+    parts :
+        Content of each part, keyed by its path within the directory. An empty
+        mapping leaves the directory there and empty; `None` leaves it missing
+        altogether, as a clone without the pipeline's output would.
+    stamped :
+        Whether to run the stamping itself. The tests that check what stamping
+        writes want it left undone.
+
+    Returns
+    -------
+    :
+        `path`.
+    """
+    repo = init(_mkdir(path))
+    (repo / ".gitignore").write_text("steps/\n")
+    (repo / "results").mkdir(parents=True)
+    if parts is not None:
+        target = _mkdir(repo / "steps" / "out.parquet")
+        for name, text in parts.items():
+            part = target / name
+            _mkdir(part.parent)
+            part.write_text(text)
+    (repo / "results" / "big.parquet").symlink_to("../steps/out.parquet")
+    (repo / "results" / "crossrepo.yml").write_text(
+        "files:\n  big.parquet: Per-chromosome effect sizes\n"
+    )
+    commit(repo, "publish a dataset as a link")
+    return repo
 
 
 def write_link_repo(
