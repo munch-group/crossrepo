@@ -1,0 +1,25 @@
+# open_staging { #crossrepo.cache.open_staging }
+
+```python
+crossrepo.cache.open_staging(root=None)
+```
+
+Name a temporary path for content whose key is not known yet.
+
+[](`crossrepo.cache.open_for_write`) wants the key up front, which is the
+ordinary case: what is being fetched is already known by its hash. A part of
+a dataset published as a link is not. Nothing in the repository records the
+parts, so a part read over ssh is hashed as it arrives and only then has a
+name to be stored under.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**root**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Path](`pathlib.Path`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   Cache root. Defaults to [](`crossrepo.config.cache_root`).
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Path](`pathlib.Path`)]{.parameter-annotation}</code>
+
+:   A path that does not exist, unique to this process and this call, beside the objects so that storing what lands there costs no copy. It ends in ``.tmp``, so [](`crossrepo.cache.objects`) passes it over, and it is the caller's to remove.

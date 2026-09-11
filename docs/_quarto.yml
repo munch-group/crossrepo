@@ -135,6 +135,18 @@ quartodoc:
         - Version
         - Spec
 
+    - title: Tables
+      package: crossrepo.table
+      desc: |
+        The data frame the catalog functions hand back.
+      contents:
+        # Its own page name, because `crossrepo.cli.table` already has `table`
+        # and a case-insensitive filesystem makes those one file.
+        - kind: page
+          path: table-class
+          contents:
+            - Table
+
     - title: GitHub
       package: crossrepo.remote
       desc: |
@@ -195,9 +207,12 @@ quartodoc:
         - store
         - store_from_file
         - open_for_write
+        - open_staging
         - link
         - objects
         - content_hash
+        - tree_parts
+        - tree_hash
         - check_object
         - discard
         - usage
@@ -223,6 +238,7 @@ quartodoc:
         - lfs_object_path
         - link_target
         - resolve_link
+        - list_files
         - GitError
     - title: Command line
       package: crossrepo.cli

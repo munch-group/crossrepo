@@ -1,0 +1,29 @@
+# list_files { #crossrepo.gitutil.list_files }
+
+```python
+crossrepo.gitutil.list_files(directory)
+```
+
+List the files a directory holds, as the parts of one dataset.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**directory**]{.parameter-name} [:]{.parameter-annotation-sep} [[Location](`crossrepo.location.Location`)]{.parameter-annotation}</code>
+
+:   Directory to list, on this machine or another.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[str](`str`)\]]{.parameter-annotation}</code>
+
+:   Paths relative to `directory`, with forward slashes, in a stable order. Empty when the directory is empty or cannot be read.
+
+## Raises {.doc-section .doc-section-raises}
+
+<code>[:]{.parameter-annotation-sep} [[GitError](`crossrepo.gitutil.GitError`)]{.parameter-annotation}</code>
+
+:   If a directory on another machine cannot be listed, which is a host that stopped answering rather than a dataset with nothing in it.
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`crossrepo.cache.tree_parts`)

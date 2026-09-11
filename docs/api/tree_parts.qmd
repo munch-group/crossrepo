@@ -1,0 +1,29 @@
+# tree_parts { #crossrepo.cache.tree_parts }
+
+```python
+crossrepo.cache.tree_parts(directory)
+```
+
+List and hash every file a directory holds, as the parts of one dataset.
+
+Every regular file counts, at any depth. A symbolic link inside the
+directory is passed over rather than followed: what a link reaches is not
+the directory's own content, and following one is how a walk meets a cycle.
+The link that publishes the directory is a different matter and has already
+been followed by the time this is called.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**directory**]{.parameter-name} [:]{.parameter-annotation-sep} [[Path](`pathlib.Path`)]{.parameter-annotation}</code>
+
+:   Directory to walk. A symbolic link to a directory is walked as the directory it names.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[Tuple](`typing.Tuple`)\[[str](`str`), [int](`int`), [str](`str`)\]\]]{.parameter-annotation}</code>
+
+:   ``(relative_path, size, sha256)`` for each part, ordered by path. Paths are written with forward slashes, so a dataset stamped on one kind of machine is read the same on another.
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`crossrepo.cache.tree_hash`)

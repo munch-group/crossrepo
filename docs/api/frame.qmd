@@ -16,7 +16,7 @@ Represent the catalog as a data frame.
 
 <code>[]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation}</code>
 
-:   A [](`pandas.DataFrame`) with one row per result file and columns ``owner``, ``repo``, ``name``, ``description``, ``date``, ``github``, ``path``, ``dir``, ``bytes``, ``tags``, ``lfs``, ``version``, ``parts``, ``spec`` and ``url``. ``github`` is ``owner/repo`` and ``path`` is ``dir/name``, each carried whole as well as in halves. ``parts`` is zero for an ordinary file and the number of files for a dataset published as a directory.
+:   A `Table` -- a [](`pandas.DataFrame`) that left aligns its text columns in a notebook -- with one row per result file and columns ``owner``, ``repo``, ``name``, ``description``, ``date``, ``github``, ``path``, ``dir``, ``bytes``, ``tags``, ``lfs``, ``version``, ``parts``, ``spec`` and ``url``. ``github`` is ``owner/repo`` and ``path`` is ``dir/name``, each carried whole as well as in halves. ``parts`` is zero for an ordinary file and the number of files for a dataset published as a directory.
 
 ## Raises {.doc-section .doc-section-raises}
 

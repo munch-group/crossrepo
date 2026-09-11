@@ -1,7 +1,7 @@
 # Stamp { #crossrepo.manifest.Stamp }
 
 ```python
-crossrepo.manifest.Stamp(sha256, size)
+crossrepo.manifest.Stamp(sha256, size, parts=0)
 ```
 
 The content a published link stands for.
@@ -17,11 +17,15 @@ anything cheaper.
 
 <code>[**sha256**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
 
-:   Hash of the content, in lower case hexadecimal. The same digest Git LFS keys an object by, so linked and LFS content of equal bytes share one cached object.
+:   Hash of the content, in lower case hexadecimal. For a link to a file this is the digest Git LFS keys an object by, so linked and LFS content of equal bytes share one cached object. For a link to a directory it is the digest [](`crossrepo.cache.tree_hash`) takes over the whole of it.
 
 <code>[**size**]{.parameter-name} [:]{.parameter-annotation-sep} [[int](`int`)]{.parameter-annotation}</code>
 
-:   Size of the content in bytes, which is checked before the hash so that a stamp left behind by a regenerated file is caught without reading it.
+:   Size of the content in bytes, the total over the parts for a directory. It is checked before the hash so that a stamp left behind by a regenerated file is caught without reading it.
+
+<code>[**parts**]{.parameter-name} [:]{.parameter-annotation-sep} [[int](`int`)]{.parameter-annotation}</code>
+
+:   Number of files in the directory, or ``0`` for a link to a single file. A count rather than a flag because it is worth showing: it is the same column a dataset committed to git fills in, and the two then read alike in a listing.
 
 ## See Also {.doc-section .doc-section-see-also}
 

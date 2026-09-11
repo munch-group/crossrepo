@@ -1,7 +1,7 @@
 # resolve_link { #crossrepo.gitutil.resolve_link }
 
 ```python
-crossrepo.gitutil.resolve_link(repo, path, target)
+crossrepo.gitutil.resolve_link(repo, path, target, directory=False)
 ```
 
 Locate the file a committed symbolic link points at.
@@ -27,12 +27,17 @@ normal thing to publish.
 
 :   Target as committed, from [](`crossrepo.gitutil.link_target`).
 
+<code>[**directory**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [False]{.parameter-default}</code>
+
+:   Look for a directory rather than a file, which is what a link publishing a dataset points at. The two are asked for separately rather than either being accepted: a stamp says which was meant, and a directory found where the stamp describes a file is a repository that has changed under the manifest, not a thing to be read as if nothing had happened.
+
 ## Returns {.doc-section .doc-section-returns}
 
 <code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Location](`crossrepo.location.Location`)\]]{.parameter-annotation}</code>
 
-:   Location of the file, or `None` when nothing is there. A link resolves on the machine its repository is on, so a target read over ssh is looked for on the far side.
+:   Location of the file or directory, or `None` when nothing of that kind is there. A link resolves on the machine its repository is on, so a target read over ssh is looked for on the far side.
 
 ## See Also {.doc-section .doc-section-see-also}
 
 [](`crossrepo.gitutil.write_file_to`)
+[](`crossrepo.gitutil.list_files`)

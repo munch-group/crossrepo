@@ -1,0 +1,37 @@
+# Table { #crossrepo.table.Table }
+
+```python
+crossrepo.table.Table()
+```
+
+A data frame that shows itself with its text columns left aligned.
+
+A [](`pandas.DataFrame`) in every other respect -- it inherits from one, so
+every method, every operator and every library that takes a data frame takes
+this. What it adds is one thing: in a notebook, columns holding text are
+drawn left aligned rather than right.
+
+That is not decoration. pandas right aligns everything, which suits numbers
+and is wrong for the columns a catalog is mostly made of: a description, a
+path, a repository name. Read down a right aligned column of text and the
+eye has no edge to run along, and the one column anybody scans -- what each
+file holds -- is the worst of them.
+
+Operations return a `Table` too, so the alignment survives a
+[](`pandas.DataFrame.sort_values`) or a column selection and does not have
+to be asked for again. One column of one is an ordinary
+[](`pandas.Series`), there being nothing to align in a single column.
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+import crossrepo
+
+crossrepo.list()                      # already one of these
+crossrepo.Table(some_other_frame)     # or wrap your own
+```
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`crossrepo.list`)
+[](`crossrepo.frame`)

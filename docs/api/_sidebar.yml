@@ -35,6 +35,9 @@ website:
       - api/Spec.qmd
       section: Data types
     - contents:
+      - api/table-class.qmd
+      section: Tables
+    - contents:
       - api/build.qmd
       - api/scan_repo.qmd
       - api/versions.qmd
@@ -71,9 +74,12 @@ website:
       - api/store.qmd
       - api/store_from_file.qmd
       - api/open_for_write.qmd
+      - api/open_staging.qmd
       - api/link.qmd
       - api/objects.qmd
       - api/content_hash.qmd
+      - api/tree_parts.qmd
+      - api/tree_hash.qmd
       - api/check_object.qmd
       - api/discard.qmd
       - api/usage.qmd
@@ -96,6 +102,7 @@ website:
       - api/lfs_object_path.qmd
       - api/link_target.qmd
       - api/resolve_link.qmd
+      - api/list_files.qmd
       - api/GitError.qmd
       section: Git access
     - contents:

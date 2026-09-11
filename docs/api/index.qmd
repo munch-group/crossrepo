@@ -57,6 +57,15 @@ What the catalog is made of.
 | [Version](Version.qmd#crossrepo.Version) | One commit in which a result file changed. |
 | [Spec](Spec.qmd#crossrepo.Spec) | A parsed reference to a result file. |
 
+## Tables
+
+The data frame the catalog functions hand back.
+
+
+| | |
+| --- | --- |
+| [Table](table-class.qmd#crossrepo.table.Table) | A data frame that shows itself with its text columns left aligned. |
+
 ## GitHub
 
 Cataloguing and fetching repositories over the GitHub API, without
@@ -129,9 +138,12 @@ id, or by the stamp of a file published as a symbolic link.
 | [store](store.qmd#crossrepo.cache.store) | Store an object held in memory. |
 | [store_from_file](store_from_file.qmd#crossrepo.cache.store_from_file) | Store an object that already exists on disk, such as a Git LFS object. |
 | [open_for_write](open_for_write.qmd#crossrepo.cache.open_for_write) | Prepare to stream an object into the cache. |
+| [open_staging](open_staging.qmd#crossrepo.cache.open_staging) | Name a temporary path for content whose key is not known yet. |
 | [link](link.qmd#crossrepo.cache.link) | Expose a cached object under a readable name. |
 | [objects](objects.qmd#crossrepo.cache.objects) | List every object the store holds. |
 | [content_hash](content_hash.qmd#crossrepo.cache.content_hash) | Hash a file the way a manifest stamp records it. |
+| [tree_parts](tree_parts.qmd#crossrepo.cache.tree_parts) | List and hash every file a directory holds, as the parts of one dataset. |
+| [tree_hash](tree_hash.qmd#crossrepo.cache.tree_hash) | Hash a directory the way a manifest stamp records it. |
 | [check_object](check_object.qmd#crossrepo.cache.check_object) | Test whether a cached object holds the content its key promises. |
 | [discard](discard.qmd#crossrepo.cache.discard) | Remove a cached object, and the readable links that stand for it. |
 | [usage](usage.qmd#crossrepo.cache.usage) | Measure how much the cache holds. |
@@ -160,6 +172,7 @@ Plumbing wrappers used to read repositories.
 | [lfs_object_path](lfs_object_path.qmd#crossrepo.gitutil.lfs_object_path) | Locate the real content of a Git LFS object in a repository. |
 | [link_target](link_target.qmd#crossrepo.gitutil.link_target) | Read where a committed symbolic link points. |
 | [resolve_link](resolve_link.qmd#crossrepo.gitutil.resolve_link) | Locate the file a committed symbolic link points at. |
+| [list_files](list_files.qmd#crossrepo.gitutil.list_files) | List the files a directory holds, as the parts of one dataset. |
 | [GitError](GitError.qmd#crossrepo.gitutil.GitError) | Raised when a git command fails. |
 
 ## Command line

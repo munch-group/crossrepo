@@ -47,6 +47,7 @@ crossrepo.Spec.parse py:function 1 api/Spec.html#crossrepo.Spec.parse -
 crossrepo.model.Spec.parse py:function 1 api/Spec.html#crossrepo.Spec.parse crossrepo.Spec.parse
 crossrepo.Spec py:class 1 api/Spec.html#crossrepo.Spec -
 crossrepo.model.Spec py:class 1 api/Spec.html#crossrepo.Spec crossrepo.Spec
+crossrepo.table.Table py:class 1 api/table-class.html#crossrepo.table.Table -
 crossrepo.remote.build py:function 1 api/build.html#crossrepo.remote.build -
 crossrepo.remote.scan_repo py:function 1 api/scan_repo.html#crossrepo.remote.scan_repo -
 crossrepo.remote.versions py:function 1 api/versions.html#crossrepo.remote.versions -
@@ -73,6 +74,7 @@ crossrepo.manifest.Manifest.governs py:function 1 api/Manifest.html#crossrepo.ma
 crossrepo.manifest.Manifest.relative py:function 1 api/Manifest.html#crossrepo.manifest.Manifest.relative -
 crossrepo.manifest.Manifest.stamp py:function 1 api/Manifest.html#crossrepo.manifest.Manifest.stamp -
 crossrepo.manifest.Manifest py:class 1 api/Manifest.html#crossrepo.manifest.Manifest -
+crossrepo.manifest.Stamp.is_directory py:attribute 1 api/Stamp.html#crossrepo.manifest.Stamp.is_directory -
 crossrepo.manifest.Stamp py:class 1 api/Stamp.html#crossrepo.manifest.Stamp -
 crossrepo.manifest.parse py:function 1 api/parse.html#crossrepo.manifest.parse -
 crossrepo.manifest.write_stamp py:function 1 api/write_stamp.html#crossrepo.manifest.write_stamp -
@@ -93,9 +95,12 @@ crossrepo.cache.readable_path py:function 1 api/readable_path.html#crossrepo.cac
 crossrepo.cache.store py:function 1 api/store.html#crossrepo.cache.store -
 crossrepo.cache.store_from_file py:function 1 api/store_from_file.html#crossrepo.cache.store_from_file -
 crossrepo.cache.open_for_write py:function 1 api/open_for_write.html#crossrepo.cache.open_for_write -
+crossrepo.cache.open_staging py:function 1 api/open_staging.html#crossrepo.cache.open_staging -
 crossrepo.cache.link py:function 1 api/link.html#crossrepo.cache.link -
 crossrepo.cache.objects py:function 1 api/objects.html#crossrepo.cache.objects -
 crossrepo.cache.content_hash py:function 1 api/content_hash.html#crossrepo.cache.content_hash -
+crossrepo.cache.tree_parts py:function 1 api/tree_parts.html#crossrepo.cache.tree_parts -
+crossrepo.cache.tree_hash py:function 1 api/tree_hash.html#crossrepo.cache.tree_hash -
 crossrepo.cache.check_object py:function 1 api/check_object.html#crossrepo.cache.check_object -
 crossrepo.cache.discard py:function 1 api/discard.html#crossrepo.cache.discard -
 crossrepo.cache.usage py:function 1 api/usage.html#crossrepo.cache.usage -
@@ -116,6 +121,7 @@ crossrepo.gitutil.parse_lfs_pointer py:function 1 api/parse_lfs_pointer.html#cro
 crossrepo.gitutil.lfs_object_path py:function 1 api/lfs_object_path.html#crossrepo.gitutil.lfs_object_path -
 crossrepo.gitutil.link_target py:function 1 api/link_target.html#crossrepo.gitutil.link_target -
 crossrepo.gitutil.resolve_link py:function 1 api/resolve_link.html#crossrepo.gitutil.resolve_link -
+crossrepo.gitutil.list_files py:function 1 api/list_files.html#crossrepo.gitutil.list_files -
 crossrepo.gitutil.GitError py:class 1 api/GitError.html#crossrepo.gitutil.GitError -
 crossrepo.cli.main py:function 1 api/main.html#crossrepo.cli.main -
 crossrepo.cli.table py:function 1 api/table.html#crossrepo.cli.table -

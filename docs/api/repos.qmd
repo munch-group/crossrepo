@@ -22,7 +22,7 @@ The python side of ``crossrepo repos``.
 
 <code>[]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation}</code>
 
-:   A [](`pandas.DataFrame`) with columns ``repo``, ``files``, ``bytes`` and ``latest``.
+:   A `Table`, which is a [](`pandas.DataFrame`), with columns ``repo``, ``files``, ``bytes`` and ``latest``.
 
 ## Raises {.doc-section .doc-section-raises}
 

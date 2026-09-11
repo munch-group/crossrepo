@@ -63,7 +63,7 @@ publishes carries the same one.
 
 <code>[]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation}</code>
 
-:   A [](`pandas.DataFrame`) with one row per published file or dataset: ``owner``, ``repo``, ``name``, ``description``, ``date``, ``github``, ``path``, ``dir``, ``bytes``, ``tags`` and ``lfs``, or the six columns of `brief`, plus whichever of ``version``, ``spec`` and ``url`` were asked for. ``github`` is the repository as ``owner/repo``, and ``path`` the file as ``dir/name``. [](`crossrepo.frame`) has everything, including the number of files a dataset holds.
+:   A `Table`, which is a [](`pandas.DataFrame`), with one row per published file or dataset: ``owner``, ``repo``, ``name``, ``description``, ``date``, ``github``, ``path``, ``dir``, ``bytes``, ``tags`` and ``lfs``, or the six columns of `brief`, plus whichever of ``version``, ``spec`` and ``url`` were asked for. ``github`` is the repository as ``owner/repo``, and ``path`` the file as ``dir/name``. [](`crossrepo.frame`) has everything, including the number of files a dataset holds.
 
 ## Raises {.doc-section .doc-section-raises}
 

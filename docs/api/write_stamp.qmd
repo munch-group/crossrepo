@@ -6,7 +6,8 @@ crossrepo.manifest.write_stamp(text, key, stamp)
 
 Write one entry's stamp into a manifest, leaving the rest of the file alone.
 
-Only the entry's own ``sha256`` and ``size`` lines are touched, so comments,
+Only the entry's own ``sha256``, ``size`` and ``parts`` lines are touched, so
+comments,
 key order, quoting and formatting survive: the manifest is a file people
 write by hand and read in diffs, and a stamping run should show up in one as
 two changed lines and nothing else. An entry written as a bare description
