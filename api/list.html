@@ -871,7 +871,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </dd>
 <dt><code><span class="parameter-name"><strong>brief</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="parameter-default-sep">=</span> <span class="parameter-default">False</span></code></dt>
 <dd>
-<p>Show only what a file is: <code>owner</code>, <code>repo</code>, <code>name</code>, <code>size</code>, <code>description</code> and <code>date</code>. <code>size</code> is the byte count written for reading, as <code>512.2 MB</code>, in place of the <code>bytes</code> it is counted in.</p>
+<p>Show only what a file is and where reading it goes: <code>owner</code>, <code>repo</code>, <code>name</code>, <code>description</code> and <code>get</code>.</p>
 </dd>
 <dt><code><span class="parameter-name"><strong>version</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="parameter-default-sep">=</span> <span class="parameter-default">False</span></code></dt>
 <dd>
@@ -904,7 +904,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dl>
 <dt><code><span class="parameter-name"></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"></span></code></dt>
 <dd>
-<p>A <code>Table</code>, which is a <code>pandas.DataFrame</code>, with one row per published file or dataset: <code>owner</code>, <code>repo</code>, <code>name</code>, <code>description</code>, <code>date</code>, <code>github</code>, <code>path</code>, <code>dir</code>, <code>bytes</code>, <code>tags</code> and <code>lfs</code>, or the six columns of <code>brief</code>, plus whichever of <code>version</code>, <code>spec</code> and <code>url</code> were asked for. <code>github</code> is the repository as <code>owner/repo</code>, and <code>path</code> the file as <code>dir/name</code>. <a href="../api/frame.html#crossrepo.frame"><code>crossrepo.frame</code></a> has everything, including the number of files a dataset holds.</p>
+<p>A <code>Table</code>, which is a <code>pandas.DataFrame</code>, with one row per published file or dataset: <code>owner</code>, <code>repo</code>, <code>name</code>, <code>description</code>, <code>get</code>, <code>date</code>, <code>github</code>, <code>path</code>, <code>dir</code>, <code>bytes</code>, <code>tags</code> and <code>lfs</code>, or the five columns of <code>brief</code>, plus whichever of <code>version</code>, <code>spec</code> and <code>url</code> were asked for. <code>get</code> says where reading the file goes: <code>local</code> for a clone on this machine, <code>github</code> for a repository read over the API, and the server’s name or alias for one reached over ssh. <code>github</code> is the repository as <code>owner/repo</code>, and <code>path</code> the file as <code>dir/name</code>. <a href="../api/frame.html#crossrepo.frame"><code>crossrepo.frame</code></a> has everything, including the number of files a dataset holds.</p>
 </dd>
 </dl>
 </section>
