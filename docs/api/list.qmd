@@ -33,7 +33,7 @@ publishes carries the same one.
 
 <code>[**brief**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [False]{.parameter-default}</code>
 
-:   Show only what a file is: ``owner``, ``repo``, ``name``, ``size``, ``description`` and ``date``. ``size`` is the byte count written for reading, as ``512.2 MB``, in place of the ``bytes`` it is counted in.
+:   Show only what a file is and where reading it goes: ``owner``, ``repo``, ``name``, ``description`` and ``get``.
 
 <code>[**version**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [False]{.parameter-default}</code>
 
@@ -63,7 +63,7 @@ publishes carries the same one.
 
 <code>[]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation}</code>
 
-:   A `Table`, which is a [](`pandas.DataFrame`), with one row per published file or dataset: ``owner``, ``repo``, ``name``, ``description``, ``date``, ``github``, ``path``, ``dir``, ``bytes``, ``tags`` and ``lfs``, or the six columns of `brief`, plus whichever of ``version``, ``spec`` and ``url`` were asked for. ``github`` is the repository as ``owner/repo``, and ``path`` the file as ``dir/name``. [](`crossrepo.frame`) has everything, including the number of files a dataset holds.
+:   A `Table`, which is a [](`pandas.DataFrame`), with one row per published file or dataset: ``owner``, ``repo``, ``name``, ``description``, ``get``, ``date``, ``github``, ``path``, ``dir``, ``bytes``, ``tags`` and ``lfs``, or the five columns of `brief`, plus whichever of ``version``, ``spec`` and ``url`` were asked for. ``get`` says where reading the file goes: ``local`` for a clone on this machine, ``github`` for a repository read over the API, and the server's name or alias for one reached over ssh. ``github`` is the repository as ``owner/repo``, and ``path`` the file as ``dir/name``. [](`crossrepo.frame`) has everything, including the number of files a dataset holds.
 
 ## Raises {.doc-section .doc-section-raises}
 

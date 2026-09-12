@@ -189,6 +189,44 @@ class Entry:
         return f"{self.owner}/{self.repo}" if self.owner else self.repo
 
     @property
+    def fetched_from(self) -> str:
+        """
+        Where the content of this file is read from.
+
+        `source` says the same thing in the vocabulary of the scan; this says it
+        in the one a person reading a listing has, where the useful answer for a
+        repository on a server is *which* server rather than the fact that ssh
+        was involved. It is the destination as the root that found it was
+        written, so it matches what is in the settings and can be looked up in
+        ``~/.ssh/config``, but without the ``user@``: a listing is about where
+        the bytes are, and who is logging in is a separate question.
+
+        Returns
+        -------
+        :
+            ``local`` for a clone on this machine, ``github`` for a repository
+            read over the API, and the server's name or alias for a clone
+            reached over ssh.
+
+        Examples
+        --------
+
+        ```python
+        entry.fetched_from
+        # 'login.genome.au.dk', from a root of kmt@login.genome.au.dk:projects
+        # 'gdk', from a root of gdk:projects
+        ```
+
+        See Also
+        --------
+        [](`crossrepo.list`)
+        """
+        if self.source != "ssh":
+            return self.source
+        host = self.root.host
+        return host.rpartition("@")[2] or host or self.source
+
+    @property
     def spec(self) -> str:
         """
         Copy-pasteable identifier for the latest version of this file.

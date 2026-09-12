@@ -29,6 +29,8 @@ crossrepo.core.repo_identity py:function 1 api/repo_identity.html#crossrepo.core
 crossrepo.core.materialize py:function 1 api/materialize.html#crossrepo.core.materialize -
 crossrepo.core.progress_bar py:function 1 api/progress_bar.html#crossrepo.core.progress_bar -
 crossrepo.core.copy_out py:function 1 api/copy_out.html#crossrepo.core.copy_out -
+crossrepo.Entry.fetched_from py:attribute 1 api/Entry.html#crossrepo.Entry.fetched_from -
+crossrepo.model.Entry.fetched_from py:attribute 1 api/Entry.html#crossrepo.Entry.fetched_from crossrepo.Entry.fetched_from
 crossrepo.Entry.name py:attribute 1 api/Entry.html#crossrepo.Entry.name -
 crossrepo.model.Entry.name py:attribute 1 api/Entry.html#crossrepo.Entry.name crossrepo.Entry.name
 crossrepo.Entry.repo_key py:attribute 1 api/Entry.html#crossrepo.Entry.repo_key -

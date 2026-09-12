@@ -82,7 +82,7 @@ def test_parts_is_left_to_frame(cfg):
 
 def test_list_columns_are_in_the_order_they_are_read_in(cfg):
     assert [*crossrepo.list(cfg=cfg).columns] == [
-        "owner", "repo", "name", "description", "date", "github", "path",
+        "owner", "repo", "name", "description", "get", "date", "github", "path",
         "dir", "bytes", "tags", "lfs",
     ]
 
@@ -179,20 +179,18 @@ def test_refresh_forwards_spec_too(cfg):
     assert "spec" in crossrepo.refresh(spec=True, progress=False, cfg=cfg).columns
 
 
-def test_brief_shows_only_what_a_file_is(cfg):
+def test_brief_shows_what_a_file_is_and_where_it_comes_from(cfg):
     table = crossrepo.list(brief=True, cfg=cfg)
     assert [*table.columns] == [
-        "owner", "repo", "name", "size", "description", "date",
+        "owner", "repo", "name", "description", "get",
     ]
     assert len(table) == len(crossrepo.list(cfg=cfg))     # the same rows
 
 
-def test_brief_writes_the_size_for_reading(cfg):
-    """`size` is `bytes` in megabytes of a million, as results are talked about."""
-    table = crossrepo.list(brief=True, cfg=cfg).set_index("name")
-    assert table.loc["big.h5", "size"] == "512.2 MB"        # 512189753 bytes
-    assert table.loc["borders.tsv", "size"] == "0.0 MB"     # small, and says so
-    assert "bytes" not in table.columns
+def test_brief_says_nothing_about_size_or_date(cfg):
+    """Both are questions for a file already worth looking at."""
+    table = crossrepo.list(brief=True, cfg=cfg)
+    assert not {"size", "bytes", "date"} & set(table.columns)
 
 
 def test_a_size_over_a_billion_bytes_is_gigabytes():
@@ -303,3 +301,20 @@ def test_the_module_still_says_no_to_what_it_has_not_got():
     """The lazy `Table` is served by a module __getattr__, which must not eat this."""
     with pytest.raises(AttributeError, match="no attribute"):
         crossrepo.no_such_thing
+
+
+# --------------------------------------------- where reading a file goes
+
+def test_get_says_local_for_a_clone_on_this_machine(cfg):
+    assert set(crossrepo.list(cfg=cfg)["get"]) == {"local"}
+
+
+def test_get_sits_between_the_description_and_the_date(cfg):
+    columns = [*crossrepo.list(cfg=cfg).columns]
+    assert columns[columns.index("description") + 1] == "get"
+    assert columns[columns.index("get") + 1] == "date"
+
+
+def test_brief_keeps_get(cfg):
+    """It is half of what `brief` is for: what a file is, and where it is."""
+    assert [*crossrepo.list(brief=True, cfg=cfg).columns][-1] == "get"

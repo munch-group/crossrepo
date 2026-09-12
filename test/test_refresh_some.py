@@ -167,7 +167,8 @@ def test_refresh_still_takes_the_listing_options(cfg, entries):
     core.save(entries, cfg)
     df = crossrepo.refresh(cfg=cfg, progress=False, repo="sweep-scan", brief=True,
                          version=True, pattern="*.csv")
-    assert "version" in df.columns and "size" in df.columns
+    # The brief columns say `brief` took, and `version` that the option did.
+    assert [*df.columns] == [*crossrepo.BRIEF_COLUMNS, "version"]
     assert set(df["repo"]) == {"sweep-scan"}
     assert all(name.endswith(".csv") for name in df["name"])
 

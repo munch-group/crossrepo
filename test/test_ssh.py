@@ -15,6 +15,7 @@ from pathlib import Path
 
 import pytest
 
+import crossrepo
 from crossrepo import core, gitutil
 from crossrepo.config import Config, SourceWarning
 from crossrepo.location import Location, quote
@@ -615,3 +616,10 @@ def test_a_host_without_git_publishes_nothing_and_reports_it(server, tmp_path):
 def test_a_host_with_git_is_not_complained_about(server, recwarn):
     assert core.build(Config(roots=[f"{HOST}:~/projects"]))
     assert not [w for w in recwarn if issubclass(w.category, SourceWarning)]
+
+
+def test_a_listing_names_the_server_a_file_is_on(server):
+    """`get` answers which machine, not merely that ssh was involved."""
+    cfg = Config(roots=[f"{HOST}:~/projects"])
+    table = crossrepo.list(cfg=cfg)
+    assert set(table["get"]) == {"fakehost"}     # the user@ is not part of it

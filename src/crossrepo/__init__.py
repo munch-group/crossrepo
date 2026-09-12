@@ -94,8 +94,8 @@ __all__ = [
 #: ``name`` the two halves of ``path``, so that either can be grouped or sorted
 #: on without taking the other apart first.
 FRAME_COLUMNS = (
-    "owner", "repo", "name", "description", "date", "github", "path", "dir",
-    "bytes", "tags", "lfs", "version", "parts", "spec", "url",
+    "owner", "repo", "name", "description", "get", "date", "github", "path",
+    "dir", "bytes", "tags", "lfs", "version", "parts", "spec", "url",
 )
 
 #: Columns [](`crossrepo.versions`) always has.
@@ -170,10 +170,12 @@ def frame(entries=None):
     :
         A `Table` -- a [](`pandas.DataFrame`) that left aligns its text
         columns in a notebook -- with one row per result file and columns
-        ``owner``, ``repo``, ``name``, ``description``, ``date``, ``github``,
-        ``path``, ``dir``, ``bytes``, ``tags``, ``lfs``, ``version``, ``parts``,
-        ``spec`` and ``url``. ``github`` is ``owner/repo`` and ``path`` is
-        ``dir/name``, each carried whole as well as in halves. ``parts`` is zero
+        ``owner``, ``repo``, ``name``, ``description``, ``get``, ``date``,
+        ``github``, ``path``, ``dir``, ``bytes``, ``tags``, ``lfs``,
+        ``version``, ``parts``, ``spec`` and ``url``. ``github`` is
+        ``owner/repo`` and ``path`` is ``dir/name``, each carried whole as well
+        as in halves. ``get`` says where the content comes from: ``local``,
+        ``github``, or the name of the server it is on. ``parts`` is zero
         for an ordinary file and the number of files for a dataset published as
         a directory.
 
@@ -206,6 +208,7 @@ def frame(entries=None):
                 "repo": e.repo,
                 "name": e.name,
                 "description": e.description,
+                "get": e.fetched_from,
                 "date": e.latest.date[:10],
                 "github": e.repo_key,
                 "path": e.path,
@@ -231,13 +234,15 @@ _OPTIONAL = ("version", "spec", "url")
 #: Columns [](`crossrepo.list`) shows, in the order it shows them: what the file
 #: is, then where it came from, then what it is made of.
 LIST_COLUMNS = (
-    "owner", "repo", "name", "description", "date", "github", "path", "dir",
-    "bytes", "tags", "lfs",
+    "owner", "repo", "name", "description", "get", "date", "github", "path",
+    "dir", "bytes", "tags", "lfs",
 )
 
-#: Columns ``crossrepo.list(brief=True)`` shows: what a file is and how big, and
-#: nothing about where it is kept. ``size`` is ``bytes`` written for reading.
-BRIEF_COLUMNS = ("owner", "repo", "name", "size", "description", "date")
+#: Columns ``crossrepo.list(brief=True)`` shows: what a file is, and where
+#: reading it goes. Nothing about when it changed or how big it is, those being
+#: the questions asked once a file is worth looking at rather than while finding
+#: which one is.
+BRIEF_COLUMNS = ("owner", "repo", "name", "description", "get")
 
 
 def _size(n: int) -> str:
@@ -248,6 +253,10 @@ def _size(n: int) -> str:
     powers of two [](`crossrepo.core.human`) uses for the command line: these are
     the numbers a table of results is read against, and the difference of a few
     percent is not what the column is for.
+
+    Nothing calls this since ``size`` left the `brief` columns. It is kept
+    against a caller wanting `bytes` written for reading, which is the only form
+    anybody says a result file's size out loud in.
 
     Parameters
     ----------
@@ -303,9 +312,8 @@ def list(
     pattern :
         Keep only files whose name matches this glob, such as ``"*.csv"``.
     brief :
-        Show only what a file is: ``owner``, ``repo``, ``name``, ``size``,
-        ``description`` and ``date``. ``size`` is the byte count written for
-        reading, as ``512.2 MB``, in place of the ``bytes`` it is counted in.
+        Show only what a file is and where reading it goes: ``owner``,
+        ``repo``, ``name``, ``description`` and ``get``.
     version :
         Include the ``version`` column, the full commit sha.
     spec :
@@ -329,10 +337,12 @@ def list(
     :
         A `Table`, which is a [](`pandas.DataFrame`), with one row per
         published file or dataset:
-        ``owner``, ``repo``, ``name``, ``description``, ``date``, ``github``,
-        ``path``, ``dir``, ``bytes``, ``tags`` and ``lfs``, or the six columns
-        of `brief`, plus whichever of ``version``, ``spec`` and ``url`` were
-        asked for. ``github`` is the repository as ``owner/repo``, and ``path``
+        ``owner``, ``repo``, ``name``, ``description``, ``get``, ``date``,
+        ``github``, ``path``, ``dir``, ``bytes``, ``tags`` and ``lfs``, or the
+        five columns of `brief`, plus whichever of ``version``, ``spec`` and
+        ``url`` were asked for. ``get`` says where reading the file goes:
+        ``local`` for a clone on this machine, ``github`` for a repository read
+        over the API, and the server's name or alias for one reached over ssh. ``github`` is the repository as ``owner/repo``, and ``path``
         the file as ``dir/name``. [](`crossrepo.frame`) has everything, including
         the number of files a dataset holds.
 
@@ -385,7 +395,7 @@ def _tabulate(
     pattern :
         Keep only files whose name matches this glob.
     brief :
-        Show only what a file is, with `size` written for reading.
+        Show only what a file is and where reading it goes.
     version :
         Include the ``version`` column.
     spec :
@@ -410,7 +420,6 @@ def _tabulate(
     asked = [c for c in _OPTIONAL if wanted[c]]    # asked-for columns go last
     if not brief:
         return table[[*LIST_COLUMNS, *asked]]
-    table = table.assign(size=[_size(n) for n in table["bytes"]])
     return table[[*BRIEF_COLUMNS, *asked]]
 
 

@@ -389,3 +389,20 @@ def test_a_repo_written_without_an_owner_is_reported():
     client = FakeClient(tree=[], commits=[], blobs={})
     with pytest.warns(SourceWarning, match="should be written owner/repo"):
         assert remote.build(Config(repos=["justaname"]), client) == []
+
+
+def test_a_listing_says_github_for_what_was_never_cloned():
+    """`get` has to name the API when that is the only place the bytes are."""
+    import crossrepo
+
+    client = FakeClient(
+        tree=[
+            {"path": "results/crossrepo.yml", "type": "blob", "sha": "man", "size": 60},
+            {"path": "results/hits.csv", "type": "blob", "sha": "aaa", "size": 10},
+        ],
+        commits=[commit("c" * 40, "add hits")],
+        blobs={"man": MANIFEST},
+        files_by_commit={"c" * 40: ["results/hits.csv"]},
+    )
+    entries = remote.scan_repo(client, "munch-group", "demo", Config(), "main")
+    assert [*crossrepo.frame(entries)["get"]] == ["github"]
