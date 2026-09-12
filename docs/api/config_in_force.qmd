@@ -1,0 +1,29 @@
+# config_in_force { #crossrepo.config.config_in_force }
+
+```python
+crossrepo.config.config_in_force()
+```
+
+The configuration file settings are actually read from.
+
+A `LOCAL_NAME` in the working directory wins outright: it is read *instead
+of* the one that applies everywhere, not on top of it. One file is in force
+at a time, so what a command is about to do can be read off that file alone
+rather than worked out from two.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Path](`pathlib.Path`)]{.parameter-annotation}</code>
+
+:   The local file when it is there, else [](`crossrepo.config.config_path`). Neither is required to exist; a missing file yields the defaults.
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+config_in_force()
+# PosixPath('/home/kmt/work/x-gwas/crossrepo.toml')
+```
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`crossrepo.config.Config.load`)

@@ -632,6 +632,13 @@ def scan_repo(root: Location, cfg: Config) -> List[Entry]:
                 continue
             sha, date, subject = head
             seen.add(path)
+            target = gitutil.link_target(root, blob_sha)
+            # Whether the link leads anywhere is asked here, once, and stored:
+            # a listing must not promise content that a clone cannot produce,
+            # and the question can only be answered where the repository is.
+            here = gitutil.resolve_link(
+                root, path, target, directory=bool(stamp.parts)
+            )
             # One read per link, after the filters, so a link that is not
             # published costs nothing. Reading them together would be one round
             # trip rather than several, which would matter if a repository
@@ -651,7 +658,7 @@ def scan_repo(root: Location, cfg: Config) -> List[Entry]:
                         sha=sha, date=date, subject=subject,
                         blob=stamp.sha256, size=stamp.size, lfs_oid=None,
                         parts=stamp.parts, tags=tags.get(sha, ()),
-                        link=gitutil.link_target(root, blob_sha),
+                        link=target, missing=here is None,
                     ),
                 )
             )
@@ -860,6 +867,89 @@ def _merge(local: List[Entry], fetched: List[Entry]) -> List[Entry]:
         out.append(entry)
     out.extend(by_key.values())
     return out
+
+
+def describe(entry: Entry, version: Optional[Version] = None) -> List[str]:
+    """
+    Everything the catalog holds about one published file, as lines to print.
+
+    Rendered here rather than at either end, so that the terminal and a notebook
+    say the same thing in the same words. Sizes are written the way the command
+    line writes them, by [](`crossrepo.core.human`).
+
+    What a file is comes first and what this version of it is comes second,
+    because the first block is true of the file whatever version is being looked
+    at and the second changes under it. A field with nothing in it is left out:
+    ``link`` on a file git holds itself would be a blank where a reader would
+    look for a reason.
+
+    Parameters
+    ----------
+    entry :
+        Entry to describe.
+    version :
+        Version to describe. Defaults to `crossrepo.model.Entry.latest`.
+
+    Returns
+    -------
+    :
+        The lines, without trailing newlines, starting with the spec that names
+        the file and with a blank line between the two blocks.
+
+    See Also
+    --------
+    [](`crossrepo.info`)
+    [](`crossrepo.core.versions`)
+    """
+    v = version or entry.latest
+    rows = [
+        ("description", entry.description),
+        ("get", entry.fetched_from),
+        ("path", entry.path),
+        ("manifest", entry.manifest),
+        ("root", str(entry.root)),
+        ("", ""),
+        ("version", v.sha),
+        ("date", v.date[:10]),
+        ("commit", v.subject),
+        ("size", human(v.size)),
+        ("parts", str(v.parts)),
+        ("note", ",".join(_notes(v))),
+        ("content", v.blob),
+        ("link", v.link or ""),
+        ("url", entry.url(v)),
+    ]
+    width = max(len(name) for name, _ in rows if name)
+    out = [f"{entry.repo_key}:{entry.path}", ""]
+    for name, value in rows:
+        if not name:
+            out.append("")
+        elif value:
+            out.append(f"{name.ljust(width)}  {value}")
+    return out
+
+
+def _notes(version: Version) -> List[str]:
+    """
+    What is unusual about a version, as words.
+
+    Parameters
+    ----------
+    version :
+        Version to look at.
+
+    Returns
+    -------
+    :
+        Its tags, and whether it is held in Git LFS or published as a symbolic
+        link. Empty for an ordinary tagless file.
+    """
+    bits = [*version.tags]
+    if version.lfs_oid:
+        bits.append("lfs")
+    if version.link is not None:
+        bits.append("link")
+    return bits
 
 
 def diagnose(cfg: Optional[Config] = None) -> List[str]:
@@ -1104,7 +1194,7 @@ def load_cached(
                         subject=v["subject"], blob=v["blob"], size=v["size"],
                         lfs_oid=v.get("lfs_oid"), parts=v.get("parts", 0),
                         tags=tuple(v.get("tags", ())),
-                        link=v.get("link"),
+                        link=v.get("link"), missing=v.get("missing", False),
                     ),
                 )
             )
@@ -1744,6 +1834,77 @@ def get(
     if out is not None:
         path = copy_out(path, out, entry.name)
     return path
+
+
+def info(
+    repo: str,
+    filename: str,
+    version: Optional[str] = None,
+    *,
+    owner: Optional[str] = None,
+    refresh: bool = False,
+    cfg: Optional[Config] = None,
+) -> None:
+    """
+    Print everything the catalog holds about one result file.
+
+    Addressed exactly as [](`crossrepo.core.get`) addresses it, so a call that
+    fetches a file and a call that asks about it differ in the verb and nothing
+    else. Nothing is downloaded and nothing is returned: this is for looking.
+
+    Parameters
+    ----------
+    repo :
+        Repository name, optionally written ``owner/repo`` when the name alone
+        is used by two organisations.
+    filename :
+        File name, or as much of the path as is needed to be unambiguous within
+        the repository.
+    version :
+        Hash of the commit holding the wanted version, a unique prefix of one,
+        or a tag name. `None` describes the latest.
+    owner :
+        Repository owner, an alternative to writing ``owner/repo`` in `repo`.
+    refresh :
+        Rescan the repositories before resolving, instead of using the stored
+        catalog.
+    cfg :
+        Settings. Defaults to [](`crossrepo.config.active_config`): what
+        [](`crossrepo.config.use_config`) registered, or the configuration file.
+
+    Raises
+    ------
+    LookupError
+        If nothing matches, if several files match, or if there is no such
+        version. The message lists the candidates as full specs.
+
+    Examples
+    --------
+
+    ```python
+    import crossrepo
+
+    crossrepo.info("x-gwas", "hits.csv")
+    # x-gwas:results/hits.csv
+    #
+    # description  Genome-wide association hits, p < 5e-8
+    # get          login.genome.au.dk
+    # ...
+    ```
+
+    See Also
+    --------
+    [](`crossrepo.core.get`)
+    [](`crossrepo.core.describe`)
+    [](`crossrepo.versions`)
+    """
+    if owner is None and "/" in repo:
+        owner, _, repo = repo.partition("/")
+    entries = catalog(refresh=refresh, cfg=cfg)
+    entry = resolve_one(entries, Spec(repo=repo, path=filename, owner=owner))
+    found = find_version(entry, version or "latest")
+    for line in describe(entry, found):
+        print(line)
 
 
 def copy_out(src: Path, out: Union[str, Path], name: str) -> Path:

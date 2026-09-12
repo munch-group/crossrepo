@@ -20,7 +20,7 @@ from crossrepo import core, gitutil
 from crossrepo.config import Config, SourceWarning
 from crossrepo.location import Location, quote
 
-from fixtures import CODE, commit, fake_ssh, init, tree_digest
+from fixtures import CODE, commit, digest, fake_ssh, init, tree_digest
 
 HOST = "tester@fakehost"
 
@@ -623,3 +623,32 @@ def test_a_listing_names_the_server_a_file_is_on(server):
     cfg = Config(roots=[f"{HOST}:~/projects"])
     table = crossrepo.list(cfg=cfg)
     assert set(table["get"]) == {"fakehost"}     # the user@ is not part of it
+
+
+def test_a_link_that_leads_nowhere_on_the_far_side_says_missing(server):
+    """The question is asked where the repository is, not where we are."""
+    repo = server / "projects" / "dangler"
+    init(repo)
+    (repo / "results").mkdir(parents=True)
+    (repo / ".gitignore").write_text("steps/\n")
+    (repo / "steps").mkdir()
+    (repo / "steps" / "there.csv").write_text("far,1\n")
+    (repo / "results" / "there.csv").symlink_to("../steps/there.csv")
+    (repo / "results" / "away.csv").symlink_to("../steps/away.csv")
+    (repo / "results" / "crossrepo.yml").write_text(
+        "files:\n"
+        "  there.csv:\n"
+        "    description: written\n"
+        f'    sha256: "{digest("far,1\\n")}"\n'
+        "    size: 6\n"
+        "  away.csv:\n"
+        "    description: never written\n"
+        f'    sha256: "{digest("never,1\\n")}"\n'
+        "    size: 8\n"
+    )
+    commit(repo, "one link that leads somewhere and one that does not")
+
+    cfg = Config(roots=[f"{HOST}:~/projects"])
+    by_path = {e.path: e for e in core.build(cfg) if e.repo == "dangler"}
+    assert by_path["results/there.csv"].fetched_from == "fakehost"
+    assert by_path["results/away.csv"].fetched_from == "missing"

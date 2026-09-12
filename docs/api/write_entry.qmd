@@ -1,0 +1,43 @@
+# write_entry { #crossrepo.manifest.write_entry }
+
+```python
+crossrepo.manifest.write_entry(text, key, description)
+```
+
+Put one file into a manifest, leaving the rest of it alone.
+
+Publishing is naming a file, so this is the act of publishing one. An entry
+already there has its description rewritten and keeps whatever else it
+carries: a stamp belongs to the file, not to the sentence describing it, and
+a re-description should not send the content back to be read again.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**text**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Content of the manifest. An empty string starts one.
+
+<code>[**key**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Key to write, as a path relative to the manifest or, with a leading ``/``, from the root of the repository.
+
+<code>[**description**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   What the file holds.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   The manifest with the entry written.
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+write_entry("files:\n  a.csv: one\n", "b.csv", "another")
+# 'files:\n  a.csv: one\n  b.csv: another\n'
+```
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`crossrepo.manifest.write_stamp`)

@@ -1,0 +1,70 @@
+# info { #crossrepo.info }
+
+```python
+crossrepo.info(
+    repo,
+    filename,
+    version=None,
+    *,
+    owner=None,
+    refresh=False,
+    cfg=None,
+)
+```
+
+Print everything the catalog holds about one result file.
+
+Addressed exactly as [](`crossrepo.core.get`) addresses it, so a call that
+fetches a file and a call that asks about it differ in the verb and nothing
+else. Nothing is downloaded and nothing is returned: this is for looking.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Repository name, optionally written ``owner/repo`` when the name alone is used by two organisations.
+
+<code>[**filename**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   File name, or as much of the path as is needed to be unambiguous within the repository.
+
+<code>[**version**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[str](`str`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   Hash of the commit holding the wanted version, a unique prefix of one, or a tag name. `None` describes the latest.
+
+<code>[**owner**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[str](`str`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   Repository owner, an alternative to writing ``owner/repo`` in `repo`.
+
+<code>[**refresh**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [False]{.parameter-default}</code>
+
+:   Rescan the repositories before resolving, instead of using the stored catalog.
+
+<code>[**cfg**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Config](`crossrepo.config.Config`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   Settings. Defaults to [](`crossrepo.config.active_config`): what [](`crossrepo.config.use_config`) registered, or the configuration file.
+
+## Raises {.doc-section .doc-section-raises}
+
+<code>[:]{.parameter-annotation-sep} [[LookupError](`LookupError`)]{.parameter-annotation}</code>
+
+:   If nothing matches, if several files match, or if there is no such version. The message lists the candidates as full specs.
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+import crossrepo
+
+crossrepo.info("x-gwas", "hits.csv")
+# x-gwas:results/hits.csv
+#
+# description  Genome-wide association hits, p < 5e-8
+# get          login.genome.au.dk
+# ...
+```
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`crossrepo.core.get`)
+[](`crossrepo.core.describe`)
+[](`crossrepo.versions`)

@@ -15,6 +15,8 @@ crossrepo.diagnose py:function 1 api/diagnose.html#crossrepo.diagnose -
 crossrepo.core.diagnose py:function 1 api/diagnose.html#crossrepo.diagnose crossrepo.diagnose
 crossrepo.get py:function 1 api/get.html#crossrepo.get -
 crossrepo.core.get py:function 1 api/get.html#crossrepo.get crossrepo.get
+crossrepo.info py:function 1 api/info.html#crossrepo.info -
+crossrepo.core.info py:function 1 api/info.html#crossrepo.info crossrepo.info
 crossrepo.fetch py:function 1 api/fetch.html#crossrepo.fetch -
 crossrepo.core.fetch py:function 1 api/fetch.html#crossrepo.fetch crossrepo.fetch
 crossrepo.outdated py:function 1 api/outdated.html#crossrepo.outdated -
@@ -23,6 +25,7 @@ crossrepo.core.resolve_one py:function 1 api/resolve_one.html#crossrepo.core.res
 crossrepo.core.match py:function 1 api/match.html#crossrepo.core.match -
 crossrepo.core.selects py:function 1 api/selects.html#crossrepo.core.selects -
 crossrepo.core.find_version py:function 1 api/find_version.html#crossrepo.core.find_version -
+crossrepo.core.describe py:function 1 api/describe.html#crossrepo.core.describe -
 crossrepo.core.fingerprint py:function 1 api/fingerprint.html#crossrepo.core.fingerprint -
 crossrepo.core.scan_repo py:function 1 api/scan_repo.html#crossrepo.core.scan_repo -
 crossrepo.core.repo_identity py:function 1 api/repo_identity.html#crossrepo.core.repo_identity -
@@ -50,9 +53,9 @@ crossrepo.model.Spec.parse py:function 1 api/Spec.html#crossrepo.Spec.parse cros
 crossrepo.Spec py:class 1 api/Spec.html#crossrepo.Spec -
 crossrepo.model.Spec py:class 1 api/Spec.html#crossrepo.Spec crossrepo.Spec
 crossrepo.table.Table py:class 1 api/table-class.html#crossrepo.table.Table -
-crossrepo.remote.build py:function 1 api/build.html#crossrepo.remote.build -
-crossrepo.remote.scan_repo py:function 1 api/scan_repo.html#crossrepo.remote.scan_repo -
-crossrepo.remote.versions py:function 1 api/versions.html#crossrepo.remote.versions -
+crossrepo.remote.build py:function 1 api/remote-build.html#crossrepo.remote.build -
+crossrepo.remote.scan_repo py:function 1 api/remote-scan_repo.html#crossrepo.remote.scan_repo -
+crossrepo.remote.versions py:function 1 api/remote-versions.html#crossrepo.remote.versions -
 crossrepo.remote.version_at py:function 1 api/version_at.html#crossrepo.remote.version_at -
 crossrepo.remote.dataset_files py:function 1 api/dataset_files.html#crossrepo.remote.dataset_files -
 crossrepo.remote.download py:function 1 api/download.html#crossrepo.remote.download -
@@ -79,7 +82,9 @@ crossrepo.manifest.Manifest py:class 1 api/Manifest.html#crossrepo.manifest.Mani
 crossrepo.manifest.Stamp.is_directory py:attribute 1 api/Stamp.html#crossrepo.manifest.Stamp.is_directory -
 crossrepo.manifest.Stamp py:class 1 api/Stamp.html#crossrepo.manifest.Stamp -
 crossrepo.manifest.parse py:function 1 api/parse.html#crossrepo.manifest.parse -
+crossrepo.manifest.write_entry py:function 1 api/write_entry.html#crossrepo.manifest.write_entry -
 crossrepo.manifest.write_stamp py:function 1 api/write_stamp.html#crossrepo.manifest.write_stamp -
+crossrepo.manifest.quote_key py:function 1 api/quote_key.html#crossrepo.manifest.quote_key -
 crossrepo.manifest.is_manifest py:function 1 api/is_manifest.html#crossrepo.manifest.is_manifest -
 crossrepo.manifest.manifest_path py:function 1 api/manifest_path.html#crossrepo.manifest.manifest_path -
 crossrepo.manifest.ManifestError py:class 1 api/ManifestError.html#crossrepo.manifest.ManifestError -
@@ -91,6 +96,12 @@ crossrepo.config.active_config py:function 1 api/active_config.html#crossrepo.co
 crossrepo.config.Registration.undo py:function 1 api/Registration.html#crossrepo.config.Registration.undo -
 crossrepo.config.Registration py:class 1 api/Registration.html#crossrepo.config.Registration -
 crossrepo.config.config_path py:function 1 api/config_path.html#crossrepo.config.config_path -
+crossrepo.config.local_config_path py:function 1 api/local_config_path.html#crossrepo.config.local_config_path -
+crossrepo.config.config_in_force py:function 1 api/config_in_force.html#crossrepo.config.config_in_force -
+crossrepo.config.setting_type py:function 1 api/setting_type.html#crossrepo.config.setting_type -
+crossrepo.config.write_setting py:function 1 api/write_setting.html#crossrepo.config.write_setting -
+crossrepo.config.clear_setting py:function 1 api/clear_setting.html#crossrepo.config.clear_setting -
+crossrepo.config.render_setting py:function 1 api/render_setting.html#crossrepo.config.render_setting -
 crossrepo.config.cache_root py:function 1 api/cache_root.html#crossrepo.config.cache_root -
 crossrepo.cache.blob_path py:function 1 api/blob_path.html#crossrepo.cache.blob_path -
 crossrepo.cache.readable_path py:function 1 api/readable_path.html#crossrepo.cache.readable_path -

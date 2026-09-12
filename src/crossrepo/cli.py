@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import fnmatch
 import json
+import os
 import sys
 import warnings
 from contextlib import contextmanager
@@ -24,9 +25,13 @@ from typing import Any, Callable, Dict, Iterator, List, Optional, Tuple
 
 import click
 
-from . import __version__, cache, gitutil, manifest
+from . import LIST_COLUMNS, __version__, cache, gitutil, manifest
 from . import core as cat
-from .config import Config, SourceWarning, cache_root, config_path
+from . import config as cfgmod
+from .config import (
+    Config, SourceWarning, cache_root, config_in_force, config_path,
+    local_config_path,
+)
 from .core import human
 from .gitutil import GitError
 from .model import Entry, Spec
@@ -197,13 +202,36 @@ def _require_sources(cfg: Config) -> None:
     """
     if cfg.roots or cfg.owners or cfg.repos:
         return
-    raise click.ClickException(
-        "nothing is configured to read.\n"
-        f"Run `crossrepo config --init` to write {config_path()}, then set either\n"
-        "  owners = [\"munch-group\"]        # read GitHub directly, nothing cloned\n"
-        "  roots  = [\"~/projects\"]         # or scan clones already on this machine\n"
-        "  roots  = [\"me@server:~/projects\"] # or clones on a server, over ssh"
+    where = config_in_force()
+    scope = "local" if where == local_config_path() else "global"
+    said = [f"nothing is configured to read in {where}."]
+    if scope == "local":
+        # The confusing case: a local file is read *instead of* the global one,
+        # so an empty one here hides a configured one there. Saying only where
+        # settings could go leaves that unsaid, and it is the whole answer.
+        said.append(
+            f"A crossrepo.toml in this directory is read instead of "
+            f"{config_path()}, not on top of it."
+        )
+        elsewhere = Config.load(config_path())
+        if elsewhere.roots or elsewhere.owners or elsewhere.repos:
+            said.append(
+                f"That file does name sources, and they are not being used. "
+                f"Delete {where.name} to go back to them, or name sources here:"
+            )
+        else:
+            said.append("Name sources here:")
+    else:
+        said.append("Name sources there:")
+    said.append(
+        f"  crossrepo config {scope} append owners munch-group\n"
+        f"                                      # read GitHub directly, nothing cloned\n"
+        f"  crossrepo config {scope} append roots ~/projects\n"
+        f"                                      # or scan clones already on this machine\n"
+        f"  crossrepo config {scope} append roots me@server:~/projects\n"
+        f"                                      # or clones on a server, over ssh"
     )
+    raise click.ClickException("\n".join(said))
 
 
 @contextmanager
@@ -343,10 +371,6 @@ def _explain_empty(
 @click.argument("repo", required=False)
 @click.option("-p", "--pattern", metavar="GLOB", help="filter by filename glob, e.g. '*.csv'")
 @click.option("--json", "as_json", is_flag=True, help="print machine readable output")
-@click.option("--version", "--sha", "show_version", is_flag=True,
-              help="add the version, the full commit sha, as a last column")
-@click.option("-u", "--url", "show_url", is_flag=True,
-              help="add the URL of each file's version on GitHub")
 @catalog_options
 @click.pass_context
 def cmd_list(
@@ -354,16 +378,16 @@ def cmd_list(
     repo: Optional[str],
     pattern: Optional[str],
     as_json: bool,
-    show_version: bool,
-    show_url: bool,
     config_file: Optional[str],
     refresh: bool,
 ) -> int:
     """
     List result files, optionally limited to one repo.
 
-    The version is left out unless asked for: it is a full commit sha, which is
-    wide, and it is the same for every file a repository publishes.
+    Four columns: which repository, which file, where reading it goes, and what
+    it holds. They are what a file is chosen on, and they are the same four
+    `crossrepo.list` shows in a notebook, so that a listing is one thing however
+    it is read. Everything known about one file is `crossrepo info`.
     """
     entries = _entries(ctx, config_file, refresh)
     if repo:
@@ -377,25 +401,10 @@ def cmd_list(
     if not entries:
         _explain_empty(ctx, config_file, refresh)
         return 1
-    headers = ["REPO", "PATH", "DATE", "SIZE", "NOTE", "DESCRIPTION"]
     rows = [
-        [
-            e.repo_key, e.path, e.latest.date[:10],
-            human(e.latest.size),
-            note(e.latest),
-            e.description,
-        ]
-        for e in entries
+        [e.repo_key, e.path, e.fetched_from, e.description] for e in entries
     ]
-    if show_version:
-        headers.append("VERSION")
-        for row, entry in zip(rows, entries):
-            row.append(entry.latest.sha)
-    if show_url:
-        headers.append("URL")
-        for row, entry in zip(rows, entries):
-            row.append(entry.url())
-    click.echo(table(rows, headers))
+    click.echo(table(rows, [*LIST_COLUMNS]))
     click.echo(f"\n{len(entries)} files in {len({e.repo_key for e in entries})} repos")
     return 0
 
@@ -492,6 +501,28 @@ def cmd_get(
     return 0
 
 
+@cli.command("info")
+@click.argument("spec")
+@catalog_options
+@click.pass_context
+def cmd_info(
+    ctx: click.Context, spec: str, config_file: Optional[str], refresh: bool
+) -> int:
+    """
+    Print everything the catalog holds about [owner/]repo:path[@version].
+
+    Addressed exactly as `crossrepo get` addresses it, so asking about a file
+    and fetching it differ in the verb and nothing else. Nothing is downloaded.
+    The same lines `crossrepo.info` prints in a notebook.
+    """
+    entries = _entries(ctx, config_file, refresh)
+    parsed = Spec.parse(spec)
+    entry = cat.resolve_one(entries, parsed)
+    version = cat.find_version(entry, parsed.version or "latest")
+    click.echo("\n".join(cat.describe(entry, version)))
+    return 0
+
+
 @cli.command("refresh")
 @catalog_options
 @click.pass_context
@@ -522,34 +553,332 @@ def cmd_refresh(ctx: click.Context, config_file: Optional[str], refresh: bool) -
     return 0
 
 
-@cli.command("config")
-@click.option("--init", "init", is_flag=True, help="write a config file")
-@click.option("--force", is_flag=True, help="overwrite an existing file")
+@cli.group("config", invoke_without_command=True)
 @click.pass_context
-def cmd_config(ctx: click.Context, init: bool, force: bool) -> int:
+def cmd_config(ctx: click.Context) -> int:
     """
-    Show the settings in force, or write a config file.
+    Show the settings in force, or work on one of the two config files.
 
-    A ``--config PATH`` given before the subcommand names the file to show or
-    write, instead of the default location.
+    Called on its own it shows what is in force and which file that came from:
+    the crossrepo.toml in this directory when there is one, else the config
+    that applies everywhere. `config local` and `config global` name one of the
+    two outright, and write the file if it is not there yet.
+
+    A ``--config PATH`` given before the subcommand names the file to show,
+    instead of the one that would be found.
     """
-    named = _shared(ctx).get("config")
-    path = Path(named).expanduser() if named else config_path()
-    if init:
-        if path.exists() and not force:
-            click.echo(f"{path} exists; --force to overwrite", err=True)
-            return 1
-        Config().write_default(path)
-        click.echo(f"wrote {path}")
+    if ctx.invoked_subcommand is not None:
         return 0
+    named = _shared(ctx).get("config")
+    path = Path(named).expanduser() if named else config_in_force()
     cfg = Config.load(path)
+    kind = "local" if path == local_config_path() else "global"
     suffix = "" if path.exists() else "  (not present -- using defaults)"
-    click.echo(f"config file: {path}{suffix}")
+    click.echo(f"config file: {path}  ({kind}){suffix}")
     for k, v in vars(cfg).items():
         click.echo(f"  {k} = {v!r}")
     n, total = cache.usage()
     click.echo(f"cache: {n} objects, {human(total)}")
     return 0
+
+
+def _init_config(path: Path) -> int:
+    """
+    Write a configuration file, unless one is already there.
+
+    The only thing that creates one. Editing a setting does not: a file appearing
+    because a command was mistyped in the wrong directory is how a project comes
+    to be configured by something nobody meant to write.
+
+    Parameters
+    ----------
+    path :
+        File to write.
+
+    Returns
+    -------
+    :
+        Zero, whether it was written or was already there. Asking for a file
+        that exists is not a failure, and saying so lets the command be run
+        again without a guard around it.
+    """
+    if path.exists():
+        click.echo(f"{path} is already there")
+        return 0
+    Config().write_default(path)
+    click.echo(f"wrote {path}")
+    return 0
+
+
+def _show_config(path: Path, scope: str) -> int:
+    """
+    Print a configuration file.
+
+    The path goes first, as a comment, so that it is plain which of the two
+    files this is and so that what is printed is still a configuration file:
+    piping it into another one leaves a note saying where it came from.
+
+    Parameters
+    ----------
+    path :
+        File to print.
+    scope :
+        ``local`` or ``global``, to name the command that would write it.
+
+    Returns
+    -------
+    :
+        Zero.
+
+    Raises
+    ------
+    click.ClickException
+        If the file is not there. Showing it would otherwise print the defaults
+        as though someone had chosen them.
+    """
+    text = _existing(path, scope)
+    click.echo(f"# {path}")
+    click.echo(text.rstrip("\n"))
+    return 0
+
+
+def _setting(key: str) -> type:
+    """
+    The kind of value a setting takes, refusing a name that is not one.
+
+    Parameters
+    ----------
+    key :
+        Setting named on the command line.
+
+    Returns
+    -------
+    :
+        `list`, `int` or `str`.
+
+    Raises
+    ------
+    click.ClickException
+        If there is no such setting. The message lists the ones there are, since
+        a typo and a setting from an older version look the same from here.
+    """
+    try:
+        return cfgmod.setting_type(key)
+    except KeyError:
+        known = ", ".join(sorted(Config.__dataclass_fields__))
+        raise click.ClickException(
+            f"no setting called `{key}`; the settings are: {known}"
+        ) from None
+
+
+def _existing(path: Path, scope: str) -> str:
+    """
+    The text of a configuration file, refusing one that is not there.
+
+    Parameters
+    ----------
+    path :
+        File about to be changed.
+    scope :
+        ``local`` or ``global``, to name the command that would write it.
+
+    Returns
+    -------
+    :
+        Its content.
+
+    Raises
+    ------
+    click.ClickException
+        If the file does not exist. Writing it here would mean a command run in
+        the wrong directory leaves a configuration file behind in it.
+    """
+    if not path.exists():
+        raise click.ClickException(
+            f"{path} is not there; `crossrepo config {scope} init` writes it"
+        )
+    return path.read_text(encoding="utf-8")
+
+
+def _write_config(
+    path: Path, scope: str, key: str, values: Tuple[str, ...]
+) -> int:
+    """
+    Set one setting in a configuration file.
+
+    Parameters
+    ----------
+    path :
+        File to change.
+    scope :
+        ``local`` or ``global``.
+    key :
+        Setting to set.
+    values :
+        What to set it to, one word for a number and any number of them for a
+        list.
+
+    Returns
+    -------
+    :
+        Zero.
+    """
+    kind = _setting(key)
+    if kind is list:
+        value = [*values]
+    elif len(values) != 1:
+        raise click.ClickException(f"`{key}` takes one value, not {len(values)}")
+    elif kind is int:
+        try:
+            value = int(values[0])
+        except ValueError:
+            raise click.ClickException(
+                f"`{key}` is a number of bytes; `{values[0]}` is not a number"
+            ) from None
+    else:
+        value = values[0]
+    text = _existing(path, scope)
+    path.write_text(cfgmod.write_setting(text, key, value), encoding="utf-8")
+    click.echo(f"{key} = {value!r}  in {path}")
+    return 0
+
+
+def _append_config(
+    path: Path, scope: str, key: str, values: Tuple[str, ...]
+) -> int:
+    """
+    Add to a list setting in a configuration file.
+
+    Parameters
+    ----------
+    path :
+        File to change.
+    scope :
+        ``local`` or ``global``.
+    key :
+        Setting to add to.
+    values :
+        Entries to add. One already there is not added twice: the settings are
+        sets in all but name, and a root named twice is scanned twice.
+
+    Returns
+    -------
+    :
+        Zero.
+    """
+    if _setting(key) is not list:
+        raise click.ClickException(
+            f"`{key}` is not a list, so there is nothing to append to; "
+            f"use `set` to change it"
+        )
+    text = _existing(path, scope)
+    current = getattr(Config.load(path), key)
+    added = [v for v in values if v not in current]
+    if not added:
+        click.echo(f"{key} already has {', '.join(values)}  in {path}")
+        return 0
+    value = [*current, *added]
+    path.write_text(cfgmod.write_setting(text, key, value), encoding="utf-8")
+    click.echo(f"{key} = {value!r}  in {path}")
+    return 0
+
+
+def _reset_config(path: Path, scope: str, key: str) -> int:
+    """
+    Take one setting out of a configuration file, so its default applies.
+
+    Parameters
+    ----------
+    path :
+        File to change.
+    scope :
+        ``local`` or ``global``.
+    key :
+        Setting to reset.
+
+    Returns
+    -------
+    :
+        Zero.
+    """
+    _setting(key)
+    text = _existing(path, scope)
+    path.write_text(cfgmod.clear_setting(text, key), encoding="utf-8")
+    click.echo(f"{key} reset to {getattr(Config(), key)!r}  in {path}")
+    return 0
+
+
+def _config_scope(name: str, locate, what: str):
+    """
+    Build the ``local`` or ``global`` half of ``crossrepo config``.
+
+    Both halves do the same four things to different files, so they are written
+    once: a difference between them would be a difference nobody meant.
+
+    Named on its own the group prints its help, which is the list of what can be
+    done to the file. Nothing is written by being asked about.
+
+    Parameters
+    ----------
+    name :
+        Subcommand name.
+    locate :
+        Called for the path of the file this half works on. Called each time
+        rather than once, since the local file follows the working directory.
+    what :
+        How to describe the file in help text.
+
+    Returns
+    -------
+    :
+        The click group, already attached to ``config``.
+    """
+
+    @cmd_config.group(name)
+    def scope() -> None:
+        pass
+
+    scope.help = f"Write or change {what}."
+
+    @scope.command("init")
+    def init() -> int:
+        return _init_config(locate())
+
+    init.help = f"Write {what}, unless it is already there."
+
+    @scope.command("show")
+    def show() -> int:
+        return _show_config(locate(), name)
+
+    show.help = f"Print {what}."
+
+    @scope.command("set")
+    @click.argument("key")
+    @click.argument("values", nargs=-1, required=True)
+    def set_(key: str, values: Tuple[str, ...]) -> int:
+        return _write_config(locate(), name, key, values)
+
+    set_.help = f"Set KEY to VALUES in {what}."
+
+    @scope.command("append")
+    @click.argument("key")
+    @click.argument("values", nargs=-1, required=True)
+    def append(key: str, values: Tuple[str, ...]) -> int:
+        return _append_config(locate(), name, key, values)
+
+    append.help = f"Add VALUES to the list setting KEY in {what}."
+
+    @scope.command("reset")
+    @click.argument("key")
+    def reset(key: str) -> int:
+        return _reset_config(locate(), name, key)
+
+    reset.help = f"Take KEY out of {what}, so its default applies."
+    return scope
+
+
+_config_scope("local", local_config_path, "the crossrepo.toml in this directory")
+_config_scope("global", config_path, "the config file that applies everywhere")
 
 
 def _manifest_file(root: Path, wanted: str) -> Optional[Path]:
@@ -572,6 +901,34 @@ def _manifest_file(root: Path, wanted: str) -> Optional[Path]:
         Path of the ``crossrepo.yml``, or `None` when the directory or the
         manifest is not there.
     """
+    here = _asset_dir(root, wanted)
+    if here is None:
+        return None
+    for name in manifest.MANIFEST_NAMES:
+        if (here / name).is_file():
+            return here / name
+    return None
+
+
+def _asset_dir(root: Path, wanted: str) -> Optional[Path]:
+    """
+    Find one asset directory in a working tree, however it is spelled.
+
+    The directory is matched without regard to case, as the scan matches it, so
+    a repository spelling it ``Results`` is found like any other.
+
+    Parameters
+    ----------
+    root :
+        Top of the working tree.
+    wanted :
+        Asset directory as the settings spell it, relative to `root`.
+
+    Returns
+    -------
+    :
+        The directory, or `None` when it is not there.
+    """
     here = root
     for part in wanted.strip("/").split("/"):
         if not part:
@@ -579,14 +936,14 @@ def _manifest_file(root: Path, wanted: str) -> Optional[Path]:
         if (here / part).is_dir():
             here = here / part
             continue
-        got = [c for c in sorted(here.iterdir()) if c.is_dir() and c.name.lower() == part.lower()]
+        got = [
+            c for c in sorted(here.iterdir())
+            if c.is_dir() and c.name.lower() == part.lower()
+        ]
         if not got:
             return None
         here = got[0]
-    for name in manifest.MANIFEST_NAMES:
-        if (here / name).is_file():
-            return here / name
-    return None
+    return here
 
 
 def _key_path(governing: manifest.Manifest, key: str) -> str:
@@ -677,6 +1034,191 @@ def _links_under(directory: Path) -> Iterator[Path]:
             yield here
         elif here.is_dir():
             yield from _links_under(here)
+
+
+def _tracked(root: Path, rel: str) -> bool:
+    """
+    Test whether git holds a path in a working tree.
+
+    Parameters
+    ----------
+    root :
+        Top of the working tree.
+    rel :
+        Repository-relative path, which may name a directory.
+
+    Returns
+    -------
+    :
+        `True` when git tracks it, or anything inside it. Staged counts:
+        committing is what publishes, but a file about to be committed is one
+        somebody has decided to keep.
+    """
+    listed = gitutil.git(root, "ls-files", "-z", "--", rel, check=False)
+    return bool(str(listed).strip("\0").strip())
+
+
+def _inside(root: Path, path: Path) -> Optional[str]:
+    """
+    Express a path relative to a working tree, without following its last part.
+
+    Parameters
+    ----------
+    root :
+        Top of the working tree.
+    path :
+        Path to place. Its parent directories are resolved, so a working tree
+        reached through a symbolic link still matches, while the last component
+        is left alone: a symbolic link is the thing being named, not a route to
+        something else.
+
+    Returns
+    -------
+    :
+        The repository-relative path with forward slashes, or `None` when the
+        path lies outside the working tree.
+    """
+    full = path.parent.resolve() / path.name
+    try:
+        return full.relative_to(root.resolve()).as_posix()
+    except ValueError:
+        return None
+
+
+def _share_target(root: Path, here: Path) -> Optional[str]:
+    """
+    Where a symbolic link points, as a path in the working tree.
+
+    Parameters
+    ----------
+    root :
+        Top of the working tree.
+    here :
+        The link.
+
+    Returns
+    -------
+    :
+        The repository-relative path of the target, or `None` when it lies
+        outside the working tree, which is the ordinary case: a link is how a
+        file too large to commit is published, and such a file is written to
+        scratch space beside the repository rather than inside it.
+    """
+    target = here.readlink()
+    resolved = target if target.is_absolute() else here.parent / target
+    return _inside(root, Path(os.path.normpath(resolved)))
+
+
+@cli.command("share")
+@click.argument("path", type=click.Path())
+@click.argument("description")
+@catalog_options
+@click.pass_context
+def cmd_share(
+    ctx: click.Context, path: str, description: str,
+    config_file: Optional[str], refresh: bool,
+) -> int:
+    """
+    Publish PATH, saying in DESCRIPTION what it holds.
+
+    Publishing is naming a file in the crossrepo.yml, and this is that written
+    for you: the file is checked, the manifest is updated, and a file published
+    as a symbolic link is stamped as well. Committing the crossrepo.yml is what
+    makes the new version.
+
+    PATH has to be tracked by git already, since committing a file is the act of
+    offering it. A symbolic link is published instead of its content, so what it
+    points at must *not* be tracked: a target git holds as well would be
+    published twice, once as bytes and once as a stamp that could disagree.
+    """
+    cfg, _ = _settings(ctx, config_file, refresh)
+    here = Path(path)
+    if not os.path.lexists(here):
+        raise click.ClickException(f"{path} is not there")
+    try:
+        top = str(gitutil.git(here.parent, "rev-parse", "--show-toplevel")).strip()
+    except GitError:
+        raise click.ClickException(f"{path} is not in a git repository") from None
+    root = Path(top)
+
+    rel = _inside(root, here)
+    if rel is None:
+        raise click.ClickException(f"{path} is outside {root}")
+    if not _tracked(root, rel):
+        raise click.ClickException(
+            f"{rel} is not tracked by git, so there is nothing to publish yet.\n"
+            f"Run `git add {rel}` first: committing a file is how it is offered."
+        )
+
+    link = here.is_symlink()
+    if link:
+        target = _share_target(root, here)
+        if target is not None and _tracked(root, target):
+            raise click.ClickException(
+                f"{rel} points at {target}, which git tracks too.\n"
+                f"A link is published in place of content too large to commit, "
+                f"so the content behind it must not be committed as well. "
+                f"Publish {target} itself, or move it out of the repository."
+            )
+
+    where, key = _share_key(root, cfg, rel)
+    text = where.read_text(encoding="utf-8") if where.exists() else ""
+    where.parent.mkdir(parents=True, exist_ok=True)
+    where.write_text(manifest.write_entry(text, key, description), encoding="utf-8")
+    shown = where.relative_to(root).as_posix()
+    click.echo(f"  published  {rel}  in {shown}")
+    if link:
+        ctx.invoke(cmd_stamp, path=str(root), check=False)
+    click.echo(f"commit {shown} to publish this version")
+    return 0
+
+
+def _share_key(cfg_root: Path, cfg: Config, rel: str) -> Tuple[Path, str]:
+    """
+    Decide which manifest publishes a file, and under what key.
+
+    A file inside an asset directory is named relative to the manifest there,
+    which is the short spelling and the usual one. Anything else is named from
+    the root of the repository, with a leading ``/``, in the manifest of the
+    first asset directory the repository has: that is the one spelling for a
+    path reaching outside, so what a manifest covers stays plain to read.
+
+    Parameters
+    ----------
+    cfg_root :
+        Top of the working tree.
+    cfg :
+        Settings, for the asset directories.
+    rel :
+        Repository-relative path being published.
+
+    Returns
+    -------
+    :
+        ``(manifest_path, key)``.
+
+    Raises
+    ------
+    click.ClickException
+        If the repository has none of the configured asset directories, there
+        being nowhere a manifest may sit.
+    """
+    first = None
+    for wanted in cfg.asset_dirs:
+        directory = _asset_dir(cfg_root, wanted)
+        if directory is None:
+            continue
+        first = first or directory
+        inside = directory.relative_to(cfg_root).as_posix()
+        if rel == inside or rel.startswith(inside + "/"):
+            return directory / manifest.MANIFEST_NAMES[0], rel[len(inside) + 1:]
+    if first is None:
+        wanted = ", ".join(cfg.asset_dirs) or "results"
+        raise click.ClickException(
+            f"{cfg_root} has none of the asset directories ({wanted}), so there "
+            f"is nowhere for a crossrepo.yml to sit. Make one and try again."
+        )
+    return first / manifest.MANIFEST_NAMES[0], "/" + rel
 
 
 @cli.command("stamp")

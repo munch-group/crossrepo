@@ -1,0 +1,38 @@
+# describe { #crossrepo.core.describe }
+
+```python
+crossrepo.core.describe(entry, version=None)
+```
+
+Everything the catalog holds about one published file, as lines to print.
+
+Rendered here rather than at either end, so that the terminal and a notebook
+say the same thing in the same words. Sizes are written the way the command
+line writes them, by [](`crossrepo.core.human`).
+
+What a file is comes first and what this version of it is comes second,
+because the first block is true of the file whatever version is being looked
+at and the second changes under it. A field with nothing in it is left out:
+``link`` on a file git holds itself would be a blank where a reader would
+look for a reason.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**entry**]{.parameter-name} [:]{.parameter-annotation-sep} [[Entry](`crossrepo.model.Entry`)]{.parameter-annotation}</code>
+
+:   Entry to describe.
+
+<code>[**version**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Version](`crossrepo.model.Version`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   Version to describe. Defaults to `crossrepo.model.Entry.latest`.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[str](`str`)\]]{.parameter-annotation}</code>
+
+:   The lines, without trailing newlines, starting with the spec that names the file and with a blank line between the two blocks.
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`crossrepo.info`)
+[](`crossrepo.core.versions`)

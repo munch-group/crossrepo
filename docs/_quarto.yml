@@ -108,6 +108,7 @@ quartodoc:
         Getting a local path to one version of a result file.
       contents:
         - get
+        - info
         - fetch
         - outdated
     - title: Resolving
@@ -120,6 +121,7 @@ quartodoc:
         - match
         - selects
         - find_version
+        - describe
         - fingerprint
         - scan_repo
         - repo_identity
@@ -153,9 +155,22 @@ quartodoc:
         Cataloguing and fetching repositories over the GitHub API, without
         cloning them.
       contents:
-        - build
-        - scan_repo
-        - versions
+        # These three share a name with the one in the main API, and a shared
+        # name is a shared page: without a path of their own they overwrite
+        # `crossrepo.build`, `crossrepo.core.scan_repo` and `crossrepo.versions`,
+        # which are then linked from the index as anchors that are not there.
+        - kind: page
+          path: remote-build
+          contents:
+            - build
+        - kind: page
+          path: remote-scan_repo
+          contents:
+            - scan_repo
+        - kind: page
+          path: remote-versions
+          contents:
+            - versions
         - version_at
         - dataset_files
         - download
@@ -180,7 +195,9 @@ quartodoc:
         - Manifest
         - Stamp
         - parse
+        - write_entry
         - write_stamp
+        - quote_key
         - is_manifest
         - manifest_path
         - ManifestError
@@ -195,6 +212,12 @@ quartodoc:
         - active_config
         - Registration
         - config_path
+        - local_config_path
+        - config_in_force
+        - setting_type
+        - write_setting
+        - clear_setting
+        - render_setting
         - cache_root
     - title: Cache
       package: crossrepo.cache

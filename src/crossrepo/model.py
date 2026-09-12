@@ -60,6 +60,20 @@ class Version:
         `None` for a file git holds the content of. A link's content is read
         from the target rather than from git, and `blob` is then the stamp that
         says which content it should be.
+    missing :
+        Whether the content is not where it should be: that a `link` resolved to
+        nothing when the catalog was built. Always `False` for content git holds
+        itself, which is there wherever the repository is. It is recorded rather
+        than worked out on demand because the answer is a question for the
+        machine the repository is on, and asking it over ssh costs a round trip;
+        it is therefore as old as the catalog, and a pipeline that writes the
+        file after the last scan still reads as missing until the next one.
+
+        It says the repository cannot produce the content, which is the question
+        a listing is asking. The cache is a separate matter: content already in
+        it -- fetched before the file went away, or put there by another file of
+        the same bytes -- is still handed over, since a cached object is what it
+        is whatever became of the link.
     """
 
     sha: str
@@ -71,6 +85,7 @@ class Version:
     parts: int = 0
     tags: Tuple[str, ...] = ()
     link: Optional[str] = None
+    missing: bool = False
 
 
 @dataclass(frozen=True)
@@ -206,7 +221,11 @@ class Entry:
         :
             ``local`` for a clone on this machine, ``github`` for a repository
             read over the API, and the server's name or alias for a clone
-            reached over ssh.
+            reached over ssh. ``missing`` when the file is published as a link
+            and the link led nowhere: the content is then not to be had from
+            anywhere, the API holding a link's target path rather than its
+            bytes, so naming a machine would promise a fetch that cannot
+            happen.
 
         Examples
         --------
@@ -221,6 +240,8 @@ class Entry:
         --------
         [](`crossrepo.list`)
         """
+        if self.latest.missing:
+            return "missing"
         if self.source != "ssh":
             return self.source
         host = self.root.host

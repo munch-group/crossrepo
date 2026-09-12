@@ -518,15 +518,17 @@ def test_the_note_column_says_a_version_is_a_link(linked):
     assert cli.note(linked["proj:results/plain.csv"].latest) == ""
 
 
-def test_the_listing_says_a_file_is_a_link(links, tmp_path, capsys):
+def test_info_says_a_file_is_a_link_and_what_it_points_at(links, tmp_path, capsys):
+    """The listing is four columns now, so this is `info`'s to say."""
     conf = tmp_path / "config.toml"
     conf.write_text(f'roots = ["{links}/links"]\n')
-    assert cli.main(["--config", str(conf), "--refresh", "list", "proj"]) == 0
-    rows = [
-        l.split() for l in capsys.readouterr().out.splitlines() if "results/" in l
-    ]
-    big = [r for r in rows if r[1].endswith("big.csv")][0]
-    assert "link" in big
+    assert cli.main(["--config", str(conf), "--refresh", "info", "proj:big.csv"]) == 0
+    fields = dict(
+        line.split(None, 1)
+        for line in capsys.readouterr().out.splitlines()[2:] if line.strip()
+    )
+    assert fields["note"] == "link"
+    assert fields["link"] == "../steps/big.csv"
 
 
 def test_get_serves_a_link_from_the_command_line(links, tmp_path, capsys):
@@ -740,3 +742,95 @@ def test_a_directory_the_pipeline_never_wrote_says_so(tmp_path, capsys):
     entry = {e.path: e for e in entries}["results/big.parquet"]
     with pytest.raises(FileNotFoundError, match="no such directory"):
         core.materialize(entry, entry.latest)
+
+
+# ------------------------------- a link that leads nowhere is not `local`
+
+GONE = "gene,score\nonly this fixture writes these bytes,1\n"
+"""Content no other test caches, so a dangling link cannot be served from it."""
+
+
+@pytest.fixture()
+def dangling(tmp_path):
+    """A repository publishing one link that resolves and one that does not."""
+    repo = init(tmp_path / "gone")
+    (repo / ".gitignore").write_text("steps/\n")
+    (repo / "steps").mkdir()
+    (repo / "results").mkdir()
+    # `GONE` is unique to this fixture, so the link that dangles cannot be
+    # served from an object another test put in the cache: the store is keyed
+    # by content, and two identical files are one object.
+    (repo / "steps" / "here.csv").write_text(LINK_V1)
+    (repo / "steps" / "away.csv").write_text(GONE)
+    (repo / "results" / "here.csv").symlink_to("../steps/here.csv")
+    (repo / "results" / "away.csv").symlink_to("../steps/away.csv")
+    (repo / "results" / "crossrepo.yml").write_text(
+        "files:\n"
+        "  here.csv:\n"
+        "    description: The pipeline wrote this one\n"
+        f'    sha256: "{digest(LINK_V1)}"\n'
+        f"    size: {len(LINK_V1)}\n"
+        "  away.csv:\n"
+        "    description: And this one it did not\n"
+        f'    sha256: "{digest(GONE)}"\n'
+        f"    size: {len(GONE)}\n"
+    )
+    commit(repo, "two links, one of them about to dangle")
+    (repo / "steps" / "away.csv").unlink()
+    return repo
+
+
+def test_a_link_that_leads_nowhere_is_not_offered_as_local(dangling):
+    """`local` would promise content the clone cannot produce."""
+    by_path = {e.path: e for e in linked_entries(Config(roots=[str(dangling)]))}
+    assert by_path["results/here.csv"].fetched_from == "local"
+    assert by_path["results/away.csv"].fetched_from == "missing"
+
+
+def test_the_ordinary_files_beside_it_are_unaffected(dangling):
+    (dangling / "results" / "plain.csv").write_text("k,v\nx,1\n")
+    (dangling / "results" / "crossrepo.yml").write_text(
+        (dangling / "results" / "crossrepo.yml").read_text()
+        + "  plain.csv: git holds this one\n"
+    )
+    commit(dangling, "a committed file too")
+    by_path = {e.path: e for e in linked_entries(Config(roots=[str(dangling)]))}
+    assert by_path["results/plain.csv"].fetched_from == "local"
+
+
+def test_what_the_listing_says_is_what_get_does(dangling):
+    """The column and the fetch must not disagree."""
+    cfg = Config(roots=[str(dangling)])
+    assert core.get("gone", "here.csv", cfg=cfg, quiet=True).exists()
+    with pytest.raises(FileNotFoundError):
+        core.get("gone", "away.csv", cfg=cfg, quiet=True)
+
+
+def test_the_answer_survives_the_catalog_cache(dangling, tmp_path):
+    """It is recorded, so a listing off the stored catalog still says it."""
+    cfg = Config(roots=[str(dangling)])
+    core.save(linked_entries(cfg), cfg)
+    by_path = {e.path: e for e in core.load_cached(cfg=cfg)}
+    assert by_path["results/away.csv"].latest.missing is True
+    assert by_path["results/here.csv"].latest.missing is False
+
+
+def test_a_linked_directory_that_is_gone_counts_too(tmp_path):
+    repo = init(tmp_path / "dataset-gone")
+    (repo / ".gitignore").write_text("steps/\n")
+    (repo / "steps" / "out.parquet").mkdir(parents=True)
+    (repo / "results").mkdir()
+    (repo / "steps" / "out.parquet" / "part-0.parquet").write_text("a,1\n")
+    (repo / "results" / "big.parquet").symlink_to("../steps/out.parquet")
+    (repo / "results" / "crossrepo.yml").write_text(
+        "files:\n"
+        "  big.parquet:\n"
+        "    description: Written by the pipeline\n"
+        f'    sha256: "{cache.tree_hash([("part-0.parquet", digest("a,1\\n"))])}"\n'
+        "    size: 4\n"
+        "    parts: 1\n"
+    )
+    commit(repo, "a dataset published as a link")
+    shutil.rmtree(repo / "steps" / "out.parquet")
+    entry = {e.path: e for e in linked_entries(Config(roots=[str(repo)]))}
+    assert entry["results/big.parquet"].fetched_from == "missing"

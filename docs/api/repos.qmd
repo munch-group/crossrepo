@@ -1,7 +1,7 @@
 # repos { #crossrepo.repos }
 
 ```python
-crossrepo.repos(refresh=False, cfg=None)
+crossrepo.repos(refresh=False, progress=True, cfg=None)
 ```
 
 Tabulate one row per repository that publishes something.
@@ -13,6 +13,10 @@ The python side of ``crossrepo repos``.
 <code>[**refresh**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [False]{.parameter-default}</code>
 
 :   Rescan before listing, rather than using the stored catalog.
+
+<code>[**progress**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [True]{.parameter-default}</code>
+
+:   Show a progress bar while rescanning, one step per repository, as [](`crossrepo.list`) and [](`crossrepo.refresh`) do. Nothing is drawn when the stored catalog is read.
 
 <code>[**cfg**]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
 

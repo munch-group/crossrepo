@@ -5,21 +5,20 @@ crossrepo.list(
     repo=None,
     pattern=None,
     *,
-    brief=False,
-    version=False,
-    spec=False,
-    url=False,
     refresh=False,
-    progress=False,
+    progress=True,
     cfg=None,
 )
 ```
 
 Tabulate what the configured repositories publish.
 
-The python side of ``crossrepo list``, and like it the version is left out
-unless asked for: it is a full commit sha, and every file a repository
-publishes carries the same one.
+The python side of ``crossrepo list``, showing the same four columns it
+shows: which repository, which file, where reading it goes, and what it
+holds. A listing is for finding the file you want among all of them, and
+these are what that is decided on. Everything else the catalog knows is in
+[](`crossrepo.frame`), and everything it knows about one file is in
+[](`crossrepo.info`).
 
 ## Parameters {.doc-section .doc-section-parameters}
 
@@ -31,29 +30,13 @@ publishes carries the same one.
 
 :   Keep only files whose name matches this glob, such as ``"*.csv"``.
 
-<code>[**brief**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [False]{.parameter-default}</code>
-
-:   Show only what a file is and where reading it goes: ``owner``, ``repo``, ``name``, ``description`` and ``get``.
-
-<code>[**version**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [False]{.parameter-default}</code>
-
-:   Include the ``version`` column, the full commit sha.
-
-<code>[**spec**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [False]{.parameter-default}</code>
-
-:   Include the ``spec`` column, the one string naming a file at a version, which [](`crossrepo.fetch`) and the command line take. It restates the repository, the path and the version, so it is the widest column there is and is left out unless wanted.
-
-<code>[**url**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [False]{.parameter-default}</code>
-
-:   Include the ``url`` column, addressing that version on GitHub.
-
 <code>[**refresh**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [False]{.parameter-default}</code>
 
 :   Rescan before listing, rather than using the stored catalog.
 
-<code>[**progress**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [False]{.parameter-default}</code>
+<code>[**progress**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [True]{.parameter-default}</code>
 
-:   Show a progress bar while rescanning. Only meaningful with `refresh`, since a stored catalog is read at once.
+:   Show a progress bar while rescanning, one step per repository. On by default, because a listing rescans on its own account -- when there is no stored catalog, or the stored one has aged out -- and a scan of repositories on a server is not something to do silently. Nothing is drawn when the stored catalog is read, there being nothing to wait for.
 
 <code>[**cfg**]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
 
@@ -63,7 +46,7 @@ publishes carries the same one.
 
 <code>[]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation}</code>
 
-:   A `Table`, which is a [](`pandas.DataFrame`), with one row per published file or dataset: ``owner``, ``repo``, ``name``, ``description``, ``get``, ``date``, ``github``, ``path``, ``dir``, ``bytes``, ``tags`` and ``lfs``, or the five columns of `brief`, plus whichever of ``version``, ``spec`` and ``url`` were asked for. ``get`` says where reading the file goes: ``local`` for a clone on this machine, ``github`` for a repository read over the API, and the server's name or alias for one reached over ssh. ``github`` is the repository as ``owner/repo``, and ``path`` the file as ``dir/name``. [](`crossrepo.frame`) has everything, including the number of files a dataset holds.
+:   A `Table`, which is a [](`pandas.DataFrame`), with one row per published file or dataset and the columns `LIST_COLUMNS` names: ``repo`` as ``owner/repo``, ``path`` from the repository root, ``get``, and ``description``. ``get`` says where reading the file goes: ``local`` for a clone on this machine, ``github`` for a repository read over the API, the server's name or alias for one reached over ssh, and ``missing`` for a file published as a link whose target was not there when the catalog was built.
 
 ## Raises {.doc-section .doc-section-raises}
 
@@ -77,14 +60,12 @@ publishes carries the same one.
 import crossrepo
 
 crossrepo.list()                        # everything published
-crossrepo.list(brief=True)              # just what each file is, and how big
 crossrepo.list("x-gwas")                # one repository
 crossrepo.list(pattern="*.parquet")     # by file name
-crossrepo.list(version=True)            # with the sha that pins each file
-crossrepo.list(spec=True)               # with the string the shell takes
 ```
 
 ## See Also {.doc-section .doc-section-see-also}
 
+[](`crossrepo.info`)
 [](`crossrepo.get`)
-[](`crossrepo.repos`)
+[](`crossrepo.frame`)

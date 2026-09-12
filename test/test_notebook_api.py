@@ -5,29 +5,28 @@ import pytest
 import crossrepo
 
 
-def test_list_leaves_the_version_out_by_default(cfg):
+def test_a_listing_is_four_columns(cfg):
+    """What a file is chosen on, and nothing else; the rest is `frame`."""
     table = crossrepo.list(cfg=cfg)
-    assert "version" not in table.columns
-    assert "url" not in table.columns
-    assert {"repo", "path", "description", "bytes"} <= set(table.columns)
+    assert [*table.columns] == ["repo", "path", "get", "description"]
     assert len(table) > 0
 
 
-def test_list_version_adds_it_last(cfg):
-    table = crossrepo.list(version=True, cfg=cfg)
-    assert table.columns[-1] == "version"
-    assert all(len(v) == 40 for v in table["version"])
+def test_the_listing_names_the_owner_with_the_repo(cfg):
+    """A listing is what a spec is copied out of, and a spec names the owner."""
+    assert all("/" in name for name in crossrepo.list(cfg=cfg)["repo"])
 
 
-def test_list_url_and_version_are_the_last_two(cfg):
-    table = crossrepo.list(version=True, url=True, cfg=cfg)
-    assert [*table.columns[-2:]] == ["version", "url"]
+def test_the_listing_refuses_the_options_it_used_to_take(cfg):
+    """They shaped columns the listing no longer has."""
+    for gone in ("brief", "version", "spec", "url"):
+        with pytest.raises(TypeError):
+            crossrepo.list(cfg=cfg, **{gone: True})
 
 
 def test_list_filters_by_repo_and_pattern(cfg):
     table = crossrepo.list("hic-borders", cfg=cfg)
-    assert set(table["repo"]) == {"hic-borders"}
-    assert set(table["github"]) == {"other-org/hic-borders"}
+    assert set(table["repo"]) == {"other-org/hic-borders"}
     paths = set(crossrepo.list(pattern="*.tsv", cfg=cfg)["path"])
     assert paths == {"Results/borders.tsv"}
 
@@ -36,9 +35,7 @@ def test_an_empty_result_still_has_columns(cfg):
     """Downstream code must not have to special-case nothing matching."""
     table = crossrepo.list(pattern="*.nothing", cfg=cfg)
     assert len(table) == 0
-    assert "path" in table.columns
-    assert "version" not in table.columns
-    assert "version" in crossrepo.list(pattern="*.nothing", version=True, cfg=cfg).columns
+    assert [*table.columns] == [*crossrepo.LIST_COLUMNS]
 
 
 def test_repos_summarises_one_row_each(cfg):
@@ -64,11 +61,10 @@ def test_versions_reports_ambiguity(cfg):
         crossrepo.versions("sweep-scan", "stable.csv", cfg=cfg)
 
 
-def test_refresh_rebuilds_and_returns_the_catalog(cfg):
-    table = crossrepo.refresh(cfg=cfg)
-    assert len(table) > 0
-    assert "version" not in table.columns
-    assert "version" in crossrepo.refresh(version=True, cfg=cfg).columns
+def test_refresh_rebuilds_the_catalog_and_shows_nothing(cfg):
+    """A cell that rescans should not answer with the whole catalog."""
+    assert crossrepo.refresh(cfg=cfg) is None
+    assert len(crossrepo.list(cfg=cfg)) > 0            # it did rebuild it
 
 
 def test_parts_is_left_to_frame(cfg):
@@ -80,15 +76,15 @@ def test_parts_is_left_to_frame(cfg):
     assert [*full.loc[full["name"] == "table.parquet", "parts"]] == [3]
 
 
-def test_list_columns_are_in_the_order_they_are_read_in(cfg):
-    assert [*crossrepo.list(cfg=cfg).columns] == [
+def test_frame_columns_are_in_the_order_they_are_read_in(cfg):
+    assert [*crossrepo.frame(crossrepo.catalog(cfg=cfg)).columns] == [
         "owner", "repo", "name", "description", "get", "date", "github", "path",
-        "dir", "bytes", "tags", "lfs",
+        "dir", "bytes", "tags", "lfs", "version", "parts", "spec", "url",
     ]
 
 
 def test_the_repository_and_the_file_are_each_carried_whole_and_in_halves(cfg):
-    table = crossrepo.list(cfg=cfg).set_index("path")
+    table = crossrepo.frame(crossrepo.catalog(cfg=cfg)).set_index("path")
     row = table.loc["results/sub/stable.csv"]
     assert (row["owner"], row["repo"]) == ("acme", "sweep-scan")
     assert row["github"] == "acme/sweep-scan"        # the two halves joined
@@ -97,8 +93,8 @@ def test_the_repository_and_the_file_are_each_carried_whole_and_in_halves(cfg):
 
 def test_the_owner_is_the_github_account_not_the_directory(cfg):
     """hic-borders sits under acme/ on disk; its remote says otherwise."""
-    table = crossrepo.list("hic-borders", cfg=cfg)
-    assert set(table["owner"]) == {"other-org"}
+    table = crossrepo.frame(crossrepo.catalog(cfg=cfg))
+    assert set(table[table["repo"] == "hic-borders"]["owner"]) == {"other-org"}
 
 
 def test_a_file_at_the_root_of_a_repo_has_an_empty_dir(tmp_path):
@@ -113,7 +109,8 @@ def test_a_file_at_the_root_of_a_repo_has_an_empty_dir(tmp_path):
     (repo / "top.csv").write_text("a\n")
     commit(repo, "a published file beside the .git")
 
-    table = crossrepo.list(cfg=Config(roots=[str(tmp_path)]))
+    cfg = Config(roots=[str(tmp_path)])
+    table = crossrepo.frame(crossrepo.catalog(refresh=True, cfg=cfg))
     assert [*table["path"]] == ["top.csv"]
     assert [*table["dir"]] == [""]
     assert [*table["name"]] == ["top.csv"]
@@ -158,60 +155,74 @@ def test_listing_without_refreshing_draws_nothing(cfg, monkeypatch):
     assert len(crossrepo.list(cfg=cfg)) > 0
 
 
-def test_spec_is_left_out_by_default(cfg):
+def bars(monkeypatch):
+    """Record which progress bars were asked for, without drawing any."""
+    from crossrepo import core
+
+    seen = {}
+    real = core.progress_bar
+
+    def spy(items, description, enabled):
+        seen[description] = enabled
+        return real(items, description, False)      # no bar in the test output
+
+    monkeypatch.setattr(core, "progress_bar", spy)
+    return seen
+
+
+def test_listing_scans_with_the_same_bar_refresh_uses(cfg, monkeypatch, tmp_path):
+    """A listing rescans on its own account, and must not do it silently."""
+    monkeypatch.setenv("CROSSREPO_CACHE", str(tmp_path / "cold"))
+    seen = bars(monkeypatch)
+    assert len(crossrepo.list(cfg=cfg)) > 0
+    assert seen.get("scanning clones") is True
+
+
+def test_the_repo_summary_scans_with_it_too(cfg, monkeypatch, tmp_path):
+    monkeypatch.setenv("CROSSREPO_CACHE", str(tmp_path / "cold"))
+    seen = bars(monkeypatch)
+    assert len(crossrepo.repos(cfg=cfg)) > 0
+    assert seen.get("scanning clones") is True
+
+
+def test_both_can_be_asked_to_stay_quiet(cfg, monkeypatch, tmp_path):
+    monkeypatch.setenv("CROSSREPO_CACHE", str(tmp_path / "cold"))
+    seen = bars(monkeypatch)
+    crossrepo.list(progress=False, cfg=cfg)
+    assert seen.get("scanning clones") is False
+    seen.clear()
+    monkeypatch.setenv("CROSSREPO_CACHE", str(tmp_path / "colder"))
+    crossrepo.repos(progress=False, cfg=cfg)
+    assert seen.get("scanning clones") is False
+
+
+def test_the_repo_summary_draws_nothing_off_a_stored_catalog(cfg, monkeypatch):
+    from crossrepo import core
+
+    crossrepo.refresh(progress=False, cfg=cfg)        # populate the stored catalog
+    monkeypatch.setattr(
+        core, "progress_bar",
+        lambda *a, **k: pytest.fail("a stored catalog needs no progress bar"),
+    )
+    assert len(crossrepo.repos(cfg=cfg)) > 0
+
+
+def test_spec_is_left_to_frame(cfg):
     """It restates repo, path and version, so it is the widest column there is."""
     assert "spec" not in crossrepo.list(cfg=cfg).columns
 
 
-def test_spec_can_be_asked_for_and_round_trips(cfg):
-    table = crossrepo.list(spec=True, cfg=cfg)
-    assert table.columns[-1] == "spec"
+def test_the_spec_frame_carries_round_trips(cfg):
+    table = crossrepo.frame(crossrepo.catalog(cfg=cfg))
     one = table.loc[table["path"] == "results/candidates.csv", "spec"].iloc[0]
     assert crossrepo.fetch(one, cfg=cfg).read_text().count("\n") == 4
 
 
-def test_the_optional_columns_keep_their_order(cfg):
-    table = crossrepo.list(version=True, spec=True, url=True, cfg=cfg)
-    assert [*table.columns[-3:]] == ["version", "spec", "url"]
+def test_refresh_refuses_the_listing_options(cfg):
+    """They went with the return value they were shaping."""
+    with pytest.raises(TypeError):
+        crossrepo.refresh(spec=True, progress=False, cfg=cfg)
 
-
-def test_refresh_forwards_spec_too(cfg):
-    assert "spec" in crossrepo.refresh(spec=True, progress=False, cfg=cfg).columns
-
-
-def test_brief_shows_what_a_file_is_and_where_it_comes_from(cfg):
-    table = crossrepo.list(brief=True, cfg=cfg)
-    assert [*table.columns] == [
-        "owner", "repo", "name", "description", "get",
-    ]
-    assert len(table) == len(crossrepo.list(cfg=cfg))     # the same rows
-
-
-def test_brief_says_nothing_about_size_or_date(cfg):
-    """Both are questions for a file already worth looking at."""
-    table = crossrepo.list(brief=True, cfg=cfg)
-    assert not {"size", "bytes", "date"} & set(table.columns)
-
-
-def test_a_size_over_a_billion_bytes_is_gigabytes():
-    assert crossrepo._size(2_400_000_000) == "2.4 GB"
-    assert crossrepo._size(999_000_000) == "999.0 MB"
-    assert crossrepo._size(-1) == "?"                         # unknown, not -0.0 MB
-
-
-def test_brief_still_takes_the_optional_columns(cfg):
-    table = crossrepo.list(brief=True, version=True, url=True, cfg=cfg)
-    assert [*table.columns[-2:]] == ["version", "url"]
-    assert table.columns[0] == "owner"
-
-
-def test_brief_of_nothing_still_has_its_columns(cfg):
-    table = crossrepo.list(brief=True, pattern="*.nothing", cfg=cfg)
-    assert len(table) == 0
-    assert [*table.columns] == [*crossrepo.BRIEF_COLUMNS]
-
-
-# -------------------------------------------------- the table it hands back
 
 def aligned(table):
     """The column numbers the rendered table left aligns."""
@@ -247,13 +258,13 @@ def test_a_listing_left_aligns_the_columns_that_hold_text(cfg):
 
 def test_a_number_column_is_left_where_it_was(cfg):
     """Right aligned is right for numbers; this is only about text."""
-    table = crossrepo.list(cfg=cfg)
+    table = crossrepo.frame(crossrepo.catalog(cfg=cfg))
     assert [*table.columns].index("bytes") not in aligned(table)
 
 
 def test_the_alignment_survives_being_worked_on(cfg):
     """A sort or a column selection must not cost the styling."""
-    table = crossrepo.list(cfg=cfg)
+    table = crossrepo.frame(crossrepo.catalog(cfg=cfg))
     assert aligned(table.sort_values("bytes")) == text_columns(table)
     narrowed = table[["repo", "description", "bytes"]]
     assert aligned(narrowed) == text_columns(narrowed)
@@ -309,12 +320,96 @@ def test_get_says_local_for_a_clone_on_this_machine(cfg):
     assert set(crossrepo.list(cfg=cfg)["get"]) == {"local"}
 
 
-def test_get_sits_between_the_description_and_the_date(cfg):
+def test_get_follows_the_description(cfg):
     columns = [*crossrepo.list(cfg=cfg).columns]
-    assert columns[columns.index("description") + 1] == "get"
-    assert columns[columns.index("get") + 1] == "date"
+    assert columns[columns.index("description") - 1] == "get"
 
 
-def test_brief_keeps_get(cfg):
-    """It is half of what `brief` is for: what a file is, and where it is."""
-    assert [*crossrepo.list(brief=True, cfg=cfg).columns][-1] == "get"
+def test_the_version_history_scans_with_a_bar_too(cfg, monkeypatch, tmp_path):
+    """The third of the three tables, and it rescans on its own account too."""
+    monkeypatch.setenv("CROSSREPO_CACHE", str(tmp_path / "cold"))
+    seen = bars(monkeypatch)
+    assert len(crossrepo.versions("sweep-scan", "candidates.csv", cfg=cfg)) > 0
+    assert seen.get("scanning clones") is True
+
+
+def test_the_version_history_can_be_asked_to_stay_quiet(cfg, monkeypatch, tmp_path):
+    monkeypatch.setenv("CROSSREPO_CACHE", str(tmp_path / "cold"))
+    seen = bars(monkeypatch)
+    crossrepo.versions("sweep-scan", "candidates.csv", progress=False, cfg=cfg)
+    assert seen.get("scanning clones") is False
+
+
+# --------------------------------------------- everything about one file
+
+def fields(text):
+    """The printed block as a mapping, its heading dropped."""
+    return dict(
+        line.split(None, 1) for line in text.splitlines()[2:] if line.strip()
+    )
+
+
+def test_info_prints_what_is_stored(cfg, capsys):
+    crossrepo.info("sweep-scan", "candidates.csv", cfg=cfg)
+    out = capsys.readouterr().out
+    assert out.splitlines()[0] == "acme/sweep-scan:results/candidates.csv"
+    got = fields(out)
+    assert got["description"] == "Sweep candidates, one row per gene"
+    assert got["get"] == "local"
+    assert got["path"] == "results/candidates.csv"
+    assert got["manifest"] == "results/crossrepo.yml"
+    assert len(got["version"]) == 40
+    assert got["size"].endswith("B")           # as the terminal writes it
+
+
+def test_info_returns_nothing(cfg, capsys):
+    """It is for looking at, like the command it mirrors."""
+    assert crossrepo.info("sweep-scan", "candidates.csv", cfg=cfg) is None
+    capsys.readouterr()
+
+
+def test_info_is_addressed_the_way_get_is(cfg, capsys):
+    """Same arguments, so asking and fetching differ in the verb alone."""
+    import inspect
+
+    taken = inspect.signature(crossrepo.info).parameters
+    for name in ("repo", "filename", "version", "owner", "refresh", "cfg"):
+        assert name in taken
+    crossrepo.info("acme/sweep-scan", "candidates.csv", cfg=cfg)
+    assert "acme/sweep-scan" in capsys.readouterr().out
+    crossrepo.info("sweep-scan", "candidates.csv", owner="acme", cfg=cfg)
+    assert "acme/sweep-scan" in capsys.readouterr().out
+
+
+def test_info_takes_a_version(cfg, capsys):
+    older = crossrepo.versions("sweep-scan", "candidates.csv", cfg=cfg)
+    sha = older["version"].iloc[-1]                  # the oldest of them
+    crossrepo.info("sweep-scan", "candidates.csv", sha, cfg=cfg)
+    got = fields(capsys.readouterr().out)
+    assert got["version"] == sha
+    assert got["commit"] == "first results"
+
+
+def test_info_says_when_nothing_matches(cfg):
+    with pytest.raises(LookupError):
+        crossrepo.info("sweep-scan", "no-such-file.csv", cfg=cfg)
+
+
+# ------------------------------------- the terminal and the notebook agree
+
+def test_the_listing_columns_are_one_definition(cfg, capsys):
+    """`crossrepo list` and `crossrepo.list()` show the same four, by name."""
+    from crossrepo import cli
+
+    assert [*crossrepo.list(cfg=cfg).columns] == [*crossrepo.LIST_COLUMNS]
+    assert cli.LIST_COLUMNS is crossrepo.LIST_COLUMNS
+
+
+def test_info_reads_the_same_in_both(cfg, capsys, by_spec):
+    """Both ends print `describe`, so neither can drift from the other."""
+    from crossrepo import core
+
+    entry = by_spec["acme/sweep-scan:results/candidates.csv"]
+    crossrepo.info("sweep-scan", "candidates.csv", cfg=cfg)
+    printed = capsys.readouterr().out.rstrip("\n")
+    assert printed == "\n".join(core.describe(entry, entry.latest))

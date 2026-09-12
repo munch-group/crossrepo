@@ -1,0 +1,19 @@
+# quote_key { #crossrepo.manifest.quote_key }
+
+```python
+crossrepo.manifest.quote_key(key)
+```
+
+Write a manifest key the way YAML needs it written.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**key**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Key as a path.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   The key, quoted when it holds a character that would otherwise change what it means -- a glob, a leading indicator, a colon.

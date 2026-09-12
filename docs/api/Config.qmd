@@ -79,7 +79,7 @@ Read settings from a TOML file.
 
 <code>[**path**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Path](`pathlib.Path`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
 
-:   File to read. Defaults to [](`crossrepo.config.config_path`). A missing file is not an error and yields the defaults.
+:   File to read. Defaults to [](`crossrepo.config.config_in_force`): the ``crossrepo.toml`` in the working directory when there is one, else the file that applies everywhere. A missing file is not an error and yields the defaults.
 
 #### Returns {.doc-section .doc-section-returns}
 

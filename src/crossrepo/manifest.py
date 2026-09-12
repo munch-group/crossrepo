@@ -716,6 +716,175 @@ def write_stamp(text: str, key: str, stamp: Stamp) -> str:
     return newline.join(lines) + (newline if ends else "")
 
 
+def quote_key(key: str) -> str:
+    """
+    Write a manifest key the way YAML needs it written.
+
+    Parameters
+    ----------
+    key :
+        Key as a path.
+
+    Returns
+    -------
+    :
+        The key, quoted when it holds a character that would otherwise change
+        what it means -- a glob, a leading indicator, a colon.
+    """
+    if key and (_is_glob(key) or key[0] in "*?[]{}&!|>%@`\"'#-" or ":" in key):
+        return '"' + key.replace('"', '\\"') + '"'
+    return key
+
+
+def write_entry(text: str, key: str, description: str) -> str:
+    """
+    Put one file into a manifest, leaving the rest of it alone.
+
+    Publishing is naming a file, so this is the act of publishing one. An entry
+    already there has its description rewritten and keeps whatever else it
+    carries: a stamp belongs to the file, not to the sentence describing it, and
+    a re-description should not send the content back to be read again.
+
+    Parameters
+    ----------
+    text :
+        Content of the manifest. An empty string starts one.
+    key :
+        Key to write, as a path relative to the manifest or, with a leading
+        ``/``, from the root of the repository.
+    description :
+        What the file holds.
+
+    Returns
+    -------
+    :
+        The manifest with the entry written.
+
+    Examples
+    --------
+
+    ```python
+    write_entry("files:\\n  a.csv: one\\n", "b.csv", "another")
+    # 'files:\\n  a.csv: one\\n  b.csv: another\\n'
+    ```
+
+    See Also
+    --------
+    [](`crossrepo.manifest.write_stamp`)
+    """
+    newline = "\r\n" if "\r\n" in text else "\n"
+    written = f"{quote_key(key)}: {description}" if description else f"{quote_key(key)}:"
+    if not text.strip():
+        return f"files:{newline}  {written}{newline}"
+    lines = text.splitlines()
+    i, indent, rest = _find_key(lines, key)
+    if i is None:
+        return _appended(lines, written, newline)
+    body = rest.strip()
+    if not body or body.startswith("#"):
+        return _described(lines, i, indent, description, newline)
+    head = lines[i][: len(lines[i]) - len(rest)]
+    lines[i] = f"{head} {description}" if description else head.rstrip()
+    return newline.join(lines) + newline
+
+
+def _appended(lines: List[str], written: str, newline: str) -> str:
+    """
+    Add an entry under ``files``, at the end of the ones already there.
+
+    Parameters
+    ----------
+    lines :
+        The manifest, split into lines.
+    written :
+        The entry, ``key: description``.
+    newline :
+        Line ending the file uses.
+
+    Returns
+    -------
+    :
+        The manifest with the entry added.
+
+    Raises
+    ------
+    ManifestError
+        If there is no ``files`` mapping to add it to. The alternative is
+        writing one and hoping the rest of the file meant what we assume.
+    """
+    start = next(
+        (i for i, line in enumerate(lines) if re.match(r"^files\s*:", line)), None
+    )
+    if start is None:
+        raise ManifestError(
+            "the manifest has no `files:` mapping to add to; a manifest reads\n"
+            "  files:\n    hits.csv: what this file holds"
+        )
+    # The entries are the shallowest lines under `files`; anything deeper
+    # belongs to one of them, and taking its indent would nest the new entry
+    # inside whichever happened to be written last.
+    indent = None
+    end = len(lines)
+    for j in range(start + 1, len(lines)):
+        line = lines[j]
+        if not line.strip():
+            continue
+        lead = line[: len(line) - len(line.lstrip())]
+        if not lead:
+            end = j
+            break
+        if indent is None or len(lead) < len(indent):
+            indent = lead
+    indent = indent or "  "
+    # A blank line before the next top level key belongs after the entry.
+    while end > start + 1 and not lines[end - 1].strip():
+        end -= 1
+    lines.insert(end, f"{indent}{written}")
+    return newline.join(lines) + newline
+
+
+def _described(
+    lines: List[str], i: int, indent: str, description: str, newline: str
+) -> str:
+    """
+    Set the ``description`` of an entry written as a mapping.
+
+    Parameters
+    ----------
+    lines :
+        The manifest, split into lines.
+    i :
+        Index of the entry's own line.
+    indent :
+        Whitespace that line starts with.
+    description :
+        What the file holds.
+    newline :
+        Line ending the file uses.
+
+    Returns
+    -------
+    :
+        The manifest with the description written.
+    """
+    child = indent + "  "
+    end = i + 1
+    while end < len(lines):
+        line = lines[end]
+        if line.strip():
+            lead = line[: len(line) - len(line.lstrip())]
+            if len(lead) <= len(indent):
+                break
+            child = lead
+        end += 1
+    for j in range(i + 1, end):
+        if re.match(r"^\s*description\s*:", lines[j]):
+            lines[j] = f"{child}description: {description}"
+            return newline.join(lines) + newline
+    lines.insert(i + 1, f"{child}description: {description}")
+    return newline.join(lines) + newline
+
+
 def manifest_path(results_dir: str) -> str:
     """
     Where a results directory's manifest must sit to be read.

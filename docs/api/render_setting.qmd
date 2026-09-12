@@ -1,0 +1,23 @@
+# render_setting { #crossrepo.config.render_setting }
+
+```python
+crossrepo.config.render_setting(key, value)
+```
+
+Write one setting the way a configuration file spells it.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**key**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Setting name.
+
+<code>[**value**]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation}</code>
+
+:   Its value, a list of strings or a number.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   The setting as TOML, ending in a newline. A list goes on one line when it is empty and one entry to a line otherwise, which is how [](`crossrepo.config.Config.write_default`) writes it and what keeps a diff to the entries that changed.

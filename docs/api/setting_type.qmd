@@ -1,0 +1,25 @@
+# setting_type { #crossrepo.config.setting_type }
+
+```python
+crossrepo.config.setting_type(key)
+```
+
+What kind of value a setting takes.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**key**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Name of a setting.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[type](`type`)]{.parameter-annotation}</code>
+
+:   `list` for a setting holding several strings, `int` for a count of bytes, `str` for anything else.
+
+## Raises {.doc-section .doc-section-raises}
+
+<code>[:]{.parameter-annotation-sep} [[KeyError](`KeyError`)]{.parameter-annotation}</code>
+
+:   If there is no such setting. The caller says what the names are, since it is the caller that knows how they were asked for.

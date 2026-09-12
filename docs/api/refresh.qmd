@@ -1,13 +1,15 @@
 # refresh { #crossrepo.refresh }
 
 ```python
-crossrepo.refresh(cfg=None, progress=True, owner=None, repo=None, **kwargs)
+crossrepo.refresh(cfg=None, progress=True, owner=None, repo=None)
 ```
 
 Rescan the repositories and store the catalog.
 
-The python side of ``crossrepo refresh``. The rebuilt catalog is returned, so
-a notebook cell shows what is there now.
+The python side of ``crossrepo refresh``. Nothing is returned: rescanning
+and looking are two things, and a cell that does the first should not answer
+with three hundred rows of the second. Call [](`crossrepo.list`) to look,
+which is also what someone reading the notebook later will see was meant.
 
 Naming an `owner` or a `repo` rescans that much and no more, which is the
 difference between a request or two and a request for every repository an
@@ -33,21 +35,11 @@ repositories as they are now.
 
 :   Rescan only repositories matching this, as [](`crossrepo.list`) filters on it: the text is matched anywhere in ``owner/repo``, ignoring case, so a name, a fragment of one, or a whole ``owner/repo`` all work.
 
-<code>[****kwargs**]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation} [ = ]{.parameter-default-sep} [{}]{.parameter-default}</code>
-
-:   Passed to [](`crossrepo.list`), so ``version=True`` and ``url=True`` work here too.
-
 ## Returns {.doc-section .doc-section-returns}
 
 <code>[]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation}</code>
 
-:   A [](`pandas.DataFrame`), as [](`crossrepo.list`) returns, holding what was rescanned when `owner` or `repo` was given and the whole catalog otherwise. Where nothing configured matches, the table is empty and a [](`crossrepo.config.SourceWarning`) says so, a rescan that looked at nothing being otherwise an empty table and no explanation.
-
-## Raises {.doc-section .doc-section-raises}
-
-<code>[:]{.parameter-annotation-sep} [[ImportError](`ImportError`)]{.parameter-annotation}</code>
-
-:   If pandas is not installed.
+:   Nothing. Where `owner` or `repo` was given and nothing configured matches it, a [](`crossrepo.config.SourceWarning`) says so: a rescan that looked at nothing is otherwise indistinguishable from one that worked.
 
 ## Examples {.doc-section .doc-section-examples}
 
@@ -58,6 +50,9 @@ crossrepo.refresh(progress=False)         # without the bar
 crossrepo.refresh(repo="x-gwas")          # one repository
 crossrepo.refresh(owner="munch-group")    # one organisation
 crossrepo.refresh(owner="munch-group", repo="x-gwas")
+
+crossrepo.refresh()                       # rescan,
+crossrepo.list()                          # then look
 ```
 
 ## See Also {.doc-section .doc-section-see-also}

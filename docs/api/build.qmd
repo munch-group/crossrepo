@@ -1,36 +1,42 @@
-# build { #crossrepo.remote.build }
+# build { #crossrepo.build }
 
 ```python
-crossrepo.remote.build(cfg, client=None, progress=False, select=None)
+crossrepo.build(cfg=None, progress=False, select=None)
 ```
 
-Catalog every repository the settings name on GitHub.
+Catalog every repository under the configured roots.
+
+Repositories that cannot be read are skipped rather than failing the scan,
+so one broken working tree does not hide the rest.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
-<code>[**cfg**]{.parameter-name} [:]{.parameter-annotation-sep} [[Config](`crossrepo.config.Config`)]{.parameter-annotation}</code>
+<code>[**cfg**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Config](`crossrepo.config.Config`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
 
-:   Settings supplying `owners` and `repos`.
-
-<code>[**client**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Client](`crossrepo.github.Client`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
-
-:   Client to read with. Defaults to a new one, authenticated as [](`crossrepo.github.token`) finds.
+:   Settings. Defaults to [](`crossrepo.config.active_config`): what [](`crossrepo.config.use_config`) registered, or the configuration file.
 
 <code>[**progress**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [False]{.parameter-default}</code>
 
-:   Show a progress bar, one step per repository. Reading a whole organisation is otherwise silent for as long as it takes.
+:   Show a progress bar, one step per repository. Scanning an organisation is otherwise silent for as long as it takes.
 
 <code>[**select**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[str](`str`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
 
-:   Read only the repositories this names, by [](`crossrepo.core.selects`). An owner that cannot hold a match is not even listed, and one that can is listed but only read into where a repository matches, so narrowing a scan to one repository of an organisation costs one request for the listing instead of one for every repository it holds.
+:   Scan only the repositories this names, by [](`crossrepo.core.selects`). A clone is identified before it is read and an organisation is listed but not read into, so what is skipped costs nothing beyond finding out that it is there. The result is then part of a catalog rather than a whole one, which is [](`crossrepo.core.catalog`)'s business to put back together.
 
 ## Returns {.doc-section .doc-section-returns}
 
 <code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[Entry](`crossrepo.model.Entry`)\]]{.parameter-annotation}</code>
 
-:   Entries from every repository that publishes something. A repository that cannot be read is skipped with a [](`crossrepo.config.SourceWarning`) rather than failing the scan, as is an owner GitHub will not list and a repository named in the settings that is not there.
+:   Entries sorted by repository and path.
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+entries = build(Config(roots=["~/github-backup/munch-group"]))
+len(entries)
+```
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`crossrepo.remote.scan_repo`)
+[](`crossrepo.core.catalog`)
 [](`crossrepo.core.selects`)

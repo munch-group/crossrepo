@@ -1,39 +1,41 @@
-# scan_repo { #crossrepo.remote.scan_repo }
+# scan_repo { #crossrepo.core.scan_repo }
 
 ```python
-crossrepo.remote.scan_repo(client, owner, repo, cfg, ref=None)
+crossrepo.core.scan_repo(root, cfg)
 ```
 
-Catalog the result files one GitHub repository publishes.
+Catalog the result files of one repository.
+
+Only files named by a committed ``crossrepo.yml`` are cataloged. A results
+directory without one contributes nothing, and neither does a file the
+manifest does not mention. A manifest may name any tracked file in the
+repository, not only the ones beneath it, by writing the path from the
+repository root.
+
+A symbolic link is cataloged when its manifest entry carries a stamp, which
+is what says which content the link stands for; git holds only the link. A
+link with no stamp is passed over with a warning, since nothing would be
+checking what it resolved to. Links inside a dataset directory are not
+published: a stamp names one file, so a directory of them has nothing to
+say what it holds.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
-<code>[**client**]{.parameter-name} [:]{.parameter-annotation-sep} [[Client](`crossrepo.github.Client`)]{.parameter-annotation}</code>
+<code>[**root**]{.parameter-name} [:]{.parameter-annotation-sep} [[Location](`crossrepo.location.Location`)]{.parameter-annotation}</code>
 
-:   Client to read with.
-
-<code>[**owner**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
-
-:   Repository owner.
-
-<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
-
-:   Repository name.
+:   Working tree of the repository.
 
 <code>[**cfg**]{.parameter-name} [:]{.parameter-annotation-sep} [[Config](`crossrepo.config.Config`)]{.parameter-annotation}</code>
 
 :   Settings supplying the results directories and the reading side filters.
 
-<code>[**ref**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[str](`str`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
-
-:   Branch, tag or commit to read. Defaults to the repository's default branch.
-
 ## Returns {.doc-section .doc-section-returns}
 
 <code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[Entry](`crossrepo.model.Entry`)\]]{.parameter-annotation}</code>
 
-:   One entry per published result file or dataset, each stamped with the commit the repository points at. Empty, at the cost of a single request, when the repository publishes nothing.
+:   One entry per published result file, at its most recent version.
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`crossrepo.core.scan_repo`)
+[](`crossrepo.core.build`)
+[](`crossrepo.manifest.Manifest`)

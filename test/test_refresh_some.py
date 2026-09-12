@@ -150,38 +150,42 @@ def test_naming_nothing_reads_everything():
 
 # ------------------------------------------------------------- the notebook call
 
-def test_refresh_shows_what_it_rescanned(cfg, entries):
+def test_refresh_hands_back_nothing_to_look_at(cfg, entries):
+    """Rescanning and looking are two calls; this is the first of them."""
     core.save(entries, cfg)
-    df = crossrepo.refresh(cfg=cfg, progress=False, repo="sweep-scan")
-    assert set(df["repo"]) == {"sweep-scan"}
-    assert len(df) == len([e for e in entries if e.repo_key == "acme/sweep-scan"])
+    assert crossrepo.refresh(cfg=cfg, progress=False) is None
 
 
-def test_refresh_by_owner_shows_that_owner(cfg, entries):
+def test_refresh_stores_what_it_rescanned(cfg, entries):
+    """What a named rescan did is read from the catalog it left behind."""
     core.save(entries, cfg)
-    df = crossrepo.refresh(cfg=cfg, progress=False, owner="other-org")
-    assert set(df["owner"]) == {"other-org"}
+    crossrepo.refresh(cfg=cfg, progress=False, repo="sweep-scan")
+    stored = core.catalog(cfg=cfg)
+    assert {e.repo for e in stored if e.repo == "sweep-scan"} == {"sweep-scan"}
+    assert len(stored) == len(entries)          # and the rest is still there
 
 
-def test_refresh_still_takes_the_listing_options(cfg, entries):
+def test_refresh_by_owner_leaves_the_other_owners_alone(cfg, entries):
     core.save(entries, cfg)
-    df = crossrepo.refresh(cfg=cfg, progress=False, repo="sweep-scan", brief=True,
-                         version=True, pattern="*.csv")
-    # The brief columns say `brief` took, and `version` that the option did.
-    assert [*df.columns] == [*crossrepo.BRIEF_COLUMNS, "version"]
-    assert set(df["repo"]) == {"sweep-scan"}
-    assert all(name.endswith(".csv") for name in df["name"])
+    crossrepo.refresh(cfg=cfg, progress=False, owner="other-org")
+    assert {e.owner for e in core.catalog(cfg=cfg)} == {e.owner for e in entries}
+
+
+def test_refresh_no_longer_takes_the_listing_options(cfg, entries):
+    """There is no table to put them on, so they are refused rather than ignored."""
+    core.save(entries, cfg)
+    with pytest.raises(TypeError):
+        crossrepo.refresh(cfg=cfg, progress=False, brief=True)
 
 
 def test_refresh_without_a_name_still_rebuilds_everything(cfg, entries):
     core._cache_file().unlink(missing_ok=True)
-    df = crossrepo.refresh(cfg=cfg, progress=False)
-    assert len(df) == len(entries)
+    crossrepo.refresh(cfg=cfg, progress=False)
+    assert len(core.catalog(cfg=cfg)) == len(entries)
 
 
 def test_a_name_that_matches_nothing_says_so(cfg, entries):
     core.save(entries, cfg)
     with pytest.warns(SourceWarning, match="nothing matching 'no-such-repo'"):
-        df = crossrepo.refresh(cfg=cfg, progress=False, repo="no-such-repo")
-    assert df.empty
+        crossrepo.refresh(cfg=cfg, progress=False, repo="no-such-repo")
     assert len(core.catalog(cfg=cfg)) == len(entries)   # and the catalog is intact

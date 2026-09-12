@@ -24,6 +24,7 @@ Getting a local path to one version of a result file.
 | | |
 | --- | --- |
 | [get](get.qmd#crossrepo.get) | Download one result file, addressed by repository and file name. |
+| [info](info.qmd#crossrepo.info) | Print everything the catalog holds about one result file. |
 | [fetch](fetch.qmd#crossrepo.fetch) | Get a local path to a result file, fetching it if it is not cached. |
 | [outdated](outdated.qmd#crossrepo.outdated) | Say whether a pinned version has been overtaken. |
 
@@ -39,6 +40,7 @@ version.
 | [match](match.qmd#crossrepo.core.match) | Find the entries a spec refers to, ignoring its version. |
 | [selects](selects.qmd#crossrepo.core.selects) | Test whether a narrowed scan should look at a repository. |
 | [find_version](find_version.qmd#crossrepo.core.find_version) | Resolve a version reference against a file's history. |
+| [describe](describe.qmd#crossrepo.core.describe) | Everything the catalog holds about one published file, as lines to print. |
 | [fingerprint](fingerprint.qmd#crossrepo.core.fingerprint) | Summarise the settings that decide what a catalog contains. |
 | [scan_repo](scan_repo.qmd#crossrepo.core.scan_repo) | Catalog the result files of one repository. |
 | [repo_identity](repo_identity.qmd#crossrepo.core.repo_identity) | Determine the owner and name of a repository. |
@@ -74,9 +76,9 @@ cloning them.
 
 | | |
 | --- | --- |
-| [build](build.qmd#crossrepo.remote.build) | Catalog every repository the settings name on GitHub. |
-| [scan_repo](scan_repo.qmd#crossrepo.remote.scan_repo) | Catalog the result files one GitHub repository publishes. |
-| [versions](versions.qmd#crossrepo.remote.versions) | List every version of one published file or dataset on GitHub. |
+| [build](remote-build.qmd#crossrepo.remote.build) | Catalog every repository the settings name on GitHub. |
+| [scan_repo](remote-scan_repo.qmd#crossrepo.remote.scan_repo) | Catalog the result files one GitHub repository publishes. |
+| [versions](remote-versions.qmd#crossrepo.remote.versions) | List every version of one published file or dataset on GitHub. |
 | [version_at](version_at.qmd#crossrepo.remote.version_at) | Read one named version of a file on GitHub without listing the others. |
 | [dataset_files](dataset_files.qmd#crossrepo.remote.dataset_files) | List the parts of a dataset at one commit. |
 | [download](download.qmd#crossrepo.remote.download) | Stream one file's content from GitHub into a local path. |
@@ -105,7 +107,9 @@ which content that link stands for.
 | [Manifest](Manifest.qmd#crossrepo.manifest.Manifest) | What one directory of a repository publishes. |
 | [Stamp](Stamp.qmd#crossrepo.manifest.Stamp) | The content a published link stands for. |
 | [parse](parse.qmd#crossrepo.manifest.parse) | Read a manifest. |
+| [write_entry](write_entry.qmd#crossrepo.manifest.write_entry) | Put one file into a manifest, leaving the rest of it alone. |
 | [write_stamp](write_stamp.qmd#crossrepo.manifest.write_stamp) | Write one entry's stamp into a manifest, leaving the rest of the file alone. |
+| [quote_key](quote_key.qmd#crossrepo.manifest.quote_key) | Write a manifest key the way YAML needs it written. |
 | [is_manifest](is_manifest.qmd#crossrepo.manifest.is_manifest) | Test whether a repository path is a manifest. |
 | [manifest_path](manifest_path.qmd#crossrepo.manifest.manifest_path) | Where a results directory's manifest must sit to be read. |
 | [ManifestError](ManifestError.qmd#crossrepo.manifest.ManifestError) | Raised when a manifest cannot be understood. |
@@ -122,7 +126,13 @@ settings and the cache live.
 | [use_config](use_config.qmd#crossrepo.config.use_config) | Register settings for the rest of the session, or for a block. |
 | [active_config](active_config.qmd#crossrepo.config.active_config) | The settings in effect for calls that are not given any. |
 | [Registration](Registration.qmd#crossrepo.config.Registration) | The undo for one call to [](`crossrepo.config.use_config`). |
-| [config_path](config_path.qmd#crossrepo.config.config_path) | Location of the configuration file. |
+| [config_path](config_path.qmd#crossrepo.config.config_path) | Location of the configuration file that applies everywhere. |
+| [local_config_path](local_config_path.qmd#crossrepo.config.local_config_path) | Location of the configuration file belonging to the current directory. |
+| [config_in_force](config_in_force.qmd#crossrepo.config.config_in_force) | The configuration file settings are actually read from. |
+| [setting_type](setting_type.qmd#crossrepo.config.setting_type) | What kind of value a setting takes. |
+| [write_setting](write_setting.qmd#crossrepo.config.write_setting) | Put one setting into a configuration file, leaving the rest of it alone. |
+| [clear_setting](clear_setting.qmd#crossrepo.config.clear_setting) | Take one setting out of a configuration file, so its default applies again. |
+| [render_setting](render_setting.qmd#crossrepo.config.render_setting) | Write one setting the way a configuration file spells it. |
 | [cache_root](cache_root.qmd#crossrepo.config.cache_root) | Location of the local cache. |
 
 ## Cache

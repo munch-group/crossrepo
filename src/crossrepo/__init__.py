@@ -40,7 +40,8 @@ them once rather than passing them to every call:
 import crossrepo
 
 crossrepo.use_config(crossrepo.Config(repos=["munch-group/x-gwas"]))
-df = crossrepo.refresh()
+crossrepo.refresh()
+df = crossrepo.list()
 ```
 
 See Also
@@ -56,7 +57,8 @@ from importlib.metadata import version as _installed_version
 
 from .config import Config, active_config, use_config
 from .core import (
-    build, catalog, diagnose, fetch, get, match, outdated, resolve_one,
+    build, catalog, diagnose, fetch, find_version, get, info, match, outdated,
+    resolve_one,
 )
 from .model import Entry, Spec, Version
 
@@ -73,6 +75,7 @@ __all__ = [
     "fetch",
     "frame",
     "get",
+    "info",
     "list",
     "match",
     "outdated",
@@ -227,82 +230,31 @@ def frame(entries=None):
     )
 
 
-#: Columns [](`crossrepo.list`) leaves out unless they are asked for. Each is wide
-#: and each restates something the other columns already carry.
-_OPTIONAL = ("version", "spec", "url")
-
-#: Columns [](`crossrepo.list`) shows, in the order it shows them: what the file
-#: is, then where it came from, then what it is made of.
-LIST_COLUMNS = (
-    "owner", "repo", "name", "description", "get", "date", "github", "path",
-    "dir", "bytes", "tags", "lfs",
-)
-
-#: Columns ``crossrepo.list(brief=True)`` shows: what a file is, and where
-#: reading it goes. Nothing about when it changed or how big it is, those being
-#: the questions asked once a file is worth looking at rather than while finding
-#: which one is.
-BRIEF_COLUMNS = ("owner", "repo", "name", "description", "get")
-
-
-def _size(n: int) -> str:
-    """
-    Write a byte count the way a result file is talked about.
-
-    Megabytes and gigabytes of a million and a billion bytes, rather than the
-    powers of two [](`crossrepo.core.human`) uses for the command line: these are
-    the numbers a table of results is read against, and the difference of a few
-    percent is not what the column is for.
-
-    Nothing calls this since ``size`` left the `brief` columns. It is kept
-    against a caller wanting `bytes` written for reading, which is the only form
-    anybody says a result file's size out loud in.
-
-    Parameters
-    ----------
-    n :
-        Number of bytes. A negative number means the size is unknown.
-
-    Returns
-    -------
-    :
-        A string such as ``512.2 MB`` or ``1.4 GB``, or ``?`` when unknown.
-
-    Examples
-    --------
-
-    ```python
-    _size(512189753)
-    # '512.2 MB'
-    ```
-    """
-    if n < 0:
-        return "?"
-    return f"{n / 1e6:.1f} MB" if n < 1e9 else f"{n / 1e9:.1f} GB"
-
-#: Columns [](`crossrepo.list`) never shows, being a detail of how a dataset is
-#: stored rather than of what it holds. [](`crossrepo.frame`) still carries it.
-_HIDDEN = ("parts",)
+#: Columns [](`crossrepo.list`) shows: which repository, which file, where
+#: reading it goes, and what it holds. The same four the command line shows, so
+#: that a listing read in a terminal and one read in a notebook are one thing.
+#: ``repo`` is ``owner/repo``, which is what a spec is written with.
+#: [](`crossrepo.frame`) carries the rest.
+LIST_COLUMNS = ("repo", "path", "get", "description")
 
 
 def list(
     repo=None,
     pattern=None,
     *,
-    brief: bool = False,
-    version: bool = False,
-    spec: bool = False,
-    url: bool = False,
     refresh: bool = False,
-    progress: bool = False,
+    progress: bool = True,
     cfg=None,
 ):
     """
     Tabulate what the configured repositories publish.
 
-    The python side of ``crossrepo list``, and like it the version is left out
-    unless asked for: it is a full commit sha, and every file a repository
-    publishes carries the same one.
+    The python side of ``crossrepo list``, showing the same four columns it
+    shows: which repository, which file, where reading it goes, and what it
+    holds. A listing is for finding the file you want among all of them, and
+    these are what that is decided on. Everything else the catalog knows is in
+    [](`crossrepo.frame`), and everything it knows about one file is in
+    [](`crossrepo.info`).
 
     Parameters
     ----------
@@ -311,23 +263,14 @@ def list(
         ``crossrepo list <repo>`` does.
     pattern :
         Keep only files whose name matches this glob, such as ``"*.csv"``.
-    brief :
-        Show only what a file is and where reading it goes: ``owner``,
-        ``repo``, ``name``, ``description`` and ``get``.
-    version :
-        Include the ``version`` column, the full commit sha.
-    spec :
-        Include the ``spec`` column, the one string naming a file at a version,
-        which [](`crossrepo.fetch`) and the command line take. It restates the
-        repository, the path and the version, so it is the widest column there
-        is and is left out unless wanted.
-    url :
-        Include the ``url`` column, addressing that version on GitHub.
     refresh :
         Rescan before listing, rather than using the stored catalog.
     progress :
-        Show a progress bar while rescanning. Only meaningful with `refresh`,
-        since a stored catalog is read at once.
+        Show a progress bar while rescanning, one step per repository. On by
+        default, because a listing rescans on its own account -- when there is
+        no stored catalog, or the stored one has aged out -- and a scan of
+        repositories on a server is not something to do silently. Nothing is
+        drawn when the stored catalog is read, there being nothing to wait for.
     cfg :
         Settings. Defaults to [](`crossrepo.config.active_config`): what
         [](`crossrepo.config.use_config`) registered, or the configuration file.
@@ -335,16 +278,14 @@ def list(
     Returns
     -------
     :
-        A `Table`, which is a [](`pandas.DataFrame`), with one row per
-        published file or dataset:
-        ``owner``, ``repo``, ``name``, ``description``, ``get``, ``date``,
-        ``github``, ``path``, ``dir``, ``bytes``, ``tags`` and ``lfs``, or the
-        five columns of `brief`, plus whichever of ``version``, ``spec`` and
-        ``url`` were asked for. ``get`` says where reading the file goes:
-        ``local`` for a clone on this machine, ``github`` for a repository read
-        over the API, and the server's name or alias for one reached over ssh. ``github`` is the repository as ``owner/repo``, and ``path``
-        the file as ``dir/name``. [](`crossrepo.frame`) has everything, including
-        the number of files a dataset holds.
+        A `Table`, which is a [](`pandas.DataFrame`), with one row per published
+        file or dataset and the columns `LIST_COLUMNS` names: ``repo`` as
+        ``owner/repo``, ``path`` from the repository root, ``get``, and
+        ``description``. ``get`` says where reading the file goes: ``local`` for
+        a clone on this machine, ``github`` for a repository read over the API,
+        the server's name or alias for one reached over ssh, and ``missing``
+        for a file published as a link whose target was not there when the
+        catalog was built.
 
     Raises
     ------
@@ -358,33 +299,25 @@ def list(
     import crossrepo
 
     crossrepo.list()                        # everything published
-    crossrepo.list(brief=True)              # just what each file is, and how big
     crossrepo.list("x-gwas")                # one repository
     crossrepo.list(pattern="*.parquet")     # by file name
-    crossrepo.list(version=True)            # with the sha that pins each file
-    crossrepo.list(spec=True)               # with the string the shell takes
     ```
 
     See Also
     --------
+    [](`crossrepo.info`)
     [](`crossrepo.get`)
-    [](`crossrepo.repos`)
+    [](`crossrepo.frame`)
     """
     entries = catalog(refresh=refresh, cfg=cfg, progress=progress)
-    return _tabulate(entries, repo, pattern, brief=brief, version=version,
-                     spec=spec, url=url)
+    return _tabulate(entries, repo, pattern)
 
 
-def _tabulate(
-    entries, repo=None, pattern=None, *, brief: bool = False,
-    version: bool = False, spec: bool = False, url: bool = False,
-):
+def _tabulate(entries, repo=None, pattern=None):
     """
     Filter and tabulate entries, as [](`crossrepo.list`) shows them.
 
-    The half of [](`crossrepo.list`) that is not about getting the catalog, so
-    that [](`crossrepo.refresh`) can rescan in its own way and still show what it
-    found in the same table.
+    The half of [](`crossrepo.list`) that is not about getting the catalog.
 
     Parameters
     ----------
@@ -394,19 +327,13 @@ def _tabulate(
         Keep only repositories whose ``owner/repo`` contains this.
     pattern :
         Keep only files whose name matches this glob.
-    brief :
-        Show only what a file is and where reading it goes.
-    version :
-        Include the ``version`` column.
-    spec :
-        Include the ``spec`` column.
-    url :
-        Include the ``url`` column.
 
     Returns
     -------
     :
-        A [](`pandas.DataFrame`), as [](`crossrepo.list`) returns.
+        A [](`pandas.DataFrame`), as [](`crossrepo.list`) returns. The
+        ``github`` column is what is shown as ``repo``: a listing is what a spec
+        is copied out of, and a spec names the owner.
     """
     import fnmatch
 
@@ -415,15 +342,11 @@ def _tabulate(
         entries = [e for e in entries if needle in e.repo_key.lower()]
     if pattern:
         entries = [e for e in entries if fnmatch.fnmatch(e.name, pattern)]
-    table = frame(entries)
-    wanted = {"version": version, "spec": spec, "url": url}
-    asked = [c for c in _OPTIONAL if wanted[c]]    # asked-for columns go last
-    if not brief:
-        return table[[*LIST_COLUMNS, *asked]]
-    return table[[*BRIEF_COLUMNS, *asked]]
+    table = frame(entries)[["github", "path", "get", "description"]]
+    return table.rename(columns={"github": "repo"})
 
 
-def repos(*, refresh: bool = False, cfg=None):
+def repos(*, refresh: bool = False, progress: bool = True, cfg=None):
     """
     Tabulate one row per repository that publishes something.
 
@@ -433,6 +356,10 @@ def repos(*, refresh: bool = False, cfg=None):
     ----------
     refresh :
         Rescan before listing, rather than using the stored catalog.
+    progress :
+        Show a progress bar while rescanning, one step per repository, as
+        [](`crossrepo.list`) and [](`crossrepo.refresh`) do. Nothing is drawn
+        when the stored catalog is read.
     cfg :
         Settings. Defaults to [](`crossrepo.config.active_config`): what
         [](`crossrepo.config.use_config`) registered, or the configuration file.
@@ -456,7 +383,7 @@ def repos(*, refresh: bool = False, cfg=None):
     crossrepo.repos().sort_values("bytes", ascending=False)
     ```
     """
-    entries = catalog(refresh=refresh, cfg=cfg)
+    entries = catalog(refresh=refresh, cfg=cfg, progress=progress)
     by = {}
     for e in entries:
         by.setdefault(e.repo_key, []).append(e)
@@ -474,7 +401,10 @@ def repos(*, refresh: bool = False, cfg=None):
     )
 
 
-def versions(entry_or_repo, filename=None, *, refresh: bool = False, cfg=None):
+def versions(
+    entry_or_repo, filename=None, *, refresh: bool = False,
+    progress: bool = True, cfg=None,
+):
     """
     Tabulate the history of one published file or dataset.
 
@@ -492,6 +422,11 @@ def versions(entry_or_repo, filename=None, *, refresh: bool = False, cfg=None):
         entry was given.
     refresh :
         Rescan before resolving, rather than using the stored catalog.
+    progress :
+        Show a progress bar while rescanning, one step per repository, as
+        [](`crossrepo.list`) and [](`crossrepo.refresh`) do. Nothing is drawn
+        when the stored catalog is read, and nothing when an
+        [](`crossrepo.model.Entry`) was given, there being no catalog to read.
     cfg :
         Settings. Defaults to [](`crossrepo.config.active_config`): what
         [](`crossrepo.config.use_config`) registered, or the configuration file.
@@ -532,7 +467,7 @@ def versions(entry_or_repo, filename=None, *, refresh: bool = False, cfg=None):
         repo = entry_or_repo
         if "/" in repo:
             owner, _, repo = repo.partition("/")
-        entries = catalog(refresh=refresh, cfg=cfg)
+        entries = catalog(refresh=refresh, cfg=cfg, progress=progress)
         entry = resolve_one(entries, Spec(repo=repo, path=filename, owner=owner))
     return _table()(
         [
@@ -575,12 +510,14 @@ def _select(owner=None, repo=None):
     return repo or None
 
 
-def refresh(*, cfg=None, progress: bool = True, owner=None, repo=None, **kwargs):
+def refresh(*, cfg=None, progress: bool = True, owner=None, repo=None):
     """
     Rescan the repositories and store the catalog.
 
-    The python side of ``crossrepo refresh``. The rebuilt catalog is returned, so
-    a notebook cell shows what is there now.
+    The python side of ``crossrepo refresh``. Nothing is returned: rescanning
+    and looking are two things, and a cell that does the first should not answer
+    with three hundred rows of the second. Call [](`crossrepo.list`) to look,
+    which is also what someone reading the notebook later will see was meant.
 
     Naming an `owner` or a `repo` rescans that much and no more, which is the
     difference between a request or two and a request for every repository an
@@ -604,23 +541,14 @@ def refresh(*, cfg=None, progress: bool = True, owner=None, repo=None, **kwargs)
         Rescan only repositories matching this, as [](`crossrepo.list`) filters on
         it: the text is matched anywhere in ``owner/repo``, ignoring case, so a
         name, a fragment of one, or a whole ``owner/repo`` all work.
-    **kwargs :
-        Passed to [](`crossrepo.list`), so ``version=True`` and ``url=True`` work
-        here too.
 
     Returns
     -------
     :
-        A [](`pandas.DataFrame`), as [](`crossrepo.list`) returns, holding what
-        was rescanned when `owner` or `repo` was given and the whole catalog
-        otherwise. Where nothing configured matches, the table is empty and a
-        [](`crossrepo.config.SourceWarning`) says so, a rescan that looked at
-        nothing being otherwise an empty table and no explanation.
-
-    Raises
-    ------
-    ImportError
-        If pandas is not installed.
+        Nothing. Where `owner` or `repo` was given and nothing configured
+        matches it, a [](`crossrepo.config.SourceWarning`) says so: a rescan
+        that looked at nothing is otherwise indistinguishable from one that
+        worked.
 
     Examples
     --------
@@ -632,6 +560,9 @@ def refresh(*, cfg=None, progress: bool = True, owner=None, repo=None, **kwargs)
     crossrepo.refresh(repo="x-gwas")          # one repository
     crossrepo.refresh(owner="munch-group")    # one organisation
     crossrepo.refresh(owner="munch-group", repo="x-gwas")
+
+    crossrepo.refresh()                       # rescan,
+    crossrepo.list()                          # then look
     ```
 
     See Also
@@ -653,4 +584,3 @@ def refresh(*, cfg=None, progress: bool = True, owner=None, repo=None, **kwargs)
             "the rest of the catalog was left as it was",
             SourceWarning, stacklevel=2,
         )
-    return _tabulate(entries, select, **kwargs)

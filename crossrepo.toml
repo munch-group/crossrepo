@@ -1,0 +1,37 @@
+# Where to look for repos. Each root is either a repo itself or a
+# directory holding repos; a directory containing .git is a repo.
+# A root on another machine is written user@host:path and read
+# over ssh, with whatever access ssh already grants. E.g.
+#   roots = ["~/projects", "kmt@genome.au.dk:~/projects"]
+# Nothing is scanned until this is filled in. Naming the
+# directories your repos are in keeps the scan out of synced
+# folders and network mounts, which can be very slow.
+roots = [
+  "gdk:xy-drive/people/kmt",
+  "gdk:primatediversity/people/kmt",
+]
+
+# GitHub organisations or users to catalog over the API. Nothing is
+# cloned; repositories need not be checked out at all. E.g.
+#   owners = ["munch-group"]
+owners = [
+  "munch-group",
+]
+repos = []
+
+# Directories inside each repo holding a crossrepo.yml, and with it
+# the result files it publishes. Paths from the repo root, at any
+# depth, matched case-insensitively, so Results/ is found too. A
+# crossrepo.yml may publish files elsewhere in the repo as well, by
+# naming them from the repo root, as /data/samples.csv.
+asset_dirs = ['results']
+
+# What a repo publishes is decided by its crossrepo.yml. These
+# narrow that on the reading side; empty means everything
+# published, e.g. include = ["*.csv"].
+include = []
+exclude = []
+
+# Size filters in bytes; 0 disables the limit.
+min_bytes = 0
+max_bytes = 0

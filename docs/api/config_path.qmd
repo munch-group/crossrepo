@@ -4,7 +4,7 @@
 crossrepo.config.config_path()
 ```
 
-Location of the configuration file.
+Location of the configuration file that applies everywhere.
 
 Honours ``XDG_CONFIG_HOME``.
 
@@ -13,3 +13,8 @@ Honours ``XDG_CONFIG_HOME``.
 <code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Path](`pathlib.Path`)]{.parameter-annotation}</code>
 
 :   Path of ``config.toml``, whether or not it exists.
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`crossrepo.config.local_config_path`)
+[](`crossrepo.config.config_in_force`)

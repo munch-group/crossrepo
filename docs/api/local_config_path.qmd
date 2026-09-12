@@ -1,0 +1,22 @@
+# local_config_path { #crossrepo.config.local_config_path }
+
+```python
+crossrepo.config.local_config_path()
+```
+
+Location of the configuration file belonging to the current directory.
+
+The working directory itself and nowhere above it. Walking up would find a
+file the person running the command need never have seen, and settings that
+decide what is scanned -- a network mount, a whole GitHub organisation --
+should not arrive from a directory nobody named.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[Path](`pathlib.Path`)]{.parameter-annotation}</code>
+
+:   Path of ``crossrepo.toml`` in the working directory, whether or not it exists.
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`crossrepo.config.config_in_force`)

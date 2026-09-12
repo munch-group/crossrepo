@@ -1,27 +1,66 @@
-# versions { #crossrepo.remote.versions }
+# versions { #crossrepo.versions }
 
 ```python
-crossrepo.remote.versions(entry, client=None)
+crossrepo.versions(
+    entry_or_repo,
+    filename=None,
+    *,
+    refresh=False,
+    progress=True,
+    cfg=None,
+)
 ```
 
-List every version of one published file or dataset on GitHub.
+Tabulate the history of one published file or dataset.
+
+The python side of ``crossrepo versions``. These are the commits in which the
+file itself changed, which is the useful set to pin; the catalog stamps a
+file with the repository's current commit instead.
 
 ## Parameters {.doc-section .doc-section-parameters}
 
-<code>[**entry**]{.parameter-name} [:]{.parameter-annotation-sep} [[Entry](`crossrepo.model.Entry`)]{.parameter-annotation}</code>
+<code>[**entry_or_repo**]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation}</code>
 
-:   Entry whose history to read. Its `remote` names the repository.
+:   Repository name, optionally ``owner/repo``, or an [](`crossrepo.model.Entry`) already in hand.
 
-<code>[**client**]{.parameter-name} [:]{.parameter-annotation-sep} [[Optional](`typing.Optional`)\[[Client](`crossrepo.github.Client`)\]]{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+<code>[**filename**]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
 
-:   Client to read with. Defaults to a new one.
+:   File name, or as much of the path as is unambiguous. Omitted when an entry was given.
+
+<code>[**refresh**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [False]{.parameter-default}</code>
+
+:   Rescan before resolving, rather than using the stored catalog.
+
+<code>[**progress**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [True]{.parameter-default}</code>
+
+:   Show a progress bar while rescanning, one step per repository, as [](`crossrepo.list`) and [](`crossrepo.refresh`) do. Nothing is drawn when the stored catalog is read, and nothing when an [](`crossrepo.model.Entry`) was given, there being no catalog to read.
+
+<code>[**cfg**]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   Settings. Defaults to [](`crossrepo.config.active_config`): what [](`crossrepo.config.use_config`) registered, or the configuration file.
 
 ## Returns {.doc-section .doc-section-returns}
 
-<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[Version](`crossrepo.model.Version`)\]]{.parameter-annotation}</code>
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation}</code>
 
-:   Versions newest first.
+:   A `Table`, which is a [](`pandas.DataFrame`), with columns ``version``, ``date``, ``bytes``, ``parts``, ``tags`` and ``subject``, newest first. ``crossrepo.core`` holds a ``versions`` taking an entry and returning [](`crossrepo.model.Version`) objects, which is what this tabulates.
+
+## Raises {.doc-section .doc-section-raises}
+
+<code>[:]{.parameter-annotation-sep} [[ImportError](`ImportError`)]{.parameter-annotation}</code>
+
+:   If pandas is not installed.
+
+<code>[:]{.parameter-annotation-sep} [[LookupError](`LookupError`)]{.parameter-annotation}</code>
+
+:   If nothing matches, or several files do.
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+crossrepo.versions("x-gwas", "hits.csv")
+```
 
 ## See Also {.doc-section .doc-section-see-also}
 
-[](`crossrepo.versions`)
+[](`crossrepo.list`)

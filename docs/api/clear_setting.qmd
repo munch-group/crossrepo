@@ -1,0 +1,23 @@
+# clear_setting { #crossrepo.config.clear_setting }
+
+```python
+crossrepo.config.clear_setting(text, key)
+```
+
+Take one setting out of a configuration file, so its default applies again.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**text**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Content of the file.
+
+<code>[**key**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Setting to remove.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   The file without it. Unchanged when it was not there, a setting left at its default and a setting never written being the same thing.

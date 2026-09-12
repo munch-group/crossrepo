@@ -100,7 +100,7 @@ def test_nothing_configured_says_what_to_do(tmp_path, capsys):
     err = capsys.readouterr().err
     assert "nothing is configured to read" in err
     assert "owners" in err and "roots" in err
-    assert "crossrepo config --init" in err
+    assert "crossrepo config local append" in err
     assert "Traceback" not in err
 
 
@@ -121,18 +121,12 @@ def test_owners_alone_count_as_configured():
         cli._require_sources(Config())
 
 
-def test_list_shows_the_description(conf, capsys):
+def test_list_shows_the_four_columns(conf, capsys):
     assert run(conf, "--refresh", "list") == 0
     out = capsys.readouterr().out
-    assert "DESCRIPTION" in out
+    assert out.splitlines()[0].split() == ["repo", "path", "get", "description"]
     assert "Sweep candidates, one row per gene" in out
-
-
-def test_list_url_column_shows_a_commit_pinned_address(conf, capsys):
-    assert run(conf, "--refresh", "list", "--url", "-p", "candidates.csv") == 0
-    out = capsys.readouterr().out
-    assert "URL" in out
-    assert "raw.githubusercontent.com/acme/sweep-scan/" in out
+    assert "acme/sweep-scan" in out                 # the owner comes with it
 
 
 def test_get_url_prints_the_address_instead_of_downloading(conf, capsys):
@@ -178,31 +172,46 @@ def test_the_count_of_repos_with_a_manifest_is_reported(repos, tmp_path, capsys)
     assert "with results/crossrepo.yml" in err
 
 
-def test_list_leaves_out_the_version_by_default(conf, capsys):
+def test_list_says_nothing_about_versions(conf, capsys):
+    """The version, the size and the URL moved to `crossrepo info`."""
     assert run(conf, "--refresh", "list", "-p", "candidates.csv") == 0
     out = capsys.readouterr().out
-    assert "VERSION" not in out
-    assert "candidates.csv" in out and "DESCRIPTION" in out
+    assert "candidates.csv" in out
+    assert "version" not in out and "http" not in out
 
 
-def test_list_version_adds_it_as_the_last_column(conf, capsys):
-    assert run(conf, "list", "--version", "-p", "candidates.csv") == 0
+def test_list_refuses_the_options_it_used_to_take(conf):
+    """`--version`, `--sha` and `--url` shaped columns it no longer has."""
+    for gone in ("--version", "--sha", "--url"):
+        assert run(conf, "list", gone, "-p", "candidates.csv") != 0
+
+
+# ------------------------------------------------- everything about one file
+
+def test_info_prints_what_is_stored(conf, capsys):
+    assert run(conf, "--refresh", "info", "sweep-scan:candidates.csv") == 0
     out = capsys.readouterr().out
-    header = out.splitlines()[0]
-    assert header.rstrip().endswith("VERSION")
-    sha = out.splitlines()[2].split()[-1]
-    assert len(sha) == 40 and set(sha) <= set("0123456789abcdef")
+    assert out.splitlines()[0] == "acme/sweep-scan:results/candidates.csv"
+    fields = dict(
+        line.split(None, 1) for line in out.splitlines()[2:] if line.strip()
+    )
+    assert fields["description"] == "Sweep candidates, one row per gene"
+    assert fields["get"] == "local"
+    assert fields["path"] == "results/candidates.csv"
+    assert len(fields["version"]) == 40
+    assert fields["size"].endswith("B")            # as the terminal writes it
 
 
-def test_sha_is_an_alias_for_version(conf, capsys):
-    assert run(conf, "list", "--sha", "-p", "candidates.csv") == 0
-    assert "VERSION" in capsys.readouterr().out
+def test_info_takes_a_version_the_way_get_does(conf, capsys):
+    run(conf, "--refresh", "versions", "sweep-scan:candidates.csv")
+    sha = capsys.readouterr().out.splitlines()[4].split()[0]   # past the rule
+    assert run(conf, "info", f"sweep-scan:candidates.csv@{sha}") == 0
+    out = capsys.readouterr().out
+    assert sha in out
 
 
-def test_version_and_url_can_both_be_asked_for(conf, capsys):
-    assert run(conf, "list", "--sha", "--url", "-p", "candidates.csv") == 0
-    header = capsys.readouterr().out.splitlines()[0]
-    assert "VERSION" in header and header.rstrip().endswith("URL")
+def test_info_says_when_nothing_matches(conf):
+    assert run(conf, "info", "sweep-scan:no-such-file.csv") != 0
 
 
 # ------------------------------------- sources that could not be read

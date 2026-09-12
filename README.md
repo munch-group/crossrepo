@@ -55,7 +55,23 @@ files:
 ```
 
 Any tracked file can be named this way, and a directory named this way is a
-dataset like any other. A key cannot climb out with `..`: there is one spelling
+dataset like any other. `crossrepo share <path> "<description>"` writes the entry for you:
+
+```console
+$ git add results/hits.csv
+$ crossrepo share results/hits.csv "Sweep hits, one row per gene"
+  published  results/hits.csv  in results/crossrepo.yml
+commit results/crossrepo.yml to publish this version
+```
+
+The path has to be tracked by git already — committing a file is the act of
+offering it — and a path outside the results directory is written from the
+repository root for you. Sharing a symbolic link stamps it in the same run, and
+is refused when git tracks what the link points at as well: the content would
+then be published twice, once as bytes and once as a stamp that could disagree
+with them. Saying it again rewrites the description and leaves the stamp alone.
+
+A key cannot climb out with `..`: there is one spelling
 for a path that leaves the results directory, so what a manifest reaches is
 plain to read from the key alone. A key *without* a leading `/` never reaches
 outside, so `hits.csv` publishes the one beside the manifest and not its
@@ -70,9 +86,11 @@ that link stands for.
 
 ```console
 $ ln -s ../steps/very_large_file.csv results/very_large_file.csv
-$ crossrepo stamp
-  stamped  results/very_large_file.csv  (41M)
-stamped 1 file; commit the crossrepo.yml to publish this version
+$ git add results/very_large_file.csv
+$ crossrepo share results/very_large_file.csv "Merged per-sample table"
+  published  results/very_large_file.csv  in results/crossrepo.yml
+  stamped    results/very_large_file.csv  (41M)
+commit results/crossrepo.yml to publish this version
 ```
 
 ```yaml
@@ -234,9 +252,42 @@ python older than 3.11. `pandas` is optional and needed just for
 
 ## Configure
 
+There are two config files, and **exactly one is in force at a time**: a
+`crossrepo.toml` in the directory you are running from, or, when there is none,
+`~/.config/crossrepo/config.toml`. Only the working directory itself is looked
+in — nothing above it — so what a command is about to scan can be read off one
+file you can see.
+
 ```bash
-crossrepo config --init      # writes ~/.config/crossrepo/config.toml
+crossrepo config             # what is in force, and which file it came from
+crossrepo config local init  # write ./crossrepo.toml
+crossrepo config global init # write ~/.config/crossrepo/config.toml
 ```
+
+`init` is the only thing that creates a file. `crossrepo config local` on its
+own prints what can be done to it and writes nothing, and so does `global`.
+`crossrepo config local show` prints the file itself, leading with its path as a
+comment so the output is still a config file.
+
+A local file **replaces** the global one rather than adding to it. A
+`crossrepo.toml` that names only `roots` gets the built-in defaults for
+everything else, not your global `owners`.
+
+Either file can be edited from the command line, and `local` and `global` take
+the same three verbs:
+
+```bash
+crossrepo config local set roots ~/work/x-gwas ~/work/other
+crossrepo config local append owners munch-group
+crossrepo config local reset asset_dirs        # back to its default
+```
+
+`set` replaces a setting, `append` adds to a list one, and `reset` takes it out
+of the file so the default applies again. All three want the file to exist
+already and say to run `init` when it does not, so a command typed in the wrong
+directory leaves nothing behind in it. A name that is not a setting is refused
+and the real ones listed; so is appending to something that is not a list. Your
+comments and the settings you did not name survive the edit.
 
 ```toml
 roots = [
@@ -358,26 +409,59 @@ Every command has a python counterpart returning a DataFrame:
 crossrepo.list()                     # what is published
 crossrepo.list("x-gwas")             # one repository
 crossrepo.list(pattern="*.parquet")  # by file name
-crossrepo.list(brief=True)           # just what each file is, and how big
-crossrepo.list(version=True)         # with the sha that pins each file
-crossrepo.list(url=True)             # with the GitHub URL of each version
 
 crossrepo.repos()                    # one row per repository
 crossrepo.versions("x-gwas", "hits.csv")   # when the file itself changed
-crossrepo.refresh()                  # rescan, then list
+crossrepo.info("x-gwas", "hits.csv")       # everything about one file
+crossrepo.refresh()                  # rescan; returns nothing, so list after
 crossrepo.diagnose()                 # why is the catalog empty
 ```
 
-The columns are `owner`, `repo`, `name`, `description`, `date`, `github`,
-`path`, `dir`, `bytes`, `tags`, `lfs`. The repository is carried whole as
-`github` (`owner/repo`) and in halves as `owner` and `repo`; the file likewise
-as `path` and as `dir` plus `name` — so grouping by account, by repository or by
-directory needs no string splitting. `crossrepo.frame()` adds `version`, `parts`,
-`spec` and `url`.
+A listing is four columns — `repo`, `path`, `get`, `description` — and they are
+**the same four `crossrepo list` prints in a terminal**. A listing is for
+finding the file you want among all of them, and those are what that is decided
+on. `repo` is `owner/repo`, which is what a spec is written with, so a row can
+be copied straight into `get`. `get` says where reading the file goes: `local`,
+`github`, the name of the server it is on, or `missing` — a file published as a
+link whose target was not there when the catalog was built. A link's content
+lives only where the pipeline wrote it, and GitHub holds the link rather than
+the bytes, so `missing` means not to be had from anywhere rather than to be
+fetched from somewhere else.
 
-`brief=True` cuts it to `owner`, `repo`, `name`, `size`, `description`, `date` —
-what each file is and how big, with `size` written for reading (`512.2 MB`)
-rather than counted in bytes.
+Everything else the catalog knows is still there, in two places. `crossrepo.frame()`
+is the whole table — `owner`, `repo`, `name`, `description`, `get`, `date`,
+`github`, `path`, `dir`, `bytes`, `tags`, `lfs`, `version`, `parts`, `spec`,
+`url` — with the repository carried whole as `github` and in halves as `owner`
+and `repo`, and the file as `path` and as `dir` plus `name`, so grouping by
+account, by repository or by directory needs no string splitting.
+
+And `info` is everything about **one** file, in the same words in a terminal and
+a notebook:
+
+```console
+$ crossrepo info x-gwas:hits.csv
+munch-group/x-gwas:results/hits.csv
+
+description  Genome-wide association hits, p < 5e-8
+get          login.genome.au.dk
+path         results/hits.csv
+manifest     results/crossrepo.yml
+root         me@login.genome.au.dk:projects/x-gwas
+
+version      5112e31d01266fbd65b086dc6201c7fef7ef2550
+date         2026-09-08
+commit       Recompute after QC fix
+size         327.0K
+parts        0
+note         link
+content      aa871d1f52dc89b6faa28b9a9afb7dd30df1ced2
+link         ../steps/hits.csv
+url          https://raw.githubusercontent.com/munch-group/x-gwas/5112e31/results/hits.csv
+```
+
+`crossrepo.info("x-gwas", "hits.csv")` prints the same block. It takes the same
+arguments `get` does, so asking about a file and fetching it differ in the verb
+and nothing else. A field with nothing in it is left out.
 
 `refresh` draws a progress bar, one step per repository — a widget in a
 notebook, a text bar in a terminal. Reading a whole organisation takes about a
@@ -453,7 +537,8 @@ repos  = ["someone-else/shared-results"]   # optional extras
 ```
 
 ```bash
-crossrepo list --url        # files, with the URL of each version
+crossrepo list                        # what is published, four columns
+crossrepo info x-gwas:hits.csv        # everything about one of them
 crossrepo get x-gwas:hits.csv --url   # just the URL
 crossrepo get x-gwas:hits.csv         # download it, print the cached path
 ```

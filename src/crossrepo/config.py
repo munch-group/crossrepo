@@ -12,10 +12,11 @@ from __future__ import annotations
 
 import os
 import pprint
+import re
 import warnings
 from dataclasses import dataclass, field, fields, replace
 from pathlib import Path
-from typing import Dict, List, Optional, Set
+from typing import Dict, List, Optional, Set, Tuple
 
 DEFAULT_INCLUDE: List[str] = []
 """
@@ -100,9 +101,19 @@ def _toml_list(name: str, values: List[str]) -> str:
     return f"{name} = [\n{body}\n]\n"
 
 
+LOCAL_NAME = "crossrepo.toml"
+"""
+What a configuration file belonging to one project is called.
+
+Named for the tool rather than hidden with a dot, and sitting beside the
+``crossrepo.yml`` that says what the project publishes: the two are read
+together often enough that finding one should mean having found the other.
+"""
+
+
 def config_path() -> Path:
     """
-    Location of the configuration file.
+    Location of the configuration file that applies everywhere.
 
     Honours ``XDG_CONFIG_HOME``.
 
@@ -110,9 +121,67 @@ def config_path() -> Path:
     -------
     :
         Path of ``config.toml``, whether or not it exists.
+
+    See Also
+    --------
+    [](`crossrepo.config.local_config_path`)
+    [](`crossrepo.config.config_in_force`)
     """
     base = os.environ.get("XDG_CONFIG_HOME") or (Path.home() / ".config")
     return Path(base) / "crossrepo" / "config.toml"
+
+
+def local_config_path() -> Path:
+    """
+    Location of the configuration file belonging to the current directory.
+
+    The working directory itself and nowhere above it. Walking up would find a
+    file the person running the command need never have seen, and settings that
+    decide what is scanned -- a network mount, a whole GitHub organisation --
+    should not arrive from a directory nobody named.
+
+    Returns
+    -------
+    :
+        Path of ``crossrepo.toml`` in the working directory, whether or not it
+        exists.
+
+    See Also
+    --------
+    [](`crossrepo.config.config_in_force`)
+    """
+    return Path.cwd() / LOCAL_NAME
+
+
+def config_in_force() -> Path:
+    """
+    The configuration file settings are actually read from.
+
+    A `LOCAL_NAME` in the working directory wins outright: it is read *instead
+    of* the one that applies everywhere, not on top of it. One file is in force
+    at a time, so what a command is about to do can be read off that file alone
+    rather than worked out from two.
+
+    Returns
+    -------
+    :
+        The local file when it is there, else [](`crossrepo.config.config_path`).
+        Neither is required to exist; a missing file yields the defaults.
+
+    Examples
+    --------
+
+    ```python
+    config_in_force()
+    # PosixPath('/home/kmt/work/x-gwas/crossrepo.toml')
+    ```
+
+    See Also
+    --------
+    [](`crossrepo.config.Config.load`)
+    """
+    local = local_config_path()
+    return local if local.is_file() else config_path()
 
 
 def cache_root() -> Path:
@@ -253,8 +322,10 @@ class Config:
         Parameters
         ----------
         path :
-            File to read. Defaults to [](`crossrepo.config.config_path`). A
-            missing file is not an error and yields the defaults.
+            File to read. Defaults to [](`crossrepo.config.config_in_force`):
+            the ``crossrepo.toml`` in the working directory when there is one,
+            else the file that applies everywhere. A missing file is not an
+            error and yields the defaults.
 
         Returns
         -------
@@ -272,7 +343,7 @@ class Config:
         RuntimeError
             On Python older than 3.11 when `tomli` is not installed.
         """
-        path = path or config_path()
+        path = path or config_in_force()
         if not path.exists():
             return cls()
         try:
@@ -374,6 +445,156 @@ class Config:
             encoding="utf-8",
         )
         return path
+
+
+def setting_type(key: str) -> type:
+    """
+    What kind of value a setting takes.
+
+    Parameters
+    ----------
+    key :
+        Name of a setting.
+
+    Returns
+    -------
+    :
+        `list` for a setting holding several strings, `int` for a count of
+        bytes, `str` for anything else.
+
+    Raises
+    ------
+    KeyError
+        If there is no such setting. The caller says what the names are, since
+        it is the caller that knows how they were asked for.
+    """
+    if key not in Config.__dataclass_fields__:
+        raise KeyError(key)
+    annotation = Config.__dataclass_fields__[key].type
+    text = annotation if isinstance(annotation, str) else getattr(
+        annotation, "__name__", str(annotation)
+    )
+    if "List" in text or "list" in text:
+        return list
+    return int if "int" in text else str
+
+
+def _value_lines(text: str, key: str) -> Optional[Tuple[int, int]]:
+    """
+    Find the lines one setting is written on.
+
+    Parameters
+    ----------
+    text :
+        Content of a configuration file.
+    key :
+        Setting to find.
+
+    Returns
+    -------
+    :
+        ``(first, last)`` line indices, inclusive, or `None` when the setting is
+        not written in the file. A list written over several lines is found
+        whole, so that replacing it does not leave its old entries behind.
+    """
+    lines = text.splitlines()
+    for i, line in enumerate(lines):
+        if not re.match(rf"^\s*{re.escape(key)}\s*=", line):
+            continue
+        _, _, rest = line.partition("=")
+        if rest.count("[") <= rest.count("]"):
+            return i, i
+        for j in range(i + 1, len(lines)):
+            if lines[j].rstrip().endswith("]"):
+                return i, j
+        return i, len(lines) - 1        # unterminated; take the rest of it
+    return None
+
+
+def render_setting(key: str, value) -> str:
+    """
+    Write one setting the way a configuration file spells it.
+
+    Parameters
+    ----------
+    key :
+        Setting name.
+    value :
+        Its value, a list of strings or a number.
+
+    Returns
+    -------
+    :
+        The setting as TOML, ending in a newline. A list goes on one line when
+        it is empty and one entry to a line otherwise, which is how
+        [](`crossrepo.config.Config.write_default`) writes it and what keeps a
+        diff to the entries that changed.
+    """
+    if isinstance(value, bool) or not isinstance(value, list):
+        return f"{key} = {value!r}\n"
+    return _toml_list(key, value)
+
+
+def write_setting(text: str, key: str, value) -> str:
+    """
+    Put one setting into a configuration file, leaving the rest of it alone.
+
+    Only the lines the setting is written on are touched, so comments, key
+    order and spacing survive: a configuration file is written by hand and read
+    in diffs, and changing one setting should show up in one as that setting and
+    nothing else.
+
+    Parameters
+    ----------
+    text :
+        Content of the file.
+    key :
+        Setting to write.
+    value :
+        Its new value.
+
+    Returns
+    -------
+    :
+        The file with the setting written, appended at the end when it was not
+        already there.
+    """
+    written = render_setting(key, value).splitlines()
+    found = _value_lines(text, key)
+    lines = text.splitlines()
+    if found is None:
+        if lines and lines[-1].strip():
+            lines.append("")
+        return "\n".join([*lines, *written]) + "\n"
+    first, last = found
+    lines[first:last + 1] = written
+    return "\n".join(lines) + "\n"
+
+
+def clear_setting(text: str, key: str) -> str:
+    """
+    Take one setting out of a configuration file, so its default applies again.
+
+    Parameters
+    ----------
+    text :
+        Content of the file.
+    key :
+        Setting to remove.
+
+    Returns
+    -------
+    :
+        The file without it. Unchanged when it was not there, a setting left at
+        its default and a setting never written being the same thing.
+    """
+    found = _value_lines(text, key)
+    if found is None:
+        return text
+    first, last = found
+    lines = text.splitlines()
+    del lines[first:last + 1]
+    return "\n".join(lines) + ("\n" if lines else "")
 
 
 _registered: Optional[Config] = None
