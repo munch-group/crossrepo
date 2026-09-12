@@ -246,10 +246,68 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>A repository publishes by committing a <code>crossrepo.yml</code> in the <code>results/</code> directory at its root, naming the files it wants others to see and saying what each one holds. Everything else in <code>results/</code> stays private to that project.</p>
 <p>Repositories are read wherever they are: clones on this machine, clones on a server reached over ssh, and repositories on GitHub read over the API without being cloned at all.</p>
 <p>Add a “crossrepo share <path> <code>&lt;description&gt;</code>”. It should check that the path is tracked by git. If a symlink it should also check that the address of the symlink is not tracked. It should write the path / description this to the crossrepo.yml file. If the path is a symlink, it should also run crossrepo stamp after updating the crossrepo.yml file.</path></p>
-<div id="4ea86094" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-08-31T16:05:53.645910Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-08-31T16:05:53.645652Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-08-31T16:05:55.428753Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-08-31T16:05:55.428330Z&quot;}}" data-execution_count="11">
+<div id="4ea86094" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-08-31T16:05:53.645910Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-08-31T16:05:53.645652Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-08-31T16:05:55.428753Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-08-31T16:05:55.428330Z&quot;}}" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> vscodenb</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> crossrepo</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+
+        <style>
+        :root {
+            --vscodenb-foreground: var(--vscode-editor-foreground, var(--jp-content-font-color1, #1f1f1f));
+            --jp-widgets-color: var(--vscodenb-foreground);
+        }
+        </style>
+        
+        <style>
+        .cell-output-ipywidget-background {
+            background-color: transparent !important;
+        }
+       .jp-OutputArea-output {
+           background-color: transparent;
+        }  
+        /* tqdm styling: */
+        .widget-label,
+        .widget-html,
+        .widget-button,
+        .widget-dropdown,
+        .widget-text,
+        .widget-textarea {
+            font-size: 10px !important;      /* Font size */
+        }
+        /* tqdm progress bar labels ("47%" and "470/1000 [00:03<00:03, ...]") */
+        .widget-label,
+        .widget-html,
+        .widget-htmlmath,
+        .widget-html-content,
+        .widget-htmlmath-content {
+            color: var(--vscodenb-foreground) !important;
+        }
+        div.widget-html-content > progress { /* Outer container */
+            height: 10px !important;
+        
+        }
+        div.jp-OutputArea-output td.output_html { /* tqdm HTML output area */
+            height: 5px !important;
+        }
+        div.progress { /* Jupyter Notebook (classic) */
+            height: 5px !important;
+            min-height: 5px !important;
+            margin-top: 12px !important;    
+        }
+        div.progress-bar { /* inner bar */
+            height: 5px !important;
+            min-height: 5px !important;
+            line-height: 5px !important;
+            color: white !important;
+            padding-bottom: 0px !important;    
+        }
+        table {
+            font-variant-numeric: tabular-nums; 
+        }                     
+        </style>                          
+        
+</div>
 </div>
 <section id="make-results-accessible-by-crossref" class="level2">
 <h2 class="anchored" data-anchor-id="make-results-accessible-by-crossref">Make results accessible by <code>crossref</code></h2>
@@ -285,7 +343,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">sha256</span><span class="kw">:</span><span class="at"> </span><span class="st">"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"</span></span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">size</span><span class="kw">:</span><span class="at"> </span><span class="dv">0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>crossrepo share</code> makes this a bit easier. If the file is a symlink, <code>crossrepo</code> will automatically run the <code>stamp</code> command too.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">crossrepo</span> share results/symlink_to untracked_file.csv <span class="st">'Short description of untracked the file'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ln</span> <span class="at">-s</span> steps/large.txt results</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add results/large.txt <span class="kw">&amp;&amp;</span> <span class="fu">git</span> commit <span class="at">-m</span> <span class="st">'Added symlink'</span> </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="ex">crossrepo</span> share results/symlink_to untracked_file.csv <span class="st">'Short description of untracked the file'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
 <section id="config" class="level2">
@@ -293,28 +353,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><code>crossrepo</code> configuration is read from a <code>crossrepo.toml</code> file in the current directory and otherwise from <code>~/.config/crossrepo/config.toml</code>. You create a <code>~/.config/crossrepo/config.toml</code> by running:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">crossrepo</span> config global init</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>and a local <code>crossrepo.yml</code> by replacing <code>global</code> with <code>local</code>.</p>
-<div id="d51b059f" class="cell" data-execution_count="12">
+<div id="d51b059f" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>crossrepo.active_config()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="12">
+<div class="cell-output cell-output-display" data-execution_count="2">
 <pre><code>Config(roots=[],
        owners=['munch-group'],
-       repos=['songlab-cal/gpn', 'MyersGroup/relate'],
-       asset_dirs=['results'],
-       include=[],
-       exclude=[],
+       repos=[],
+       asset_dirs=['results', 'data'],
+       include=['*.csv',
+                '*.tsv',
+                '*.txt',
+                '*.parquet',
+                '*.pq',
+                '*.h5',
+                '*.hdf',
+                '*.hdf5',
+                '*.store',
+                '*.json',
+                '*.jsonl',
+                '*.xlsx',
+                '*.bed',
+                '*.gff',
+                '*.vcf',
+                '*.vcf.gz',
+                '*.pkl',
+                '*.pickle',
+                '*.npy',
+                '*.npz',
+                '*.feather',
+                '*.zarr'],
+       exclude=['*.png',
+                '*.pdf',
+                '*.svg',
+                '*.html',
+                '*.md',
+                '.gitkeep',
+                '*.log'],
        min_bytes=0,
        max_bytes=0)</code></pre>
 </div>
 </div>
 <p>You can also generate a config on the fly that is only specific to one notebook:</p>
-<div id="7b3a1bf0" class="cell" data-execution_count="13">
+<div id="7b3a1bf0" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>cfg <span class="op">=</span> crossrepo.config.Config(</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    repos<span class="op">=</span>[<span class="st">'munch-group/relate1Kgenomes'</span>, <span class="st">'munch-group/atlas-variant-ages'</span>], </span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    include<span class="op">=</span>[<span class="st">'*.parquet'</span>, <span class="st">'*.csv'</span>, <span class="st">'*.tsv'</span>],</span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    exclude<span class="op">=</span>[<span class="st">'.store'</span>, <span class="st">'*.fa'</span>, <span class="st">'*.vcf'</span>, <span class="st">'*.bim'</span>, <span class="st">'*.fam'</span>, <span class="st">'*.ped'</span>, <span class="st">'*.bam'</span>],</span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>crossrepo.use_config(cfg)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="13">
+<div class="cell-output cell-output-display" data-execution_count="3">
 <pre><code>Config(roots=[],
        owners=[],
        repos=['munch-group/relate1Kgenomes', 'munch-group/atlas-variant-ages'],
@@ -326,9 +413,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>You an alway see the active configs using:</p>
-<div id="0aa67108" class="cell" data-execution_count="14">
+<div id="0aa67108" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>crossrepo.active_config() </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="14">
+<div class="cell-output cell-output-display" data-execution_count="4">
 <pre><code>Config(roots=[],
        owners=[],
        repos=['munch-group/relate1Kgenomes', 'munch-group/atlas-variant-ages'],
@@ -340,9 +427,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>To go activate the default configs specified in your config file, just pass <code>None</code> to <code>use_config</code>:</p>
-<div id="44eed0b1" class="cell" data-execution_count="15">
+<div id="44eed0b1" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>crossrepo.use_config(<span class="va">None</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="15">
+<div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>Config(roots=[],
        owners=['munch-group'],
        repos=[],
@@ -381,24 +468,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>A cache refresh is run the first time you use the it after you change the configs. You can always force a cache refresh using the <code>refresh</code> method:</p>
-<div id="9032ebcd" class="cell" data-execution_count="16">
+<div id="9032ebcd" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>crossrepo.refresh()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"6f32b5fe033b49a7b7f94ea24fd13f9c","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+{"model_id":"16dff44236ca404584c15da55ba48ec4","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
 </script>
 </div>
 </div>
 <section id="github-remote-repositories" class="level3">
 <h3 class="anchored" data-anchor-id="github-remote-repositories">GitHub remote repositories</h3>
 <p>Search all github repos under these accounts listed in <code>owners</code> and/or in each repo listed in <code>repos</code>:</p>
-<div id="5f65315a" class="cell" data-execution_count="17">
+<div id="5f65315a" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>cfg <span class="op">=</span> crossrepo.config.Config(</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    owners<span class="op">=</span>[<span class="st">"munch-group"</span>, ], </span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    repos<span class="op">=</span>[<span class="st">"songlab-cal/gpn"</span>, <span class="st">'MyersGroup/relate'</span>], </span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>crossrepo.use_config(cfg)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="17">
+<div class="cell-output cell-output-display" data-execution_count="7">
 <pre><code>Config(roots=[],
        owners=['munch-group'],
        repos=['songlab-cal/gpn', 'MyersGroup/relate'],
@@ -413,12 +500,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="local-working-copies" class="level3">
 <h3 class="anchored" data-anchor-id="local-working-copies">Local working copies</h3>
 <p>You can use <code>roots</code> to list folders where you have checked out working copies of repositories. When files exist on the same filesystem, <code>crossrepo.get()</code> returns a hardlink rather than a copy to not take up extra disk space.</p>
-<div id="853941ee" class="cell" data-execution_count="18">
+<div id="853941ee" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>cfg <span class="op">=</span> crossrepo.config.Config(</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    roots <span class="op">=</span> [<span class="st">"~/"</span>, ]</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>crossrepo.use_config(cfg)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="18">
+<div class="cell-output cell-output-display" data-execution_count="8">
 <pre><code>Config(roots=['~/'],
        owners=[],
        repos=[],
@@ -448,14 +535,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="browsing-the-catalog" class="level2">
 <h2 class="anchored" data-anchor-id="browsing-the-catalog">Browsing the catalog</h2>
-<div id="ec6e7777" class="cell" data-execution_count="19">
+<div id="ec6e7777" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>cfg <span class="op">=</span> crossrepo.config.Config(</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    owners<span class="op">=</span>[<span class="st">"munch-group"</span>], </span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    repos<span class="op">=</span>[<span class="st">"songlab-cal/gpn"</span>, <span class="st">'MyersGroup/relate'</span>],     </span>
 <span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    roots <span class="op">=</span> [<span class="st">"gdk:xy-drive/people/kmt"</span>, <span class="st">"gdk:primatediversity/people/kmt"</span>, <span class="st">"~/"</span>]</span>
 <span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>crossrepo.use_config(cfg)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="19">
+<div class="cell-output cell-output-display" data-execution_count="9">
 <pre><code>Config(roots=['gdk:xy-drive/people/kmt',
               'gdk:primatediversity/people/kmt',
               '~/'],
@@ -469,119 +556,119 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p><code>crossrepo</code> will refresh the catalog of assets scan the sources to update the catalog of assets if this more than an hour old, or if the configs have changed. You can always force a refresh with:</p>
-<div id="2df37928" class="cell">
+<div id="2df37928" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>crossrepo.refresh()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"68a41098bfda4f3988d0a5d9042a51af","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+{"model_id":"d9dff8ac9e634d45b66664f67ea01dac","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
 </script>
 </div>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"6c831c90ad57486893dcca70eb315dc6","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+{"model_id":"462a5c6a3c7048478a7ae487830ede9d","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
 </script>
 </div>
 </div>
 <p>(same as <code>crossrepo refresh</code> command).</p>
 <p>List the catalog accessible using the active configs:</p>
-<div id="d7ead614" class="cell" data-execution_count="21">
+<div id="d7ead614" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>crossrepo.<span class="bu">list</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="21">
+<div class="cell-output cell-output-display" data-execution_count="11">
 <style type="text/css">
-#T_57337 .col0 {
+#T_5e7b8 .col0 {
   text-align: left;
 }
-#T_57337 .col1 {
+#T_5e7b8 .col1 {
   text-align: left;
 }
-#T_57337 .col2 {
+#T_5e7b8 .col2 {
   text-align: left;
 }
-#T_57337 .col3 {
+#T_5e7b8 .col3 {
   text-align: left;
 }
 </style>
 
-<table id="T_57337" class="caption-top table table-sm table-striped small">
+<table id="T_5e7b8" class="caption-top table table-sm table-striped small">
 <thead>
 <tr class="header">
 <th class="blank level0" data-quarto-table-cell-role="th">&nbsp;</th>
-<th id="T_57337_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">repo</th>
-<th id="T_57337_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">path</th>
-<th id="T_57337_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">get</th>
-<th id="T_57337_level0_col3" class="col_heading level0 col3" data-quarto-table-cell-role="th">description</th>
+<th id="T_5e7b8_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">repo</th>
+<th id="T_5e7b8_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">path</th>
+<th id="T_5e7b8_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">get</th>
+<th id="T_5e7b8_level0_col3" class="col_heading level0 col3" data-quarto-table-cell-role="th">description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<th id="T_57337_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">0</th>
-<td id="T_57337_row0_col0" class="data row0 col0">munch-group/atlas-variant-ages</td>
-<td id="T_57337_row0_col1" class="data row0 col1">results/atlas_variant_ages.parquet</td>
-<td id="T_57337_row0_col2" class="data row0 col2">github</td>
-<td id="T_57337_row0_col3" class="data row0 col3">Variant ages using Abers method</td>
+<th id="T_5e7b8_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">0</th>
+<td id="T_5e7b8_row0_col0" class="data row0 col0">munch-group/atlas-variant-ages</td>
+<td id="T_5e7b8_row0_col1" class="data row0 col1">results/atlas_variant_ages.parquet</td>
+<td id="T_5e7b8_row0_col2" class="data row0 col2">github</td>
+<td id="T_5e7b8_row0_col3" class="data row0 col3">Variant ages using Abers method</td>
 </tr>
 <tr class="even">
-<th id="T_57337_level0_row1" class="row_heading level0 row1" data-quarto-table-cell-role="th">1</th>
-<td id="T_57337_row1_col0" class="data row1 col0">munch-group/crossrepo</td>
-<td id="T_57337_row1_col1" class="data row1 col1">results/dummy.csv</td>
-<td id="T_57337_row1_col2" class="data row1 col2">local</td>
-<td id="T_57337_row1_col3" class="data row1 col3">Dome dummy csv file sym linked from steps</td>
+<th id="T_5e7b8_level0_row1" class="row_heading level0 row1" data-quarto-table-cell-role="th">1</th>
+<td id="T_5e7b8_row1_col0" class="data row1 col0">munch-group/crossrepo</td>
+<td id="T_5e7b8_row1_col1" class="data row1 col1">results/dummy.csv</td>
+<td id="T_5e7b8_row1_col2" class="data row1 col2">local</td>
+<td id="T_5e7b8_row1_col3" class="data row1 col3">Dome dummy csv file sym linked from steps</td>
 </tr>
 <tr class="odd">
-<th id="T_57337_level0_row2" class="row_heading level0 row2" data-quarto-table-cell-role="th">2</th>
-<td id="T_57337_row2_col0" class="data row2 col0">munch-group/crossrepo</td>
-<td id="T_57337_row2_col1" class="data row2 col1">results/dummy.txt</td>
-<td id="T_57337_row2_col2" class="data row2 col2">github</td>
-<td id="T_57337_row2_col3" class="data row2 col3">Dummy text file</td>
+<th id="T_5e7b8_level0_row2" class="row_heading level0 row2" data-quarto-table-cell-role="th">2</th>
+<td id="T_5e7b8_row2_col0" class="data row2 col0">munch-group/crossrepo</td>
+<td id="T_5e7b8_row2_col1" class="data row2 col1">results/dummy.txt</td>
+<td id="T_5e7b8_row2_col2" class="data row2 col2">github</td>
+<td id="T_5e7b8_row2_col3" class="data row2 col3">Dummy text file</td>
 </tr>
 <tr class="even">
-<th id="T_57337_level0_row3" class="row_heading level0 row3" data-quarto-table-cell-role="th">3</th>
-<td id="T_57337_row3_col0" class="data row3 col0">munch-group/crossrepo</td>
-<td id="T_57337_row3_col1" class="data row3 col1">results/tester.parquet</td>
-<td id="T_57337_row3_col2" class="data row3 col2">local</td>
-<td id="T_57337_row3_col3" class="data row3 col3">Tester symlink to dir</td>
+<th id="T_5e7b8_level0_row3" class="row_heading level0 row3" data-quarto-table-cell-role="th">3</th>
+<td id="T_5e7b8_row3_col0" class="data row3 col0">munch-group/crossrepo</td>
+<td id="T_5e7b8_row3_col1" class="data row3 col1">results/large.txt</td>
+<td id="T_5e7b8_row3_col2" class="data row3 col2">local</td>
+<td id="T_5e7b8_row3_col3" class="data row3 col3">Tester symlinked file</td>
 </tr>
 <tr class="odd">
-<th id="T_57337_level0_row4" class="row_heading level0 row4" data-quarto-table-cell-role="th">4</th>
-<td id="T_57337_row4_col0" class="data row4 col0">munch-group/hic-xy-sperm</td>
-<td id="T_57337_row4_col1" class="data row4 col1">results/all_genes.h5</td>
-<td id="T_57337_row4_col2" class="data row4 col2">github</td>
-<td id="T_57337_row4_col3" class="data row4 col3">all genes</td>
+<th id="T_5e7b8_level0_row4" class="row_heading level0 row4" data-quarto-table-cell-role="th">4</th>
+<td id="T_5e7b8_row4_col0" class="data row4 col0">munch-group/hic-xy-sperm</td>
+<td id="T_5e7b8_row4_col1" class="data row4 col1">results/all_genes.h5</td>
+<td id="T_5e7b8_row4_col2" class="data row4 col2">github</td>
+<td id="T_5e7b8_row4_col3" class="data row4 col3">all genes</td>
 </tr>
 <tr class="even">
-<th id="T_57337_level0_row5" class="row_heading level0 row5" data-quarto-table-cell-role="th">5</th>
-<td id="T_57337_row5_col0" class="data row5 col0">munch-group/hic-xy-sperm</td>
-<td id="T_57337_row5_col1" class="data row5 col1">results/segments_100000.csv</td>
-<td id="T_57337_row5_col2" class="data row5 col2">github</td>
-<td id="T_57337_row5_col3" class="data row5 col3">100kb segments</td>
+<th id="T_5e7b8_level0_row5" class="row_heading level0 row5" data-quarto-table-cell-role="th">5</th>
+<td id="T_5e7b8_row5_col0" class="data row5 col0">munch-group/hic-xy-sperm</td>
+<td id="T_5e7b8_row5_col1" class="data row5 col1">results/segments_100000.csv</td>
+<td id="T_5e7b8_row5_col2" class="data row5 col2">github</td>
+<td id="T_5e7b8_row5_col3" class="data row5 col3">100kb segments</td>
 </tr>
 <tr class="odd">
-<th id="T_57337_level0_row6" class="row_heading level0 row6" data-quarto-table-cell-role="th">6</th>
-<td id="T_57337_row6_col0" class="data row6 col0">munch-group/hic-xy-sperm</td>
-<td id="T_57337_row6_col1" class="data row6 col1">results/segments_50000.csv</td>
-<td id="T_57337_row6_col2" class="data row6 col2">github</td>
-<td id="T_57337_row6_col3" class="data row6 col3">50kb segments</td>
+<th id="T_5e7b8_level0_row6" class="row_heading level0 row6" data-quarto-table-cell-role="th">6</th>
+<td id="T_5e7b8_row6_col0" class="data row6 col0">munch-group/hic-xy-sperm</td>
+<td id="T_5e7b8_row6_col1" class="data row6 col1">results/segments_50000.csv</td>
+<td id="T_5e7b8_row6_col2" class="data row6 col2">github</td>
+<td id="T_5e7b8_row6_col3" class="data row6 col3">50kb segments</td>
 </tr>
 <tr class="even">
-<th id="T_57337_level0_row7" class="row_heading level0 row7" data-quarto-table-cell-role="th">7</th>
-<td id="T_57337_row7_col0" class="data row7 col0">munch-group/hic-xy-sperm</td>
-<td id="T_57337_row7_col1" class="data row7 col1">results/segments_500000.csv</td>
-<td id="T_57337_row7_col2" class="data row7 col2">github</td>
-<td id="T_57337_row7_col3" class="data row7 col3">500kb segments</td>
+<th id="T_5e7b8_level0_row7" class="row_heading level0 row7" data-quarto-table-cell-role="th">7</th>
+<td id="T_5e7b8_row7_col0" class="data row7 col0">munch-group/hic-xy-sperm</td>
+<td id="T_5e7b8_row7_col1" class="data row7 col1">results/segments_500000.csv</td>
+<td id="T_5e7b8_row7_col2" class="data row7 col2">github</td>
+<td id="T_5e7b8_row7_col3" class="data row7 col3">500kb segments</td>
 </tr>
 <tr class="odd">
-<th id="T_57337_level0_row8" class="row_heading level0 row8" data-quarto-table-cell-role="th">8</th>
-<td id="T_57337_row8_col0" class="data row8 col0">munch-group/relate1Kgenomes</td>
-<td id="T_57337_row8_col1" class="data row8 col1">results/relate_snps_p_vals.parquet</td>
-<td id="T_57337_row8_col2" class="data row8 col2">github</td>
-<td id="T_57337_row8_col3" class="data row8 col3">Genome SNPs (hg38) with a log p-value below -2w</td>
+<th id="T_5e7b8_level0_row8" class="row_heading level0 row8" data-quarto-table-cell-role="th">8</th>
+<td id="T_5e7b8_row8_col0" class="data row8 col0">munch-group/relate1Kgenomes</td>
+<td id="T_5e7b8_row8_col1" class="data row8 col1">results/relate_snps_p_vals.parquet</td>
+<td id="T_5e7b8_row8_col2" class="data row8 col2">github</td>
+<td id="T_5e7b8_row8_col3" class="data row8 col3">Genome SNPs (hg38) with a log p-value below -2w</td>
 </tr>
 <tr class="even">
-<th id="T_57337_level0_row9" class="row_heading level0 row9" data-quarto-table-cell-role="th">9</th>
-<td id="T_57337_row9_col0" class="data row9 col0">munch-group/vep-data</td>
-<td id="T_57337_row9_col1" class="data row9 col1">results/vep.parquet</td>
-<td id="T_57337_row9_col2" class="data row9 col2">gdk</td>
-<td id="T_57337_row9_col3" class="data row9 col3">Parquet formatted VEP info from ensembl</td>
+<th id="T_5e7b8_level0_row9" class="row_heading level0 row9" data-quarto-table-cell-role="th">9</th>
+<td id="T_5e7b8_row9_col0" class="data row9 col0">munch-group/vep-data</td>
+<td id="T_5e7b8_row9_col1" class="data row9 col1">results/vep.parquet</td>
+<td id="T_5e7b8_row9_col2" class="data row9 col2">gdk</td>
+<td id="T_5e7b8_row9_col3" class="data row9 col3">Parquet formatted VEP info from ensembl</td>
 </tr>
 </tbody>
 </table>
@@ -589,63 +676,63 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>(same as <code>crossrepo list</code> command).</p>
 <p>Use <code>repos</code> to list repos searched for catalog assets:</p>
-<div id="278fb8ae" class="cell" data-execution_count="23">
+<div id="278fb8ae" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>crossrepo.repos()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="23">
+<div class="cell-output cell-output-display" data-execution_count="12">
 <style type="text/css">
-#T_a2416 .col0 {
+#T_45285 .col0 {
   text-align: left;
 }
-#T_a2416 .col3 {
+#T_45285 .col3 {
   text-align: left;
 }
 </style>
 
-<table id="T_a2416" class="caption-top table table-sm table-striped small">
+<table id="T_45285" class="caption-top table table-sm table-striped small">
 <thead>
 <tr class="header">
 <th class="blank level0" data-quarto-table-cell-role="th">&nbsp;</th>
-<th id="T_a2416_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">repo</th>
-<th id="T_a2416_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">files</th>
-<th id="T_a2416_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">bytes</th>
-<th id="T_a2416_level0_col3" class="col_heading level0 col3" data-quarto-table-cell-role="th">latest</th>
+<th id="T_45285_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">repo</th>
+<th id="T_45285_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">files</th>
+<th id="T_45285_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">bytes</th>
+<th id="T_45285_level0_col3" class="col_heading level0 col3" data-quarto-table-cell-role="th">latest</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<th id="T_a2416_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">0</th>
-<td id="T_a2416_row0_col0" class="data row0 col0">munch-group/atlas-variant-ages</td>
-<td id="T_a2416_row0_col1" class="data row0 col1">1</td>
-<td id="T_a2416_row0_col2" class="data row0 col2">1890901982</td>
-<td id="T_a2416_row0_col3" class="data row0 col3">2026-09-06</td>
+<th id="T_45285_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">0</th>
+<td id="T_45285_row0_col0" class="data row0 col0">munch-group/atlas-variant-ages</td>
+<td id="T_45285_row0_col1" class="data row0 col1">1</td>
+<td id="T_45285_row0_col2" class="data row0 col2">1890901982</td>
+<td id="T_45285_row0_col3" class="data row0 col3">2026-09-06</td>
 </tr>
 <tr class="even">
-<th id="T_a2416_level0_row1" class="row_heading level0 row1" data-quarto-table-cell-role="th">1</th>
-<td id="T_a2416_row1_col0" class="data row1 col0">munch-group/crossrepo</td>
-<td id="T_a2416_row1_col1" class="data row1 col1">3</td>
-<td id="T_a2416_row1_col2" class="data row1 col2">12</td>
-<td id="T_a2416_row1_col3" class="data row1 col3">2026-09-12</td>
+<th id="T_45285_level0_row1" class="row_heading level0 row1" data-quarto-table-cell-role="th">1</th>
+<td id="T_45285_row1_col0" class="data row1 col0">munch-group/crossrepo</td>
+<td id="T_45285_row1_col1" class="data row1 col1">3</td>
+<td id="T_45285_row1_col2" class="data row1 col2">24</td>
+<td id="T_45285_row1_col3" class="data row1 col3">2026-09-12</td>
 </tr>
 <tr class="odd">
-<th id="T_a2416_level0_row2" class="row_heading level0 row2" data-quarto-table-cell-role="th">2</th>
-<td id="T_a2416_row2_col0" class="data row2 col0">munch-group/hic-xy-sperm</td>
-<td id="T_a2416_row2_col1" class="data row2 col1">4</td>
-<td id="T_a2416_row2_col2" class="data row2 col2">8260043</td>
-<td id="T_a2416_row2_col3" class="data row2 col3">2026-09-06</td>
+<th id="T_45285_level0_row2" class="row_heading level0 row2" data-quarto-table-cell-role="th">2</th>
+<td id="T_45285_row2_col0" class="data row2 col0">munch-group/hic-xy-sperm</td>
+<td id="T_45285_row2_col1" class="data row2 col1">4</td>
+<td id="T_45285_row2_col2" class="data row2 col2">8260043</td>
+<td id="T_45285_row2_col3" class="data row2 col3">2026-09-06</td>
 </tr>
 <tr class="even">
-<th id="T_a2416_level0_row3" class="row_heading level0 row3" data-quarto-table-cell-role="th">3</th>
-<td id="T_a2416_row3_col0" class="data row3 col0">munch-group/relate1Kgenomes</td>
-<td id="T_a2416_row3_col1" class="data row3 col1">1</td>
-<td id="T_a2416_row3_col2" class="data row3 col2">82477487</td>
-<td id="T_a2416_row3_col3" class="data row3 col3">2026-09-06</td>
+<th id="T_45285_level0_row3" class="row_heading level0 row3" data-quarto-table-cell-role="th">3</th>
+<td id="T_45285_row3_col0" class="data row3 col0">munch-group/relate1Kgenomes</td>
+<td id="T_45285_row3_col1" class="data row3 col1">1</td>
+<td id="T_45285_row3_col2" class="data row3 col2">82477487</td>
+<td id="T_45285_row3_col3" class="data row3 col3">2026-09-06</td>
 </tr>
 <tr class="odd">
-<th id="T_a2416_level0_row4" class="row_heading level0 row4" data-quarto-table-cell-role="th">4</th>
-<td id="T_a2416_row4_col0" class="data row4 col0">munch-group/vep-data</td>
-<td id="T_a2416_row4_col1" class="data row4 col1">1</td>
-<td id="T_a2416_row4_col2" class="data row4 col2">31840511289</td>
-<td id="T_a2416_row4_col3" class="data row4 col3">2026-09-11</td>
+<th id="T_45285_level0_row4" class="row_heading level0 row4" data-quarto-table-cell-role="th">4</th>
+<td id="T_45285_row4_col0" class="data row4 col0">munch-group/vep-data</td>
+<td id="T_45285_row4_col1" class="data row4 col1">1</td>
+<td id="T_45285_row4_col2" class="data row4 col2">31840511289</td>
+<td id="T_45285_row4_col3" class="data row4 col3">2026-09-11</td>
 </tr>
 </tbody>
 </table>
@@ -653,7 +740,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>(same as <code>crossrepo repos</code> command).</p>
 <p>Use <code>info</code> to list information about an asset:</p>
-<div id="24ca6191" class="cell" data-execution_count="28">
+<div id="24ca6191" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>crossrepo.info(<span class="st">"munch-group/relate1Kgenomes"</span>, <span class="st">"results/relate_snps_p_vals.parquet"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>munch-group/relate1Kgenomes:results/relate_snps_p_vals.parquet
@@ -674,7 +761,7 @@ url          https://github.com/munch-group/relate1Kgenomes/tree/f2a7042fde23956
 </div>
 </div>
 <p>As long as the repo names and file names are unique, you can skip the owner and folder information:</p>
-<div id="e7768dde" class="cell" data-execution_count="29">
+<div id="e7768dde" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>crossrepo.info(<span class="st">"relate1Kgenomes"</span>, <span class="st">"relate_snps_p_vals.parquet"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>munch-group/relate1Kgenomes:results/relate_snps_p_vals.parquet
@@ -696,7 +783,7 @@ url          https://github.com/munch-group/relate1Kgenomes/tree/f2a7042fde23956
 </div>
 <p>(same as <code>crossrepo info relate1Kgenomes relate_snps_p_vals.parquet</code> command).</p>
 <p>Use <code>get</code> to the path to a downloaded/hardlinked asset.</p>
-<div id="6f475d07" class="cell" data-execution_count="30">
+<div id="6f475d07" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>tmp_path <span class="op">=</span> crossrepo.get(<span class="st">"relate1Kgenomes"</span>, <span class="st">"relate_snps_p_vals.parquet"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Add version="f2a7042fde239562518974d7b29a61fe94910cf5" to pin this version.</code></pre>
@@ -704,14 +791,14 @@ url          https://github.com/munch-group/relate1Kgenomes/tree/f2a7042fde23956
 </div>
 <p>(same as <code>crossrepo get relate1Kgenomes relate_snps_p_vals.parquet</code> command).</p>
 <p>Now silent, because this is still the current version</p>
-<div id="587ffa0e" class="cell">
+<div id="587ffa0e" class="cell" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>tmp_path <span class="op">=</span> crossrepo.get(<span class="st">"relate1Kgenomes"</span>, <span class="st">"relate_snps_p_vals.parquet"</span>,</span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>                         version<span class="op">=</span><span class="st">"f2a7042fde239562518974d7b29a61fe94910cf5"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="8cd45140" class="cell" data-execution_count="33">
+<div id="8cd45140" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_parquet(tmp_path)</span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>df.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="33">
+<div class="cell-output cell-output-display" data-execution_count="17">
 <div>
 
 
@@ -773,7 +860,7 @@ url          https://github.com/munch-group/relate1Kgenomes/tree/f2a7042fde23956
 </div>
 </div>
 </div>
-<div id="9030a54e" class="cell" data-execution_count="34">
+<div id="9030a54e" class="cell" data-execution_count="18">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>filters <span class="op">=</span> [</span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'pos'</span>, <span class="st">'&gt;='</span>, <span class="dv">892733</span>), </span>
 <span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'pos'</span>, <span class="st">'&lt;'</span>, <span class="dv">901516</span>),</span>
@@ -781,7 +868,7 @@ url          https://github.com/munch-group/relate1Kgenomes/tree/f2a7042fde23956
 <span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'chrom'</span>, <span class="st">'=='</span>, <span class="st">"chrX"</span>),</span>
 <span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>]</span>
 <span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>pd.read_parquet(tmp_path, filters<span class="op">=</span>filters)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="34">
+<div class="cell-output cell-output-display" data-execution_count="18">
 <div>
 
 
@@ -887,45 +974,45 @@ url          https://github.com/munch-group/relate1Kgenomes/tree/f2a7042fde23956
 <section id="version-history" class="level2">
 <h2 class="anchored" data-anchor-id="version-history">Version history</h2>
 <p>The catalog stamps every file with the repository’s current commit. <code>crossrepo.versions()</code> shows the commits in which the file itself changed, which is the useful set to pin.</p>
-<div id="6dd2ffc7" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-08-31T16:05:55.964532Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-08-31T16:05:55.964388Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-08-31T16:05:56.026262Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-08-31T16:05:56.025786Z&quot;}}" data-execution_count="35">
+<div id="6dd2ffc7" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-08-31T16:05:55.964532Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-08-31T16:05:55.964388Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-08-31T16:05:56.026262Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-08-31T16:05:56.025786Z&quot;}}" data-execution_count="19">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>crossrepo.versions(<span class="st">"relate1Kgenomes"</span>, <span class="st">"relate_snps_p_vals.parquet"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="35">
+<div class="cell-output cell-output-display" data-execution_count="19">
 <style type="text/css">
-#T_fd416 .col0 {
+#T_34d72 .col0 {
   text-align: left;
 }
-#T_fd416 .col1 {
+#T_34d72 .col1 {
   text-align: left;
 }
-#T_fd416 .col4 {
+#T_34d72 .col4 {
   text-align: left;
 }
-#T_fd416 .col5 {
+#T_34d72 .col5 {
   text-align: left;
 }
 </style>
 
-<table id="T_fd416" class="caption-top table table-sm table-striped small">
+<table id="T_34d72" class="caption-top table table-sm table-striped small">
 <thead>
 <tr class="header">
 <th class="blank level0" data-quarto-table-cell-role="th">&nbsp;</th>
-<th id="T_fd416_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">version</th>
-<th id="T_fd416_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">date</th>
-<th id="T_fd416_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">bytes</th>
-<th id="T_fd416_level0_col3" class="col_heading level0 col3" data-quarto-table-cell-role="th">parts</th>
-<th id="T_fd416_level0_col4" class="col_heading level0 col4" data-quarto-table-cell-role="th">tags</th>
-<th id="T_fd416_level0_col5" class="col_heading level0 col5" data-quarto-table-cell-role="th">subject</th>
+<th id="T_34d72_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">version</th>
+<th id="T_34d72_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">date</th>
+<th id="T_34d72_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">bytes</th>
+<th id="T_34d72_level0_col3" class="col_heading level0 col3" data-quarto-table-cell-role="th">parts</th>
+<th id="T_34d72_level0_col4" class="col_heading level0 col4" data-quarto-table-cell-role="th">tags</th>
+<th id="T_34d72_level0_col5" class="col_heading level0 col5" data-quarto-table-cell-role="th">subject</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<th id="T_fd416_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">0</th>
-<td id="T_fd416_row0_col0" class="data row0 col0">f4f1fc621cb9dfac3610f7f47d90caf640b43571</td>
-<td id="T_fd416_row0_col1" class="data row0 col1">2026-09-01</td>
-<td id="T_fd416_row0_col2" class="data row0 col2">82477487</td>
-<td id="T_fd416_row0_col3" class="data row0 col3">3</td>
-<td id="T_fd416_row0_col4" class="data row0 col4"></td>
-<td id="T_fd416_row0_col5" class="data row0 col5">Added parquet fixed data</td>
+<th id="T_34d72_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">0</th>
+<td id="T_34d72_row0_col0" class="data row0 col0">f4f1fc621cb9dfac3610f7f47d90caf640b43571</td>
+<td id="T_34d72_row0_col1" class="data row0 col1">2026-09-01</td>
+<td id="T_34d72_row0_col2" class="data row0 col2">82477487</td>
+<td id="T_34d72_row0_col3" class="data row0 col3">3</td>
+<td id="T_34d72_row0_col4" class="data row0 col4"></td>
+<td id="T_34d72_row0_col5" class="data row0 col5">Added parquet fixed data</td>
 </tr>
 </tbody>
 </table>
