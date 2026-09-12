@@ -249,6 +249,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../api/info.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">info</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../api/fetch.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">fetch</span></a>
   </div>
@@ -292,6 +298,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../api/find_version.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">find_version</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/describe.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">describe</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -389,19 +401,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../api/build.html" class="sidebar-item-text sidebar-link">
+  <a href="../api/remote-build.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">build</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../api/scan_repo.html" class="sidebar-item-text sidebar-link">
+  <a href="../api/remote-scan_repo.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">scan_repo</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../api/versions.html" class="sidebar-item-text sidebar-link">
+  <a href="../api/remote-versions.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">versions</span></a>
   </div>
 </li>
@@ -489,8 +501,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../api/write_entry.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">write_entry</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../api/write_stamp.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">write_stamp</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/quote_key.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">quote_key</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -550,6 +574,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../api/config_path.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">config_path</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/local_config_path.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">local_config_path</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/config_in_force.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">config_in_force</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/setting_type.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">setting_type</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/write_setting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">write_setting</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/clear_setting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">clear_setting</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/render_setting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">render_setting</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -848,16 +908,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    repo<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    pattern<span class="op">=</span><span class="va">None</span>,</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    brief<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    version<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    spec<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    url<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    refresh<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    progress<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    cfg<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    refresh<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    progress<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    cfg<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Tabulate what the configured repositories publish.</p>
-<p>The python side of <code>crossrepo list</code>, and like it the version is left out unless asked for: it is a full commit sha, and every file a repository publishes carries the same one.</p>
+<p>The python side of <code>crossrepo list</code>, showing the same four columns it shows: which repository, which file, where reading it goes, and what it holds. A listing is for finding the file you want among all of them, and these are what that is decided on. Everything else the catalog knows is in <a href="../api/frame.html#crossrepo.frame"><code>crossrepo.frame</code></a>, and everything it knows about one file is in <a href="../api/info.html#crossrepo.info"><code>crossrepo.info</code></a>.</p>
 <section id="parameters" class="level2 doc-section doc-section-parameters">
 <h2 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h2>
 <dl>
@@ -869,29 +925,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dd>
 <p>Keep only files whose name matches this glob, such as <code>"*.csv"</code>.</p>
 </dd>
-<dt><code><span class="parameter-name"><strong>brief</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="parameter-default-sep">=</span> <span class="parameter-default">False</span></code></dt>
-<dd>
-<p>Show only what a file is and where reading it goes: <code>owner</code>, <code>repo</code>, <code>name</code>, <code>description</code> and <code>get</code>.</p>
-</dd>
-<dt><code><span class="parameter-name"><strong>version</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="parameter-default-sep">=</span> <span class="parameter-default">False</span></code></dt>
-<dd>
-<p>Include the <code>version</code> column, the full commit sha.</p>
-</dd>
-<dt><code><span class="parameter-name"><strong>spec</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="parameter-default-sep">=</span> <span class="parameter-default">False</span></code></dt>
-<dd>
-<p>Include the <code>spec</code> column, the one string naming a file at a version, which <a href="../api/fetch.html#crossrepo.fetch"><code>crossrepo.fetch</code></a> and the command line take. It restates the repository, the path and the version, so it is the widest column there is and is left out unless wanted.</p>
-</dd>
-<dt><code><span class="parameter-name"><strong>url</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="parameter-default-sep">=</span> <span class="parameter-default">False</span></code></dt>
-<dd>
-<p>Include the <code>url</code> column, addressing that version on GitHub.</p>
-</dd>
 <dt><code><span class="parameter-name"><strong>refresh</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="parameter-default-sep">=</span> <span class="parameter-default">False</span></code></dt>
 <dd>
 <p>Rescan before listing, rather than using the stored catalog.</p>
 </dd>
-<dt><code><span class="parameter-name"><strong>progress</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="parameter-default-sep">=</span> <span class="parameter-default">False</span></code></dt>
+<dt><code><span class="parameter-name"><strong>progress</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="parameter-default-sep">=</span> <span class="parameter-default">True</span></code></dt>
 <dd>
-<p>Show a progress bar while rescanning. Only meaningful with <code>refresh</code>, since a stored catalog is read at once.</p>
+<p>Show a progress bar while rescanning, one step per repository. On by default, because a listing rescans on its own account – when there is no stored catalog, or the stored one has aged out – and a scan of repositories on a server is not something to do silently. Nothing is drawn when the stored catalog is read, there being nothing to wait for.</p>
 </dd>
 <dt><code><span class="parameter-name"><strong>cfg</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"></span> <span class="parameter-default-sep">=</span> <span class="parameter-default">None</span></code></dt>
 <dd>
@@ -904,7 +944,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dl>
 <dt><code><span class="parameter-name"></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"></span></code></dt>
 <dd>
-<p>A <code>Table</code>, which is a <code>pandas.DataFrame</code>, with one row per published file or dataset: <code>owner</code>, <code>repo</code>, <code>name</code>, <code>description</code>, <code>get</code>, <code>date</code>, <code>github</code>, <code>path</code>, <code>dir</code>, <code>bytes</code>, <code>tags</code> and <code>lfs</code>, or the five columns of <code>brief</code>, plus whichever of <code>version</code>, <code>spec</code> and <code>url</code> were asked for. <code>get</code> says where reading the file goes: <code>local</code> for a clone on this machine, <code>github</code> for a repository read over the API, and the server’s name or alias for one reached over ssh. <code>github</code> is the repository as <code>owner/repo</code>, and <code>path</code> the file as <code>dir/name</code>. <a href="../api/frame.html#crossrepo.frame"><code>crossrepo.frame</code></a> has everything, including the number of files a dataset holds.</p>
+<p>A <code>Table</code>, which is a <code>pandas.DataFrame</code>, with one row per published file or dataset and the columns <code>LIST_COLUMNS</code> names: <code>repo</code> as <code>owner/repo</code>, <code>path</code> from the repository root, <code>get</code>, and <code>description</code>. <code>get</code> says where reading the file goes: <code>local</code> for a clone on this machine, <code>github</code> for a repository read over the API, the server’s name or alias for one reached over ssh, and <code>missing</code> for a file published as a link whose target was not there when the catalog was built.</p>
 </dd>
 </dl>
 </section>
@@ -922,15 +962,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> crossrepo</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>crossrepo.<span class="bu">list</span>()                        <span class="co"># everything published</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>crossrepo.<span class="bu">list</span>(brief<span class="op">=</span><span class="va">True</span>)              <span class="co"># just what each file is, and how big</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>crossrepo.<span class="bu">list</span>(<span class="st">"x-gwas"</span>)                <span class="co"># one repository</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>crossrepo.<span class="bu">list</span>(pattern<span class="op">=</span><span class="st">"*.parquet"</span>)     <span class="co"># by file name</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>crossrepo.<span class="bu">list</span>(version<span class="op">=</span><span class="va">True</span>)            <span class="co"># with the sha that pins each file</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>crossrepo.<span class="bu">list</span>(spec<span class="op">=</span><span class="va">True</span>)               <span class="co"># with the string the shell takes</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>crossrepo.<span class="bu">list</span>(<span class="st">"x-gwas"</span>)                <span class="co"># one repository</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>crossrepo.<span class="bu">list</span>(pattern<span class="op">=</span><span class="st">"*.parquet"</span>)     <span class="co"># by file name</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="see-also" class="level2 doc-section doc-section-see-also">
 <h2 class="doc-section doc-section-see-also anchored" data-anchor-id="see-also">See Also</h2>
-<p><a href="../api/get.html#crossrepo.get"><code>crossrepo.get</code></a> <a href="../api/repos.html#crossrepo.repos"><code>crossrepo.repos</code></a></p>
+<p><a href="../api/info.html#crossrepo.info"><code>crossrepo.info</code></a> <a href="../api/get.html#crossrepo.get"><code>crossrepo.get</code></a> <a href="../api/frame.html#crossrepo.frame"><code>crossrepo.frame</code></a></p>
 
 
 </section>

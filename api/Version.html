@@ -249,6 +249,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../api/info.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">info</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../api/fetch.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">fetch</span></a>
   </div>
@@ -292,6 +298,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../api/find_version.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">find_version</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/describe.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">describe</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -389,19 +401,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../api/build.html" class="sidebar-item-text sidebar-link">
+  <a href="../api/remote-build.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">build</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../api/scan_repo.html" class="sidebar-item-text sidebar-link">
+  <a href="../api/remote-scan_repo.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">scan_repo</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../api/versions.html" class="sidebar-item-text sidebar-link">
+  <a href="../api/remote-versions.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">versions</span></a>
   </div>
 </li>
@@ -489,8 +501,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../api/write_entry.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">write_entry</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../api/write_stamp.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">write_stamp</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/quote_key.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">quote_key</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -550,6 +574,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../api/config_path.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">config_path</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/local_config_path.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">local_config_path</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/config_in_force.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">config_in_force</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/setting_type.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">setting_type</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/write_setting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">write_setting</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/clear_setting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">clear_setting</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/render_setting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">render_setting</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -850,7 +910,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    parts<span class="op">=</span><span class="dv">0</span>,</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    tags<span class="op">=</span>(),</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    link<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    missing<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>One commit in which a result file changed.</p>
 <p>A version is defined by a commit, not by a repository tag. Analysis repos are rarely tagged, whereas every change to a result file is a commit, so commits give a version key that exists without extra discipline. Tags, when present, are carried in <code>tags</code> and can be used to address a version, but they never define one.</p>
 <section id="attributes" class="level2 doc-section doc-section-attributes">
@@ -891,6 +952,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dt><code><span class="parameter-name"><strong>link</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a href="https://docs.python.org/3/library/stdtypes.html#str">str</a>]</span></code></dt>
 <dd>
 <p>Target of the symbolic link the file is published as, as committed, or <code>None</code> for a file git holds the content of. A link’s content is read from the target rather than from git, and <code>blob</code> is then the stamp that says which content it should be.</p>
+</dd>
+<dt><code><span class="parameter-name"><strong>missing</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/functions.html#bool">bool</a></span></code></dt>
+<dd>
+<p>Whether the content is not where it should be: that a <code>link</code> resolved to nothing when the catalog was built. Always <code>False</code> for content git holds itself, which is there wherever the repository is. It is recorded rather than worked out on demand because the answer is a question for the machine the repository is on, and asking it over ssh costs a round trip; it is therefore as old as the catalog, and a pipeline that writes the file after the last scan still reads as missing until the next one. It says the repository cannot produce the content, which is the question a listing is asking. The cache is a separate matter: content already in it – fetched before the file went away, or put there by another file of the same bytes – is still handed over, since a cached object is what it is whatever became of the link.</p>
 </dd>
 </dl>
 

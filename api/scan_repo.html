@@ -249,6 +249,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../api/info.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">info</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../api/fetch.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">fetch</span></a>
   </div>
@@ -292,6 +298,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../api/find_version.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">find_version</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/describe.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">describe</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -389,19 +401,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../api/build.html" class="sidebar-item-text sidebar-link">
+  <a href="../api/remote-build.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">build</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../api/scan_repo.html" class="sidebar-item-text sidebar-link">
+  <a href="../api/remote-scan_repo.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">scan_repo</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../api/versions.html" class="sidebar-item-text sidebar-link">
+  <a href="../api/remote-versions.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">versions</span></a>
   </div>
 </li>
@@ -489,8 +501,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../api/write_entry.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">write_entry</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../api/write_stamp.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">write_stamp</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/quote_key.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">quote_key</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -550,6 +574,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../api/config_path.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">config_path</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/local_config_path.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">local_config_path</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/config_in_force.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">config_in_force</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/setting_type.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">setting_type</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/write_setting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">write_setting</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/clear_setting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">clear_setting</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/render_setting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">render_setting</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -825,7 +885,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#crossrepo.remote.scan_repo" id="toc-crossrepo.remote.scan_repo" class="nav-link active" data-scroll-target="#crossrepo.remote.scan_repo">scan_repo</a>
+  <li><a href="#crossrepo.core.scan_repo" id="toc-crossrepo.core.scan_repo" class="nav-link active" data-scroll-target="#crossrepo.core.scan_repo">scan_repo</a>
   <ul class="collapse">
   <li><a href="#parameters" id="toc-parameters" class="nav-link" data-scroll-target="#parameters">Parameters</a></li>
   <li><a href="#returns" id="toc-returns" class="nav-link" data-scroll-target="#returns">Returns</a></li>
@@ -840,32 +900,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="crossrepo.remote.scan_repo" class="level1">
+<section id="crossrepo.core.scan_repo" class="level1">
 <h1>scan_repo</h1>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>crossrepo.remote.scan_repo(client, owner, repo, cfg, ref<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Catalog the result files one GitHub repository publishes.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>crossrepo.core.scan_repo(root, cfg)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Catalog the result files of one repository.</p>
+<p>Only files named by a committed <code>crossrepo.yml</code> are cataloged. A results directory without one contributes nothing, and neither does a file the manifest does not mention. A manifest may name any tracked file in the repository, not only the ones beneath it, by writing the path from the repository root.</p>
+<p>A symbolic link is cataloged when its manifest entry carries a stamp, which is what says which content the link stands for; git holds only the link. A link with no stamp is passed over with a warning, since nothing would be checking what it resolved to. Links inside a dataset directory are not published: a stamp names one file, so a directory of them has nothing to say what it holds.</p>
 <section id="parameters" class="level2 doc-section doc-section-parameters">
 <h2 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h2>
 <dl>
-<dt><code><span class="parameter-name"><strong>client</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="../api/Client.html#crossrepo.github.Client">Client</a></span></code></dt>
+<dt><code><span class="parameter-name"><strong>root</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><code>Location</code></span></code></dt>
 <dd>
-<p>Client to read with.</p>
-</dd>
-<dt><code><span class="parameter-name"><strong>owner</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span></code></dt>
-<dd>
-<p>Repository owner.</p>
-</dd>
-<dt><code><span class="parameter-name"><strong>repo</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span></code></dt>
-<dd>
-<p>Repository name.</p>
+<p>Working tree of the repository.</p>
 </dd>
 <dt><code><span class="parameter-name"><strong>cfg</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="../api/Config.html#crossrepo.config.Config">Config</a></span></code></dt>
 <dd>
 <p>Settings supplying the results directories and the reading side filters.</p>
-</dd>
-<dt><code><span class="parameter-name"><strong>ref</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a href="https://docs.python.org/3/library/stdtypes.html#str">str</a>]</span> <span class="parameter-default-sep">=</span> <span class="parameter-default">None</span></code></dt>
-<dd>
-<p>Branch, tag or commit to read. Defaults to the repository’s default branch.</p>
 </dd>
 </dl>
 </section>
@@ -874,13 +924,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dl>
 <dt><code><span class="parameter-name"></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.List">List</a>[<a href="../api/Entry.html#crossrepo.Entry">Entry</a>]</span></code></dt>
 <dd>
-<p>One entry per published result file or dataset, each stamped with the commit the repository points at. Empty, at the cost of a single request, when the repository publishes nothing.</p>
+<p>One entry per published result file, at its most recent version.</p>
 </dd>
 </dl>
 </section>
 <section id="see-also" class="level2 doc-section doc-section-see-also">
 <h2 class="doc-section doc-section-see-also anchored" data-anchor-id="see-also">See Also</h2>
-<p><a href="../api/scan_repo.html#crossrepo.core.scan_repo"><code>crossrepo.core.scan_repo</code></a></p>
+<p><a href="../api/build.html#crossrepo.build"><code>crossrepo.core.build</code></a> <a href="../api/Manifest.html#crossrepo.manifest.Manifest"><code>crossrepo.manifest.Manifest</code></a></p>
 
 
 </section>

@@ -249,6 +249,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../api/info.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">info</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../api/fetch.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">fetch</span></a>
   </div>
@@ -292,6 +298,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../api/find_version.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">find_version</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/describe.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">describe</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -389,19 +401,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../api/build.html" class="sidebar-item-text sidebar-link">
+  <a href="../api/remote-build.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">build</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../api/scan_repo.html" class="sidebar-item-text sidebar-link">
+  <a href="../api/remote-scan_repo.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">scan_repo</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../api/versions.html" class="sidebar-item-text sidebar-link">
+  <a href="../api/remote-versions.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">versions</span></a>
   </div>
 </li>
@@ -489,8 +501,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../api/write_entry.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">write_entry</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../api/write_stamp.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">write_stamp</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/quote_key.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">quote_key</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -550,6 +574,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../api/config_path.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">config_path</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/local_config_path.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">local_config_path</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/config_in_force.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">config_in_force</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/setting_type.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">setting_type</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/write_setting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">write_setting</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/clear_setting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">clear_setting</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/render_setting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">render_setting</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -825,10 +885,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#crossrepo.remote.build" id="toc-crossrepo.remote.build" class="nav-link active" data-scroll-target="#crossrepo.remote.build">build</a>
+  <li><a href="#crossrepo.build" id="toc-crossrepo.build" class="nav-link active" data-scroll-target="#crossrepo.build">build</a>
   <ul class="collapse">
   <li><a href="#parameters" id="toc-parameters" class="nav-link" data-scroll-target="#parameters">Parameters</a></li>
   <li><a href="#returns" id="toc-returns" class="nav-link" data-scroll-target="#returns">Returns</a></li>
+  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
   <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See Also</a></li>
   </ul></li>
   </ul>
@@ -840,28 +901,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="crossrepo.remote.build" class="level1">
+<section id="crossrepo.build" class="level1">
 <h1>build</h1>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>crossrepo.remote.build(cfg, client<span class="op">=</span><span class="va">None</span>, progress<span class="op">=</span><span class="va">False</span>, select<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Catalog every repository the settings name on GitHub.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>crossrepo.build(cfg<span class="op">=</span><span class="va">None</span>, progress<span class="op">=</span><span class="va">False</span>, select<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Catalog every repository under the configured roots.</p>
+<p>Repositories that cannot be read are skipped rather than failing the scan, so one broken working tree does not hide the rest.</p>
 <section id="parameters" class="level2 doc-section doc-section-parameters">
 <h2 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h2>
 <dl>
-<dt><code><span class="parameter-name"><strong>cfg</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="../api/Config.html#crossrepo.config.Config">Config</a></span></code></dt>
+<dt><code><span class="parameter-name"><strong>cfg</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a href="../api/Config.html#crossrepo.config.Config">Config</a>]</span> <span class="parameter-default-sep">=</span> <span class="parameter-default">None</span></code></dt>
 <dd>
-<p>Settings supplying <code>owners</code> and <code>repos</code>.</p>
-</dd>
-<dt><code><span class="parameter-name"><strong>client</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a href="../api/Client.html#crossrepo.github.Client">Client</a>]</span> <span class="parameter-default-sep">=</span> <span class="parameter-default">None</span></code></dt>
-<dd>
-<p>Client to read with. Defaults to a new one, authenticated as <a href="../api/token.html#crossrepo.github.token"><code>crossrepo.github.token</code></a> finds.</p>
+<p>Settings. Defaults to <a href="../api/active_config.html#crossrepo.config.active_config"><code>crossrepo.config.active_config</code></a>: what <a href="../api/use_config.html#crossrepo.config.use_config"><code>crossrepo.config.use_config</code></a> registered, or the configuration file.</p>
 </dd>
 <dt><code><span class="parameter-name"><strong>progress</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="parameter-default-sep">=</span> <span class="parameter-default">False</span></code></dt>
 <dd>
-<p>Show a progress bar, one step per repository. Reading a whole organisation is otherwise silent for as long as it takes.</p>
+<p>Show a progress bar, one step per repository. Scanning an organisation is otherwise silent for as long as it takes.</p>
 </dd>
 <dt><code><span class="parameter-name"><strong>select</strong></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[<a href="https://docs.python.org/3/library/stdtypes.html#str">str</a>]</span> <span class="parameter-default-sep">=</span> <span class="parameter-default">None</span></code></dt>
 <dd>
-<p>Read only the repositories this names, by <a href="../api/selects.html#crossrepo.core.selects"><code>crossrepo.core.selects</code></a>. An owner that cannot hold a match is not even listed, and one that can is listed but only read into where a repository matches, so narrowing a scan to one repository of an organisation costs one request for the listing instead of one for every repository it holds.</p>
+<p>Scan only the repositories this names, by <a href="../api/selects.html#crossrepo.core.selects"><code>crossrepo.core.selects</code></a>. A clone is identified before it is read and an organisation is listed but not read into, so what is skipped costs nothing beyond finding out that it is there. The result is then part of a catalog rather than a whole one, which is <a href="../api/catalog.html#crossrepo.catalog"><code>crossrepo.core.catalog</code></a>’s business to put back together.</p>
 </dd>
 </dl>
 </section>
@@ -870,13 +928,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dl>
 <dt><code><span class="parameter-name"></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/typing.html#typing.List">List</a>[<a href="../api/Entry.html#crossrepo.Entry">Entry</a>]</span></code></dt>
 <dd>
-<p>Entries from every repository that publishes something. A repository that cannot be read is skipped with a <code>crossrepo.config.SourceWarning</code> rather than failing the scan, as is an owner GitHub will not list and a repository named in the settings that is not there.</p>
+<p>Entries sorted by repository and path.</p>
 </dd>
 </dl>
 </section>
+<section id="examples" class="level2 doc-section doc-section-examples">
+<h2 class="doc-section doc-section-examples anchored" data-anchor-id="examples">Examples</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>entries <span class="op">=</span> build(Config(roots<span class="op">=</span>[<span class="st">"~/github-backup/munch-group"</span>]))</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(entries)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
 <section id="see-also" class="level2 doc-section doc-section-see-also">
 <h2 class="doc-section doc-section-see-also anchored" data-anchor-id="see-also">See Also</h2>
-<p><a href="../api/scan_repo.html#crossrepo.remote.scan_repo"><code>crossrepo.remote.scan_repo</code></a> <a href="../api/selects.html#crossrepo.core.selects"><code>crossrepo.core.selects</code></a></p>
+<p><a href="../api/catalog.html#crossrepo.catalog"><code>crossrepo.core.catalog</code></a> <a href="../api/selects.html#crossrepo.core.selects"><code>crossrepo.core.selects</code></a></p>
 
 
 </section>

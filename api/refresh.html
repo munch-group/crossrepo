@@ -249,6 +249,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../api/info.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">info</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../api/fetch.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">fetch</span></a>
   </div>
@@ -292,6 +298,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../api/find_version.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">find_version</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/describe.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">describe</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -389,19 +401,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../api/build.html" class="sidebar-item-text sidebar-link">
+  <a href="../api/remote-build.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">build</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../api/scan_repo.html" class="sidebar-item-text sidebar-link">
+  <a href="../api/remote-scan_repo.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">scan_repo</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../api/versions.html" class="sidebar-item-text sidebar-link">
+  <a href="../api/remote-versions.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">versions</span></a>
   </div>
 </li>
@@ -489,8 +501,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../api/write_entry.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">write_entry</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../api/write_stamp.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">write_stamp</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/quote_key.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">quote_key</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -550,6 +574,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../api/config_path.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">config_path</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/local_config_path.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">local_config_path</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/config_in_force.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">config_in_force</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/setting_type.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">setting_type</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/write_setting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">write_setting</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/clear_setting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">clear_setting</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../api/render_setting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">render_setting</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -829,7 +889,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#parameters" id="toc-parameters" class="nav-link" data-scroll-target="#parameters">Parameters</a></li>
   <li><a href="#returns" id="toc-returns" class="nav-link" data-scroll-target="#returns">Returns</a></li>
-  <li><a href="#raises" id="toc-raises" class="nav-link" data-scroll-target="#raises">Raises</a></li>
   <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
   <li><a href="#see-also" id="toc-see-also" class="nav-link" data-scroll-target="#see-also">See Also</a></li>
   </ul></li>
@@ -844,9 +903,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="crossrepo.refresh" class="level1">
 <h1>refresh</h1>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>crossrepo.refresh(cfg<span class="op">=</span><span class="va">None</span>, progress<span class="op">=</span><span class="va">True</span>, owner<span class="op">=</span><span class="va">None</span>, repo<span class="op">=</span><span class="va">None</span>, <span class="op">**</span>kwargs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>crossrepo.refresh(cfg<span class="op">=</span><span class="va">None</span>, progress<span class="op">=</span><span class="va">True</span>, owner<span class="op">=</span><span class="va">None</span>, repo<span class="op">=</span><span class="va">None</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Rescan the repositories and store the catalog.</p>
-<p>The python side of <code>crossrepo refresh</code>. The rebuilt catalog is returned, so a notebook cell shows what is there now.</p>
+<p>The python side of <code>crossrepo refresh</code>. Nothing is returned: rescanning and looking are two things, and a cell that does the first should not answer with three hundred rows of the second. Call <a href="../api/list.html#crossrepo.list"><code>crossrepo.list</code></a> to look, which is also what someone reading the notebook later will see was meant.</p>
 <p>Naming an <code>owner</code> or a <code>repo</code> rescans that much and no more, which is the difference between a request or two and a request for every repository an organisation holds. The rest of the catalog is neither rescanned nor forgotten: what is stored is still the whole of it, with the named repositories as they are now.</p>
 <section id="parameters" class="level2 doc-section doc-section-parameters">
 <h2 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h2>
@@ -867,10 +926,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dd>
 <p>Rescan only repositories matching this, as <a href="../api/list.html#crossrepo.list"><code>crossrepo.list</code></a> filters on it: the text is matched anywhere in <code>owner/repo</code>, ignoring case, so a name, a fragment of one, or a whole <code>owner/repo</code> all work.</p>
 </dd>
-<dt><code><span class="parameter-name">****kwargs**</span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"></span> <span class="parameter-default-sep">=</span> <span class="parameter-default">{}</span></code></dt>
-<dd>
-<p>Passed to <a href="../api/list.html#crossrepo.list"><code>crossrepo.list</code></a>, so <code>version=True</code> and <code>url=True</code> work here too.</p>
-</dd>
 </dl>
 </section>
 <section id="returns" class="level2 doc-section doc-section-returns">
@@ -878,16 +933,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dl>
 <dt><code><span class="parameter-name"></span> <span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"></span></code></dt>
 <dd>
-<p>A <code>pandas.DataFrame</code>, as <a href="../api/list.html#crossrepo.list"><code>crossrepo.list</code></a> returns, holding what was rescanned when <code>owner</code> or <code>repo</code> was given and the whole catalog otherwise. Where nothing configured matches, the table is empty and a <code>crossrepo.config.SourceWarning</code> says so, a rescan that looked at nothing being otherwise an empty table and no explanation.</p>
-</dd>
-</dl>
-</section>
-<section id="raises" class="level2 doc-section doc-section-raises">
-<h2 class="doc-section doc-section-raises anchored" data-anchor-id="raises">Raises</h2>
-<dl>
-<dt><code><span class="parameter-annotation-sep">:</span> <span class="parameter-annotation"><a href="https://docs.python.org/3/library/exceptions.html#ImportError">ImportError</a></span></code></dt>
-<dd>
-<p>If pandas is not installed.</p>
+<p>Nothing. Where <code>owner</code> or <code>repo</code> was given and nothing configured matches it, a <code>crossrepo.config.SourceWarning</code> says so: a rescan that looked at nothing is otherwise indistinguishable from one that worked.</p>
 </dd>
 </dl>
 </section>
@@ -898,7 +944,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>crossrepo.refresh(repo<span class="op">=</span><span class="st">"x-gwas"</span>)          <span class="co"># one repository</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>crossrepo.refresh(owner<span class="op">=</span><span class="st">"munch-group"</span>)    <span class="co"># one organisation</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>crossrepo.refresh(owner<span class="op">=</span><span class="st">"munch-group"</span>, repo<span class="op">=</span><span class="st">"x-gwas"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>crossrepo.refresh(owner<span class="op">=</span><span class="st">"munch-group"</span>, repo<span class="op">=</span><span class="st">"x-gwas"</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>crossrepo.refresh()                       <span class="co"># rescan,</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>crossrepo.<span class="bu">list</span>()                          <span class="co"># then look</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="see-also" class="level2 doc-section doc-section-see-also">
 <h2 class="doc-section doc-section-see-also anchored" data-anchor-id="see-also">See Also</h2>
