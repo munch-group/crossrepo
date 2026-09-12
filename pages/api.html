@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Reading another project’s results – crossrepo</title>
+<title>Jupyter notebook UI – crossrepo</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -140,6 +140,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link" href="../api/"> 
 <span class="menu-text">API reference</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../pages/cli.html"> 
+<span class="menu-text">API reference</span></a>
+  </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
@@ -158,7 +162,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../pages/example.html">Examples</a></li><li class="breadcrumb-item"><a href="../pages/example.html">Reading another project’s results</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../pages/api.html">Tutorials</a></li><li class="breadcrumb-item"><a href="../pages/api.html">Jupyter notebook UI</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -173,13 +177,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/overview.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Overview</span></a>
+ <span class="menu-text">Getting started</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">Examples</span></a>
+ <span class="menu-text">Tutorials</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -187,8 +191,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/example.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Reading another project’s results</span></a>
+  <a href="../pages/api.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Jupyter notebook UI</span></a>
   </div>
 </li>
       </ul>
@@ -223,9 +227,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../pages/example.html">Examples</a></li><li class="breadcrumb-item"><a href="../pages/example.html">Reading another project’s results</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../pages/api.html">Tutorials</a></li><li class="breadcrumb-item"><a href="../pages/api.html">Jupyter notebook UI</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Reading another project’s results</h1>
+<h1 class="title">Jupyter notebook UI</h1>
 </div>
 
 
@@ -242,10 +246,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><code>crossrepo</code> lets one project read result files produced by another, without submodules, without cloning, and without downloading anything by hand.</p>
-<p>A repository publishes by committing a <code>crossrepo.yml</code> in the <code>results/</code> directory at its root, naming the files it wants others to see and saying what each one holds. Everything else in <code>results/</code> stays private to that project.</p>
-<p>Repositories are read wherever they are: clones on this machine, clones on a server reached over ssh, and repositories on GitHub read over the API without being cloned at all.</p>
-<p>Add a “crossrepo share <path> <code>&lt;description&gt;</code>”. It should check that the path is tracked by git. If a symlink it should also check that the address of the symlink is not tracked. It should write the path / description this to the crossrepo.yml file. If the path is a symlink, it should also run crossrepo stamp after updating the crossrepo.yml file.</path></p>
 <div id="4ea86094" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-08-31T16:05:53.645910Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-08-31T16:05:53.645652Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-08-31T16:05:55.428753Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-08-31T16:05:55.428330Z&quot;}}" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> vscodenb</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> crossrepo</span>
@@ -1428,8 +1428,8 @@ url          https://github.com/munch-group/relate1Kgenomes/tree/f2a7042fde23956
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../pages/overview.html" class="pagination-link" aria-label="Overview">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Overview</span>
+      <a href="../pages/overview.html" class="pagination-link" aria-label="Getting started">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Getting started</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
