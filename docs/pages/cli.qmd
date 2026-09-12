@@ -1,0 +1,372 @@
+---
+title: Command line
+# Help text is prose, not markdown, and a spec is written [owner/]repo:path
+# [@version]. Pandoc reads `@version` as a citation and renders it as one, so
+# citation syntax is turned off for a page that has no citations in it.
+from: markdown-citations
+---
+
+Every command, as `crossrepo --help` reports it. The python API mirrors it, one
+call per command, and is documented in the [API reference](../api/index.qmd).
+
+A `--config PATH` given before a command names the configuration file to use
+instead of the one that would be found; `--refresh` before or after one rescans
+the repositories rather than reading the stored catalog.
+
+::: {.callout-note collapse="true" title="Where settings come from"}
+A `crossrepo.toml` in the working directory is read *instead of*
+`~/.config/crossrepo/config.toml`, not on top of it, and only the working
+directory itself is looked in. `crossrepo config` says which of the two is in
+force.
+:::
+
+## `crossrepo` {#crossrepo}
+
+```console
+crossrepo [OPTIONS] COMMAND [ARGS]...
+```
+
+Catalog and fetch versioned result files across git repos.
+
+| Option | |
+|---|---|
+| `--config PATH` | path to config.toml |
+| `--refresh` | rescan repos instead of using the cached catalog |
+| `-V, --version` | Show the version and exit. |
+
+| Subcommand | |
+|---|---|
+| [`crossrepo cache`](#crossrepo-cache) | Show what the local cache holds, and check that it is sound. |
+| [`crossrepo config`](#crossrepo-config) | Show the settings in force, or work on one of the two config files. |
+| [`crossrepo get`](#crossrepo-get) | Fetch \[owner/\]repo:path\[@version\] into the cache and print its path. |
+| [`crossrepo info`](#crossrepo-info) | Print everything the catalog holds about \[owner/\]repo:path\[@version\]. |
+| [`crossrepo list`](#crossrepo-list) | List result files, optionally limited to one repo. |
+| [`crossrepo refresh`](#crossrepo-refresh) | Rescan the repos and store the catalog. |
+| [`crossrepo repos`](#crossrepo-repos) | Print one line per repo holding result files. |
+| [`crossrepo share`](#crossrepo-share) | Publish PATH, saying in DESCRIPTION what it holds. |
+| [`crossrepo stamp`](#crossrepo-stamp) | Record what the published symbolic links in a repository point at. |
+| [`crossrepo versions`](#crossrepo-versions) | Print the history of one result file, given as \[owner/\]repo:path. |
+
+### `crossrepo cache` {#crossrepo-cache}
+
+```console
+crossrepo cache [OPTIONS]
+```
+
+Show what the local cache holds, and check that it is sound.
+
+Verification re-hashes every object and compares the digest with the key it
+is stored under, so it says whether the cache still holds what it claims.
+``--repair`` removes the objects that fail, together with the readable links
+that stand for them; their content is fetched again the next time it is
+asked for.
+
+| Option | |
+|---|---|
+| `--verify` | re-hash every cached object and report any that do not match its key |
+| `--repair` | remove the objects that fail verification; implies --verify |
+
+### `crossrepo config` {#crossrepo-config}
+
+```console
+crossrepo config [OPTIONS] COMMAND [ARGS]...
+```
+
+Show the settings in force, or work on one of the two config files.
+
+Called on its own it shows what is in force and which file that came from:
+the crossrepo.toml in this directory when there is one, else the config
+that applies everywhere. `config local` and `config global` name one of the
+two outright, and write the file if it is not there yet.
+
+A ``--config PATH`` given before the subcommand names the file to show,
+instead of the one that would be found.
+
+| Subcommand | |
+|---|---|
+| [`crossrepo config global`](#crossrepo-config-global) | Write or change the config file that applies everywhere. |
+| [`crossrepo config local`](#crossrepo-config-local) | Write or change the crossrepo.toml in this directory. |
+
+#### `crossrepo config global` {#crossrepo-config-global}
+
+```console
+crossrepo config global [OPTIONS] COMMAND [ARGS]...
+```
+
+Write or change the config file that applies everywhere.
+
+| Subcommand | |
+|---|---|
+| [`crossrepo config global append`](#crossrepo-config-global-append) | Add VALUES to the list setting KEY in the config file that applies everywhere. |
+| [`crossrepo config global init`](#crossrepo-config-global-init) | Write the config file that applies everywhere, unless it is already there. |
+| [`crossrepo config global reset`](#crossrepo-config-global-reset) | Take KEY out of the config file that applies everywhere, so its default applies. |
+| [`crossrepo config global set`](#crossrepo-config-global-set) | Set KEY to VALUES in the config file that applies everywhere. |
+| [`crossrepo config global show`](#crossrepo-config-global-show) | Print the config file that applies everywhere. |
+
+##### `crossrepo config global append` {#crossrepo-config-global-append}
+
+```console
+crossrepo config global append [OPTIONS] KEY VALUES...
+```
+
+Add VALUES to the list setting KEY in the config file that applies everywhere.
+
+Takes `KEY` and `VALUES...`.
+
+##### `crossrepo config global init` {#crossrepo-config-global-init}
+
+```console
+crossrepo config global init [OPTIONS]
+```
+
+Write the config file that applies everywhere, unless it is already there.
+
+##### `crossrepo config global reset` {#crossrepo-config-global-reset}
+
+```console
+crossrepo config global reset [OPTIONS] KEY
+```
+
+Take KEY out of the config file that applies everywhere, so its default applies.
+
+Takes `KEY`.
+
+##### `crossrepo config global set` {#crossrepo-config-global-set}
+
+```console
+crossrepo config global set [OPTIONS] KEY VALUES...
+```
+
+Set KEY to VALUES in the config file that applies everywhere.
+
+Takes `KEY` and `VALUES...`.
+
+##### `crossrepo config global show` {#crossrepo-config-global-show}
+
+```console
+crossrepo config global show [OPTIONS]
+```
+
+Print the config file that applies everywhere.
+
+#### `crossrepo config local` {#crossrepo-config-local}
+
+```console
+crossrepo config local [OPTIONS] COMMAND [ARGS]...
+```
+
+Write or change the crossrepo.toml in this directory.
+
+| Subcommand | |
+|---|---|
+| [`crossrepo config local append`](#crossrepo-config-local-append) | Add VALUES to the list setting KEY in the crossrepo.toml in this directory. |
+| [`crossrepo config local init`](#crossrepo-config-local-init) | Write the crossrepo.toml in this directory, unless it is already there. |
+| [`crossrepo config local reset`](#crossrepo-config-local-reset) | Take KEY out of the crossrepo.toml in this directory, so its default applies. |
+| [`crossrepo config local set`](#crossrepo-config-local-set) | Set KEY to VALUES in the crossrepo.toml in this directory. |
+| [`crossrepo config local show`](#crossrepo-config-local-show) | Print the crossrepo.toml in this directory. |
+
+##### `crossrepo config local append` {#crossrepo-config-local-append}
+
+```console
+crossrepo config local append [OPTIONS] KEY VALUES...
+```
+
+Add VALUES to the list setting KEY in the crossrepo.toml in this directory.
+
+Takes `KEY` and `VALUES...`.
+
+##### `crossrepo config local init` {#crossrepo-config-local-init}
+
+```console
+crossrepo config local init [OPTIONS]
+```
+
+Write the crossrepo.toml in this directory, unless it is already there.
+
+##### `crossrepo config local reset` {#crossrepo-config-local-reset}
+
+```console
+crossrepo config local reset [OPTIONS] KEY
+```
+
+Take KEY out of the crossrepo.toml in this directory, so its default applies.
+
+Takes `KEY`.
+
+##### `crossrepo config local set` {#crossrepo-config-local-set}
+
+```console
+crossrepo config local set [OPTIONS] KEY VALUES...
+```
+
+Set KEY to VALUES in the crossrepo.toml in this directory.
+
+Takes `KEY` and `VALUES...`.
+
+##### `crossrepo config local show` {#crossrepo-config-local-show}
+
+```console
+crossrepo config local show [OPTIONS]
+```
+
+Print the crossrepo.toml in this directory.
+
+### `crossrepo get` {#crossrepo-get}
+
+```console
+crossrepo get [OPTIONS] SPEC
+```
+
+Fetch \[owner/\]repo:path\[@version\] into the cache and print its path.
+
+The path is the only thing written to standard output, so the command
+composes in a shell pipeline. When no version is given, the one chosen is
+named on standard error; when one is given and the file has changed since,
+that is said there instead.
+
+Takes `SPEC`.
+
+| Option | |
+|---|---|
+| `-o, --out PATH` | also write a copy here |
+| `-u, --url` | print the URL of the version instead of downloading it |
+| `--config PATH` | path to config.toml |
+| `--refresh` | rescan repos instead of using the cached catalog |
+
+### `crossrepo info` {#crossrepo-info}
+
+```console
+crossrepo info [OPTIONS] SPEC
+```
+
+Print everything the catalog holds about \[owner/\]repo:path\[@version\].
+
+Addressed exactly as `crossrepo get` addresses it, so asking about a file
+and fetching it differ in the verb and nothing else. Nothing is downloaded.
+The same lines `crossrepo.info` prints in a notebook.
+
+Takes `SPEC`.
+
+| Option | |
+|---|---|
+| `--config PATH` | path to config.toml |
+| `--refresh` | rescan repos instead of using the cached catalog |
+
+### `crossrepo list` {#crossrepo-list}
+
+```console
+crossrepo list [OPTIONS] [REPO]
+```
+
+List result files, optionally limited to one repo.
+
+Four columns: which repository, which file, where reading it goes, and what
+it holds. They are what a file is chosen on, and they are the same four
+`crossrepo.list` shows in a notebook, so that a listing is one thing however
+it is read. Everything known about one file is `crossrepo info`.
+
+Takes `[REPO]`.
+
+| Option | |
+|---|---|
+| `-p, --pattern GLOB` | filter by filename glob, e.g. '*.csv' |
+| `--json` | print machine readable output |
+| `--config PATH` | path to config.toml |
+| `--refresh` | rescan repos instead of using the cached catalog |
+
+### `crossrepo refresh` {#crossrepo-refresh}
+
+```console
+crossrepo refresh [OPTIONS]
+```
+
+Rescan the repos and store the catalog.
+
+A progress bar is drawn, one step per repository, when standard error is a
+terminal. Any root, organisation or repository that could not be read is
+named on standard error afterwards; the catalog is still written from what
+could be, and the status stays zero, since a scan that reached most of its
+sources has done its job.
+
+| Option | |
+|---|---|
+| `--config PATH` | path to config.toml |
+| `--refresh` | rescan repos instead of using the cached catalog |
+
+### `crossrepo repos` {#crossrepo-repos}
+
+```console
+crossrepo repos [OPTIONS]
+```
+
+Print one line per repo holding result files.
+
+| Option | |
+|---|---|
+| `--config PATH` | path to config.toml |
+| `--refresh` | rescan repos instead of using the cached catalog |
+
+### `crossrepo share` {#crossrepo-share}
+
+```console
+crossrepo share [OPTIONS] PATH DESCRIPTION
+```
+
+Publish PATH, saying in DESCRIPTION what it holds.
+
+Publishing is naming a file in the crossrepo.yml, and this is that written
+for you: the file is checked, the manifest is updated, and a file published
+as a symbolic link is stamped as well. Committing the crossrepo.yml is what
+makes the new version.
+
+PATH has to be tracked by git already, since committing a file is the act of
+offering it. A symbolic link is published instead of its content, so what it
+points at must *not* be tracked: a target git holds as well would be
+published twice, once as bytes and once as a stamp that could disagree.
+
+Takes `PATH` and `DESCRIPTION`.
+
+| Option | |
+|---|---|
+| `--config PATH` | path to config.toml |
+| `--refresh` | rescan repos instead of using the cached catalog |
+
+### `crossrepo stamp` {#crossrepo-stamp}
+
+```console
+crossrepo stamp [OPTIONS] [PATH]
+```
+
+Record what the published symbolic links in a repository point at.
+
+A result file too large to commit is published as a symbolic link to
+wherever the pipeline wrote it, together with a stamp in the ``crossrepo.yml``
+saying which content the link stands for. Git versions the link and not the
+bytes, so it is the stamp that makes the version: this command writes it,
+and committing the manifest publishes the new version.
+
+Only the two stamp lines of each entry are rewritten, so comments and
+formatting survive and a stamping run reads as itself in a diff. A file must
+already be named in the manifest to be stamped, naming it being how it is
+published in the first place.
+
+Takes `[PATH]`.
+
+| Option | |
+|---|---|
+| `--check` | say what is out of date and write nothing; for a hook or for CI |
+
+### `crossrepo versions` {#crossrepo-versions}
+
+```console
+crossrepo versions [OPTIONS] SPEC
+```
+
+Print the history of one result file, given as \[owner/\]repo:path.
+
+Takes `SPEC`.
+
+| Option | |
+|---|---|
+| `--config PATH` | path to config.toml |
+| `--refresh` | rescan repos instead of using the cached catalog |

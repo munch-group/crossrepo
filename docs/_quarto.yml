@@ -15,6 +15,9 @@ metadata-files:
 filters:
   - "interlinks"
 
+render:
+  - "pages/cli.qmd"
+
 interlinks:
   fast: true
   sources:
@@ -43,6 +46,8 @@ website:
     left:
       - href: api/
         text: API reference
+      - href: pages/cli.html
+        text: API reference
       # - href: gallery/
       #   text: Gallery
     right:
@@ -55,9 +60,9 @@ website:
       align: left
       contents:
         - pages/overview.ipynb
-        - section: "Examples"
+        - section: "Tutorials"
           contents:
-            - pages/example.ipynb                   
+            - pages/api.ipynb
 
 lightbox: true
 
