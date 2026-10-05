@@ -47,7 +47,7 @@ website:
       - href: api/
         text: API reference
       - href: pages/cli.html
-        text: API reference
+        text: CLI reference
       # - href: gallery/
       #   text: Gallery
     right:
