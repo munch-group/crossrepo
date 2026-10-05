@@ -382,6 +382,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/widgetsnbextension-4.0.15-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/zipp-3.23.0-pyhcf101f3_1.conda
       - conda: https://conda.anaconda.org/munch-group/linux-64/vscodenb-1.0.7-0.conda
+      - conda: https://conda.anaconda.org/munch-group/noarch/crossrepo-0.1.27-py_0.conda
       osx-arm64:
       - conda: https://conda.anaconda.org/conda-forge/noarch/_python_abi3_support-1.0-hd8ed1ab_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/_r-mutex-1.0.1-anacondar_1.tar.bz2
@@ -756,6 +757,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zlib-1.3.2-h8088a28_3.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zlib-ng-2.3.3-h31dac16_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zstd-1.5.7-hbf9d68e_6.conda
+      - conda: https://conda.anaconda.org/munch-group/noarch/crossrepo-0.1.27-py_0.conda
       - conda: https://conda.anaconda.org/munch-group/osx-arm64/vscodenb-1.0.7-0.conda
 packages:
 - conda: https://conda.anaconda.org/conda-forge/linux-64/_libgcc_mutex-0.1-conda_forge.tar.bz2
@@ -9111,6 +9113,18 @@ packages:
   license: MIT
   size: 48282
   timestamp: 1788176631548
+- conda: https://conda.anaconda.org/munch-group/noarch/crossrepo-0.1.27-py_0.conda
+  sha256: c032a77ce57d2718b397716b218ed5776976188b7f0092ad7028ca0bc8624f90
+  md5: 830e15b2a262c20519d19623ccc99119
+  depends:
+  - click >=8.0
+  - python >=3.9,<3.16
+  - pyyaml >=6.0
+  - tomli
+  - tqdm >=4.60
+  license: MIT
+  size: 102241
+  timestamp: 1789388419722
 - conda: https://conda.anaconda.org/munch-group/osx-arm64/vscodenb-1.0.7-0.conda
   noarch: python
   sha256: f3a617722f14829f85870c3aecc18cbb7e37f695ae7fe2441101a0c003d1725f
