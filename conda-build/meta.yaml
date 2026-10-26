@@ -34,7 +34,6 @@ channels:  # channels for your library dependencies
 dependencies:   # keep this block with only these packages
   - anaconda-client
   - conda-build>=25.1.3 # from 25 the output file is a .conda not .tar.bz2
-  - conda-verify
   - conda-package-handling
   # - conda-forge/label/python_rc::_python_rc # Dummy package to force selection of python_rc channel when channel_priority is set to strict
 
