@@ -58,7 +58,7 @@ from importlib.metadata import version as _installed_version
 from .config import Config, active_config, use_config
 from .core import (
     build, catalog, diagnose, fetch, find_version, get, info, match, outdated,
-    resolve_one,
+    rank, resolve_one,
 )
 from .model import Entry, Spec, Version
 
@@ -82,6 +82,7 @@ __all__ = [
     "refresh",
     "repos",
     "resolve_one",
+    "search",
     "use_config",
     "versions",
     "Config",
@@ -311,6 +312,77 @@ def list(
     """
     entries = catalog(refresh=refresh, cfg=cfg, progress=progress)
     return _tabulate(entries, repo, pattern)
+
+
+def search(
+    query,
+    repo=None,
+    pattern=None,
+    *,
+    refresh: bool = False,
+    progress: bool = True,
+    cfg=None,
+):
+    """
+    Search what the configured repositories publish, best match first.
+
+    The python side of ``crossrepo search``, and a listing like
+    [](`crossrepo.list`) in every respect but two: only the files the query
+    matches are in it, and they come best match first. The query is matched
+    fuzzily against each file's repository, path and description, so it may
+    be a few words, a misspelling or an abbreviation, as
+    [](`crossrepo.core.rank`) describes.
+
+    Parameters
+    ----------
+    query :
+        Words to look for, such as ``"gwas hits"``. Every word must match.
+    repo :
+        Keep only repositories whose ``owner/repo`` contains this, as in
+        [](`crossrepo.list`).
+    pattern :
+        Keep only files whose name matches this glob, such as ``"*.csv"``.
+    refresh :
+        Rescan before searching, rather than using the stored catalog.
+    progress :
+        Show a progress bar while rescanning, as [](`crossrepo.list`) does.
+    cfg :
+        Settings. Defaults to [](`crossrepo.config.active_config`).
+
+    Returns
+    -------
+    :
+        A `Table` with the columns `LIST_COLUMNS` names, as
+        [](`crossrepo.list`) returns, holding the matching files best match
+        first. Empty, but with its columns, when nothing matches.
+
+    Raises
+    ------
+    ValueError
+        If `query` holds no words.
+    ImportError
+        If pandas is not installed. It is not a dependency of `crossrepo`.
+
+    Examples
+    --------
+
+    ```python
+    import crossrepo
+
+    crossrepo.search("gwas hits")               # several words, all must match
+    crossrepo.search("bordrs")                  # a typo is forgiven
+    crossrepo.search("effect", pattern="*.parquet")
+    ```
+
+    See Also
+    --------
+    [](`crossrepo.list`)
+    [](`crossrepo.core.rank`)
+    """
+    if not str(query).split():
+        raise ValueError("a search needs at least one word to look for")
+    entries = catalog(refresh=refresh, cfg=cfg, progress=progress)
+    return _tabulate(rank(entries, query), repo, pattern)
 
 
 def _tabulate(entries, repo=None, pattern=None):

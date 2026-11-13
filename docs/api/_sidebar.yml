@@ -4,6 +4,7 @@ website:
     - api/index.qmd
     - contents:
       - api/list.qmd
+      - api/search.qmd
       - api/repos.qmd
       - api/versions.qmd
       - api/refresh.qmd
@@ -21,6 +22,7 @@ website:
     - contents:
       - api/resolve_one.qmd
       - api/match.qmd
+      - api/rank.qmd
       - api/selects.qmd
       - api/find_version.qmd
       - api/describe.qmd

@@ -1,0 +1,47 @@
+# rank { #crossrepo.core.rank }
+
+```python
+crossrepo.core.rank(entries, query)
+```
+
+Find the entries a free text query fuzzily matches, best first.
+
+The query is split into words and every word must match the entry
+somewhere -- its ``owner/repo``, its path or its description -- either as
+it is, with a typo, or as an abbreviation of a repository or path. The
+entries are ordered by how well their words matched on average, those
+matching equally well keeping their order in `entries`.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**entries**]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[Entry](`crossrepo.model.Entry`)\]]{.parameter-annotation}</code>
+
+:   Catalog to search.
+
+<code>[**query**]{.parameter-name} [:]{.parameter-annotation-sep} [[str](`str`)]{.parameter-annotation}</code>
+
+:   Words to look for, such as ``"gwas hits"``. Case does not matter.
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} [[List](`typing.List`)\[[Entry](`crossrepo.model.Entry`)\]]{.parameter-annotation}</code>
+
+:   The matching entries, best match first; none if nothing matches.
+
+## Raises {.doc-section .doc-section-raises}
+
+<code>[:]{.parameter-annotation-sep} [[ValueError](`ValueError`)]{.parameter-annotation}</code>
+
+:   If `query` holds no words.
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+rank(catalog(), "tad bordrs")       # a typo is forgiven
+rank(catalog(), "hicbord")          # an abbreviation of hic-borders
+```
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`crossrepo.search`)
+[](`crossrepo.core.match`)

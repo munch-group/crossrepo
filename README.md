@@ -347,6 +347,7 @@ class `crossrepo.config.SourceWarning`.
 crossrepo repos                                  # one line per repo
 crossrepo list humanXsweeps                      # files in one repo
 crossrepo list -p '*.hdf'                        # by filename glob
+crossrepo search tmrca stats                     # fuzzy search, best match first
 crossrepo versions humanXsweeps:tmrca_stats.hdf
 crossrepo get humanXsweeps:tmrca_stats.hdf@a1b2c3d4e5f6...   # full sha, or a prefix
 crossrepo get x-gwas:hits.csv -o ./local_copy.csv
@@ -409,6 +410,7 @@ Every command has a python counterpart returning a DataFrame:
 crossrepo.list()                     # what is published
 crossrepo.list("x-gwas")             # one repository
 crossrepo.list(pattern="*.parquet")  # by file name
+crossrepo.search("gwas hits")        # fuzzy search, best match first
 
 crossrepo.repos()                    # one row per repository
 crossrepo.versions("x-gwas", "hits.csv")   # when the file itself changed
@@ -427,6 +429,14 @@ link whose target was not there when the catalog was built. A link's content
 lives only where the pipeline wrote it, and GitHub holds the link rather than
 the bytes, so `missing` means not to be had from anywhere rather than to be
 fetched from somewhere else.
+
+When the listing is too long to read, `crossrepo search` and `crossrepo.search()`
+return the same four columns holding only the files a query matches, best match
+first. Every word of the query must match a file's repository, path or
+description — as written, with a typo (`bordrs`), or as an abbreviation of the
+repository or path (`hicbord`). Both take the same repository and file name
+filters as a listing: `crossrepo search effect -r x-gwas -p '*.parquet'`, or
+`crossrepo.search("effect", "x-gwas", pattern="*.parquet")`.
 
 Everything else the catalog knows is still there, in two places. `crossrepo.frame()`
 is the whole table — `owner`, `repo`, `name`, `description`, `get`, `date`,

@@ -1,0 +1,79 @@
+# search { #crossrepo.search }
+
+```python
+crossrepo.search(
+    query,
+    repo=None,
+    pattern=None,
+    *,
+    refresh=False,
+    progress=True,
+    cfg=None,
+)
+```
+
+Search what the configured repositories publish, best match first.
+
+The python side of ``crossrepo search``, and a listing like
+[](`crossrepo.list`) in every respect but two: only the files the query
+matches are in it, and they come best match first. The query is matched
+fuzzily against each file's repository, path and description, so it may
+be a few words, a misspelling or an abbreviation, as
+[](`crossrepo.core.rank`) describes.
+
+## Parameters {.doc-section .doc-section-parameters}
+
+<code>[**query**]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation}</code>
+
+:   Words to look for, such as ``"gwas hits"``. Every word must match.
+
+<code>[**repo**]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   Keep only repositories whose ``owner/repo`` contains this, as in [](`crossrepo.list`).
+
+<code>[**pattern**]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   Keep only files whose name matches this glob, such as ``"*.csv"``.
+
+<code>[**refresh**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [False]{.parameter-default}</code>
+
+:   Rescan before searching, rather than using the stored catalog.
+
+<code>[**progress**]{.parameter-name} [:]{.parameter-annotation-sep} [[bool](`bool`)]{.parameter-annotation} [ = ]{.parameter-default-sep} [True]{.parameter-default}</code>
+
+:   Show a progress bar while rescanning, as [](`crossrepo.list`) does.
+
+<code>[**cfg**]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation} [ = ]{.parameter-default-sep} [None]{.parameter-default}</code>
+
+:   Settings. Defaults to [](`crossrepo.config.active_config`).
+
+## Returns {.doc-section .doc-section-returns}
+
+<code>[]{.parameter-name} [:]{.parameter-annotation-sep} []{.parameter-annotation}</code>
+
+:   A `Table` with the columns `LIST_COLUMNS` names, as [](`crossrepo.list`) returns, holding the matching files best match first. Empty, but with its columns, when nothing matches.
+
+## Raises {.doc-section .doc-section-raises}
+
+<code>[:]{.parameter-annotation-sep} [[ValueError](`ValueError`)]{.parameter-annotation}</code>
+
+:   If `query` holds no words.
+
+<code>[:]{.parameter-annotation-sep} [[ImportError](`ImportError`)]{.parameter-annotation}</code>
+
+:   If pandas is not installed. It is not a dependency of `crossrepo`.
+
+## Examples {.doc-section .doc-section-examples}
+
+```python
+import crossrepo
+
+crossrepo.search("gwas hits")               # several words, all must match
+crossrepo.search("bordrs")                  # a typo is forgiven
+crossrepo.search("effect", pattern="*.parquet")
+```
+
+## See Also {.doc-section .doc-section-see-also}
+
+[](`crossrepo.list`)
+[](`crossrepo.core.rank`)

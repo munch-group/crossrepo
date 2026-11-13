@@ -8,6 +8,7 @@ Finding out what the repositories publish.
 | | |
 | --- | --- |
 | [list](list.qmd#crossrepo.list) | Tabulate what the configured repositories publish. |
+| [search](search.qmd#crossrepo.search) | Search what the configured repositories publish, best match first. |
 | [repos](repos.qmd#crossrepo.repos) | Tabulate one row per repository that publishes something. |
 | [versions](versions.qmd#crossrepo.versions) | Tabulate the history of one published file or dataset. |
 | [refresh](refresh.qmd#crossrepo.refresh) | Rescan the repositories and store the catalog. |
@@ -38,6 +39,7 @@ version.
 | --- | --- |
 | [resolve_one](resolve_one.qmd#crossrepo.core.resolve_one) | Find the single entry a spec refers to. |
 | [match](match.qmd#crossrepo.core.match) | Find the entries a spec refers to, ignoring its version. |
+| [rank](rank.qmd#crossrepo.core.rank) | Find the entries a free text query fuzzily matches, best first. |
 | [selects](selects.qmd#crossrepo.core.selects) | Test whether a narrowed scan should look at a repository. |
 | [find_version](find_version.qmd#crossrepo.core.find_version) | Resolve a version reference against a file's history. |
 | [describe](describe.qmd#crossrepo.core.describe) | Everything the catalog holds about one published file, as lines to print. |

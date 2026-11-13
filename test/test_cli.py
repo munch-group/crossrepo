@@ -256,3 +256,38 @@ def test_reading_the_stored_catalog_says_nothing(repos, tmp_path, capsys):
     capsys.readouterr()
     assert cli.main(["--config", str(conf), "list"]) == 0
     assert "could not be read" not in capsys.readouterr().err
+
+
+def test_search_prints_the_list_columns_best_match_first(conf, capsys):
+    assert run(conf, "--refresh", "search", "table") == 0
+    lines = capsys.readouterr().out.splitlines()
+    assert lines[0].split() == ["repo", "path", "get", "description"]
+    assert "results/table.parquet" in lines[2]       # found in its name
+    assert "files in" in lines[-1]
+
+
+def test_search_forgives_a_typo_and_needs_every_word(conf, capsys):
+    assert run(conf, "search", "tad", "bordrs") == 0
+    out = capsys.readouterr().out
+    assert "Results/borders.tsv" in out and "candidates.csv" not in out
+
+
+def test_search_narrows_by_repo_and_pattern(conf, capsys):
+    assert run(conf, "search", "stable", "-r", "hic", "-p", "*.csv") == 0
+    out = capsys.readouterr().out
+    assert "other-org/hic-borders" in out and "acme/sweep-scan" not in out
+
+
+def test_search_without_a_match_says_so(conf, capsys):
+    assert run(conf, "search", "zzzz") == 1
+    assert "nothing published matches 'zzzz'" in capsys.readouterr().err
+
+
+def test_search_json_is_machine_readable(conf, capsys):
+    assert run(conf, "search", "candidates", "--json") == 0
+    data = json.loads(capsys.readouterr().out)
+    assert [e["path"] for e in data] == ["results/candidates.csv"]
+
+
+def test_search_needs_a_query(conf):
+    assert run(conf, "search") != 0

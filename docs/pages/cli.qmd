@@ -43,6 +43,7 @@ Catalog and fetch versioned result files across git repos.
 | [`crossrepo list`](#crossrepo-list) | List result files, optionally limited to one repo. |
 | [`crossrepo refresh`](#crossrepo-refresh) | Rescan the repos and store the catalog. |
 | [`crossrepo repos`](#crossrepo-repos) | Print one line per repo holding result files. |
+| [`crossrepo search`](#crossrepo-search) | Search result files by repo, path and description, best match first. |
 | [`crossrepo share`](#crossrepo-share) | Publish PATH, saying in DESCRIPTION what it holds. |
 | [`crossrepo stamp`](#crossrepo-stamp) | Record what the published symbolic links in a repository point at. |
 | [`crossrepo versions`](#crossrepo-versions) | Print the history of one result file, given as \[owner/\]repo:path. |
@@ -303,6 +304,30 @@ Print one line per repo holding result files.
 
 | Option | |
 |---|---|
+| `--config PATH` | path to config.toml |
+| `--refresh` | rescan repos instead of using the cached catalog |
+
+### `crossrepo search` {#crossrepo-search}
+
+```console
+crossrepo search [OPTIONS] QUERY...
+```
+
+Search result files by repo, path and description, best match first.
+
+The same four columns as `crossrepo list`, holding only the files QUERY
+matches. Every word of the query must match a file's repository, path or
+description, either as written, with a typo, or as an abbreviation of the
+repository or path, so `crossrepo search gwas hits`, `crossrepo search
+bordrs` and `crossrepo search hicbord` all find something.
+
+Takes `QUERY...`.
+
+| Option | |
+|---|---|
+| `-r, --repo TEXT` | only repos whose owner/repo contains this |
+| `-p, --pattern GLOB` | filter by filename glob, e.g. '*.csv' |
+| `--json` | print machine readable output |
 | `--config PATH` | path to config.toml |
 | `--refresh` | rescan repos instead of using the cached catalog |
 

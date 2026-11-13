@@ -1332,6 +1332,191 @@ def match(entries: List[Entry], spec: Spec) -> List[Entry]:
     return hits
 
 
+SIMILAR = 0.75
+"""How alike a query word and a word of an entry must be to count as a typo of it.
+
+A [](`difflib.SequenceMatcher`) ratio: one letter wrong in four passes, one in
+three does not, so a short word is not taken for every other short word."""
+
+ABBREVIATION_SPAN = 3
+"""How spread out an abbreviation may be, as a multiple of its own length.
+
+``hicbord`` may be found in ``hic-borders`` with a letter skipped, but only
+within three times its own length; otherwise any few letters would be found
+somewhere in any long enough path. The repository and the path are looked in
+separately, so an abbreviation cannot straddle the two."""
+
+
+def _words(text: str) -> List[str]:
+    """
+    Split text into the lowercase words a query is compared with.
+
+    Parameters
+    ----------
+    text :
+        Text to split, such as a path or a description.
+
+    Returns
+    -------
+    :
+        Runs of letters and digits, lowercased; punctuation, ``/``, ``.``,
+        ``-`` and ``_`` separate them.
+    """
+    return re.findall(r"[^\W_]+", text.lower())
+
+
+def _abbreviation(term: str, text: str) -> float:
+    """
+    Score `term` as letters of `text` taken in order, the tighter the better.
+
+    Parameters
+    ----------
+    term :
+        Lowercase query word.
+    text :
+        Lowercase text to look in.
+
+    Returns
+    -------
+    :
+        ``len(term) / span`` for the shortest stretch of `text` holding the
+        letters of `term` in order, or 0 when there is none within
+        `ABBREVIATION_SPAN` times the length of `term`.
+    """
+    best = 0.0
+    start = text.find(term[0])
+    while start != -1:
+        at = start
+        for ch in term[1:]:
+            at = text.find(ch, at + 1)
+            if at == -1:
+                return best          # no later start can do better
+        span = at - start + 1
+        if span <= ABBREVIATION_SPAN * len(term):
+            best = max(best, len(term) / span)
+        start = text.find(term[0], start + 1)
+    return best
+
+
+DESCRIPTION_WEIGHT = 0.9
+"""What a match in a description counts for, against one in a repo or path.
+
+A word found in the name of a file says more about which file is wanted than the
+same word in prose about it, so of two otherwise equal matches the name comes
+first."""
+
+
+def _term_score(term: str, entry: Entry) -> float:
+    """
+    Score how well one query word matches one entry.
+
+    Three kinds of match are tried, and the best one counts. The word found as
+    it is scores highest, and higher at the start of a word than inside one. A
+    word that differs by a typo from a word of the entry (`SIMILAR`) scores
+    less. Letters of the word found in order in the repository or the path
+    (`ABBREVIATION_SPAN`) score less again, by how tightly they sit;
+    descriptions are prose, in which a few letters can be found in order almost
+    anywhere, so they are not searched that way. A match in the description
+    counts for `DESCRIPTION_WEIGHT` of one in the repository or path.
+
+    Parameters
+    ----------
+    term :
+        Lowercase query word.
+    entry :
+        Catalog entry.
+
+    Returns
+    -------
+    :
+        A score between 0 (no match) and 1 (the word found whole at the start
+        of a word of the repository or path).
+    """
+    import difflib
+
+    fields = [
+        (entry.repo_key.lower(), 1.0, True),
+        (entry.path.lower(), 1.0, True),
+        (entry.description.lower(), DESCRIPTION_WEIGHT, False),
+    ]
+    best = 0.0
+    for text, weight, abbreviable in fields:
+        words = _words(text)
+        if any(w.startswith(term) for w in words):
+            score = 1.0
+        elif term in text:
+            score = 0.9
+        elif len(term) < 3:          # too short to tell a typo from chance
+            continue
+        else:
+            score = max(
+                (
+                    0.8 * ratio
+                    for ratio in (
+                        difflib.SequenceMatcher(None, term, w).ratio() for w in words
+                    )
+                    if ratio >= SIMILAR
+                ),
+                default=0.0,
+            )
+            if abbreviable:
+                score = max(score, 0.6 * _abbreviation(term, text))
+        best = max(best, weight * score)
+    return best
+
+
+def rank(entries: List[Entry], query: str) -> List[Entry]:
+    """
+    Find the entries a free text query fuzzily matches, best first.
+
+    The query is split into words and every word must match the entry
+    somewhere -- its ``owner/repo``, its path or its description -- either as
+    it is, with a typo, or as an abbreviation of a repository or path. The
+    entries are ordered by how well their words matched on average, those
+    matching equally well keeping their order in `entries`.
+
+    Parameters
+    ----------
+    entries :
+        Catalog to search.
+    query :
+        Words to look for, such as ``"gwas hits"``. Case does not matter.
+
+    Returns
+    -------
+    :
+        The matching entries, best match first; none if nothing matches.
+
+    Raises
+    ------
+    ValueError
+        If `query` holds no words.
+
+    Examples
+    --------
+
+    ```python
+    rank(catalog(), "tad bordrs")       # a typo is forgiven
+    rank(catalog(), "hicbord")          # an abbreviation of hic-borders
+    ```
+
+    See Also
+    --------
+    [](`crossrepo.search`)
+    [](`crossrepo.core.match`)
+    """
+    terms = query.lower().split()
+    if not terms:
+        raise ValueError("a search needs at least one word to look for")
+    scored = []
+    for i, e in enumerate(entries):
+        scores = [_term_score(t, e) for t in terms]
+        if all(scores):
+            scored.append((-sum(scores) / len(scores), i, e))
+    scored.sort(key=lambda s: s[:2])
+    return [e for _, _, e in scored]
+
+
 def resolve_one(entries: List[Entry], spec: Spec) -> Entry:
     """
     Find the single entry a spec refers to.

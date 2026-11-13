@@ -100,6 +100,7 @@ quartodoc:
         Finding out what the repositories publish.
       contents:
         - list
+        - search
         - repos
         - versions
         - refresh
@@ -124,6 +125,7 @@ quartodoc:
       contents:
         - resolve_one
         - match
+        - rank
         - selects
         - find_version
         - describe

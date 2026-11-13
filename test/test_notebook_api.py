@@ -413,3 +413,26 @@ def test_info_reads_the_same_in_both(cfg, capsys, by_spec):
     crossrepo.info("sweep-scan", "candidates.csv", cfg=cfg)
     printed = capsys.readouterr().out.rstrip("\n")
     assert printed == "\n".join(core.describe(entry, entry.latest))
+
+
+def test_a_search_is_a_listing_best_match_first(cfg):
+    table = crossrepo.search("table", cfg=cfg)
+    assert [*table.columns] == [*crossrepo.LIST_COLUMNS]
+    assert table["path"].iloc[0] == "results/table.parquet"
+    assert len(table) < len(crossrepo.list(cfg=cfg))
+
+
+def test_a_search_takes_the_listing_filters(cfg):
+    table = crossrepo.search("stable", "hic-borders", pattern="*.csv", cfg=cfg)
+    assert [*table["path"]] == ["Results/stable.csv"]
+
+
+def test_a_search_matching_nothing_still_has_columns(cfg):
+    table = crossrepo.search("zzzz", cfg=cfg)
+    assert len(table) == 0
+    assert [*table.columns] == [*crossrepo.LIST_COLUMNS]
+
+
+def test_a_search_needs_a_word(cfg):
+    with pytest.raises(ValueError):
+        crossrepo.search("  ", cfg=cfg)

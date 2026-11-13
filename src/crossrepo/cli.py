@@ -389,24 +389,119 @@ def cmd_list(
     `crossrepo.list` shows in a notebook, so that a listing is one thing however
     it is read. Everything known about one file is `crossrepo info`.
     """
-    entries = _entries(ctx, config_file, refresh)
+    entries = _narrow(_entries(ctx, config_file, refresh), repo, pattern)
+    if as_json:
+        return _print_json(entries)
+    if not entries:
+        _explain_empty(ctx, config_file, refresh)
+        return 1
+    _print_listing(entries)
+    return 0
+
+
+@cli.command("search")
+@click.argument("query", nargs=-1, required=True)
+@click.option("-r", "--repo", metavar="TEXT", help="only repos whose owner/repo contains this")
+@click.option("-p", "--pattern", metavar="GLOB", help="filter by filename glob, e.g. '*.csv'")
+@click.option("--json", "as_json", is_flag=True, help="print machine readable output")
+@catalog_options
+@click.pass_context
+def cmd_search(
+    ctx: click.Context,
+    query: Tuple[str, ...],
+    repo: Optional[str],
+    pattern: Optional[str],
+    as_json: bool,
+    config_file: Optional[str],
+    refresh: bool,
+) -> int:
+    """
+    Search result files by repo, path and description, best match first.
+
+    The same four columns as `crossrepo list`, holding only the files QUERY
+    matches. Every word of the query must match a file's repository, path or
+    description, either as written, with a typo, or as an abbreviation of the
+    repository or path, so `crossrepo search gwas hits`, `crossrepo search
+    bordrs` and `crossrepo search hicbord` all find something.
+    """
+    words = " ".join(query)
+    if not words.split():
+        raise click.UsageError("give at least one word to search for")
+    catalog = _entries(ctx, config_file, refresh)
+    entries = _narrow(cat.rank(catalog, words), repo, pattern)
+    if as_json:
+        return _print_json(entries)
+    if not catalog:
+        _explain_empty(ctx, config_file, refresh)
+        return 1
+    if not entries:
+        click.echo(f"nothing published matches {words!r}", err=True)
+        return 1
+    _print_listing(entries)
+    return 0
+
+
+def _narrow(
+    entries: List[Entry], repo: Optional[str], pattern: Optional[str]
+) -> List[Entry]:
+    """
+    Keep the entries a listing's ``REPO`` and ``--pattern`` select.
+
+    Parameters
+    ----------
+    entries :
+        Entries to filter, whose order is kept.
+    repo :
+        Keep only repositories whose ``owner/repo`` contains this, ignoring
+        case.
+    pattern :
+        Keep only files whose name matches this glob.
+
+    Returns
+    -------
+    :
+        The entries kept.
+    """
     if repo:
         needle = repo.lower()
         entries = [e for e in entries if needle in e.repo_key.lower()]
     if pattern:
         entries = [e for e in entries if fnmatch.fnmatch(e.name, pattern)]
-    if as_json:
-        click.echo(json.dumps([e.to_dict() for e in entries], indent=1))
-        return 0
-    if not entries:
-        _explain_empty(ctx, config_file, refresh)
-        return 1
+    return entries
+
+
+def _print_json(entries: List[Entry]) -> int:
+    """
+    Print entries as JSON, as ``--json`` asks.
+
+    Parameters
+    ----------
+    entries :
+        Entries to print.
+
+    Returns
+    -------
+    :
+        Exit status 0: an empty list is an answer, not a failure.
+    """
+    click.echo(json.dumps([e.to_dict() for e in entries], indent=1))
+    return 0
+
+
+def _print_listing(entries: List[Entry]) -> None:
+    """
+    Print entries as the four column table ``crossrepo list`` shows.
+
+    Parameters
+    ----------
+    entries :
+        Entries to print, in the order given.
+    """
     rows = [
         [e.repo_key, e.path, e.fetched_from, e.description] for e in entries
     ]
     click.echo(table(rows, [*LIST_COLUMNS]))
     click.echo(f"\n{len(entries)} files in {len({e.repo_key for e in entries})} repos")
-    return 0
 
 
 @cli.command("repos")

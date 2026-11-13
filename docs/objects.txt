@@ -3,6 +3,7 @@
 # Version: 0.0.9999
 # The remainder of this file is compressed using zlib.
 crossrepo.list py:function 1 api/list.html#crossrepo.list -
+crossrepo.search py:function 1 api/search.html#crossrepo.search -
 crossrepo.repos py:function 1 api/repos.html#crossrepo.repos -
 crossrepo.versions py:function 1 api/versions.html#crossrepo.versions -
 crossrepo.refresh py:function 1 api/refresh.html#crossrepo.refresh -
@@ -23,6 +24,7 @@ crossrepo.outdated py:function 1 api/outdated.html#crossrepo.outdated -
 crossrepo.core.outdated py:function 1 api/outdated.html#crossrepo.outdated crossrepo.outdated
 crossrepo.core.resolve_one py:function 1 api/resolve_one.html#crossrepo.core.resolve_one -
 crossrepo.core.match py:function 1 api/match.html#crossrepo.core.match -
+crossrepo.core.rank py:function 1 api/rank.html#crossrepo.core.rank -
 crossrepo.core.selects py:function 1 api/selects.html#crossrepo.core.selects -
 crossrepo.core.find_version py:function 1 api/find_version.html#crossrepo.core.find_version -
 crossrepo.core.describe py:function 1 api/describe.html#crossrepo.core.describe -
